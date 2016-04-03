@@ -18,6 +18,9 @@
       <Project>{7f5e2af9-8a0e-4e82-bc06-ec9de252f439}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5EB82752-5ACB-408C-AAFD-9CECDFCD9C89}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
