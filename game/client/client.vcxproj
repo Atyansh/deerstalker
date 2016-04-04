@@ -54,10 +54,13 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions); _WIN32_WINNT=0x0501</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>C:\Users\ckv001\Source\Repos\deerstalker2\game\client\Graphics</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\ckv001\Source\Repos\deerstalker2\game\client\Graphics</AdditionalLibraryDirectories>
+      <AdditionalDependencies>GL/freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -79,6 +82,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics\Camera.cpp" />
+    <ClCompile Include="Graphics\Color.cpp" />
+    <ClCompile Include="Graphics\Cube.cpp" />
+    <ClCompile Include="Graphics\Drawable.cpp" />
+    <ClCompile Include="Graphics\DrawData.cpp" />
+    <ClCompile Include="Graphics\Globals.cpp" />
+    <ClCompile Include="Graphics\Light.cpp" />
+    <ClCompile Include="Graphics\Material.cpp" />
+    <ClCompile Include="Graphics\Matrix4.cpp" />
+    <ClCompile Include="Graphics\Sphere.cpp" />
+    <ClCompile Include="Graphics\Texture.cpp" />
+    <ClCompile Include="Graphics\UpdateData.cpp" />
+    <ClCompile Include="Graphics\Vector3.cpp" />
+    <ClCompile Include="Graphics\Vector4.cpp" />
+    <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +109,23 @@
     <ProjectReference Include="..\util\util.vcxproj">
       <Project>{7f5e2af9-8a0e-4e82-bc06-ec9de252f439}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Graphics\Camera.h" />
+    <ClInclude Include="Graphics\Color.h" />
+    <ClInclude Include="Graphics\Cube.h" />
+    <ClInclude Include="Graphics\Drawable.h" />
+    <ClInclude Include="Graphics\DrawData.h" />
+    <ClInclude Include="Graphics\Globals.h" />
+    <ClInclude Include="Graphics\Light.h" />
+    <ClInclude Include="Graphics\Material.h" />
+    <ClInclude Include="Graphics\Matrix4.h" />
+    <ClInclude Include="Graphics\Sphere.h" />
+    <ClInclude Include="Graphics\Texture.h" />
+    <ClInclude Include="Graphics\UpdateData.h" />
+    <ClInclude Include="Graphics\Vector3.h" />
+    <ClInclude Include="Graphics\Vector4.h" />
+    <ClInclude Include="Graphics\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
