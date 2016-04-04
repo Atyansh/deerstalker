@@ -85,9 +85,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\common\common.vcxproj">
-      <Project>{b26e2b08-e5ce-4b4c-bed2-cf2ad0561ebb}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\util\util.vcxproj">
       <Project>{7f5e2af9-8a0e-4e82-bc06-ec9de252f439}</Project>
     </ProjectReference>
