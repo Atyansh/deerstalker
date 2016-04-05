@@ -70,6 +70,9 @@ int main(int argc, char* argv[])
 #include "Graphics/Matrix4.h"
 #include "Graphics/Globals.h"
 
+#include <boost/asio.hpp>
+
+using boost::asio::ip::tcp;
 
 
 enum { max_length = 1024 };
