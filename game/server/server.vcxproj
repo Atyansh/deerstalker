@@ -19,9 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\client\packages.config">
-      <FileType>Document</FileType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5EB82752-5ACB-408C-AAFD-9CECDFCD9C89}</ProjectGuid>
