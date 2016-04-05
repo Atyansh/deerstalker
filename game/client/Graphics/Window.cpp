@@ -126,13 +126,23 @@ void Window::processNormalKeys(unsigned char key, int x, int y) {
 	char reply[max_length];
 
 	size_t request_length;
-	
-
 	size_t reply_length;
 
+	//server
+	request[0] = key;
+	request[1] = '\0';
+	request_length = std::strlen(request);
+	boost::asio::write(Globals::socket, boost::asio::buffer(request, request_length));
 
+	//server
+	reply_length = boost::asio::read(Globals::socket,
+		boost::asio::buffer(reply, request_length));
+
+	std::cout << "Reply is: ";
+	std::cout.write(reply, reply_length);
+	std::cout << "\n";
     
-    switch(key){
+	switch (reply[0]){
         case 'q': case 'Q':
             //quit
             exit(EXIT_SUCCESS);
@@ -143,25 +153,9 @@ void Window::processNormalKeys(unsigned char key, int x, int y) {
             toggle = 0.005;
             break;
         case 'X':
-			//server
-			
-			request[0] = key;
-			request[1] = '\0';
-			request_length = std::strlen(request);
-			std::cout << request_length;
-			boost::asio::write(Globals::socket, boost::asio::buffer(request, request_length));
-
             //move right
             change.makeTranslate(0.3, 0, 0);
             Globals::cube.toWorld = change * Globals::cube.toWorld;
-
-			//server
-			reply_length = boost::asio::read(Globals::socket,
-				boost::asio::buffer(reply, request_length));
-			
-			std::cout << "Reply is: ";
-			std::cout.write(reply, reply_length);
-			std::cout << "\n";
             break;
         case 'x':
             //move left
