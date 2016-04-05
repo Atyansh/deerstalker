@@ -60,9 +60,9 @@ int main(int argc, char* argv[])
 #include <iostream>
 
 #ifdef __APPLE__
-#include <GLUT/glut.h>
+	#include <GLUT/glut.h>
 #else
-#include "Graphics\GL\freeglut.h"
+	#include "Graphics/GL/freeglut.h"
 #endif
 
 #include "Graphics/Window.h"
@@ -70,6 +70,9 @@ int main(int argc, char* argv[])
 #include "Graphics/Matrix4.h"
 #include "Graphics/Globals.h"
 
+
+
+enum { max_length = 1024 };
 
 
 int main(int argc, char *argv[])
@@ -91,7 +94,7 @@ int main(int argc, char *argv[])
 	glEnable(GL_LIGHTING);                                      //Enable lighting
 
 	//Register callback functions:
-	glutDisplayFunc(Window::displayCallback);
+	glutDisplayFunc([=]() { Window::displayCallback; });
 	glutReshapeFunc(Window::reshapeCallback);
 	glutIdleFunc(Window::idleCallback);
 	//Register the callback for the keyboard
@@ -104,6 +107,13 @@ int main(int argc, char *argv[])
 	//Initialize the Window:
 	//The body of this function is a great place to load textures, shaders, etc.
 	//and do any operations/calculations/configurations that only need to happen once.
+
+	// server 
+
+
+	tcp::resolver resolver(Globals::io_service);
+	boost::asio::connect(Globals::socket, resolver.resolve({ argv[1], argv[2] }));
+
 	Window::initialize();
 
 	//Start up the render loop!

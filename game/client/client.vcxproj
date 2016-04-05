@@ -41,6 +41,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <ExtensionsToDeleteOnClean>*.dll;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -60,8 +61,11 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\ckv001\Source\Repos\deerstalker2\game\client\Graphics</AdditionalLibraryDirectories>
-      <AdditionalDependencies>GL/freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Graphics/GL/freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>XCOPY "$(SolutionDir)"\client\Graphics\GL\*.DLL "$(TargetDir)"  /D /K /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -91,7 +95,6 @@
     <ClCompile Include="Graphics\Light.cpp" />
     <ClCompile Include="Graphics\Material.cpp" />
     <ClCompile Include="Graphics\Matrix4.cpp" />
-    <ClCompile Include="Graphics\Sphere.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\UpdateData.cpp" />
     <ClCompile Include="Graphics\Vector3.cpp" />
@@ -100,12 +103,10 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Graphics\GL\freeglut.dll" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\common\common.vcxproj">
-      <Project>{b26e2b08-e5ce-4b4c-bed2-cf2ad0561ebb}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\util\util.vcxproj">
       <Project>{7f5e2af9-8a0e-4e82-bc06-ec9de252f439}</Project>
     </ProjectReference>
@@ -117,15 +118,21 @@
     <ClInclude Include="Graphics\Drawable.h" />
     <ClInclude Include="Graphics\DrawData.h" />
     <ClInclude Include="Graphics\Globals.h" />
+    <ClInclude Include="Graphics\GL\freeglut.h" />
+    <ClInclude Include="Graphics\GL\freeglut_ext.h" />
+    <ClInclude Include="Graphics\GL\freeglut_std.h" />
+    <ClInclude Include="Graphics\GL\glut.h" />
     <ClInclude Include="Graphics\Light.h" />
     <ClInclude Include="Graphics\Material.h" />
     <ClInclude Include="Graphics\Matrix4.h" />
-    <ClInclude Include="Graphics\Sphere.h" />
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Graphics\UpdateData.h" />
     <ClInclude Include="Graphics\Vector3.h" />
     <ClInclude Include="Graphics\Vector4.h" />
     <ClInclude Include="Graphics\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Graphics\GL\freeglut.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

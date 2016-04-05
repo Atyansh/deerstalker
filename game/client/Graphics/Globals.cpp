@@ -9,5 +9,5 @@ Light Globals::light = Light();
 DrawData Globals::drawData = DrawData();
 UpdateData Globals::updateData = UpdateData();
 
-//New
-Sphere Globals::sphere = Sphere(2.0, 30, 30);
+boost::asio::io_service Globals::io_service = boost::asio::io_service();
+tcp::socket Globals::socket = tcp::socket(Globals::io_service);

@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="GL">
+      <UniqueIdentifier>{aa4136fc-4d11-4bc9-9cc3-a7aa9ee67839}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -45,9 +48,6 @@
     <ClCompile Include="Graphics\Matrix4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Sphere.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -66,6 +66,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Graphics\GL\freeglut.dll">
+      <Filter>GL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\Camera.h">
@@ -95,9 +98,6 @@
     <ClInclude Include="Graphics\Matrix4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Sphere.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -113,5 +113,22 @@
     <ClInclude Include="Graphics\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\GL\freeglut.h">
+      <Filter>GL</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GL\freeglut_ext.h">
+      <Filter>GL</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GL\freeglut_std.h">
+      <Filter>GL</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GL\glut.h">
+      <Filter>GL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Graphics\GL\freeglut.lib">
+      <Filter>GL</Filter>
+    </Library>
   </ItemGroup>
 </Project>

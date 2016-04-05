@@ -3,7 +3,7 @@
 #ifdef __APPLE__
     #include <GLUT/glut.h>
 #else
-    #include <GL/glut.h>
+	 #include "client/Graphics/GL/freeglut.h"
 #endif
 
 #include "Window.h"
@@ -11,15 +11,24 @@
 #include "Matrix4.h"
 #include "Globals.h"
 
+#include <cstdlib>
+#include <cstring>
+
+
+
+using boost::asio::ip::tcp;
+
+
+enum { max_length = 1024 };
+
+//graphic
 int Window::width  = 512;   //Set window width in pixels here
 int Window::height = 512;   //Set window height in pixels here
 float toggle = 0.005;
-int ball = 0;
 float bx = 0;
 float by = 0;
 
-
-void Window::initialize(void)
+void Window::initialize()
 {
     //Setup the light
     Vector4 lightPos(0.0, 10.0, 15.0, 1.0);
@@ -28,9 +37,6 @@ void Window::initialize(void)
     
     //Initialize cube matrix:
     Globals::cube.toWorld.identity();
-    
-    //Initialize sphere matrix:
-    Globals::sphere.toWorld.identity();
     
     //Setup the cube's material properties
     Color color(0x23ff27ff);
@@ -45,16 +51,11 @@ void Window::idleCallback()
     //Set up a static time delta for update calls
     Globals::updateData.dt = 1.0/60.0;// 60 fps
     
-    if(!ball){
-        //Rotate cube; if it spins too fast try smaller values and vice versa
-        Globals::cube.spin(toggle);
+    //Rotate cube; if it spins too fast try smaller values and vice versa
+    Globals::cube.spin(toggle);
         
-        //Call the update function on cube
-        Globals::cube.update(Globals::updateData);
-    }else{
-        //Call the update function on sphere
-        Globals::sphere.update(Globals::updateData);
-    }
+    //Call the update function on cube
+    Globals::cube.update(Globals::updateData);
     
     
     //Call the display routine to draw the cube
@@ -97,12 +98,8 @@ void Window::displayCallback()
     //(if we didn't the light would move with the camera, why is that?)
     Globals::light.bind(0);
     
-    //Draw the cube!
-    if(!ball){
-      Globals::cube.draw(Globals::drawData);
-    }else{
-      Globals::sphere.draw(Globals::drawData);
-    }
+     
+	Globals::cube.draw(Globals::drawData);
     
     
     //Pop off the changes we made to the matrix stack this frame
@@ -125,77 +122,97 @@ void Window::processNormalKeys(unsigned char key, int x, int y) {
     
     //print
     float px, py, pz;
+	char request[max_length];
+	char reply[max_length];
+
+	size_t request_length;
+	
+
+	size_t reply_length;
+
+
     
-    if(!ball){
-        //for cube
-        switch(key){
-            case 'q': case 'Q':
-                //quit
-                exit(EXIT_SUCCESS);
-                break;
-            case 'r':
-                //reset
-                Globals::cube.toWorld = change;
-                toggle = 0.005;
-                break;
-            case 'X':
-                //move right
-                change.makeTranslate(0.3, 0, 0);
-                Globals::cube.toWorld = change * Globals::cube.toWorld;
-                break;
-            case 'x':
-                //move left
-                change.makeTranslate(-0.3, 0, 0);
-                Globals::cube.toWorld = change * Globals::cube.toWorld;
-                break;
-            case 'Y':
-                //move up
-                change.makeTranslate(0, 0.3, 0);
-                Globals::cube.toWorld = change * Globals::cube.toWorld;
-                break;
-            case 'y':
-                //move down
-                change.makeTranslate(0, -0.3, 0);
-                Globals::cube.toWorld = change * Globals::cube.toWorld;
-                break;
-            case 'Z':
-                //move out screen
-                change.makeTranslate(0, 0, 0.3);
-                Globals::cube.toWorld = change * Globals::cube.toWorld;
-                break;
-            case 'z':
-                //move into screen
-                change.makeTranslate(0, 0, -0.3);
-                Globals::cube.toWorld = change * Globals::cube.toWorld;
-                break;
-            case 't':
-                //toggle spin
-                toggle = -toggle;
-                break;
-            case 's':
-                //scale down
-                change.makeScale(0.9);
-                Globals::cube.toWorld = Globals::cube.toWorld * change;
-                break;
-            case 'S':
-                //scale up
-                change.makeScale(1.1);
-                Globals::cube.toWorld = Globals::cube.toWorld * change;
-                break;
-            case 'o':
-                //orbit around z counterclockwise
-                change.makeRotateZ(0.3);
-                Globals::cube.toWorld = change * Globals::cube.toWorld;
-                break;
-            case 'O':
-                //orbit around z clockwise
-                change.makeRotateZ(-0.3);
-                Globals::cube.toWorld = change * Globals::cube.toWorld;
-                break;
-            case 'b':
-                ball = 1;
-                break;
-        }
+    switch(key){
+        case 'q': case 'Q':
+            //quit
+            exit(EXIT_SUCCESS);
+            break;
+        case 'r':
+            //reset
+            Globals::cube.toWorld = change;
+            toggle = 0.005;
+            break;
+        case 'X':
+			//server
+			
+			request[0] = key;
+			request[1] = '\0';
+			request_length = std::strlen(request);
+			std::cout << request_length;
+			boost::asio::write(Globals::socket, boost::asio::buffer(request, request_length));
+
+            //move right
+            change.makeTranslate(0.3, 0, 0);
+            Globals::cube.toWorld = change * Globals::cube.toWorld;
+
+			//server
+			reply_length = boost::asio::read(Globals::socket,
+				boost::asio::buffer(reply, request_length));
+			
+			std::cout << "Reply is: ";
+			std::cout.write(reply, reply_length);
+			std::cout << "\n";
+            break;
+        case 'x':
+            //move left
+            change.makeTranslate(-0.3, 0, 0);
+            Globals::cube.toWorld = change * Globals::cube.toWorld;
+            break;
+        case 'Y':
+            //move up
+            change.makeTranslate(0, 0.3, 0);
+            Globals::cube.toWorld = change * Globals::cube.toWorld;
+            break;
+        case 'y':
+            //move down
+            change.makeTranslate(0, -0.3, 0);
+            Globals::cube.toWorld = change * Globals::cube.toWorld;
+            break;
+        case 'Z':
+            //move out screen
+            change.makeTranslate(0, 0, 0.3);
+            Globals::cube.toWorld = change * Globals::cube.toWorld;
+            break;
+        case 'z':
+            //move into screen
+            change.makeTranslate(0, 0, -0.3);
+            Globals::cube.toWorld = change * Globals::cube.toWorld;
+            break;
+        case 't':
+            //toggle spin
+            toggle = -toggle;
+            break;
+        case 's':
+            //scale down
+            change.makeScale(0.9);
+            Globals::cube.toWorld = Globals::cube.toWorld * change;
+            break;
+        case 'S':
+            //scale up
+            change.makeScale(1.1);
+            Globals::cube.toWorld = Globals::cube.toWorld * change;
+            break;
+        case 'o':
+            //orbit around z counterclockwise
+            change.makeRotateZ(0.3);
+            Globals::cube.toWorld = change * Globals::cube.toWorld;
+            break;
+        case 'O':
+            //orbit around z clockwise
+            change.makeRotateZ(-0.3);
+            Globals::cube.toWorld = change * Globals::cube.toWorld;
+            break;
+		}
 
         //print
         px = (Globals::cube.toWorld).get(3,0);
@@ -203,53 +220,7 @@ void Window::processNormalKeys(unsigned char key, int x, int y) {
         pz = (Globals::cube.toWorld).get(3,2);
         
         std::cout<<"["<<px<<", "<<py<<", "<<pz<<"]"<<std::endl;
-    }else{
-        //for sphere
-        Vector3 b;
-        switch(key){
-            case 'q': case 'Q':
-                //quit
-                exit(EXIT_SUCCESS);
-                break;
-            case 'r':
-                //reset
-                Globals::sphere.toWorld = change;
-                Globals::sphere.toggleGravity(0);
-                bx = 0;
-                by = 0;
-                b.set(bx, by, 0);
-                Globals::sphere.applyForce(b);
-                break;
-            case 'b':
-                ball = 0;
-                break;
-            case 'a':
-                bx += (bx <= -0.5) ? 0 : -0.1;
-                b.set(bx, by, 0);
-                Globals::sphere.applyForce(b);
-                break;
-            case 'd':
-                bx += (bx >= 0.5) ? 0 : 0.1;
-                b.set(bx, by, 0);
-                Globals::sphere.applyForce(b);
-                break;
-            case 'w':
-                by += (by >= 1) ? 0 : 0.1;
-                b.set(bx, by, 0);
-                Globals::sphere.applyForce(b);
-                break;
-            case 's':
-                by += (by <= -1) ? 0 : -0.1;
-                b.set(bx, by, 0);
-                Globals::sphere.applyForce(b);
-                break;
-            case 'g':
-                Globals::sphere.toggleGravity(1);
-                break;
-            
-        }
 
-    }
 
 }
 

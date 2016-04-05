@@ -3,7 +3,7 @@
 #ifdef __APPLE__
     #include <GLUT/glut.h>
 #else
-    #include <GL/glut.h>
+  #include "client/Graphics/GL/freeglut.h"
 #endif
 
 #include "Window.h"
