@@ -1,5 +1,4 @@
-#ifndef CSE167_Globals_h
-#define CSE167_Globals_h
+#pragma once
 
 #include "Camera.h"
 #include "Cube.h"
@@ -28,4 +27,3 @@ public:
         
 };
 
-#endif

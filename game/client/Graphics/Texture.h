@@ -1,5 +1,4 @@
-#ifndef CSE167_Texture_h
-#define CSE167_Texture_h
+#pragma once
 
 #define _CRT_SECURE_NO_DEPRECATE
 
@@ -30,4 +29,3 @@ public:
     
 };
 
-#endif

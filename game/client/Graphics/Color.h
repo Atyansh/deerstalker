@@ -1,5 +1,4 @@
-#ifndef CSE167_Color_h
-#define CSE167_Color_h
+#pragma once
 
 class Color
 {
@@ -60,4 +59,3 @@ public:
     
 };
 
-#endif

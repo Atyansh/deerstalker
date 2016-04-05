@@ -1,5 +1,4 @@
-#ifndef CSE167_Cube_h
-#define CSE167_Cube_h
+#pragma once
 
 #include "Drawable.h"
 
@@ -20,5 +19,4 @@ public:
     
 };
 
-#endif
 

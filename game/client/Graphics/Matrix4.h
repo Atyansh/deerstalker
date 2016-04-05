@@ -1,5 +1,4 @@
-#ifndef CSE167_Matrix4_h
-#define CSE167_Matrix4_h
+#pragma once
 
 #include <string>
 
@@ -56,5 +55,3 @@ public:
     void print(std::string);
     
 };
-
-#endif

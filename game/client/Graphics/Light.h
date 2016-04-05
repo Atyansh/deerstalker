@@ -1,5 +1,4 @@
-#ifndef CSE167_Light_h
-#define CSE167_Light_h
+#pragma once
 
 #include "Matrix4.h"
 #include "Vector4.h"
@@ -35,4 +34,3 @@ public:
     
 };
 
-#endif

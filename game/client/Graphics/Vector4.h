@@ -1,5 +1,4 @@
-#ifndef CSE167_Vector4_h
-#define CSE167_Vector4_h
+#pragma once
 
 #include <string>
 
@@ -41,4 +40,3 @@ public:
     
 };
 
-#endif

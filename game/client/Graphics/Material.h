@@ -1,6 +1,4 @@
-#ifndef CSE167_Material_h
-#define CSE167_Material_h
-
+#pragma once
 #include <iostream>
 #include "Color.h"
 
@@ -29,4 +27,3 @@ public:
     
 };
 
-#endif

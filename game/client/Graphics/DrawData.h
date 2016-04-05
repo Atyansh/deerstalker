@@ -1,5 +1,4 @@
-#ifndef CSE167_RenderData_h
-#define CSE167_RenderData_h
+#pragma once
 
 #include <iostream>
 
@@ -15,5 +14,3 @@ public:
     ~DrawData(void);
     
 };
-
-#endif

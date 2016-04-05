@@ -1,5 +1,4 @@
-#ifndef CSE167_Drawable_h
-#define CSE167_Drawable_h
+#pragma once
 
 #include <iostream>
 #include "Matrix4.h"
@@ -27,4 +26,3 @@ public:
     
 };
 
-#endif

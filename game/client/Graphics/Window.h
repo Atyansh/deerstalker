@@ -1,5 +1,4 @@
-#ifndef CSE167_Window_h
-#define CSE167_Window_h
+#pragma once
 
 class Window	  // OpenGL output window related routines
 {
@@ -20,5 +19,4 @@ public:
     
 };
 
-#endif
 

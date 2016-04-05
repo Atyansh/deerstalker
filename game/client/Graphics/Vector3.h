@@ -1,5 +1,4 @@
-#ifndef CSE167_Vector3_h
-#define CSE167_Vector3_h
+#pragma once
 
 #include <string>
 
@@ -52,4 +51,3 @@ public:
     
 };
 
-#endif
