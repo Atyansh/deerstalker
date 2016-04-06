@@ -1,5 +1,4 @@
-#ifndef OBJOBJECT_H
-#define OBJOBJECT_H
+#pragma once
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -21,5 +20,3 @@ public:
 	void parse(const char* filepath);
 	void draw();
 };
-
-#endif

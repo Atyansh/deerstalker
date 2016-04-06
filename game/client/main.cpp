@@ -3,6 +3,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "Graphics/Window.h"
+#include "Graphics/Globals.h"
+
+#include <boost/asio.hpp>
+
+using boost::asio::ip::tcp;
 
 GLFWwindow* window;
 
@@ -85,7 +90,7 @@ void print_versions()
 #endif
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
 	// Create the GLFW window
 	window = Window::create_window(640, 480);
@@ -97,6 +102,10 @@ int main(void)
 	setup_opengl_settings();
 	// Initialize objects/pointers for rendering
 	Window::initialize_objects();
+
+	//Server
+	tcp::resolver resolver(Globals::io_service);
+	boost::asio::connect(Globals::socket, resolver.resolve({ argv[1], argv[2] }));
 
 	// Loop while GLFW window should stay open
 	while (!glfwWindowShouldClose(window))

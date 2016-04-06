@@ -1,5 +1,4 @@
-#ifndef _WINDOW_H_
-#define _WINDOW_H_
+#pragma once
 
 #include <iostream>
 
@@ -9,6 +8,20 @@
 
 class Window
 {
+private:
+	static const int ENTER = 13;
+	static const int ESC = 27;
+	static const int SPACE = 32;
+
+	static bool holdUp;
+	static bool holdDown;
+	static bool holdLeft;
+	static bool holdRight;
+
+	static int glfwToAscii(const int key);
+	static int asciiToGLFW(const int key);
+	static void calcMovements();
+
 public:
 	static int width;
 	static int height;
@@ -20,5 +33,3 @@ public:
 	static void display_callback(GLFWwindow*);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 };
-
-#endif

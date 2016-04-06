@@ -88,6 +88,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Graphics\Cube.cpp" />
+    <ClCompile Include="Graphics\Globals.cpp" />
     <ClCompile Include="Graphics\OBJObject.cpp" />
     <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="main.cpp" />
@@ -102,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\Cube.h" />
+    <ClInclude Include="Graphics\Globals.h" />
     <ClInclude Include="Graphics\OBJObject.h" />
     <ClInclude Include="Graphics\Window.h" />
   </ItemGroup>
