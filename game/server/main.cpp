@@ -9,49 +9,118 @@
 //
 
 #include <cstdlib>
+#include <deque>
 #include <iostream>
 #include <memory>
+#include <set>
 #include <utility>
 #include <boost/asio.hpp>
+#include "util\Message.h"
 
 using boost::asio::ip::tcp;
+using namespace util;
 
-class session
-	: public std::enable_shared_from_this<session> {
+
+typedef std::deque<Message> message_queue;
+
+
+class Client
+{
 public:
-	session(tcp::socket socket)
-		: socket_(std::move(socket)) {
+	virtual ~Client() {}
+	virtual void deliver(const Message& msg) = 0;
+};
+
+typedef std::shared_ptr<Client> client_ptr;
+
+
+class Game
+{
+public:
+	void join(client_ptr participant)
+	{
+		participants_.insert(participant);
 	}
 
-	void start() {
-		do_read();
+
+	void deliver(const Message& msg)
+	{
+		for (auto participant : participants_)
+			participant->deliver(msg);
 	}
 
 private:
-	void do_read() {
+	std::set<client_ptr> participants_;
+};
+
+
+class session
+	: public Client,
+	public std::enable_shared_from_this<session> {
+public:
+	session(tcp::socket socket, Game& game)
+		: socket_(std::move(socket)), 
+		game_(game) {
+	}
+
+	void start() {
+		game_.join(shared_from_this());
+		do_read_header();
+	}
+
+	void deliver(const Message& msg) {
+		bool write_in_progress = !write_msgs_.empty();
+		write_msgs_.push_back(msg);
+		if (!write_in_progress) {
+			do_write();
+		}
+	}
+
+private:
+	void do_read_header() {
 		auto self(shared_from_this());
-		socket_.async_read_some(boost::asio::buffer(data_, max_length),
-			[this, self](boost::system::error_code ec, std::size_t length)
+		boost::asio::async_read(socket_,
+			boost::asio::buffer(read_msg_.data(), Message::header_length),
+			[this, self](boost::system::error_code ec, std::size_t /*length*/)
 		{
-			if (!ec) {
-				do_write(length);
+			if (!ec && read_msg_.decode_header()) {
+				do_read_body();
 			}
 		});
 	}
 
-	void do_write(std::size_t length) {
+
+	void do_read_body() {
 		auto self(shared_from_this());
-		boost::asio::async_write(socket_, boost::asio::buffer(data_, length),
+		socket_.async_read_some(boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
+			[this, self](boost::system::error_code ec, std::size_t length)
+		{
+			if (!ec) {
+				game_.deliver(read_msg_);
+				do_read_header();
+			}
+		});
+	}
+
+	void do_write() {
+		auto self(shared_from_this());
+		boost::asio::async_write(socket_,
+			boost::asio::buffer(write_msgs_.front().data(), 
+			write_msgs_.front().length()),
 			[this, self](boost::system::error_code ec, std::size_t /*length*/) {
 			if (!ec) {
-				do_read();
+				write_msgs_.pop_front();
+				if (!write_msgs_.empty()) {
+					do_write();
+				}
 			}
 		});
 	}
 
 	tcp::socket socket_;
-	enum { max_length = 1024 };
-	char data_[max_length];
+	Game& game_;
+	Message read_msg_;
+	message_queue write_msgs_;
 };
 
 class server {
@@ -67,7 +136,7 @@ private:
 		acceptor_.async_accept(socket_,
 			[this](boost::system::error_code ec) {
 			if (!ec) {
-				std::make_shared<session>(std::move(socket_))->start();
+				std::make_shared<session>(std::move(socket_), game_)->start();
 			}
 
 			do_accept();
@@ -76,6 +145,7 @@ private:
 
 	tcp::acceptor acceptor_;
 	tcp::socket socket_;
+	Game game_;
 };
 
 int main(int argc, char* argv[]) {
