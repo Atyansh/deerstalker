@@ -104,7 +104,6 @@
     <ClInclude Include="Graphics\Cube.h" />
     <ClInclude Include="Graphics\OBJObject.h" />
     <ClInclude Include="Graphics\Window.h" />
-    <ClInclude Include="main.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
