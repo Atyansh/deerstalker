@@ -30,3 +30,6 @@
 # Custom
 *.sdf
 *.ilk
+
+# Packages
+packages/
