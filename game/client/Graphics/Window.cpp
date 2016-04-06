@@ -1,242 +1,126 @@
-#include <iostream>
-
-#ifdef __APPLE__
-    #include <GLUT/glut.h>
-#else
-	 #include "client/Graphics/GL/freeglut.h"
-#endif
-
 #include "Window.h"
-#include "Cube.h"
-#include "Matrix4.h"
-#include "Globals.h"
 
-#include <cstdlib>
-#include <cstring>
+const char* window_title = "GLFW Starter Project";
+Cube cube(5.0f);
 
+int Window::width;
+int Window::height;
 
-
-using boost::asio::ip::tcp;
-
-
-enum { max_length = 1024 };
-
-//graphic
-int Window::width  = 512;   //Set window width in pixels here
-int Window::height = 512;   //Set window height in pixels here
-float toggle = 0.005;
-float bx = 0;
-float by = 0;
-
-void Window::initialize()
+void Window::initialize_objects()
 {
-    //Setup the light
-    Vector4 lightPos(0.0, 10.0, 15.0, 1.0);
-    Globals::light.position = lightPos;
-    Globals::light.quadraticAttenuation = 0.02;
-    
-    //Initialize cube matrix:
-    Globals::cube.toWorld.identity();
-    
-    //Setup the cube's material properties
-    Color color(0x23ff27ff);
-    Globals::cube.material.color = color;
 }
 
-//----------------------------------------------------------------------------
-// Callback method called when system is idle.
-// This is called at the start of every new "frame" (qualitatively)
-void Window::idleCallback()
+void Window::clean_up()
 {
-    //Set up a static time delta for update calls
-    Globals::updateData.dt = 1.0/60.0;// 60 fps
-    
-    //Rotate cube; if it spins too fast try smaller values and vice versa
-    Globals::cube.spin(toggle);
-        
-    //Call the update function on cube
-    Globals::cube.update(Globals::updateData);
-    
-    
-    //Call the display routine to draw the cube
-    displayCallback();
 }
 
-//----------------------------------------------------------------------------
-// Callback method called by GLUT when graphics window is resized by the user
-void Window::reshapeCallback(int w, int h)
+GLFWwindow* Window::create_window(int width, int height)
 {
-    width = w;                                                       //Set the window width
-    height = h;                                                      //Set the window height
-    glViewport(0, 0, w, h);                                          //Set new viewport size
-    glMatrixMode(GL_PROJECTION);                                     //Set the OpenGL matrix mode to Projection
-    glLoadIdentity();                                                //Clear the projection matrix by loading the identity
-    gluPerspective(60.0, double(width)/(double)height, 1.0, 1000.0); //Set perspective projection viewing frustum
+	// Initialize GLFW
+	if (!glfwInit())
+	{
+		fprintf(stderr, "Failed to initialize GLFW\n");
+		return NULL;
+	}
+
+	// 4x antialiasing
+	glfwWindowHint(GLFW_SAMPLES, 4);
+
+	// Create the GLFW window
+	GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
+
+	// Check if the window could not be created
+	if (!window)
+	{
+		fprintf(stderr, "Failed to open GLFW window.\n");
+		glfwTerminate();
+		return NULL;
+	}
+
+	// Make the context of the window
+	glfwMakeContextCurrent(window);
+
+	// Set swap interval to 1
+	glfwSwapInterval(1);
+
+	// Call the resize callback to make sure things get drawn immediately
+	Window::resize_callback(window, width, height);
+
+	return window;
 }
 
-//----------------------------------------------------------------------------
-// Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
-void Window::displayCallback()
+void Window::resize_callback(GLFWwindow* window, int width, int height)
 {
-    //Clear color and depth buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    //Set the OpenGL matrix mode to ModelView
-    glMatrixMode(GL_MODELVIEW);
-    
-    //Push a matrix save point
-    //This will save a copy of the current matrix so that we can
-    //make changes to it and 'pop' those changes off later.
-    glPushMatrix();
-    
-    //Replace the current top of the matrix stack with the inverse camera matrix
-    //This will convert all world coordiantes into camera coordiantes
-    glLoadMatrixf(Globals::camera.getInverseMatrix().ptr());
-    
-    //Bind the light to slot 0.  We do this after the camera matrix is loaded so that
-    //the light position will be treated as world coordiantes
-    //(if we didn't the light would move with the camera, why is that?)
-    Globals::light.bind(0);
-    
-     
-	Globals::cube.draw(Globals::drawData);
-    
-    
-    //Pop off the changes we made to the matrix stack this frame
-    glPopMatrix();
-    
-    //Tell OpenGL to clear any outstanding commands in its command buffer
-    //This will make sure that all of our commands are fully executed before
-    //we swap buffers and show the user the freshly drawn frame
-    glFlush();
-    
-    //Swap the off-screen buffer (the one we just drew to) with the on-screen buffer
-    glutSwapBuffers();
+	Window::width = width;
+	Window::height = height;
+	// Set the viewport size
+	glViewport(0, 0, width, height);
+	// Set the matrix mode to GL_PROJECTION to determine the proper camera properties
+	glMatrixMode(GL_PROJECTION);
+	// Load the identity matrix
+	glLoadIdentity();
+	// Set the perspective of the projection viewing frustum
+	gluPerspective(60.0, double(width) / (double)height, 1.0, 1000.0);
+	// Move camera back 20 units so that it looks at the origin (or else it's in the origin)
+	glTranslatef(0, 0, -20);
 }
 
+void Window::idle_callback()
+{
+	// Perform any updates as necessary. Here, we will spin the cube slightly.
+	cube.update();
+}
 
-//TODO: Keyboard callbacks!
-void Window::processNormalKeys(unsigned char key, int x, int y) {
-    Matrix4 change;
-    change.identity();
-    
-    //print
-    float px, py, pz;
-	char request[max_length];
-	char reply[max_length];
+void Window::display_callback(GLFWwindow* window)
+{
+	// Clear the color and depth buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// Set the matrix mode to GL_MODELVIEW
+	glMatrixMode(GL_MODELVIEW);
+	// Load the identity matrix
+	glLoadIdentity();
+	
+	// Render objects
+	cube.draw();
 
-	size_t request_length;
-	size_t reply_length;
+	// Gets events, including input such as keyboard and mouse or window resizing
+	glfwPollEvents();
+	// Swap buffers
+	glfwSwapBuffers(window);
+}
 
-	//server
-	request[0] = key;
-	request[1] = '\0';
-	request_length = std::strlen(request);
-	boost::asio::write(Globals::socket, boost::asio::buffer(request, request_length));
+void Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	// Check for a key press
+	if (action == GLFW_PRESS)
+	{
+		glm::mat4 change(1.0f);
+		switch (key){
+		case GLFW_KEY_ESCAPE:
+			// Close the window. This causes the program to also terminate.
+			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_D:
+			//move right
+			change = glm::translate(change, glm::vec3(0.3f, 0.0f, 0.0f));
+			cube.toWorld = change * cube.toWorld;
+			break;
+		case GLFW_KEY_A:
+			//move left
+			change = glm::translate(change, glm::vec3(-0.3f, 0.0f, 0.0f));
+			cube.toWorld = change * cube.toWorld;
+			break;
+		case GLFW_KEY_W:
+			//move right
+			change = glm::translate(change, glm::vec3(0.0f, 0.3f, 0.0f));
+			cube.toWorld = change * cube.toWorld;
+			break;
+		case GLFW_KEY_S:
+			//move left
+			change = glm::translate(change, glm::vec3(0.0f, -0.3f, 0.0f));
+			cube.toWorld = change * cube.toWorld;
+			break;
 
-	//server
-	reply_length = boost::asio::read(Globals::socket,
-		boost::asio::buffer(reply, request_length));
-
-	std::cout << "Reply is: ";
-	std::cout.write(reply, reply_length);
-	std::cout << "\n";
-    
-	switch (reply[0]){
-        case 'q': case 'Q':
-            //quit
-            exit(EXIT_SUCCESS);
-            break;
-        case 'r':
-            //reset
-            Globals::cube.toWorld = change;
-            toggle = 0.005;
-            break;
-        case 'X':
-            //move right
-            change.makeTranslate(0.3, 0, 0);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'x':
-            //move left
-            change.makeTranslate(-0.3, 0, 0);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'Y':
-            //move up
-            change.makeTranslate(0, 0.3, 0);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'y':
-            //move down
-            change.makeTranslate(0, -0.3, 0);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'Z':
-            //move out screen
-            change.makeTranslate(0, 0, 0.3);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'z':
-            //move into screen
-            change.makeTranslate(0, 0, -0.3);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 't':
-            //toggle spin
-            toggle = -toggle;
-            break;
-        case 's':
-            //scale down
-            change.makeScale(0.9);
-            Globals::cube.toWorld = Globals::cube.toWorld * change;
-            break;
-        case 'S':
-            //scale up
-            change.makeScale(1.1);
-            Globals::cube.toWorld = Globals::cube.toWorld * change;
-            break;
-        case 'o':
-            //orbit around z counterclockwise
-            change.makeRotateZ(0.3);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'O':
-            //orbit around z clockwise
-            change.makeRotateZ(-0.3);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
 		}
-
-        //print
-        px = (Globals::cube.toWorld).get(3,0);
-        py = (Globals::cube.toWorld).get(3,1);
-        pz = (Globals::cube.toWorld).get(3,2);
-        
-        std::cout<<"["<<px<<", "<<py<<", "<<pz<<"]"<<std::endl;
-
-
+	}
 }
-
-//TODO: Function Key callbacks!
-void Window::processSpecialKeys(int key, int x, int y) {
-    
-    switch(key){
-        case GLUT_KEY_LEFT:
-            std::cout<<"left"<<std::endl;
-            break;
-        case GLUT_KEY_RIGHT:
-            std::cout<<"right"<<std::endl;
-            break;
-        case GLUT_KEY_UP:
-            std::cout<<"up"<<std::endl;
-            break;
-        case GLUT_KEY_DOWN:
-            std::cout<<"down"<<std::endl;
-            break;
-    }
-}
-
-//TODO: Mouse callbacks!
-
-//TODO: Mouse Motion callbacks!

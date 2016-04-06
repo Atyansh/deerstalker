@@ -41,7 +41,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <ExtensionsToDeleteOnClean>*.dll;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
+    <ExtensionsToDeleteOnClean>$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -61,10 +61,11 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\ckv001\Source\Repos\deerstalker2\game\client\Graphics</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Graphics/GL/freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY "$(SolutionDir)"\client\Graphics\GL\*.DLL "$(TargetDir)"  /D /K /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -86,24 +87,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Graphics\Camera.cpp" />
-    <ClCompile Include="Graphics\Color.cpp" />
     <ClCompile Include="Graphics\Cube.cpp" />
-    <ClCompile Include="Graphics\Drawable.cpp" />
-    <ClCompile Include="Graphics\DrawData.cpp" />
-    <ClCompile Include="Graphics\Globals.cpp" />
-    <ClCompile Include="Graphics\Light.cpp" />
-    <ClCompile Include="Graphics\Material.cpp" />
-    <ClCompile Include="Graphics\Matrix4.cpp" />
-    <ClCompile Include="Graphics\Texture.cpp" />
-    <ClCompile Include="Graphics\UpdateData.cpp" />
-    <ClCompile Include="Graphics\Vector3.cpp" />
-    <ClCompile Include="Graphics\Vector4.cpp" />
+    <ClCompile Include="Graphics\OBJObject.cpp" />
     <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Graphics\GL\freeglut.dll" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -112,27 +101,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Graphics\Camera.h" />
-    <ClInclude Include="Graphics\Color.h" />
     <ClInclude Include="Graphics\Cube.h" />
-    <ClInclude Include="Graphics\Drawable.h" />
-    <ClInclude Include="Graphics\DrawData.h" />
-    <ClInclude Include="Graphics\Globals.h" />
-    <ClInclude Include="Graphics\GL\freeglut.h" />
-    <ClInclude Include="Graphics\GL\freeglut_ext.h" />
-    <ClInclude Include="Graphics\GL\freeglut_std.h" />
-    <ClInclude Include="Graphics\GL\glut.h" />
-    <ClInclude Include="Graphics\Light.h" />
-    <ClInclude Include="Graphics\Material.h" />
-    <ClInclude Include="Graphics\Matrix4.h" />
-    <ClInclude Include="Graphics\Texture.h" />
-    <ClInclude Include="Graphics\UpdateData.h" />
-    <ClInclude Include="Graphics\Vector3.h" />
-    <ClInclude Include="Graphics\Vector4.h" />
+    <ClInclude Include="Graphics\OBJObject.h" />
     <ClInclude Include="Graphics\Window.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Graphics\GL\freeglut.lib" />
+    <ClInclude Include="main.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
@@ -170,5 +142,8 @@
     <Import Project="..\packages\boost_exception-vc120.1.59.0.0\build\native\boost_exception-vc120.targets" Condition="Exists('..\packages\boost_exception-vc120.1.59.0.0\build\native\boost_exception-vc120.targets')" />
     <Import Project="..\packages\boost_test_exec_monitor-vc120.1.59.0.0\build\native\boost_test_exec_monitor-vc120.targets" Condition="Exists('..\packages\boost_test_exec_monitor-vc120.1.59.0.0\build\native\boost_test_exec_monitor-vc120.targets')" />
     <Import Project="..\packages\boost-vc120.1.59.0.0\build\native\boost-vc120.targets" Condition="Exists('..\packages\boost-vc120.1.59.0.0\build\native\boost-vc120.targets')" />
+    <Import Project="..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets" Condition="Exists('..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" />
+    <Import Project="..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets" Condition="Exists('..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" />
+    <Import Project="..\packages\glm.0.9.7.1\build\native\glm.targets" Condition="Exists('..\packages\glm.0.9.7.1\build\native\glm.targets')" />
   </ImportGroup>
 </Project>

@@ -1,22 +1,26 @@
-#pragma once
+#ifndef _CUBE_H_
+#define _CUBE_H_
 
-#include "Drawable.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
-class Cube : public Drawable
+class Cube
 {
-    
 public:
-    
-    float size;
-    
-    Cube(float);
-    virtual ~Cube(void);
-    
-    virtual void draw(DrawData&);
-    virtual void update(UpdateData&);
-    
-    void spin(float);
-    
+	Cube(float);
+	~Cube();
+
+	glm::mat4 toWorld;
+
+	float size;
+
+	void draw();
+	void update();
+
+	void spin(float);
 };
 
+#endif
 

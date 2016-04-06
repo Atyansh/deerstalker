@@ -1,22 +1,24 @@
-#pragma once
+#ifndef _WINDOW_H_
+#define _WINDOW_H_
 
-class Window	  // OpenGL output window related routines
+#include <iostream>
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include "Cube.h"
+
+class Window
 {
-
-protected:
 public:
-    
-    static int width, height; 	            // window size
-    
-	static void initialize();
-    static void idleCallback(void);
-    static void reshapeCallback(int, int);
-    static void displayCallback(void);
-    
-    //New Methods
-    static void processNormalKeys(unsigned char key, int x, int y);
-    static void processSpecialKeys(int key, int x, int y);
-    
+	static int width;
+	static int height;
+	static void initialize_objects();
+	static void clean_up();
+	static GLFWwindow* create_window(int width, int height);
+	static void resize_callback(GLFWwindow* window, int width, int height);
+	static void idle_callback();
+	static void display_callback(GLFWwindow*);
+	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 };
 
-
+#endif
