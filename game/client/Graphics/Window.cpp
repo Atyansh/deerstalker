@@ -158,7 +158,6 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		switch (keyPress){
 		case GLFW_KEY_ESCAPE:
 			// Close the window. This causes the program to also terminate.
-			std::cout << "die ";
 			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
 		case GLFW_KEY_D:
@@ -184,7 +183,6 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		switch (keyPress){
 		case GLFW_KEY_ESCAPE:
 			// Close the window. This causes the program to also terminate.
-			std::cout << "die 2";
 			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
 		case GLFW_KEY_D:
