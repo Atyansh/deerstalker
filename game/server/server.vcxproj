@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ConfigTemplate.ini" />
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

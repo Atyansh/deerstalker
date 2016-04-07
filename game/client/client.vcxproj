@@ -103,6 +103,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ConfigTemplate.ini" />
     <None Include="Graphics\GL\freeglut.dll" />
     <None Include="packages.config" />
   </ItemGroup>

@@ -58,6 +58,7 @@ int main(int argc, char* argv[])
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <string>
 
 #ifdef __APPLE__
 	#include <GLUT/glut.h>
@@ -69,7 +70,7 @@ int main(int argc, char* argv[])
 #include "Graphics/Cube.h"
 #include "Graphics/Matrix4.h"
 #include "Graphics/Globals.h"
-
+#include "util\ConfigSettings.h"
 #include <boost/asio.hpp>
 
 using boost::asio::ip::tcp;
@@ -80,6 +81,7 @@ enum { max_length = 1024 };
 
 int main(int argc, char *argv[])
 {
+	std::string hostname, port;
 
 	glutInit(&argc, argv);                                      //Initialize GLUT
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);   //Open an OpenGL context with double buffering, RGB colors, and depth buffering
@@ -97,7 +99,7 @@ int main(int argc, char *argv[])
 	glEnable(GL_LIGHTING);                                      //Enable lighting
 
 	//Register callback functions:
-	glutDisplayFunc([=]() { Window::displayCallback; });
+	glutDisplayFunc(Window::displayCallback);
 	glutReshapeFunc(Window::reshapeCallback);
 	glutIdleFunc(Window::idleCallback);
 	//Register the callback for the keyboard
@@ -113,9 +115,25 @@ int main(int argc, char *argv[])
 
 	// server 
 
+	// load the settings from the config file
+	if (!util::ConfigSettings::config->checkIfLoaded()) {
+		if (!util::ConfigSettings::config->loadSettingsFile()) {
+			std::cerr << "There was a problem loading the config file\n";
+			return 1;
+		}
+	}
+	// set the hostname and port
+	if (!util::ConfigSettings::config->getValue(util::ConfigSettings::str_host_name, hostname)) {
+		std::cerr << "There was a problem getting the hostname from the config file\n";
+		return 1;
+	}
+	if (!util::ConfigSettings::config->getValue(util::ConfigSettings::str_port_number, port)) {
+		std::cerr << "There was a problem getting the hostname from the config file\n";
+		return 1;
+	}
 
 	tcp::resolver resolver(Globals::io_service);
-	boost::asio::connect(Globals::socket, resolver.resolve({ argv[1], argv[2] }));
+	boost::asio::connect(Globals::socket, resolver.resolve({ hostname.c_str(), port.c_str() }));
 
 	Window::initialize();
 

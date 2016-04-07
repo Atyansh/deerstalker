@@ -69,6 +69,7 @@
     <None Include="Graphics\GL\freeglut.dll">
       <Filter>GL</Filter>
     </None>
+    <None Include="ConfigTemplate.ini" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\Camera.h">
