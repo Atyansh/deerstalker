@@ -13,8 +13,9 @@
 
 #include <cstdlib>
 #include <cstring>
+#include "util\Message.h"
 
-
+using namespace util;
 
 using boost::asio::ip::tcp;
 
@@ -48,12 +49,92 @@ void Window::initialize()
 // This is called at the start of every new "frame" (qualitatively)
 void Window::idleCallback()
 {
+	Matrix4 change;
+	change.identity();
+
     //Set up a static time delta for update calls
     Globals::updateData.dt = 1.0/60.0;// 60 fps
     
     //Rotate cube; if it spins too fast try smaller values and vice versa
     Globals::cube.spin(toggle);
-        
+
+	while (!Globals::keyQueue.empty()) {
+		switch (Globals::keyQueue.front()){
+		case 'q': case 'Q':
+			//quit
+			exit(EXIT_SUCCESS);
+			break;
+		case 'r':
+			//reset
+			Globals::cube.toWorld = change;
+			toggle = 0.005;
+			break;
+		case 'X':
+			//move right
+			change.makeTranslate(0.3, 0, 0);
+			Globals::cube.toWorld = change * Globals::cube.toWorld;
+			break;
+		case 'x':
+			//move left
+			change.makeTranslate(-0.3, 0, 0);
+			Globals::cube.toWorld = change * Globals::cube.toWorld;
+			break;
+		case 'Y':
+			//move up
+			change.makeTranslate(0, 0.3, 0);
+			Globals::cube.toWorld = change * Globals::cube.toWorld;
+			break;
+		case 'y':
+			//move down
+			change.makeTranslate(0, -0.3, 0);
+			Globals::cube.toWorld = change * Globals::cube.toWorld;
+			break;
+		case 'Z':
+			//move out screen
+			change.makeTranslate(0, 0, 0.3);
+			Globals::cube.toWorld = change * Globals::cube.toWorld;
+			break;
+		case 'z':
+			//move into screen
+			change.makeTranslate(0, 0, -0.3);
+			Globals::cube.toWorld = change * Globals::cube.toWorld;
+			break;
+		case 't':
+			//toggle spin
+			toggle = -toggle;
+			break;
+		case 's':
+			//scale down
+			change.makeScale(0.9);
+			Globals::cube.toWorld = Globals::cube.toWorld * change;
+			break;
+		case 'S':
+			//scale up
+			change.makeScale(1.1);
+			Globals::cube.toWorld = Globals::cube.toWorld * change;
+			break;
+		case 'o':
+			//orbit around z counterclockwise
+			change.makeRotateZ(0.3);
+			Globals::cube.toWorld = change * Globals::cube.toWorld;
+			break;
+		case 'O':
+			//orbit around z clockwise
+			change.makeRotateZ(-0.3);
+			Globals::cube.toWorld = change * Globals::cube.toWorld;
+			break;
+		}
+
+		//print
+		float px, py, pz;
+		px = (Globals::cube.toWorld).get(3, 0);
+		py = (Globals::cube.toWorld).get(3, 1);
+		pz = (Globals::cube.toWorld).get(3, 2);
+
+		std::cout << "[" << px << ", " << py << ", " << pz << "]" << std::endl;
+
+		Globals::keyQueue.pop_front();
+	}
     //Call the update function on cube
     Globals::cube.update(Globals::updateData);
     
@@ -117,105 +198,13 @@ void Window::displayCallback()
 
 //TODO: Keyboard callbacks!
 void Window::processNormalKeys(unsigned char key, int x, int y) {
-    Matrix4 change;
-    change.identity();
-    
-    //print
-    float px, py, pz;
 	char request[max_length];
-	char reply[max_length];
-
-	size_t request_length;
-	size_t reply_length;
 
 	//server
 	request[0] = key;
 	request[1] = '\0';
-	request_length = std::strlen(request);
-	boost::asio::write(Globals::socket, boost::asio::buffer(request, request_length));
-
-	//server
-	reply_length = boost::asio::read(Globals::socket,
-		boost::asio::buffer(reply, request_length));
-
-	std::cout << "Reply is: ";
-	std::cout.write(reply, reply_length);
-	std::cout << "\n";
-    
-	switch (reply[0]){
-        case 'q': case 'Q':
-            //quit
-            exit(EXIT_SUCCESS);
-            break;
-        case 'r':
-            //reset
-            Globals::cube.toWorld = change;
-            toggle = 0.005;
-            break;
-        case 'X':
-            //move right
-            change.makeTranslate(0.3, 0, 0);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'x':
-            //move left
-            change.makeTranslate(-0.3, 0, 0);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'Y':
-            //move up
-            change.makeTranslate(0, 0.3, 0);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'y':
-            //move down
-            change.makeTranslate(0, -0.3, 0);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'Z':
-            //move out screen
-            change.makeTranslate(0, 0, 0.3);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'z':
-            //move into screen
-            change.makeTranslate(0, 0, -0.3);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 't':
-            //toggle spin
-            toggle = -toggle;
-            break;
-        case 's':
-            //scale down
-            change.makeScale(0.9);
-            Globals::cube.toWorld = Globals::cube.toWorld * change;
-            break;
-        case 'S':
-            //scale up
-            change.makeScale(1.1);
-            Globals::cube.toWorld = Globals::cube.toWorld * change;
-            break;
-        case 'o':
-            //orbit around z counterclockwise
-            change.makeRotateZ(0.3);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-        case 'O':
-            //orbit around z clockwise
-            change.makeRotateZ(-0.3);
-            Globals::cube.toWorld = change * Globals::cube.toWorld;
-            break;
-		}
-
-        //print
-        px = (Globals::cube.toWorld).get(3,0);
-        py = (Globals::cube.toWorld).get(3,1);
-        pz = (Globals::cube.toWorld).get(3,2);
-        
-        std::cout<<"["<<px<<", "<<py<<", "<<pz<<"]"<<std::endl;
-
-
+	Message m(request);
+	boost::asio::write(Globals::socket, boost::asio::buffer(m.data(), m.length()));
 }
 
 //TODO: Function Key callbacks!
