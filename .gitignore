@@ -30,6 +30,7 @@
 # Custom
 *.sdf
 *.ilk
+*.suo
 
 # Packages
 packages/
