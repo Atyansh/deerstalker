@@ -29,7 +29,7 @@ public:
 	static void clean_up();
 	static GLFWwindow* create_window(int width, int height);
 	static void resize_callback(GLFWwindow* window, int width, int height);
-	static void idle_callback();
+	static void idle_callback(GLFWwindow* window);
 	static void display_callback(GLFWwindow*);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 };

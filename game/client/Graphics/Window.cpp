@@ -1,5 +1,8 @@
 #include "Window.h"
 #include "Globals.h"
+#include "util\Message.h"
+
+using namespace util;
 
 enum { max_length = 1024 };
 
@@ -76,10 +79,67 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 	glTranslatef(0, 0, -20);
 }
 
-void Window::idle_callback()
+void Window::idle_callback(GLFWwindow* window)
 {
 	// Perform any updates as necessary. Here, we will spin the cube slightly.
 	cube.update();
+
+	while (!Globals::keyQueue.empty()) {
+		char keyPress = Globals::keyQueue.front();
+		Globals::keyQueue.pop_front();
+		int action = Globals::keyQueue.front()-1;
+		Globals::keyQueue.pop_front();
+		if (action == GLFW_PRESS)
+		{
+			switch (keyPress){
+			case GLFW_KEY_ESCAPE:
+				// Close the window. This causes the program to also terminate.
+				glfwSetWindowShouldClose(window, GL_TRUE);
+				break;
+			case GLFW_KEY_D:
+				//move right
+				holdRight = true;
+				break;
+			case GLFW_KEY_A:
+				//move left
+				holdLeft = true;
+				break;
+			case GLFW_KEY_W:
+				//move right
+				holdUp = true;
+				break;
+			case GLFW_KEY_S:
+				//move left
+				holdDown = true;
+				break;
+			}
+		}
+		if (action == GLFW_RELEASE)
+		{
+			switch (keyPress){
+			case GLFW_KEY_ESCAPE:
+				// Close the window. This causes the program to also terminate.
+				glfwSetWindowShouldClose(window, GL_TRUE);
+				break;
+			case GLFW_KEY_D:
+				//move right
+				holdRight = false;
+				break;
+			case GLFW_KEY_A:
+				//move left
+				holdLeft = false;
+				break;
+			case GLFW_KEY_W:
+				//move right
+				holdUp = false;
+				break;
+			case GLFW_KEY_S:
+				//move left
+				holdDown = false;
+				break;
+			}
+		}
+	}
 }
 
 void Window::display_callback(GLFWwindow* window)
@@ -125,84 +185,13 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 {
 	//Server
 	char request[max_length];
-	char reply[max_length];
-
-	size_t request_length;
-	size_t reply_length;
 
 	request[0] = glfwToAscii(key);
-	request[1] = '\0';
-	request_length = std::strlen(request);
+	request[1] = (char) action+1;
+	request[2] = '\0';
 
-	std::cout << "Request is: ";
-	std::cout.write(request, request_length);
-	std::cout << " with key: " << glfwToAscii(key);
-	std::cout << "\n";
-
-
-	boost::asio::write(Globals::socket, boost::asio::buffer(request, request_length));
-
-	//server
-	reply_length = boost::asio::read(Globals::socket,
-		boost::asio::buffer(reply, request_length));
-
-	int keyPress = asciiToGLFW(reply[0]);
-
-	std::cout << "Reply is: ";
-	std::cout.write(reply, reply_length);
-	std::cout << " with key: " << keyPress;
-	std::cout << "\n";
-
-	if (action == GLFW_PRESS)
-	{
-		switch (keyPress){
-		case GLFW_KEY_ESCAPE:
-			// Close the window. This causes the program to also terminate.
-			glfwSetWindowShouldClose(window, GL_TRUE);
-			break;
-		case GLFW_KEY_D:
-			//move right
-			holdRight = true;
-			break;
-		case GLFW_KEY_A:
-			//move left
-			holdLeft = true;
-			break;
-		case GLFW_KEY_W:
-			//move right
-			holdUp = true;
-			break;
-		case GLFW_KEY_S:
-			//move left
-			holdDown = true;
-			break;
-		}
-	}
-	if (action == GLFW_RELEASE)
-	{
-		switch (keyPress){
-		case GLFW_KEY_ESCAPE:
-			// Close the window. This causes the program to also terminate.
-			glfwSetWindowShouldClose(window, GL_TRUE);
-			break;
-		case GLFW_KEY_D:
-			//move right
-			holdRight = false;
-			break;
-		case GLFW_KEY_A:
-			//move left
-			holdLeft = false;
-			break;
-		case GLFW_KEY_W:
-			//move right
-			holdUp = false;
-			break;
-		case GLFW_KEY_S:
-			//move left
-			holdDown = false;
-			break;
-		}
-	}
+	Message m(request);
+	boost::asio::write(Globals::socket, boost::asio::buffer(m.data(), m.length()));
 }
 
 int Window::glfwToAscii(const int key){

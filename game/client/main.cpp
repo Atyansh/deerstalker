@@ -2,14 +2,17 @@
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <thread>
 #include "Graphics/Window.h"
 #include "Graphics/Globals.h"
 
+#include "util\Message.h"
 #include <boost/asio.hpp>
 
 using boost::asio::ip::tcp;
 
 GLFWwindow* window;
+
 
 void error_callback(int error, const char* description)
 {
@@ -66,16 +69,16 @@ void setup_opengl_settings()
 	// Disable backface culling to render both sides of polygons
 	glDisable(GL_CULL_FACE);
 	// Set clear color to black
-	glClearColor(0.0, 0.0, 0.0, 0.0);                           
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 	// Set shading to smooth
-	glShadeModel(GL_SMOOTH);                                    
+	glShadeModel(GL_SMOOTH);
 	// Auto normalize surface normals
 	glEnable(GL_NORMALIZE);
-	
+
 	// Setup materials
 	setup_materials();
 	// Setup lighting
-	setup_lighting();                                           
+	setup_lighting();
 }
 
 void print_versions()
@@ -90,8 +93,51 @@ void print_versions()
 #endif
 }
 
+enum { max_length = 1024 };
+
+void do_read_body(size_t length);
+
+void do_read_header()
+{
+	boost::asio::async_read(Globals::socket,
+		boost::asio::buffer(Globals::currentHeader, util::Message::header_length),
+		[](boost::system::error_code ec, std::size_t /*length*/)
+	{
+		if (!ec)
+		{
+			do_read_body(util::Message::decode_header(Globals::currentHeader));
+		}
+		else
+		{
+			Globals::socket.close();
+		}
+	});
+}
+
+void do_read_body(size_t length)
+{
+	char* body = new char[length];
+	boost::asio::async_read(Globals::socket,
+		boost::asio::buffer(body, length),
+		[body](boost::system::error_code ec, std::size_t /*length*/)
+	{
+		if (!ec)
+		{
+			Globals::keyQueue.push_back(body[0]);
+			Globals::keyQueue.push_back(body[1]);
+			delete body;
+			do_read_header();
+		}
+		else
+		{
+			Globals::socket.close();
+		}
+	});
+}
+
 int main(int argc, char *argv[])
 {
+
 	// Create the GLFW window
 	window = Window::create_window(640, 480);
 	// Print OpenGL and GLSL versions
@@ -103,17 +149,23 @@ int main(int argc, char *argv[])
 	// Initialize objects/pointers for rendering
 	Window::initialize_objects();
 
-	//Server
-	tcp::resolver resolver(Globals::io_service);
-	boost::asio::connect(Globals::socket, resolver.resolve({ argv[1], argv[2] }));
 
+	tcp::resolver resolver(Globals::io_service);
+	boost::asio::async_connect(Globals::socket, resolver.resolve({ argv[1], argv[2] }),
+		[](boost::system::error_code ec, tcp::resolver::iterator) {
+		if (!ec) {
+			do_read_header();
+		}
+	});
+
+	std::thread t([](){ Globals::io_service.run(); });
 	// Loop while GLFW window should stay open
 	while (!glfwWindowShouldClose(window))
 	{
 		// Main render display callback. Rendering of objects is done here.
 		Window::display_callback(window);
 		// Idle callback. Updating objects, etc. can be done here.
-		Window::idle_callback();
+		Window::idle_callback(window);
 	}
 
 	Window::clean_up();
@@ -121,6 +173,9 @@ int main(int argc, char *argv[])
 	glfwDestroyWindow(window);
 	// Terminate GLFW
 	glfwTerminate();
+
+	Globals::socket.close();
+	t.join();
 
 	exit(EXIT_SUCCESS);
 }
