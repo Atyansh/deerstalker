@@ -6,6 +6,7 @@
 #include "Graphics/Window.h"
 #include "Graphics/Globals.h"
 
+#include "util\ConfigSettings.h"
 #include "util\Message.h"
 #include <boost/asio.hpp>
 
@@ -149,9 +150,28 @@ int main(int argc, char *argv[])
 	// Initialize objects/pointers for rendering
 	Window::initialize_objects();
 
+	std::string hostname;
+	std::string port;
+
+	// load the settings from the config file
+	if (!util::ConfigSettings::config->checkIfLoaded()) {
+		if (!util::ConfigSettings::config->loadSettingsFile()) {
+			std::cerr << "There was a problem loading the config file\n";
+			return 1;
+		}
+	}
+	// set the hostname and port
+	if (!util::ConfigSettings::config->getValue(util::ConfigSettings::str_host_name, hostname)) {
+		std::cerr << "There was a problem getting the hostname from the config file\n";
+		return 1;
+	}
+	if (!util::ConfigSettings::config->getValue(util::ConfigSettings::str_port_number, port)) {
+		std::cerr << "There was a problem getting the hostname from the config file\n";
+		return 1;
+	}
 
 	tcp::resolver resolver(Globals::io_service);
-	boost::asio::async_connect(Globals::socket, resolver.resolve({ argv[1], argv[2] }),
+	boost::asio::async_connect(Globals::socket, resolver.resolve({ hostname.c_str(), port.c_str() }),
 		[](boost::system::error_code ec, tcp::resolver::iterator) {
 		if (!ec) {
 			do_read_header();

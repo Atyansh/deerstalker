@@ -16,6 +16,7 @@
 #include <utility>
 #include <boost/asio.hpp>
 #include "util\Message.h"
+#include "util\ConfigSettings.h"
 
 using boost::asio::ip::tcp;
 using namespace util;
@@ -156,14 +157,24 @@ private:
 
 int main(int argc, char* argv[]) {
 	try {
-		if (argc != 2) {
-			std::cerr << "Usage: async_tcp_echo_server <port>\n";
+		// load the settings from the config file
+		if (!util::ConfigSettings::config->checkIfLoaded()) {
+			if (!util::ConfigSettings::config->loadSettingsFile()) {
+				std::cerr << "There was a problem loading the config file\n";
+				return 1;
+			}
+		}
+
+		int port;
+		// set the port
+		if (!util::ConfigSettings::config->getValue(util::ConfigSettings::str_port_number, port)) {
+			std::cerr << "There was a problem getting the port number from the config file\n";
 			return 1;
 		}
 
 		boost::asio::io_service io_service;
 
-		Server s(io_service, std::atoi(argv[1]));
+		Server s(io_service, port);
 
 		io_service.run();
 	}
