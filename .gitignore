@@ -34,3 +34,6 @@
 
 # Packages
 packages/
+
+# Don't Ignore
+!game/client/Graphics/Assets/**/*.obj
