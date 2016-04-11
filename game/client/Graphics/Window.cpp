@@ -1,5 +1,7 @@
 #include "Window.h"
 #include "Globals.h"
+#include "Shader.h"
+#include "Model.h"
 #include "util\Message.h"
 
 using namespace util;
@@ -7,7 +9,6 @@ using namespace util;
 enum { max_length = 1024 };
 
 const char* window_title = "GLFW Starter Project";
-Cube cube(5.0f);
 
 int Window::width;
 int Window::height;
@@ -16,16 +17,22 @@ bool Window::holdDown;
 bool Window::holdLeft;
 bool Window::holdRight;
 
+Model *ourModel;
+
 void Window::initialize_objects()
 {
 	holdUp = false;
 	holdDown = false;
 	holdLeft = false;
 	holdRight = false;
+	Shader shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag");
+	ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", shader);
+	
 }
 
 void Window::clean_up()
 {
+	delete ourModel;
 }
 
 GLFWwindow* Window::create_window(int width, int height)
@@ -82,7 +89,7 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 void Window::idle_callback(GLFWwindow* window)
 {
 	// Perform any updates as necessary. Here, we will spin the cube slightly.
-	cube.update();
+	ourModel->update(Globals::updateData);
 
 	while (!Globals::keyQueue.empty()) {
 		char keyPress = Globals::keyQueue.front();
@@ -155,7 +162,7 @@ void Window::display_callback(GLFWwindow* window)
 	calcMovements();
 	
 	// Render objects
-	cube.draw();
+	ourModel->draw(Globals::drawData);
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
@@ -164,7 +171,7 @@ void Window::display_callback(GLFWwindow* window)
 }
 
 void Window::calcMovements() {
-	glm::mat4 change(1.0f);
+	/*glm::mat4 change(1.0f);
 	if (holdDown == true) {
 		change = glm::translate(change, glm::vec3(0.0f, -0.2f, 0.0f));
 	}
@@ -177,7 +184,7 @@ void Window::calcMovements() {
 	if (holdLeft == true) {
 		change = glm::translate(change, glm::vec3(-0.2f, 0.0f, 0.0f));
 	}
-	cube.toWorld = change * cube.toWorld;
+	cube->toWorld = change * cube->toWorld;*/
 
 }
 
