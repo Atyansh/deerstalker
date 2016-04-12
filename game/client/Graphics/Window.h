@@ -6,21 +6,15 @@
 #include <GLFW/glfw3.h>
 #include "Cube.h"
 
-class Window
-{
+class Window {
 private:
 	static const int ENTER = 13;
 	static const int ESC = 27;
 	static const int SPACE = 32;
 
-	static bool holdUp;
-	static bool holdDown;
-	static bool holdLeft;
-	static bool holdRight;
-
 	static int glfwToAscii(const int key);
 	static int asciiToGLFW(const int key);
-	static void calcMovements();
+	static void calcMovements(Cube& cube);
 
 public:
 	static int width;

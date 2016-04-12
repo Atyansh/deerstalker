@@ -13,5 +13,7 @@ public:
 	static std::deque<char> keyQueue;
 
 	static char currentHeader[4];
+
+	static char ID;
 };
 

@@ -1,18 +1,19 @@
 #include "Cube.h"
 #include <cstdio>
 
-Cube::Cube(float size)
-{
+Cube::Cube(float size) {
 	this->toWorld = glm::mat4(1.0f);
 	this->size = size;
+	holdUp = false;
+	holdDown = false;
+	holdLeft = false;
+	holdRight = false;
 }
 
-Cube::~Cube()
-{
+Cube::~Cube() {
 }
 
-void Cube::draw()
-{
+void Cube::draw() {
 	float halfSize = this->size / 2.0f;
 
 	// Set the OpenGL Matrix mode to ModelView (used when drawing geometry)
@@ -81,13 +82,11 @@ void Cube::draw()
 	glPopMatrix();
 }
 
-void Cube::update()
-{
+void Cube::update() {
 	spin(1.0f);
 }
 
-void Cube::spin(float deg)
-{
+void Cube::spin(float deg) {
 	// This creates the matrix to rotate the cube
 	this->toWorld = this->toWorld * glm::rotate(glm::mat4(1.0f), deg / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f));
 }

@@ -5,8 +5,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-class Cube
-{
+class Cube {
 public:
 	Cube(float);
 	~Cube();
@@ -19,5 +18,10 @@ public:
 	void update();
 
 	void spin(float);
+
+	bool holdUp;
+	bool holdDown;
+	bool holdLeft;
+	bool holdRight;
 };
 

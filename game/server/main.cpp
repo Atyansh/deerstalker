@@ -25,8 +25,7 @@ using namespace util;
 typedef std::deque<Message> message_queue;
 
 
-class Client
-{
+class Client {
 public:
 	virtual ~Client() {}
 	virtual void deliver(const Message& msg) = 0;
@@ -35,23 +34,23 @@ public:
 typedef std::shared_ptr<Client> client_ptr;
 
 
-class Game
-{
+class Game {
 public:
-	void join(client_ptr client)
-	{
+	void join(client_ptr client) {
 		clients_.insert(client);
 	}
 
-	void remove(client_ptr client)
-	{
+	void remove(client_ptr client) {
 		clients_.erase(client);
 	}
 
-	void deliver(const Message& msg)
-	{
+	void deliver(const Message& msg) {
 		for (auto client : clients_)
 			client->deliver(msg);
+	}
+
+	int size() {
+		return clients_.size();
 	}
 
 private:
@@ -70,6 +69,12 @@ public:
 
 	void start() {
 		game_.join(shared_from_this());
+		char buffer[2];
+		buffer[0] = (char) ('0' + game_.size());
+		buffer[1] = '\0';
+		cerr << buffer[0] << endl;
+		Message m(buffer);
+		boost::asio::write(socket_, boost::asio::buffer(m.data(), m.length()));
 		do_read_header();
 	}
 
@@ -86,10 +91,12 @@ private:
 		auto self(shared_from_this());
 		boost::asio::async_read(socket_,
 			boost::asio::buffer(current_header_, Message::header_length),
-			[this, self](boost::system::error_code ec, std::size_t /*length*/)
-		{
+			[this, self](boost::system::error_code ec, std::size_t /*length*/) {
 			if (!ec) {
 				do_read_body(Message::decode_header(current_header_));
+			}
+			else {
+				game_.remove(shared_from_this());
 			}
 		});
 	}
@@ -99,12 +106,14 @@ private:
 		auto self(shared_from_this());
 		char* body = new char[length];
 		socket_.async_read_some(boost::asio::buffer(body, length),
-			[this, self, body](boost::system::error_code ec, std::size_t length)
-		{
+			[this, self, body](boost::system::error_code ec, std::size_t length) {
 			if (!ec) {
 				game_.deliver(std::move(Message(body)));
 				delete body;
 				do_read_header();
+			}
+			else {
+				game_.remove(shared_from_this());
 			}
 		});
 	}

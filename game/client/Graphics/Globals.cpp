@@ -6,3 +6,5 @@ tcp::socket Globals::socket = tcp::socket(Globals::io_service);
 std::deque<char> Globals::keyQueue = std::deque<char>();
 
 char Globals::currentHeader[4] = "";
+
+char Globals::ID = '0';

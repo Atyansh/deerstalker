@@ -15,14 +15,12 @@ using boost::asio::ip::tcp;
 GLFWwindow* window;
 
 
-void error_callback(int error, const char* description)
-{
+void error_callback(int error, const char* description) {
 	// Print error
 	fputs(description, stderr);
 }
 
-void setup_callbacks()
-{
+void setup_callbacks() {
 	// Set the error callback
 	glfwSetErrorCallback(error_callback);
 	// Set the key callback
@@ -31,8 +29,7 @@ void setup_callbacks()
 	glfwSetWindowSizeCallback(window, Window::resize_callback);
 }
 
-void setup_materials()
-{
+void setup_materials() {
 	float specular[] = { 1.0, 1.0, 1.0, 1.0 };
 	float shininess[] = { 100.0 };
 
@@ -43,8 +40,7 @@ void setup_materials()
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 }
 
-void setup_lighting()
-{
+void setup_lighting() {
 	// Enable lighting
 	glEnable(GL_LIGHTING);
 	// Enable Local Viewer Light Model
@@ -59,8 +55,7 @@ void setup_lighting()
 	glEnable(GL_LIGHT0);
 }
 
-void setup_opengl_settings()
-{
+void setup_opengl_settings() {
 	// Enable depth buffering
 	glEnable(GL_DEPTH_TEST);
 	// Related to shaders and z value comparisons for the depth buffer
@@ -82,8 +77,7 @@ void setup_opengl_settings()
 	setup_lighting();
 }
 
-void print_versions()
-{
+void print_versions() {
 	// Get info of GPU and supported OpenGL version
 	printf("Renderer: %s\n", glGetString(GL_RENDERER));
 	printf("OpenGL version supported %s\n", glGetString(GL_VERSION));
@@ -98,47 +92,44 @@ enum { max_length = 1024 };
 
 void do_read_body(size_t length);
 
-void do_read_header()
-{
+void do_read_header() {
 	boost::asio::async_read(Globals::socket,
 		boost::asio::buffer(Globals::currentHeader, util::Message::header_length),
-		[](boost::system::error_code ec, std::size_t /*length*/)
-	{
-		if (!ec)
-		{
+		[](boost::system::error_code ec, std::size_t /*length*/) {
+		if (!ec) {
 			do_read_body(util::Message::decode_header(Globals::currentHeader));
 		}
-		else
-		{
+		else {
 			Globals::socket.close();
 		}
 	});
 }
 
-void do_read_body(size_t length)
-{
+void do_read_body(size_t length) {
 	char* body = new char[length];
 	boost::asio::async_read(Globals::socket,
 		boost::asio::buffer(body, length),
-		[body](boost::system::error_code ec, std::size_t /*length*/)
-	{
-		if (!ec)
-		{
-			Globals::keyQueue.push_back(body[0]);
-			Globals::keyQueue.push_back(body[1]);
+		[body, length](boost::system::error_code ec, std::size_t /*length*/) {
+		if (!ec) {
+			std::cerr << length << " length" << std::endl;
+			if (length == 1) {
+				Globals::ID = body[0];
+			}
+			else {
+				Globals::keyQueue.push_back(body[0]);
+				Globals::keyQueue.push_back(body[1]);
+				Globals::keyQueue.push_back(body[2]);
+			}
 			delete body;
 			do_read_header();
 		}
-		else
-		{
+		else {
 			Globals::socket.close();
 		}
 	});
 }
 
-int main(int argc, char *argv[])
-{
-
+int main(int argc, char *argv[]) {
 	// Create the GLFW window
 	window = Window::create_window(640, 480);
 	// Print OpenGL and GLSL versions
@@ -147,8 +138,6 @@ int main(int argc, char *argv[])
 	setup_callbacks();
 	// Setup OpenGL settings, including lighting, materials, etc.
 	setup_opengl_settings();
-	// Initialize objects/pointers for rendering
-	Window::initialize_objects();
 
 	std::string hostname;
 	std::string port;
@@ -179,9 +168,16 @@ int main(int argc, char *argv[])
 	});
 
 	std::thread t([](){ Globals::io_service.run(); });
+
+	while (Globals::ID == '0') {
+		Sleep(1);
+	}
+	
+	// Initialize objects/pointers for rendering
+	Window::initialize_objects();
+
 	// Loop while GLFW window should stay open
-	while (!glfwWindowShouldClose(window))
-	{
+	while (!glfwWindowShouldClose(window)) {
 		// Main render display callback. Rendering of objects is done here.
 		Window::display_callback(window);
 		// Idle callback. Updating objects, etc. can be done here.
