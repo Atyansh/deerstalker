@@ -2,21 +2,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-// Std. Includes
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <map>
-#include <vector>
-using namespace std;
-// GL Includes
-#include <GL/glew.h> // Contains all the necessery OpenGL includes
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <assimp/Importer.hpp>
 #include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 #include "Drawable.h"
 #include "Mesh.h"
@@ -44,11 +30,11 @@ public:
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
 
-	void printShaderPID() {
+	/*void printShaderPID() {
 		fprintf(stderr, "Shader PID in model: %u\n", shader->getPid());
 		for (int i = 0; i < meshes.size(); i++) {
 			fprintf(stderr, "Mesh #%d:\n", i);
 			meshes[i].printShaderPID();
 		}
-	}
+	}*/
 };

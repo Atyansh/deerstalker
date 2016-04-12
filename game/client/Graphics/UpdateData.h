@@ -1,5 +1,4 @@
-#ifndef CSE167_UpdateData_h
-#define CSE167_UpdateData_h
+#pragma once
 
 #include <iostream>
 
@@ -14,5 +13,3 @@ public:
     virtual ~UpdateData(void);
     
 };
-
-#endif

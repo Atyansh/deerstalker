@@ -1,19 +1,3 @@
-/*
-Copyright (C) 2006 So Yamaoka
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-Modified: Timothy Kua(2016)
-
-*/
 #include "Shader.h"
 
 #include <cstdio>
@@ -31,25 +15,7 @@ Shader::Shader()
 
 Shader::Shader(const char *vert, const char *frag, bool isFile)
 {
-	if (isFile)
-	{
-		//Read in the vertex and fragment shaders
-		//We must delete these after we are finished compiling the shaders
-		//const GLchar* vv = read(vert);
-		//const GLchar* vf = read(frag);
-
-		//Setup the shader
-		setup(vert, frag);
-
-		//Delete the file data arrays we allocted
-		//delete[] vv;
-		//delete[] vf;
-	}
-	else
-	{
-		//Treat the vert and frag parameters as shader code and directly compile them
-		setup(vert, frag);
-	}
+	setup(vert, frag, isFile);
 	init = true;
 }
 
@@ -63,9 +29,6 @@ void Shader::bind()
 	if (currentlyBoundShaderID != pid)
 	{
 		currentlyBoundShaderID = pid;
-		fprintf(stderr, "Binding shader now\n");
-		fprintf(stderr, "PID: %u\n", pid);
-		fprintf(stderr, "CurrentlyBoundShaderID: %u\n", currentlyBoundShaderID);
 		glUseProgram(pid);
 	}
 }
@@ -76,15 +39,11 @@ void Shader::unbind()
 	{
 		currentlyBoundShaderID = (0x0);
 		glUseProgram(0);
-
-		fprintf(stderr, "Unbinding shaders\n");
 	}
 }
 
 GLuint &Shader::getPid(){
 	return currentlyBoundShaderID;
-
-	//return this->pid;
 }
 
 bool Shader::isInitilized(){
@@ -106,65 +65,42 @@ void Shader::printLog(const char* tag)
 		std::cerr << tag << "(" << pid << ") -  Shaders compiled successfully!" << std::endl;
 }
 
-const GLchar* Shader::read(const char *filename)
+void Shader::setup(const GLchar *vs, const GLchar *fs, bool isFile)
 {
-	std::string shaderCode;
-	std::ifstream shaderFile;
-	// ensures ifstream objects can throw exceptions:
-	shaderFile.exceptions(std::ifstream::badbit);
-	try
-	{
-		// Open files
-		shaderFile.open(filename);
-		std::stringstream shaderStream;
-		// Read file's buffer contents into streams
-		shaderStream << shaderFile.rdbuf();
-		// close file handlers
-		shaderFile.close();
-		// Convert stream into string
-		shaderCode = shaderStream.str();
-	}
-	catch (std::ifstream::failure e)
-	{
-		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-	}
-
-	std::cout << filename << "\n" << shaderCode << std::endl;
-	return shaderCode.c_str();
-
-
-}
-
-void Shader::setup(const GLchar *vs, const GLchar *fs)
-{
-	// 1. Retrieve the vertex/fragment source code from filePath
 	std::string vertexCode;
 	std::string fragmentCode;
-	std::ifstream vShaderFile;
-	std::ifstream fShaderFile;
-	// ensures ifstream objects can throw exceptions:
-	vShaderFile.exceptions(std::ifstream::badbit);
-	fShaderFile.exceptions(std::ifstream::badbit);
-	try
-	{
-		// Open files
-		vShaderFile.open(vs);
-		fShaderFile.open(fs);
-		std::stringstream vShaderStream, fShaderStream;
-		// Read file's buffer contents into streams
-		vShaderStream << vShaderFile.rdbuf();
-		fShaderStream << fShaderFile.rdbuf();
-		// close file handlers
-		vShaderFile.close();
-		fShaderFile.close();
-		// Convert stream into string
-		vertexCode = vShaderStream.str();
-		fragmentCode = fShaderStream.str();
+	if (isFile){
+		// 1. Retrieve the vertex/fragment source code from filePath
+		std::ifstream vShaderFile;
+		std::ifstream fShaderFile;
+		// ensures ifstream objects can throw exceptions:
+		vShaderFile.exceptions(std::ifstream::badbit);
+		fShaderFile.exceptions(std::ifstream::badbit);
+		try
+		{
+			// Open files
+			vShaderFile.open(vs);
+			fShaderFile.open(fs);
+			std::stringstream vShaderStream, fShaderStream;
+			// Read file's buffer contents into streams
+			vShaderStream << vShaderFile.rdbuf();
+			fShaderStream << fShaderFile.rdbuf();
+			// close file handlers
+			vShaderFile.close();
+			fShaderFile.close();
+			// Convert stream into string
+			vertexCode = vShaderStream.str();
+			fragmentCode = fShaderStream.str();
+		}
+		catch (std::ifstream::failure e){
+			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+		}
 	}
-	catch (std::ifstream::failure e)
-	{
-		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+	else{
+		vertexCode = vs;
+		fragmentCode = fs;
 	}
+	
 	const GLchar* vShaderCode = vertexCode.c_str();
 	const GLchar * fShaderCode = fragmentCode.c_str();
 	// 2. Compile shaders
@@ -196,11 +132,8 @@ void Shader::setup(const GLchar *vs, const GLchar *fs)
 	// Shader Program
 	this->pid = glCreateProgram();
 
-	fprintf(stderr, "PID during setup after glCreateProgram: %u\n", this->pid);
-
 	glAttachShader(this->pid, vertex);
 	glAttachShader(this->pid, fragment);
-	std::cout << vertex << " " << fragment << std::endl;
 	glLinkProgram(this->pid);
 	// Print linking errors if any
 	glGetProgramiv(this->pid, GL_LINK_STATUS, &success);

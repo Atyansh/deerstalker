@@ -1,5 +1,10 @@
 #include "Model.h"
 
+#include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+
 Model::Model(const char* path, Shader *shader) : Drawable()
 {
 	this->shader = shader;
@@ -12,8 +17,10 @@ Model::~Model()
 }
 
 void Model::draw(DrawData &drawData){
-	for (GLuint i = 0; i < this->meshes.size(); i++)
+	for (GLuint i = 0; i < this->meshes.size(); i++){
+		this->meshes[i].toWorld = this->toWorld;
 		this->meshes[i].draw(drawData);
+	}
 }
 
 void Model::update(UpdateData &updateData){

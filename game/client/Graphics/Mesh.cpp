@@ -1,6 +1,11 @@
 #include "Mesh.h"
+
+#include <fstream>
+#include <sstream>
+#include <iostream>
 #include <glm/ext.hpp>
-#include "Globals.h"
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader) : Drawable()
 {
@@ -24,35 +29,11 @@ void Mesh::draw(DrawData& data)
 		exit(-1);
 	}
 
-	
-
 	shader->bind();
-
-
-	
-	
-	if (glGetUniformLocation(shader->getPid(), "model") == -1) {
-		fprintf(stderr, "LOTS OF SHITS 1\n");
-	}
-
-	if (glGetUniformLocation(shader->getPid(), "view") == -1) {
-		fprintf(stderr, "LOTS OF SHITS 2\n");
-	}
-
-	if (glGetUniformLocation(shader->getPid(), "projection") == -1) {
-		fprintf(stderr, "LOTS OF SHITS 3\n");
-	}
 
 	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "model"), 1, GL_FALSE, glm::value_ptr(toWorld));
 	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "view"), 1, GL_FALSE, glm::value_ptr(data.view));
 	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "projection"), 1, GL_FALSE, glm::value_ptr(data.projection));
-
-	/*
-	cout << "toWorld\n" << glm::to_string(toWorld) << endl;
-	cout << "view\n" << glm::to_string(data.view) << endl;
-	cout << "projection\n" << glm::to_string(data.projection) << endl;
-	*/
-	
 
 	// Bind appropriate textures
 	GLuint diffuseNr = 1;

@@ -1,21 +1,11 @@
 #pragma once
-// Std. Includes
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <vector>
-using namespace std;
-// GL Includes
-#include <GL/glew.h> // Contains all the necessery OpenGL includes
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+
 #include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 #include "Drawable.h"
 #include "Shader.h"
+
+using namespace std;
 
 struct Vertex {
 	glm::vec3 Position;
@@ -51,8 +41,8 @@ public:
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
 
-	void printShaderPID() {
-		fprintf(stderr, "Shader PID in mesh: %u\n", shader->getPid());
-	}
+	//void printShaderPID() {
+	//	fprintf(stderr, "Shader PID in mesh: %u\n", shader->getPid());
+	//}
 
 };

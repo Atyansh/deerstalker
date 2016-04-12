@@ -26,13 +26,7 @@ void Window::initialize_objects()
 	holdDown = false;
 	holdLeft = false;
 	holdRight = false;
-	//fprintf(stderr, "Shader pid at init: %u\n", Globals::shader.getPid());
-	//ourModel = new Model("Graphics/Assets/OBJ/Sphere/sphere.obj", new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
 	ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
-
-	fprintf(stderr, "Shader pid in model:\n");
-	ourModel->printShaderPID();
-
 }
 
 void Window::clean_up()
@@ -81,16 +75,8 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 	Window::height = height;
 	// Set the viewport size
 	glViewport(0, 0, width, height);
-	// Set the matrix mode to GL_PROJECTION to determine the proper camera properties
-	//glMatrixMode(GL_PROJECTION);
-	// Load the identity matrix
-	//glLoadIdentity();
-	// Set the perspective of the projection viewing frustum
 	Globals::drawData.projection = glm::perspective(45.0f, float(width) / (float)height, 0.1f, 100.0f);
 	Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	//gluPerspective(60.0, double(width) / (double)height, 1.0, 1000.0);
-	// Move camera back 20 units so that it looks at the origin (or else it's in the origin)
-	// glTranslatef(0, 0, -20);
 }
 
 void Window::idle_callback(GLFWwindow* window)
@@ -160,15 +146,10 @@ void Window::display_callback(GLFWwindow* window)
 {
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	// Set the matrix mode to GL_MODELVIEW
-	//glMatrixMode(GL_MODELVIEW);
-	// Load the identity matrix
-	//glLoadIdentity();
 
 	//Movement
 	calcMovements();
 
-	
 	// Render objects
 	ourModel->draw(Globals::drawData);
 
@@ -179,7 +160,7 @@ void Window::display_callback(GLFWwindow* window)
 }
 
 void Window::calcMovements() {
-	/*glm::mat4 change(1.0f);
+	glm::mat4 change(1.0f);
 	if (holdDown == true) {
 		change = glm::translate(change, glm::vec3(0.0f, -0.2f, 0.0f));
 	}
@@ -192,8 +173,8 @@ void Window::calcMovements() {
 	if (holdLeft == true) {
 		change = glm::translate(change, glm::vec3(-0.2f, 0.0f, 0.0f));
 	}
-	cube->toWorld = change * cube->toWorld;*/
-
+	ourModel->toWorld = change * ourModel->toWorld;
+	
 }
 
 void Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

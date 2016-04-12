@@ -138,18 +138,6 @@ void do_read_body(size_t length)
 
 int main(int argc, char *argv[])
 {
-	////Initialize glfw
-	//GLenum glfw_err = glfwInit();
-	//if (glfw_err != GL_TRUE)
-	//{
-	//	fprintf(stderr, "GLFW NOT INITIALIZED");
-	//	exit(1);
-	//}
-	//// Set all the required options for GLFW
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
 	// Create the GLFW window
 	window = Window::create_window(640, 480);
 	// Print OpenGL and GLSL versions

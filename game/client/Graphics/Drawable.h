@@ -11,7 +11,6 @@
 #include "DrawData.h"
 #include "UpdateData.h"
 
-
 class Drawable
 {
     
