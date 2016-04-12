@@ -87,6 +87,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Drawable.cpp" />
     <ClCompile Include="Graphics\DrawData.cpp" />
     <ClCompile Include="Graphics\Globals.cpp" />
@@ -106,6 +107,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Drawable.h" />
     <ClInclude Include="Graphics\DrawData.h" />
     <ClInclude Include="Graphics\Globals.h" />

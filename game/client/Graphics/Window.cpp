@@ -76,7 +76,8 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 	// Set the viewport size
 	glViewport(0, 0, width, height);
 	Globals::drawData.projection = glm::perspective(45.0f, float(width) / (float)height, 0.1f, 100.0f);
-	Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	//Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	Globals::drawData.view = Globals::camera.getView();
 }
 
 void Window::idle_callback(GLFWwindow* window)

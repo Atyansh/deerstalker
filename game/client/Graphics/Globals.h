@@ -4,6 +4,7 @@
 #include <deque>
 #include "DrawData.h"
 #include "UpdateData.h"
+#include "Camera.h"
 
 using boost::asio::ip::tcp;
 
@@ -11,6 +12,7 @@ class Globals {
 public:
 	static DrawData drawData;
 	static UpdateData updateData;
+	static Camera camera;
 
 	static boost::asio::io_service io_service;
 	static tcp::socket socket;
