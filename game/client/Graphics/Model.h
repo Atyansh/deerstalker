@@ -28,7 +28,7 @@ private:
 	vector<Mesh> meshes;
 	string directory;
 	vector<Texture> textures_loaded;
-	Shader shader;
+	Shader *shader;
 
 	void loadModel(string path);
 	void processNode(aiNode* node, const aiScene* scene);
@@ -38,9 +38,17 @@ private:
 	unsigned char* loadPPM(const char*, int&, int&);
 
 public:
-	Model(const char* path, Shader shader);
+	Model(const char* path, Shader *shader);
 	virtual ~Model(void);
 
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
+
+	void printShaderPID() {
+		fprintf(stderr, "Shader PID in model: %u\n", shader->getPid());
+		for (int i = 0; i < meshes.size(); i++) {
+			fprintf(stderr, "Mesh #%d:\n", i);
+			meshes[i].printShaderPID();
+		}
+	}
 };

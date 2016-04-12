@@ -1,6 +1,6 @@
 #include "Model.h"
 
-Model::Model(const char* path, Shader shader) : Drawable()
+Model::Model(const char* path, Shader *shader) : Drawable()
 {
 	this->shader = shader;
 	this->loadModel(path);

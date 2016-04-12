@@ -158,6 +158,8 @@ int main(int argc, char *argv[])
 	setup_callbacks();
 	// Setup OpenGL settings, including lighting, materials, etc.
 	setup_opengl_settings();
+	glewExperimental = GL_TRUE;
+	
 	// Initialize GLEW to setup the OpenGL Function pointers
 	GLenum glew_err = glewInit();
 	if (glew_err != GLEW_OK)
@@ -198,12 +200,15 @@ int main(int argc, char *argv[])
 
 	std::thread t([](){ Globals::io_service.run(); });
 	// Loop while GLFW window should stay open
+
+
 	while (!glfwWindowShouldClose(window))
 	{
 		// Main render display callback. Rendering of objects is done here.
 		Window::display_callback(window);
 		// Idle callback. Updating objects, etc. can be done here.
 		Window::idle_callback(window);
+
 	}
 
 	Window::clean_up();

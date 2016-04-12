@@ -1,6 +1,8 @@
 #include "Mesh.h"
+#include <glm/ext.hpp>
+#include "Globals.h"
 
-Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader shader) : Drawable()
+Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader) : Drawable()
 {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -17,12 +19,40 @@ Mesh::~Mesh()
 
 void Mesh::draw(DrawData& data)
 {
-	if (!shader.isInitilized()){
+	if (!shader->isInitilized()){
 		cerr << "Shader not initialized" << endl;
 		exit(-1);
 	}
 
-	shader.bind();
+	
+
+	shader->bind();
+
+
+	
+	
+	if (glGetUniformLocation(shader->getPid(), "model") == -1) {
+		fprintf(stderr, "LOTS OF SHITS 1\n");
+	}
+
+	if (glGetUniformLocation(shader->getPid(), "view") == -1) {
+		fprintf(stderr, "LOTS OF SHITS 2\n");
+	}
+
+	if (glGetUniformLocation(shader->getPid(), "projection") == -1) {
+		fprintf(stderr, "LOTS OF SHITS 3\n");
+	}
+
+	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "model"), 1, GL_FALSE, glm::value_ptr(toWorld));
+	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "view"), 1, GL_FALSE, glm::value_ptr(data.view));
+	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "projection"), 1, GL_FALSE, glm::value_ptr(data.projection));
+
+	/*
+	cout << "toWorld\n" << glm::to_string(toWorld) << endl;
+	cout << "view\n" << glm::to_string(data.view) << endl;
+	cout << "projection\n" << glm::to_string(data.projection) << endl;
+	*/
+	
 
 	// Bind appropriate textures
 	GLuint diffuseNr = 1;
@@ -40,13 +70,13 @@ void Mesh::draw(DrawData& data)
 			ss << specularNr++; // Transfer GLuint to stream
 		number = ss.str();
 		// Now set the sampler to the correct texture unit
-		glUniform1i(glGetUniformLocation(shader.getPid(), (name + number).c_str()), i);
+		glUniform1i(glGetUniformLocation(shader->getPid(), (name + number).c_str()), i);
 		// And finally bind the texture
 		glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
 	}
 
 	// Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
-	glUniform1f(glGetUniformLocation(shader.getPid(), "material.shininess"), 16.0f);
+	glUniform1f(glGetUniformLocation(shader->getPid(), "material.shininess"), 16.0f);
 
 	// Draw mesh
 	glBindVertexArray(this->VAO);
@@ -60,7 +90,7 @@ void Mesh::draw(DrawData& data)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	shader.unbind();
+	//shader->unbind();
 }
 
 void Mesh::update(UpdateData& data)

@@ -40,15 +40,19 @@ private:
 	/*  Render data  */
 	GLuint VAO, VBO, EBO;
 
-	Shader shader;
+	Shader *shader;
 
 	void setupMesh();
 
 public:
-	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader shader);
+	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader);
 	virtual ~Mesh(void);
 
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
+
+	void printShaderPID() {
+		fprintf(stderr, "Shader PID in mesh: %u\n", shader->getPid());
+	}
 
 };

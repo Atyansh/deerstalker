@@ -4,6 +4,7 @@
 #include <deque>
 #include "DrawData.h"
 #include "UpdateData.h"
+#include "Shader.h"
 
 using boost::asio::ip::tcp;
 

@@ -28,8 +28,8 @@ class Shader
 
 private:
 
-	char* read(const char *filename);
-	void setup(const char *vs, const char *fs);
+	const GLchar* read(const char *filename);
+	void setup(const GLchar *vs, const GLchar *fs);
 
 protected:
 	bool init;
@@ -45,7 +45,7 @@ public:
 	void unbind();
 
 	bool isInitilized();
-	GLuint getPid();
+	GLuint &getPid();
 
 	void printLog(const char* tag = "");
 
