@@ -91,6 +91,7 @@
     <ClCompile Include="Graphics\Drawable.cpp" />
     <ClCompile Include="Graphics\DrawData.cpp" />
     <ClCompile Include="Graphics\Globals.cpp" />
+    <ClCompile Include="Graphics\LightShader.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
@@ -111,6 +112,7 @@
     <ClInclude Include="Graphics\Drawable.h" />
     <ClInclude Include="Graphics\DrawData.h" />
     <ClInclude Include="Graphics\Globals.h" />
+    <ClInclude Include="Graphics\LightShader.h" />
     <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="Graphics\Shader.h" />
     <ClInclude Include="Graphics\Mesh.h" />

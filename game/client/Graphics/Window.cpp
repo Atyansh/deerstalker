@@ -1,6 +1,6 @@
 #include "Window.h"
 #include "Globals.h"
-#include "Shader.h"
+#include "LightShader.h"
 #include "Model.h"
 #include "util\Message.h"
 #include <glm/ext.hpp>
@@ -26,7 +26,7 @@ void Window::initialize_objects()
 	holdDown = false;
 	holdLeft = false;
 	holdRight = false;
-	ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
+	ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new LightShader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
 }
 
 void Window::clean_up()
