@@ -21,8 +21,8 @@ public:
 	Shader(const char *vert, const char *frag, bool isFile = true);
 	~Shader();
 
-	void bind();
-	void unbind();
+	virtual void bind();
+	virtual void unbind();
 
 	bool isInitilized();
 	GLuint &getPid();

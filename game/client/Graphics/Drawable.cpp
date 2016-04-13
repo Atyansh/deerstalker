@@ -5,8 +5,8 @@ Drawable::Drawable()
 {
 	this->toWorld = glm::mat4(1.0f);
 
-	toWorld = glm::translate(toWorld, glm::vec3(0.0f, 0.0f, -10.0f));
-	toWorld = glm::scale(toWorld, glm::vec3(0.2f));
+	toWorld = glm::translate(toWorld, glm::vec3(0.0f, -5.0f, -20.0f));
+	toWorld = glm::scale(toWorld, glm::vec3(0.8f));
 }
 
 Drawable::~Drawable()

@@ -30,3 +30,15 @@ glm::mat4 Camera::getView() {
 	return glm::lookAt(position, position + front, worldUp);
 
 }
+
+glm::vec3 Camera::getPosition(){
+	return this->position;
+}
+
+glm::vec3 Camera::getFront(){
+	return this->front;
+}
+
+glm::vec3 Camera::getDirection(){
+	return this->direction;
+}

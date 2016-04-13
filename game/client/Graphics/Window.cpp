@@ -26,7 +26,21 @@ void Window::initialize_objects()
 	holdDown = false;
 	holdLeft = false;
 	holdRight = false;
-	ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new LightShader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
+	LightShader *lightShader = new LightShader(Globals::camera.getPosition() , "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
+
+	// Will factor out
+	// Point light positions
+	glm::vec3 pointLightPositions[] = {
+		glm::vec3(2.3f, -1.6f, -3.0f),
+		glm::vec3(-1.7f, 0.9f, 1.0f)
+	};
+	// lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
+	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.7f, 0.2f, 0.5f), glm::vec3(1.0f), glm::vec3(1.0f));
+	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+
+	ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
+	// ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
 }
 
 void Window::clean_up()
