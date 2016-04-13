@@ -7,6 +7,7 @@
 
 class Cube {
 public:
+	int id;
 	Cube(float);
 	~Cube();
 

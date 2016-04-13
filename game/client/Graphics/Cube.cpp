@@ -8,6 +8,7 @@ Cube::Cube(float size) {
 	holdDown = false;
 	holdLeft = false;
 	holdRight = false;
+	id = -1;
 }
 
 Cube::~Cube() {

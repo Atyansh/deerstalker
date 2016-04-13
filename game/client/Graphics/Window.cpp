@@ -11,7 +11,6 @@ const char* window_title = "GLFW Starter Project";
 
 int Window::width;
 int Window::height;
-
 std::unordered_map<char, std::unique_ptr<Cube>> cubeMap;
 
 void Window::initialize_objects() {

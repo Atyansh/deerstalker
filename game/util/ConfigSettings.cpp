@@ -5,6 +5,7 @@ namespace util {
 	string ConfigSettings::str_full_screen = "FullScreen";
 	string ConfigSettings::str_port_number = "Port";
 	string ConfigSettings::str_host_name = "Hostname";
+	string ConfigSettings::str_required_players = "RequiredPlayers";
 
 	typedef pair <string, string> String_Pair;
 	ConfigSettings * ConfigSettings::config = new ConfigSettings();

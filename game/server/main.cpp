@@ -36,6 +36,11 @@ typedef std::shared_ptr<Client> client_ptr;
 
 class Game {
 public:
+	Game(int requiredPlayers)
+		: requiredPlayers_(requiredPlayers), 
+		gameStarted_(false) {
+	}
+
 	void join(client_ptr client) {
 		clients_.insert(client);
 	}
@@ -45,8 +50,15 @@ public:
 	}
 
 	void deliver(const Message& msg) {
-		for (auto client : clients_)
-			client->deliver(msg);
+		if (clients_.size() >= requiredPlayers_) {
+			if (!gameStarted_) {
+				initGame();
+				gameStarted_ = true;
+			}
+
+			for (auto client : clients_)
+				client->deliver(msg);
+		}
 	}
 
 	int size() {
@@ -54,7 +66,12 @@ public:
 	}
 
 private:
+	void initGame() {
+	}
+
 	std::set<client_ptr> clients_;
+	int requiredPlayers_;
+	bool gameStarted_;
 };
 
 
@@ -141,9 +158,9 @@ private:
 
 class Server {
 public:
-	Server(boost::asio::io_service& io_service, short port)
+	Server(boost::asio::io_service& io_service, short port, int requiredPlayers)
 		: acceptor_(io_service, tcp::endpoint(tcp::v4(), port)),
-		socket_(io_service) {
+		socket_(io_service), game_(requiredPlayers) {
 		do_accept();
 	}
 
@@ -181,9 +198,15 @@ int main(int argc, char* argv[]) {
 			return 1;
 		}
 
+		int requiredPlayers;
+		if (!util::ConfigSettings::config->getValue(util::ConfigSettings::str_required_players, requiredPlayers)) {
+			std::cerr << "There was a problem getting the number of required players from the config file\n";
+			return 1;
+		}
+
 		boost::asio::io_service io_service;
 
-		Server s(io_service, port);
+		Server s(io_service, port, requiredPlayers);
 
 		io_service.run();
 	}

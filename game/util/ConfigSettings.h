@@ -25,6 +25,7 @@ namespace util {
 		static string str_screen_height;
 		static string str_full_screen;
 		static string str_host_name;
+		static string str_required_players;
 
 	public:
 		static ConfigSettings * config; // Use this static reference instead of your own call to the constructor
