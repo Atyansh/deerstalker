@@ -94,7 +94,11 @@
     <ClCompile Include="Graphics\LightShader.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
+    <ClCompile Include="Graphics\SGeode.cpp" />
+    <ClCompile Include="Graphics\SGroup.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
+    <ClCompile Include="Graphics\SMatrixTransform.cpp" />
+    <ClCompile Include="Graphics\SNode.cpp" />
     <ClCompile Include="Graphics\UpdateData.cpp" />
     <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="main.cpp" />
@@ -114,8 +118,12 @@
     <ClInclude Include="Graphics\Globals.h" />
     <ClInclude Include="Graphics\LightShader.h" />
     <ClInclude Include="Graphics\Model.h" />
+    <ClInclude Include="Graphics\SGeode.h" />
+    <ClInclude Include="Graphics\SGroup.h" />
     <ClInclude Include="Graphics\Shader.h" />
     <ClInclude Include="Graphics\Mesh.h" />
+    <ClInclude Include="Graphics\SMatrixTransform.h" />
+    <ClInclude Include="Graphics\SNode.h" />
     <ClInclude Include="Graphics\UpdateData.h" />
     <ClInclude Include="Graphics\Window.h" />
   </ItemGroup>
