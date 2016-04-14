@@ -20,8 +20,8 @@ bool Window::holdDown;
 bool Window::holdLeft;
 bool Window::holdRight;
 
-//SMatrixTransform *root;
-Model *ourModel;
+SMatrixTransform *root;
+//Model *ourModel;
 
 void Window::initialize_objects()
 {
@@ -42,18 +42,22 @@ void Window::initialize_objects()
 	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 
-	ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
+	Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
 
 	//Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
 
-	//root = new SMatrixTransform();
-	//root->addNode(ourModel);
+	root = new SMatrixTransform();
+	root->addNode(ourModel);
+
+	glm::mat4 loc = glm::translate(glm::mat4(), glm::vec3(0.0f, -0.5f, -20.0f));
+	loc = glm::scale(loc, glm::vec3(0.8f));
+	root->setMatrix(loc);
 
 }
 
 void Window::clean_up()
 {
-	delete ourModel;
+	delete root;
 }
 
 GLFWwindow* Window::create_window(int width, int height)
@@ -105,7 +109,7 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 void Window::idle_callback(GLFWwindow* window)
 {
 	// Perform any updates as necessary. Here, we will spin the cube slightly.
-	ourModel->update(Globals::updateData);
+	root->update(Globals::updateData);
 
 	while (!Globals::keyQueue.empty()) {
 		char keyPress = Globals::keyQueue.front();
@@ -174,7 +178,7 @@ void Window::display_callback(GLFWwindow* window)
 	calcMovements();
 
 	// Render objects
-	ourModel->draw(Globals::drawData);
+	root->draw(Globals::drawData);
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();

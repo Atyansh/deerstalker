@@ -1,4 +1,5 @@
 #include "SGeode.h"
+#include <iostream>
 
 
 SGeode::SGeode() {

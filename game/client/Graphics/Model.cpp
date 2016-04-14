@@ -17,8 +17,9 @@ Model::~Model()
 }
 
 void Model::draw(DrawData &drawData){
+
 	for (GLuint i = 0; i < this->meshes.size(); i++){
-		this->meshes[i].toWorld = drawData.matrix;
+		//this->meshes[i].toWorld = drawData.matrix;
 		this->meshes[i].draw(drawData);
 	}
 }

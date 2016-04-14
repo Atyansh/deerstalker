@@ -7,7 +7,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader) : Drawable()
+Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader) : SGeode()
 {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -24,6 +24,10 @@ Mesh::~Mesh()
 
 void Mesh::draw(DrawData& data)
 {
+
+	cout << "Matrix in mesh \n";
+	cout << glm::to_string(data.matrix) << endl;
+
 	if (!shader->isInitilized()){
 		cerr << "Shader not initialized" << endl;
 		exit(-1);
@@ -31,7 +35,7 @@ void Mesh::draw(DrawData& data)
 
 	shader->bind();
 
-	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "model"), 1, GL_FALSE, glm::value_ptr(toWorld));
+	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "model"), 1, GL_FALSE, glm::value_ptr(data.matrix));
 	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "view"), 1, GL_FALSE, glm::value_ptr(data.view));
 	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "projection"), 1, GL_FALSE, glm::value_ptr(data.projection));
 

@@ -13,6 +13,7 @@ SMatrixTransform::~SMatrixTransform() {
 }
 
 void SMatrixTransform::draw(DrawData &data) {
+
 	DrawData newData;
 	newData.matrix = data.matrix * this->drawData.matrix;
 	

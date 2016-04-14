@@ -1,7 +1,8 @@
 #include "SGroup.h"
-
+#include <iostream>
 
 SGroup::SGroup() {
+	listOfNodes = new list<SNode*>();
 }
 
 SGroup::~SGroup() {

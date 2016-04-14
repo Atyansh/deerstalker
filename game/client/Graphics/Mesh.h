@@ -2,8 +2,9 @@
 
 #include <assimp/Importer.hpp>
 
-#include "Drawable.h"
+#include "SGeode.h"
 #include "Shader.h"
+#include <vector>
 
 using namespace std;
 
@@ -19,7 +20,7 @@ struct Texture {
 	aiString path;
 };
 
-class Mesh : public Drawable
+class Mesh : public SGeode
 {
 private:
 	/*  Mesh Data  */
