@@ -14,7 +14,7 @@ SMatrixTransform::~SMatrixTransform() {
 
 void SMatrixTransform::draw(DrawData &data) {
 
-	DrawData newData;
+	DrawData newData = data;
 	newData.matrix = data.matrix * this->drawData.matrix;
 	
 	list<SNode*>::iterator beg = listOfNodes->begin();

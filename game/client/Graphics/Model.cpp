@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <glm/ext.hpp>
 
 Model::Model(const char* path, Shader *shader) : SGeode()
 {
@@ -16,11 +17,11 @@ Model::~Model()
 
 }
 
-void Model::draw(DrawData &drawData){
+void Model::draw(DrawData &data){
 
 	for (GLuint i = 0; i < this->meshes.size(); i++){
 		//this->meshes[i].toWorld = drawData.matrix;
-		this->meshes[i].draw(drawData);
+		this->meshes[i].draw(data);
 	}
 }
 

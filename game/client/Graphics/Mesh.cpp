@@ -25,9 +25,6 @@ Mesh::~Mesh()
 void Mesh::draw(DrawData& data)
 {
 
-	cout << "Matrix in mesh \n";
-	cout << glm::to_string(data.matrix) << endl;
-
 	if (!shader->isInitilized()){
 		cerr << "Shader not initialized" << endl;
 		exit(-1);

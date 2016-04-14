@@ -41,17 +41,28 @@ void Window::initialize_objects()
 	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.7f, 0.2f, 0.5f), glm::vec3(1.0f), glm::vec3(1.0f));
 	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
-
+	
+	SMatrixTransform *guy1 = new SMatrixTransform();
+	guy1->setMatrix(glm::translate(glm::mat4(), glm::vec3(-5.0f, 0.0f, 0.0f)));
 	Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
+	guy1->addNode(ourModel);
 
 	//Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
 
+	SMatrixTransform *guy2 = new SMatrixTransform();
+	guy2->setMatrix(glm::translate(glm::mat4(), glm::vec3(5.0f, 0.0f, 0.0f)));
+	Model *newModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
+	guy2->addNode(newModel);
+	
 	root = new SMatrixTransform();
-	root->addNode(ourModel);
+	root->addNode(guy1);
+	root->addNode(guy2);
 
 	glm::mat4 loc = glm::translate(glm::mat4(), glm::vec3(0.0f, -0.5f, -20.0f));
 	loc = glm::scale(loc, glm::vec3(0.8f));
-	root->setMatrix(loc);
+	Globals::drawData.matrix = loc;
+
+	
 
 }
 
@@ -104,6 +115,9 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 	Globals::drawData.projection = glm::perspective(45.0f, float(width) / (float)height, 0.1f, 100.0f);
 	//Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	Globals::drawData.view = Globals::camera.getView();
+
+	cout << "projection in window \n";
+	cout << glm::to_string(Globals::drawData.projection) << endl;
 }
 
 void Window::idle_callback(GLFWwindow* window)
@@ -201,6 +215,8 @@ void Window::calcMovements() {
 		change = glm::translate(change, glm::vec3(-0.2f, 0.0f, 0.0f));
 	}
 	//ourModel->toWorld = change * ourModel->toWorld;
+	
+	Globals::drawData.matrix = change * Globals::drawData.matrix;
 	
 }
 
