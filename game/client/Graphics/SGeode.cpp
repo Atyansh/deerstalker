@@ -8,10 +8,10 @@ SGeode::SGeode() {
 SGeode::~SGeode() {
 }
 
-void SGeode::draw(DrawData &drawData) {
+void SGeode::draw(DrawData &data) {
 
 }
 
-void SGeode::update(DrawData &drawData) {
+void SGeode::update(UpdateData &data) {
 
 }

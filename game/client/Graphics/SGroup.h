@@ -2,6 +2,7 @@
 
 #include <list>
 #include "SNode.h"
+#include "UpdateData.h"
 
 using namespace std;
 
@@ -16,8 +17,8 @@ public:
 	SGroup();
 	~SGroup();
 
-	void draw(DrawData &drawData);
-	void update(DrawData &drawData);
+	void draw(DrawData &data);
+	void update(UpdateData &data);
 
 	void addNode(SNode *node);
 	void removeNode(SNode *node);

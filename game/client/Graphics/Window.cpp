@@ -2,6 +2,8 @@
 #include "Globals.h"
 #include "LightShader.h"
 #include "Model.h"
+#include "SNode.h"
+#include "SMatrixTransform.h"
 #include "util\Message.h"
 #include <glm/ext.hpp>
 
@@ -18,6 +20,7 @@ bool Window::holdDown;
 bool Window::holdLeft;
 bool Window::holdRight;
 
+//SMatrixTransform *root;
 Model *ourModel;
 
 void Window::initialize_objects()
@@ -40,7 +43,12 @@ void Window::initialize_objects()
 	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 
 	ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
-	// ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
+
+	//Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
+
+	//root = new SMatrixTransform();
+	//root->addNode(ourModel);
+
 }
 
 void Window::clean_up()
@@ -188,7 +196,7 @@ void Window::calcMovements() {
 	if (holdLeft == true) {
 		change = glm::translate(change, glm::vec3(-0.2f, 0.0f, 0.0f));
 	}
-	ourModel->toWorld = change * ourModel->toWorld;
+	//ourModel->toWorld = change * ourModel->toWorld;
 	
 }
 

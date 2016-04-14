@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SNode.h"
+#include "UpdateData.h"
 
 class SGeode : public SNode {
 
@@ -8,8 +9,8 @@ public:
 	SGeode();
 	~SGeode();
 
-	void draw(DrawData &drawData);
-	void update(DrawData &drawData);
+	void draw(DrawData &data);
+	void update(UpdateData &data);
 
 };
 

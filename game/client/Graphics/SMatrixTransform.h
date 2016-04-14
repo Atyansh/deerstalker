@@ -4,21 +4,23 @@
 
 #include "SGroup.h"
 #include "DrawData.h"
+#include "UpdateData.h"
 
 class SMatrixTransform : public SGroup {
-
-private:
+protected:
 	DrawData drawData;
 
 public:
 
 	SMatrixTransform();
+	SMatrixTransform(DrawData &data);
 	~SMatrixTransform();
 
-	void draw(DrawData &drawData);
-	void update(DrawData &drawData);
+	void draw(DrawData &data);
+	void update(UpdateData &data);
 
-	glm::mat4 getMatrix();
 	void setMatrix(glm::mat4 mat);
+	DrawData getDrawData();
+
 };
 

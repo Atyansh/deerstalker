@@ -4,10 +4,10 @@
 
 #include <assimp/scene.h>
 
-#include "Drawable.h"
+#include "SGeode.h"
 #include "Mesh.h"
 
-class Model : public Drawable
+class Model : public SGeode
 {
 private:
 	/*  Model Data  */

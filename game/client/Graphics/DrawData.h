@@ -9,7 +9,7 @@ class DrawData
 public:
     glm::mat4 projection;
 	glm::mat4 view;
-	glm::mat4 localMat;
+	glm::mat4 matrix;
     
     DrawData(void);
     ~DrawData(void);

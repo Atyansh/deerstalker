@@ -7,23 +7,23 @@ SGroup::SGroup() {
 SGroup::~SGroup() {
 }
 
-void SGroup::draw(DrawData &drawData) {
+void SGroup::draw(DrawData &data) {
 	
 	// Iterator to go through list of nodes and draw them
 	list<SNode*>::iterator beg = listOfNodes->begin();
 	
 	for (; beg != listOfNodes->end(); beg++) {
-		(*beg)->draw(drawData);
+		(*beg)->draw(data);
 	}
 
 }
 
-void SGroup::update(DrawData &drawData) {
+void SGroup::update(UpdateData &data) {
 
 	list<SNode*>::iterator beg = listOfNodes->begin();
 
 	for (; beg != listOfNodes->end(); beg++) {
-		(*beg)->draw(drawData);
+		(*beg)->update(data);
 	}
 
 }

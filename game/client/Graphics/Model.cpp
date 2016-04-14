@@ -5,7 +5,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
-Model::Model(const char* path, Shader *shader) : Drawable()
+Model::Model(const char* path, Shader *shader) : SGeode()
 {
 	this->shader = shader;
 	this->loadModel(path);
@@ -18,7 +18,7 @@ Model::~Model()
 
 void Model::draw(DrawData &drawData){
 	for (GLuint i = 0; i < this->meshes.size(); i++){
-		this->meshes[i].toWorld = this->toWorld;
+		this->meshes[i].toWorld = drawData.matrix;
 		this->meshes[i].draw(drawData);
 	}
 }
