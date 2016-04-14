@@ -2,6 +2,8 @@
 #include "Globals.h"
 #include "LightShader.h"
 #include "Model.h"
+#include "SNode.h"
+#include "SMatrixTransform.h"
 #include "util\Message.h"
 #include <glm/ext.hpp>
 
@@ -18,7 +20,8 @@ bool Window::holdDown;
 bool Window::holdLeft;
 bool Window::holdRight;
 
-Model *ourModel;
+SMatrixTransform *root;
+//Model *ourModel;
 
 void Window::initialize_objects()
 {
@@ -38,14 +41,34 @@ void Window::initialize_objects()
 	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.7f, 0.2f, 0.5f), glm::vec3(1.0f), glm::vec3(1.0f));
 	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+	
+	SMatrixTransform *guy1 = new SMatrixTransform();
+	guy1->setMatrix(glm::translate(glm::mat4(), glm::vec3(-5.0f, 0.0f, 0.0f)));
+	Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
+	guy1->addNode(ourModel);
 
-	ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
-	// ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
+	//Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
+
+	SMatrixTransform *guy2 = new SMatrixTransform();
+	guy2->setMatrix(glm::translate(glm::mat4(), glm::vec3(5.0f, 0.0f, 0.0f)));
+	Model *newModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
+	guy2->addNode(newModel);
+	
+	root = new SMatrixTransform();
+	root->addNode(guy1);
+	root->addNode(guy2);
+
+	glm::mat4 loc = glm::translate(glm::mat4(), glm::vec3(0.0f, -0.5f, -20.0f));
+	loc = glm::scale(loc, glm::vec3(0.8f));
+	Globals::drawData.matrix = loc;
+
+	
+
 }
 
 void Window::clean_up()
 {
-	delete ourModel;
+	delete root;
 }
 
 GLFWwindow* Window::create_window(int width, int height)
@@ -92,12 +115,15 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 	Globals::drawData.projection = glm::perspective(45.0f, float(width) / (float)height, 0.1f, 100.0f);
 	//Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	Globals::drawData.view = Globals::camera.getView();
+
+	cout << "projection in window \n";
+	cout << glm::to_string(Globals::drawData.projection) << endl;
 }
 
 void Window::idle_callback(GLFWwindow* window)
 {
 	// Perform any updates as necessary. Here, we will spin the cube slightly.
-	ourModel->update(Globals::updateData);
+	root->update(Globals::updateData);
 
 	while (!Globals::keyQueue.empty()) {
 		char keyPress = Globals::keyQueue.front();
@@ -166,7 +192,7 @@ void Window::display_callback(GLFWwindow* window)
 	calcMovements();
 
 	// Render objects
-	ourModel->draw(Globals::drawData);
+	root->draw(Globals::drawData);
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
@@ -188,7 +214,9 @@ void Window::calcMovements() {
 	if (holdLeft == true) {
 		change = glm::translate(change, glm::vec3(-0.2f, 0.0f, 0.0f));
 	}
-	ourModel->toWorld = change * ourModel->toWorld;
+	//ourModel->toWorld = change * ourModel->toWorld;
+	
+	Globals::drawData.matrix = change * Globals::drawData.matrix;
 	
 }
 
