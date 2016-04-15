@@ -15,6 +15,8 @@ private:
 	static bool holdDown;
 	static bool holdLeft;
 	static bool holdRight;
+	static bool holdLRot;
+	static bool holdRRot;
 
 	static int glfwToAscii(const int key);
 	static int asciiToGLFW(const int key);
