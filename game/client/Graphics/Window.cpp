@@ -30,6 +30,7 @@ void Window::initialize_objects()
 	holdLeft = false;
 	holdRight = false;
 	LightShader *lightShader = new LightShader(Globals::camera.getPosition() , "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
+	Shader *shader = new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag");
 
 	// Will factor out
 	// Point light positions
@@ -38,21 +39,20 @@ void Window::initialize_objects()
 		glm::vec3(-1.7f, 0.9f, 1.0f)
 	};
 	// lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
-	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.7f, 0.2f, 0.5f), glm::vec3(1.0f), glm::vec3(1.0f));
+	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
 	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 	
+	//Scene Graph
 	SMatrixTransform *guy1 = new SMatrixTransform();
 	guy1->setMatrix(glm::translate(glm::mat4(), glm::vec3(-5.0f, 0.0f, 0.0f)));
 	Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
 	guy1->addNode(ourModel);
 
-	//Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag"));
 
 	SMatrixTransform *guy2 = new SMatrixTransform();
 	guy2->setMatrix(glm::translate(glm::mat4(), glm::vec3(5.0f, 0.0f, 0.0f)));
-	Model *newModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
-	guy2->addNode(newModel);
+	guy2->addNode(ourModel);
 	
 	root = new SMatrixTransform();
 	root->addNode(guy1);
@@ -61,8 +61,6 @@ void Window::initialize_objects()
 	glm::mat4 loc = glm::translate(glm::mat4(), glm::vec3(0.0f, -0.5f, -20.0f));
 	loc = glm::scale(loc, glm::vec3(0.8f));
 	Globals::drawData.matrix = loc;
-
-	
 
 }
 
