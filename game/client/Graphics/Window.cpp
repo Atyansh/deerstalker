@@ -55,7 +55,7 @@ void Window::initialize_objects()
 	guy1 = new SMatrixTransform();
 	guy1->setMatrix(glm::translate(glm::mat4(), glm::vec3(-5.0f, 0.0f, 0.0f)));
 	//Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
-	Model *ourModel = new Model("Graphics/Assets/OBJ/Cube/cube.obj", lightShader);
+	Model *ourModel = new Model("Graphics/Assets/OBJ/Mango/mango.obj", lightShader);
 	
 	Globals::modelHashTable.Enter(player1, ourModel);
 
