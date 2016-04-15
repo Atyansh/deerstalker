@@ -11,35 +11,37 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "client\client.vcx
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bullet", "Bullet", "{B5AE8053-C86C-4BB9-B61F-72339A892B6A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletCollision", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\BulletCollision.vcxproj", "{59E07962-D728-454F-B5D1-3F819D0BDA7B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletCollision", "C:\workarea\bullet3-2.83.7\build3\vs2010\BulletCollision.vcxproj", "{59E07962-D728-454F-B5D1-3F819D0BDA7B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletDynamics", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\BulletDynamics.vcxproj", "{DCFE7723-6742-DF40-AE67-FA84D5672C78}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletDynamics", "C:\workarea\bullet3-2.83.7\build3\vs2010\BulletDynamics.vcxproj", "{DCFE7723-6742-DF40-AE67-FA84D5672C78}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletInverseDynamics", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\BulletInverseDynamics.vcxproj", "{4C6BCBBC-40E8-0049-B4CC-7EFD3AB24C63}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletInverseDynamics", "C:\workarea\bullet3-2.83.7\build3\vs2010\BulletInverseDynamics.vcxproj", "{4C6BCBBC-40E8-0049-B4CC-7EFD3AB24C63}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletInverseDynamicsUtils", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\BulletInverseDynamicsUtils.vcxproj", "{79FF2CC1-F77B-6541-9DD4-3157FB5F0DF3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletInverseDynamicsUtils", "C:\workarea\bullet3-2.83.7\build3\vs2010\BulletInverseDynamicsUtils.vcxproj", "{79FF2CC1-F77B-6541-9DD4-3157FB5F0DF3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletSoftBody", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\BulletSoftBody.vcxproj", "{575DFB59-E639-F94A-B7AD-73D6FC104BDE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletSoftBody", "C:\workarea\bullet3-2.83.7\build3\vs2010\BulletSoftBody.vcxproj", "{575DFB59-E639-F94A-B7AD-73D6FC104BDE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gwen", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\gwen.vcxproj", "{B26F8837-5499-0245-A5D4-499931847C4B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gwen", "C:\workarea\bullet3-2.83.7\build3\vs2010\gwen.vcxproj", "{B26F8837-5499-0245-A5D4-499931847C4B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LinearMath", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\LinearMath.vcxproj", "{19993C3E-4A48-4C43-8704-FEF6D7D8A48B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LinearMath", "C:\workarea\bullet3-2.83.7\build3\vs2010\LinearMath.vcxproj", "{19993C3E-4A48-4C43-8704-FEF6D7D8A48B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL_Window", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\OpenGL_Window.vcxproj", "{2B138048-1A7D-6C48-AA50-D13AC691263E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL_Window", "C:\workarea\bullet3-2.83.7\build3\vs2010\OpenGL_Window.vcxproj", "{2B138048-1A7D-6C48-AA50-D13AC691263E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3Common", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\Bullet3Common.vcxproj", "{A88D80C0-C8B5-8C4D-BE49-C1F1E4B43FAF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3Common", "C:\workarea\bullet3-2.83.7\build3\vs2010\Bullet3Common.vcxproj", "{A88D80C0-C8B5-8C4D-BE49-C1F1E4B43FAF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3OpenCL_clew", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\Bullet3OpenCL_clew.vcxproj", "{FA20B676-C5CE-0B42-9824-28F59F25CAF8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3OpenCL_clew", "C:\workarea\bullet3-2.83.7\build3\vs2010\Bullet3OpenCL_clew.vcxproj", "{FA20B676-C5CE-0B42-9824-28F59F25CAF8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3Dynamics", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\Bullet3Dynamics.vcxproj", "{0619C8A8-6628-D644-AA0A-A89ABB977F2D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3Dynamics", "C:\workarea\bullet3-2.83.7\build3\vs2010\Bullet3Dynamics.vcxproj", "{0619C8A8-6628-D644-AA0A-A89ABB977F2D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3Collision", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\Bullet3Collision.vcxproj", "{F9430B12-F0D4-4C44-8AA9-F7449CED3075}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3Collision", "C:\workarea\bullet3-2.83.7\build3\vs2010\Bullet3Collision.vcxproj", "{F9430B12-F0D4-4C44-8AA9-F7449CED3075}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3Geometry", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\Bullet3Geometry.vcxproj", "{4F47F013-3B36-7545-80CA-04D29396D3DE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3Geometry", "C:\workarea\bullet3-2.83.7\build3\vs2010\Bullet3Geometry.vcxproj", "{4F47F013-3B36-7545-80CA-04D29396D3DE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App_BasicExample", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\App_BasicExample.vcxproj", "{034CFB68-6459-DA4A-8BB3-FF0E6F6C5A33}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App_BasicExample", "C:\workarea\bullet3-2.83.7\build3\vs2010\App_BasicExample.vcxproj", "{034CFB68-6459-DA4A-8BB3-FF0E6F6C5A33}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App_HelloWorld", "..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\App_HelloWorld.vcxproj", "{E82B379A-7BC0-0341-B3BB-1886F3B8573E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App_HelloWorld", "C:\workarea\bullet3-2.83.7\build3\vs2010\App_HelloWorld.vcxproj", "{E82B379A-7BC0-0341-B3BB-1886F3B8573E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App_ExampleBrowser", "C:\workarea\bullet3-2.83.7\build3\vs2010\App_ExampleBrowser.vcxproj", "{FE9437EA-5B82-BC49-B649-ED321393B7B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -329,6 +331,22 @@ Global
 		{E82B379A-7BC0-0341-B3BB-1886F3B8573E}.RelWithDebInfo|Win32.Build.0 = Release|Win32
 		{E82B379A-7BC0-0341-B3BB-1886F3B8573E}.RelWithDebInfo|x64.ActiveCfg = Release|x64
 		{E82B379A-7BC0-0341-B3BB-1886F3B8573E}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.Debug|Win32.Build.0 = Debug|Win32
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.Debug|x64.ActiveCfg = Debug|x64
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.Debug|x64.Build.0 = Debug|x64
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.MinSizeRel|Win32.ActiveCfg = Release|Win32
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.MinSizeRel|Win32.Build.0 = Release|Win32
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.MinSizeRel|x64.ActiveCfg = Release|x64
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.MinSizeRel|x64.Build.0 = Release|x64
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.Release|Win32.ActiveCfg = Release|Win32
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.Release|Win32.Build.0 = Release|Win32
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.Release|x64.ActiveCfg = Release|x64
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.Release|x64.Build.0 = Release|x64
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.RelWithDebInfo|Win32.Build.0 = Release|Win32
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2}.RelWithDebInfo|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -349,5 +367,6 @@ Global
 		{4F47F013-3B36-7545-80CA-04D29396D3DE} = {B5AE8053-C86C-4BB9-B61F-72339A892B6A}
 		{034CFB68-6459-DA4A-8BB3-FF0E6F6C5A33} = {B5AE8053-C86C-4BB9-B61F-72339A892B6A}
 		{E82B379A-7BC0-0341-B3BB-1886F3B8573E} = {B5AE8053-C86C-4BB9-B61F-72339A892B6A}
+		{FE9437EA-5B82-BC49-B649-ED321393B7B2} = {B5AE8053-C86C-4BB9-B61F-72339A892B6A}
 	EndGlobalSection
 EndGlobal
