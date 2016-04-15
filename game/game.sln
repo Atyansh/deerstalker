@@ -45,11 +45,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App_ExampleBrowser", "C:\wo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protobufs", "Protobufs", "{277BCE53-F5C6-459A-A9D3-60E95E1D399B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libprotobuf", "..\..\..\..\..\workarea\protobuf-2.6.1\vsprojects\libprotobuf.vcxproj", "{3E283F37-A4ED-41B7-A3E6-A2D89D131A30}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libprotobuf", "C:\workarea\protobuf-2.6.1\vsprojects\libprotobuf.vcxproj", "{3E283F37-A4ED-41B7-A3E6-A2D89D131A30}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libprotoc", "..\..\..\..\..\workarea\protobuf-2.6.1\vsprojects\libprotoc.vcxproj", "{B84FF31A-5F9A-46F8-AB22-DBFC9BECE3BE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libprotoc", "C:\workarea\protobuf-2.6.1\vsprojects\libprotoc.vcxproj", "{B84FF31A-5F9A-46F8-AB22-DBFC9BECE3BE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "protoc", "..\..\..\..\..\workarea\protobuf-2.6.1\vsprojects\protoc.vcxproj", "{1738D5F6-ED1E-47E0-B2F0-456864B93C1E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "protoc", "C:\workarea\protobuf-2.6.1\vsprojects\protoc.vcxproj", "{1738D5F6-ED1E-47E0-B2F0-456864B93C1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
