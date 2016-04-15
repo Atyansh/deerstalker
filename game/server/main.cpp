@@ -18,6 +18,8 @@
 #include "util\Message.h"
 #include "util\ConfigSettings.h"
 
+
+
 using boost::asio::ip::tcp;
 using namespace util;
 
@@ -183,6 +185,7 @@ private:
 
 int main(int argc, char* argv[]) {
 	try {
+
 		// load the settings from the config file
 		if (!util::ConfigSettings::config->checkIfLoaded()) {
 			if (!util::ConfigSettings::config->loadSettingsFile()) {
