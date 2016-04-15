@@ -28,6 +28,8 @@ private:
 	vector<GLuint> indices;
 	vector<Texture> textures;
 
+	bool hasTexture;
+
 	/*  Render data  */
 	GLuint VAO, VBO, EBO;
 
@@ -36,7 +38,7 @@ private:
 	void setupMesh();
 
 public:
-	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader);
+	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader, bool hasTexture);
 	virtual ~Mesh(void);
 
 	virtual void update(UpdateData&);

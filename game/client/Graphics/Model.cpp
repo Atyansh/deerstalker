@@ -5,11 +5,14 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <glm/ext.hpp>
+#include <boost\filesystem.hpp>
 
 Model::Model(const char* path, Shader *shader) : SGeode()
 {
 	this->shader = shader;
 	this->loadModel(path);
+
+
 }
 
 Model::~Model()
@@ -45,6 +48,7 @@ void Model::loadModel(string path)
 	// Retrieve the directory path of the filepath
 	this->directory = path.substr(0, path.find_last_of('/'));
 
+
 	// Process ASSIMP's root node recursively
 	this->processNode(scene->mRootNode, scene);
 }
@@ -75,6 +79,10 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	vector<GLuint> indices;
 	vector<Texture> textures;
 
+	fprintf(stderr, "Has textures? : %s", hasTextureFiles() ? "yes" : "no");
+
+	bool hasTexture = hasTextureFiles();
+
 	// Walk through each of the mesh's vertices
 	for (GLuint i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -91,7 +99,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		vector.z = mesh->mNormals[i].z;
 		vertex.Normal = vector;
 		// Texture Coordinates
-		if (mesh->mTextureCoords[0]) // Does the mesh contain texture coordinates?
+		// Check that it has texture map too. No point in wasting memory.
+		if (mesh->mTextureCoords[0] && hasTexture) // Does the mesh contain texture coordinates?
 		{
 			glm::vec2 vec;
 			// A vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
@@ -113,7 +122,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 			indices.push_back(face.mIndices[j]);
 	}
 	// Process materials
-	if (mesh->mMaterialIndex >= 0)
+	if (mesh->mMaterialIndex >= 0 && hasTexture)
 	{
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 		// We assume a convention for sampler names in the shaders. Each diffuse texture should be named
@@ -132,7 +141,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	}
 
 	// Return a mesh object created from the extracted mesh data
-	return Mesh(vertices, indices, textures, this->shader);
+	return Mesh(vertices, indices, textures, this->shader, hasTexture);
 }
 
 // Checks all material textures of a given type and loads the textures if they're not loaded yet.
@@ -253,4 +262,21 @@ unsigned char* Model::loadPPM(const char* filename, int& width, int& height)
 	}
 
 	return rawData;
+}
+
+bool Model::hasTextureFiles() {
+
+	// With the assumption that there is nothing wrong with the
+	// directory path.
+	
+	boost::filesystem::recursive_directory_iterator beg(this->directory);
+	boost::filesystem::recursive_directory_iterator endit;
+	while (beg != endit) {
+		if (boost::filesystem::is_regular_file(*beg) && beg->path().extension() == ".ppm") {
+			return true;
+		}
+		beg++;
+	}
+
+	return false;
 }

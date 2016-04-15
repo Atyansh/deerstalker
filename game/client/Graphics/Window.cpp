@@ -44,13 +44,14 @@ void Window::initialize_objects()
 	};
 	// lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
 	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
-	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
-	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+	//lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+	//lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 	
 	//Scene Graph
 	SMatrixTransform *guy1 = new SMatrixTransform();
 	guy1->setMatrix(glm::translate(glm::mat4(), glm::vec3(-5.0f, 0.0f, 0.0f)));
 	Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
+	//Model *ourModel = new Model("Graphics/Assets/OBJ/Cube/cube.obj", lightShader);
 	
 	Globals::modelHashTable.Enter(player1, ourModel);
 
@@ -58,9 +59,8 @@ void Window::initialize_objects()
 
 
 	SMatrixTransform *guy2 = new SMatrixTransform();
-	guy2->setMatrix(glm::translate(glm::mat4(), glm::vec3(5.0f, 0.0f, 0.0f)));
+	guy2->setMatrix(glm::scale(glm::translate(glm::mat4(), glm::vec3(5.0f, 0.0f, 0.0f)), glm::vec3(5.0f)));
 	guy2->addNode(Globals::modelHashTable.Lookup(player1));
-	
 	root = new SMatrixTransform();
 	root->addNode(guy1);
 	root->addNode(guy2);

@@ -22,6 +22,8 @@ private:
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 	GLint TextureFromFile(const char* path, string directory);
 	unsigned char* loadPPM(const char*, int&, int&);
+	bool hasTextureFiles();
+
 
 public:
 	Model(const char* path, Shader *shader);
