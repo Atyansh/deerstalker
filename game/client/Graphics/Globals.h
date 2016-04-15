@@ -5,6 +5,8 @@
 #include "DrawData.h"
 #include "UpdateData.h"
 #include "Camera.h"
+#include "Hashtable.h"
+#include "Model.h"
 
 using boost::asio::ip::tcp;
 
@@ -13,6 +15,7 @@ public:
 	static DrawData drawData;
 	static UpdateData updateData;
 	static Camera camera;
+	static HashTable<Model*> modelHashTable;
 
 	static boost::asio::io_service io_service;
 	static tcp::socket socket;

@@ -6,6 +6,10 @@
 #include "SMatrixTransform.h"
 #include "util\Message.h"
 #include <glm/ext.hpp>
+#include "Hashtable.cpp"	// Need this to fix linker problem. Ask AJ later
+#include "util\ModelKeys.h"
+
+
 
 using namespace util;
 
@@ -47,12 +51,15 @@ void Window::initialize_objects()
 	SMatrixTransform *guy1 = new SMatrixTransform();
 	guy1->setMatrix(glm::translate(glm::mat4(), glm::vec3(-5.0f, 0.0f, 0.0f)));
 	Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
-	guy1->addNode(ourModel);
+	
+	Globals::modelHashTable.Enter(player1, ourModel);
+
+	guy1->addNode(Globals::modelHashTable.Lookup(player1));
 
 
 	SMatrixTransform *guy2 = new SMatrixTransform();
 	guy2->setMatrix(glm::translate(glm::mat4(), glm::vec3(5.0f, 0.0f, 0.0f)));
-	guy2->addNode(ourModel);
+	guy2->addNode(Globals::modelHashTable.Lookup(player1));
 	
 	root = new SMatrixTransform();
 	root->addNode(guy1);

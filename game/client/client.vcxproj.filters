@@ -60,6 +60,9 @@
     <ClCompile Include="Graphics\SMatrixTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Hashtable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -105,6 +108,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\SMatrixTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Hashtable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
