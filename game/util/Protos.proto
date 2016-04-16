@@ -26,6 +26,7 @@ message	ClientEvent {
 
 message GameObject {
 	optional int32 id = 1;
+	repeated double matrix = 2;
 }
 
 message ServerState {
@@ -44,7 +45,7 @@ message TestEvent {
 
 	optional int32 id = 1;
 	optional Type type = 2;
-	repeated double matrix = 3;
+	repeated GameObject gameObject = 3;
 	optional int32 action = 4;
 	optional int32 keyPress = 5;
 	optional int32 clientID = 6;

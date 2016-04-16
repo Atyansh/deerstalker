@@ -118,13 +118,11 @@ void do_read_body(size_t length) {
 			protos::TestEvent event;
 			event.ParseFromArray(body, length);
 			delete body;
-			if (event.type() == protos::TestEvent_Type_ASSIGN) {
+			if (event.type() == event.ASSIGN) {
 				Globals::ID = event.clientid();
 			}
-			else if (event.type() == protos::TestEvent_Type_MOVE) {
-				Globals::keyQueue.push_back(event.clientid());
-				Globals::keyQueue.push_back(event.keypress());
-				Globals::keyQueue.push_back(event.action());
+			else if (event.type() == event.MOVE) {
+				Globals::eventQueue.push_back(event);
 			}
 			do_read_header();
 		}

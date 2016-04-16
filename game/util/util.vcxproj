@@ -79,16 +79,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConfigSettings.h" />
-    <ClInclude Include="json\json-forwards.h" />
-    <ClInclude Include="json\json.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="Protos.pb.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigSettings.cpp" />
-    <ClCompile Include="jsoncpp.cpp" />
-    <ClCompile Include="Position.cpp" />
     <ClCompile Include="Protos.pb.cc" />
   </ItemGroup>
   <ItemGroup>

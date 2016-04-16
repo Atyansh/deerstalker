@@ -15,16 +15,6 @@ int Window::height;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 
 void Window::initialize_objects() {
-	cubeMap[1] = std::make_unique<Cube>(1.0f);
-	cubeMap[2] = std::make_unique<Cube>(1.0f);
-
-	glm::mat4 change1(1.0f);
-	change1 = glm::translate(change1, glm::vec3(-8.0f, 0.0f, 0.0f));
-	cubeMap[1]->toWorld *= change1;
-
-	glm::mat4 change2(1.0f);
-	change2 = glm::translate(change2, glm::vec3(8.0f, 0.0f, 0.0f));
-	cubeMap[2]->toWorld *= change2;
 }
 
 void Window::clean_up() {
@@ -79,11 +69,33 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 
 void Window::idle_callback(GLFWwindow* window) {
 	// Perform any updates as necessary. Here, we will spin the cube slightly.
-	for (auto& pair : cubeMap) {
-		pair.second->update();
-	}
+	//for (auto& pair : cubeMap) {
+	//	pair.second->update();
+	//}
 	
-	while (!Globals::keyQueue.empty()) {
+	while (!Globals::eventQueue.empty()) {
+		protos::TestEvent event = Globals::eventQueue.front();
+		Globals::eventQueue.pop_front();
+
+		for (int i = 0; i < event.gameobject_size(); i++){
+			auto& gameObject = event.gameobject(i);
+			int id = gameObject.id();
+			if (cubeMap.find(id) == cubeMap.end()) {
+				cubeMap[id] = std::make_unique<Cube>(1.0f);
+			}
+
+			Cube& cube = *cubeMap[id];
+			float matrix[16];
+			for (int j = 0; j < gameObject.matrix_size(); j++) {
+				matrix[j] = gameObject.matrix(j);
+			}
+			cube.toWorld = glm::make_mat4(matrix);
+
+			// TODO(Atyansh): Didn't need to transpose. Someone was wrong.
+			//cube.toWorld = glm::transpose(cube.toWorld);
+		}
+	}
+		/*
 		Cube& cube = *cubeMap[Globals::keyQueue.front()];
 		Globals::keyQueue.pop_front();
 		int keyPress = Globals::keyQueue.front();
@@ -137,8 +149,7 @@ void Window::idle_callback(GLFWwindow* window) {
 				cube.holdDown = false;
 				break;
 			}
-		}
-	}
+		}*/
 }
 
 void Window::display_callback(GLFWwindow* window) {
@@ -150,9 +161,9 @@ void Window::display_callback(GLFWwindow* window) {
 	glLoadIdentity();
 
 	//Movement
-	for (auto& pair : cubeMap) {
+	/*for (auto& pair : cubeMap) {
 		calcMovements(*pair.second);
-	}
+	}*/
 	
 	// Render objects
 	for (auto& pair : cubeMap) {

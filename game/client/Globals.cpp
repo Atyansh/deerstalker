@@ -3,7 +3,7 @@
 boost::asio::io_service Globals::io_service = boost::asio::io_service();
 tcp::socket Globals::socket = tcp::socket(Globals::io_service);
 
-std::deque<int> Globals::keyQueue = std::deque<int>();
+std::deque<protos::TestEvent> Globals::eventQueue = std::deque<protos::TestEvent>();
 
 char Globals::currentHeader[4] = "";
 

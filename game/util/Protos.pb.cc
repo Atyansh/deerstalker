@@ -81,8 +81,9 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ClientEvent));
   GameObject_descriptor_ = file->message_type(2);
-  static const int GameObject_offsets_[1] = {
+  static const int GameObject_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameObject, id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameObject, matrix_),
   };
   GameObject_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -116,7 +117,7 @@ void protobuf_AssignDesc_Protos_2eproto() {
   static const int TestEvent_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, type_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, matrix_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, gameobject_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, action_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, keypress_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, clientid_),
@@ -184,17 +185,18 @@ void protobuf_AddDesc_Protos_2eproto() {
     "\n\014Protos.proto\022\006protos\"\031\n\013ServerEvent\022\n\n"
     "\002id\030\001 \001(\005\"f\n\013ClientEvent\022\n\n\002id\030\001 \001(\005\022%\n\004"
     "type\030\002 \001(\0162\027.protos.TypeClientEvent\022$\n\td"
-    "irection\030\003 \001(\0162\021.protos.Direction\"\030\n\nGam"
-    "eObject\022\n\n\002id\030\001 \001(\005\"c\n\013ServerState\022\n\n\002id"
-    "\030\001 \001(\005\022#\n\007objects\030\002 \003(\0132\022.protos.GameObj"
-    "ect\022#\n\006events\030\003 \003(\0132\023.protos.ServerEvent"
-    "\"\252\001\n\tTestEvent\022\n\n\002id\030\001 \001(\005\022$\n\004type\030\002 \001(\016"
-    "2\026.protos.TestEvent.Type\022\016\n\006matrix\030\003 \003(\001"
+    "irection\030\003 \001(\0162\021.protos.Direction\"(\n\nGam"
+    "eObject\022\n\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\"c\n\013S"
+    "erverState\022\n\n\002id\030\001 \001(\005\022#\n\007objects\030\002 \003(\0132"
+    "\022.protos.GameObject\022#\n\006events\030\003 \003(\0132\023.pr"
+    "otos.ServerEvent\"\302\001\n\tTestEvent\022\n\n\002id\030\001 \001"
+    "(\005\022$\n\004type\030\002 \001(\0162\026.protos.TestEvent.Type"
+    "\022&\n\ngameObject\030\003 \003(\0132\022.protos.GameObject"
     "\022\016\n\006action\030\004 \001(\005\022\020\n\010keyPress\030\005 \001(\005\022\020\n\010cl"
     "ientID\030\006 \001(\005\"\'\n\004Type\022\t\n\005SPAWN\020\001\022\010\n\004MOVE\020"
     "\002\022\n\n\006ASSIGN\020\003*0\n\017TypeClientEvent\022\010\n\004MOVE"
     "\020\001\022\t\n\005SHOOT\020\002\022\010\n\004JUMP\020\003*2\n\tDirection\022\006\n\002"
-    "UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004", 555);
+    "UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004", 595);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   ServerEvent::default_instance_ = new ServerEvent();
@@ -788,6 +790,7 @@ void ClientEvent::Swap(ClientEvent* other) {
 
 #ifndef _MSC_VER
 const int GameObject::kIdFieldNumber;
+const int GameObject::kMatrixFieldNumber;
 #endif  // !_MSC_VER
 
 GameObject::GameObject()
@@ -845,6 +848,7 @@ GameObject* GameObject::New() const {
 
 void GameObject::Clear() {
   id_ = 0;
+  matrix_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -869,6 +873,25 @@ bool GameObject::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(17)) goto parse_matrix;
+        break;
+      }
+
+      // repeated double matrix = 2;
+      case 2: {
+        if (tag == 17) {
+         parse_matrix:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 1, 17, input, this->mutable_matrix())));
+        } else if (tag == 18) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, this->mutable_matrix())));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(17)) goto parse_matrix;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -903,6 +926,12 @@ void GameObject::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->id(), output);
   }
 
+  // repeated double matrix = 2;
+  for (int i = 0; i < this->matrix_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(
+      2, this->matrix(i), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -916,6 +945,12 @@ void GameObject::SerializeWithCachedSizes(
   // optional int32 id = 1;
   if (has_id()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->id(), target);
+  }
+
+  // repeated double matrix = 2;
+  for (int i = 0; i < this->matrix_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteDoubleToArray(2, this->matrix(i), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -938,6 +973,13 @@ int GameObject::ByteSize() const {
     }
 
   }
+  // repeated double matrix = 2;
+  {
+    int data_size = 0;
+    data_size = 8 * this->matrix_size();
+    total_size += 1 * this->matrix_size() + data_size;
+  }
+
   if (!unknown_fields().empty()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -963,6 +1005,7 @@ void GameObject::MergeFrom(const ::google::protobuf::Message& from) {
 
 void GameObject::MergeFrom(const GameObject& from) {
   GOOGLE_CHECK_NE(&from, this);
+  matrix_.MergeFrom(from.matrix_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_id()) {
       set_id(from.id());
@@ -991,6 +1034,7 @@ bool GameObject::IsInitialized() const {
 void GameObject::Swap(GameObject* other) {
   if (other != this) {
     std::swap(id_, other->id_);
+    matrix_.Swap(&other->matrix_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -1334,7 +1378,7 @@ const int TestEvent::Type_ARRAYSIZE;
 #ifndef _MSC_VER
 const int TestEvent::kIdFieldNumber;
 const int TestEvent::kTypeFieldNumber;
-const int TestEvent::kMatrixFieldNumber;
+const int TestEvent::kGameObjectFieldNumber;
 const int TestEvent::kActionFieldNumber;
 const int TestEvent::kKeyPressFieldNumber;
 const int TestEvent::kClientIDFieldNumber;
@@ -1417,7 +1461,7 @@ void TestEvent::Clear() {
 #undef OFFSET_OF_FIELD_
 #undef ZR_
 
-  matrix_.Clear();
+  gameobject_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -1462,25 +1506,20 @@ bool TestEvent::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(25)) goto parse_matrix;
+        if (input->ExpectTag(26)) goto parse_gameObject;
         break;
       }
 
-      // repeated double matrix = 3;
+      // repeated .protos.GameObject gameObject = 3;
       case 3: {
-        if (tag == 25) {
-         parse_matrix:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 25, input, this->mutable_matrix())));
-        } else if (tag == 26) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 input, this->mutable_matrix())));
+        if (tag == 26) {
+         parse_gameObject:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_gameobject()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(25)) goto parse_matrix;
+        if (input->ExpectTag(26)) goto parse_gameObject;
         if (input->ExpectTag(32)) goto parse_action;
         break;
       }
@@ -1566,10 +1605,10 @@ void TestEvent::SerializeWithCachedSizes(
       2, this->type(), output);
   }
 
-  // repeated double matrix = 3;
-  for (int i = 0; i < this->matrix_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(
-      3, this->matrix(i), output);
+  // repeated .protos.GameObject gameObject = 3;
+  for (int i = 0; i < this->gameobject_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      3, this->gameobject(i), output);
   }
 
   // optional int32 action = 4;
@@ -1608,10 +1647,11 @@ void TestEvent::SerializeWithCachedSizes(
       2, this->type(), target);
   }
 
-  // repeated double matrix = 3;
-  for (int i = 0; i < this->matrix_size(); i++) {
+  // repeated .protos.GameObject gameObject = 3;
+  for (int i = 0; i < this->gameobject_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteDoubleToArray(3, this->matrix(i), target);
+      WriteMessageNoVirtualToArray(
+        3, this->gameobject(i), target);
   }
 
   // optional int32 action = 4;
@@ -1676,11 +1716,12 @@ int TestEvent::ByteSize() const {
     }
 
   }
-  // repeated double matrix = 3;
-  {
-    int data_size = 0;
-    data_size = 8 * this->matrix_size();
-    total_size += 1 * this->matrix_size() + data_size;
+  // repeated .protos.GameObject gameObject = 3;
+  total_size += 1 * this->gameobject_size();
+  for (int i = 0; i < this->gameobject_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->gameobject(i));
   }
 
   if (!unknown_fields().empty()) {
@@ -1708,7 +1749,7 @@ void TestEvent::MergeFrom(const ::google::protobuf::Message& from) {
 
 void TestEvent::MergeFrom(const TestEvent& from) {
   GOOGLE_CHECK_NE(&from, this);
-  matrix_.MergeFrom(from.matrix_);
+  gameobject_.MergeFrom(from.gameobject_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_id()) {
       set_id(from.id());
@@ -1750,7 +1791,7 @@ void TestEvent::Swap(TestEvent* other) {
   if (other != this) {
     std::swap(id_, other->id_);
     std::swap(type_, other->type_);
-    matrix_.Swap(&other->matrix_);
+    gameobject_.Swap(&other->gameobject_);
     std::swap(action_, other->action_);
     std::swap(keypress_, other->keypress_);
     std::swap(clientid_, other->clientid_);

@@ -341,6 +341,18 @@ class GameObject : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 id() const;
   inline void set_id(::google::protobuf::int32 value);
 
+  // repeated double matrix = 2;
+  inline int matrix_size() const;
+  inline void clear_matrix();
+  static const int kMatrixFieldNumber = 2;
+  inline double matrix(int index) const;
+  inline void set_matrix(int index, double value);
+  inline void add_matrix(double value);
+  inline const ::google::protobuf::RepeatedField< double >&
+      matrix() const;
+  inline ::google::protobuf::RepeatedField< double >*
+      mutable_matrix();
+
   // @@protoc_insertion_point(class_scope:protos.GameObject)
  private:
   inline void set_has_id();
@@ -350,6 +362,7 @@ class GameObject : public ::google::protobuf::Message {
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
+  ::google::protobuf::RepeatedField< double > matrix_;
   ::google::protobuf::int32 id_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
@@ -557,17 +570,17 @@ class TestEvent : public ::google::protobuf::Message {
   inline ::protos::TestEvent_Type type() const;
   inline void set_type(::protos::TestEvent_Type value);
 
-  // repeated double matrix = 3;
-  inline int matrix_size() const;
-  inline void clear_matrix();
-  static const int kMatrixFieldNumber = 3;
-  inline double matrix(int index) const;
-  inline void set_matrix(int index, double value);
-  inline void add_matrix(double value);
-  inline const ::google::protobuf::RepeatedField< double >&
-      matrix() const;
-  inline ::google::protobuf::RepeatedField< double >*
-      mutable_matrix();
+  // repeated .protos.GameObject gameObject = 3;
+  inline int gameobject_size() const;
+  inline void clear_gameobject();
+  static const int kGameObjectFieldNumber = 3;
+  inline const ::protos::GameObject& gameobject(int index) const;
+  inline ::protos::GameObject* mutable_gameobject(int index);
+  inline ::protos::GameObject* add_gameobject();
+  inline const ::google::protobuf::RepeatedPtrField< ::protos::GameObject >&
+      gameobject() const;
+  inline ::google::protobuf::RepeatedPtrField< ::protos::GameObject >*
+      mutable_gameobject();
 
   // optional int32 action = 4;
   inline bool has_action() const;
@@ -609,7 +622,7 @@ class TestEvent : public ::google::protobuf::Message {
   mutable int _cached_size_;
   ::google::protobuf::int32 id_;
   int type_;
-  ::google::protobuf::RepeatedField< double > matrix_;
+  ::google::protobuf::RepeatedPtrField< ::protos::GameObject > gameobject_;
   ::google::protobuf::int32 action_;
   ::google::protobuf::int32 keypress_;
   ::google::protobuf::int32 clientid_;
@@ -757,6 +770,36 @@ inline void GameObject::set_id(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:protos.GameObject.id)
 }
 
+// repeated double matrix = 2;
+inline int GameObject::matrix_size() const {
+  return matrix_.size();
+}
+inline void GameObject::clear_matrix() {
+  matrix_.Clear();
+}
+inline double GameObject::matrix(int index) const {
+  // @@protoc_insertion_point(field_get:protos.GameObject.matrix)
+  return matrix_.Get(index);
+}
+inline void GameObject::set_matrix(int index, double value) {
+  matrix_.Set(index, value);
+  // @@protoc_insertion_point(field_set:protos.GameObject.matrix)
+}
+inline void GameObject::add_matrix(double value) {
+  matrix_.Add(value);
+  // @@protoc_insertion_point(field_add:protos.GameObject.matrix)
+}
+inline const ::google::protobuf::RepeatedField< double >&
+GameObject::matrix() const {
+  // @@protoc_insertion_point(field_list:protos.GameObject.matrix)
+  return matrix_;
+}
+inline ::google::protobuf::RepeatedField< double >*
+GameObject::mutable_matrix() {
+  // @@protoc_insertion_point(field_mutable_list:protos.GameObject.matrix)
+  return &matrix_;
+}
+
 // -------------------------------------------------------------------
 
 // ServerState
@@ -898,34 +941,34 @@ inline void TestEvent::set_type(::protos::TestEvent_Type value) {
   // @@protoc_insertion_point(field_set:protos.TestEvent.type)
 }
 
-// repeated double matrix = 3;
-inline int TestEvent::matrix_size() const {
-  return matrix_.size();
+// repeated .protos.GameObject gameObject = 3;
+inline int TestEvent::gameobject_size() const {
+  return gameobject_.size();
 }
-inline void TestEvent::clear_matrix() {
-  matrix_.Clear();
+inline void TestEvent::clear_gameobject() {
+  gameobject_.Clear();
 }
-inline double TestEvent::matrix(int index) const {
-  // @@protoc_insertion_point(field_get:protos.TestEvent.matrix)
-  return matrix_.Get(index);
+inline const ::protos::GameObject& TestEvent::gameobject(int index) const {
+  // @@protoc_insertion_point(field_get:protos.TestEvent.gameObject)
+  return gameobject_.Get(index);
 }
-inline void TestEvent::set_matrix(int index, double value) {
-  matrix_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protos.TestEvent.matrix)
+inline ::protos::GameObject* TestEvent::mutable_gameobject(int index) {
+  // @@protoc_insertion_point(field_mutable:protos.TestEvent.gameObject)
+  return gameobject_.Mutable(index);
 }
-inline void TestEvent::add_matrix(double value) {
-  matrix_.Add(value);
-  // @@protoc_insertion_point(field_add:protos.TestEvent.matrix)
+inline ::protos::GameObject* TestEvent::add_gameobject() {
+  // @@protoc_insertion_point(field_add:protos.TestEvent.gameObject)
+  return gameobject_.Add();
 }
-inline const ::google::protobuf::RepeatedField< double >&
-TestEvent::matrix() const {
-  // @@protoc_insertion_point(field_list:protos.TestEvent.matrix)
-  return matrix_;
+inline const ::google::protobuf::RepeatedPtrField< ::protos::GameObject >&
+TestEvent::gameobject() const {
+  // @@protoc_insertion_point(field_list:protos.TestEvent.gameObject)
+  return gameobject_;
 }
-inline ::google::protobuf::RepeatedField< double >*
-TestEvent::mutable_matrix() {
-  // @@protoc_insertion_point(field_mutable_list:protos.TestEvent.matrix)
-  return &matrix_;
+inline ::google::protobuf::RepeatedPtrField< ::protos::GameObject >*
+TestEvent::mutable_gameobject() {
+  // @@protoc_insertion_point(field_mutable_list:protos.TestEvent.gameObject)
+  return &gameobject_;
 }
 
 // optional int32 action = 4;

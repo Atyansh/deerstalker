@@ -3,7 +3,7 @@
 #include "btBulletDynamicsCommon.h"
 #include "Client.h"
 
-class Player : btRigidBody {
+class Player : public btRigidBody {
 public:
 	Player(btRigidBodyConstructionInfo& info);
 	~Player();

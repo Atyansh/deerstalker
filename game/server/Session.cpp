@@ -4,17 +4,22 @@ using boost::asio::ip::tcp;
 using namespace util;
 
 Session::Session(tcp::socket socket, Game& game)
-	: socket_(std::move(socket)),
+	: Client(), socket_(std::move(socket)),
 	game_(game) {
 }
 
 void Session::start() {
 	game_.join(shared_from_this());
+	int clientId = game_.size();
 	protos::TestEvent event;
-	event.set_clientid(game_.size());
-	event.set_type(protos::TestEvent_Type_ASSIGN);
-
+	event.set_clientid(clientId);
+	event.set_type(event.ASSIGN);
 	sendEvent(socket_, event);
+
+	event.Clear();
+	event.set_clientid(clientId);
+	event.set_type(event.SPAWN);
+	game_.deliver(event);
 	do_read_header();
 }
 
