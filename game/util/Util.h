@@ -25,18 +25,24 @@ namespace util {
 		std::memcpy(data, header, HEADER_SIZE);
 	}
 
-	static void sendEvent(tcp::socket& socket, protos::TestEvent& event) {
-		auto messageSize = event.ByteSize();
-
+	static int fillMessage(uint8_t* message, protos::TestEvent& event) {
+		int messageSize = event.ByteSize();
 		if (messageSize > MAX_MESSAGE_SIZE) {
 			std::cerr << "MAX MESSAGE SIZE EXCEEDED" << std::endl;
-			return;
+			return 0;
 		}
-
-		std::uint8_t message[HEADER_SIZE + MAX_MESSAGE_SIZE] = {};
 		encode_header(messageSize, message);
 		event.SerializeToArray(&message[HEADER_SIZE], messageSize);
-		boost::asio::write(socket,
-			boost::asio::buffer(message, messageSize + HEADER_SIZE));
+
+		return messageSize;
+	}
+
+	static void sendEvent(tcp::socket& socket, protos::TestEvent& event) {
+		std::uint8_t message[HEADER_SIZE + MAX_MESSAGE_SIZE] = {};
+		auto messageSize = fillMessage(message, event);
+		if (messageSize != 0) {
+			boost::asio::write(socket,
+				boost::asio::buffer(message, messageSize + HEADER_SIZE));
+		}
 	}
 }

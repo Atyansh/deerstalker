@@ -11,7 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Session.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\..\workarea\protobuf-2.6.1\vsprojects\libprotobuf.vcxproj">
@@ -24,6 +27,12 @@
   <ItemGroup>
     <None Include="ConfigTemplate.ini" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Client.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Server.h" />
+    <ClInclude Include="Session.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5EB82752-5ACB-408C-AAFD-9CECDFCD9C89}</ProjectGuid>
