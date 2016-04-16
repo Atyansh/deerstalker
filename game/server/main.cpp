@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <boost/asio.hpp>
+#include <thread>
 
 #include "util\ConfigSettings.h"
 #include "util\Protos.pb.h"
@@ -30,17 +31,17 @@ int main(int argc, char* argv[]) {
 			return 1;
 		}
 
-		int requiredPlayers;
-		if (!ConfigSettings::config->getValue(ConfigSettings::str_required_players, requiredPlayers)) {
-			std::cerr << "There was a problem getting the number of required players from the config file\n";
-			return 1;
-		}
-
 		boost::asio::io_service io_service;
 
-		Server s(io_service, port);
+		Game game;
 
-		io_service.run();
+		Server s(io_service, port, game);
+		std::thread t([&io_service](){ io_service.run(); });
+
+		game.initialize();
+		game.startGameLoop();
+
+		t.join();
 	}
 	catch (std::exception& e) {
 		std::cerr << "Exception: " << e.what() << "\n";

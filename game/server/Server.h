@@ -11,12 +11,12 @@ using boost::asio::ip::tcp;
 
 class Server {
 public:
-	Server(boost::asio::io_service& io_service, short port);
+	Server(boost::asio::io_service& io_service, short port, Game& game);
 
 private:
 	void do_accept();
 
 	tcp::acceptor acceptor_;
 	tcp::socket socket_;
-	Game game_;
+	Game& game_;
 };

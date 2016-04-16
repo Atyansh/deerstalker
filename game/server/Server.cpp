@@ -1,8 +1,8 @@
 #include "Server.h"
 
-Server::Server(boost::asio::io_service& io_service, short port)
+Server::Server(boost::asio::io_service& io_service, short port, Game& game)
 	: acceptor_(io_service, tcp::endpoint(tcp::v4(), port)),
-	socket_(io_service), game_() {
+	socket_(io_service), game_(game) {
 	do_accept();
 }
 

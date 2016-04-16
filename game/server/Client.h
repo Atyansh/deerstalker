@@ -11,3 +11,5 @@ public:
 };
 
 typedef std::shared_ptr<Client> client_ptr;
+
+typedef int ClientId;

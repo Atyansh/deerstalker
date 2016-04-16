@@ -15,8 +15,8 @@ int Window::height;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 
 void Window::initialize_objects() {
-	cubeMap[1] = std::make_unique<Cube>(5.0f);
-	cubeMap[2] = std::make_unique<Cube>(5.0f);
+	cubeMap[1] = std::make_unique<Cube>(1.0f);
+	cubeMap[2] = std::make_unique<Cube>(1.0f);
 
 	glm::mat4 change1(1.0f);
 	change1 = glm::translate(change1, glm::vec3(-8.0f, 0.0f, 0.0f));

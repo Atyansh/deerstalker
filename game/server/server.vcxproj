@@ -11,12 +11,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\BulletCollision.vcxproj">
+      <Project>{59e07962-d728-454f-b5d1-3f819d0bda7b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\BulletDynamics.vcxproj">
+      <Project>{dcfe7723-6742-df40-ae67-fa84d5672c78}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\LinearMath.vcxproj">
+      <Project>{19993c3e-4a48-4c43-8704-fef6d7d8a48b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\..\workarea\protobuf-2.6.1\vsprojects\libprotobuf.vcxproj">
       <Project>{3e283f37-a4ed-41b7-a3e6-a2d89d131a30}</Project>
     </ProjectReference>
@@ -31,8 +42,10 @@
   <ItemGroup>
     <ClInclude Include="Client.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Session.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5EB82752-5ACB-408C-AAFD-9CECDFCD9C89}</ProjectGuid>
@@ -80,7 +93,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions);_WIN32_WINNT=0x0501; _SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\workarea\protobuf-2.6.1\src;C:\workarea\bullet3-master\src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\workarea\protobuf-2.6.1\src;C:\workarea\bullet3-2.83.7\src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
