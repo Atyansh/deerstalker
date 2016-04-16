@@ -10,10 +10,9 @@ public:
 	static boost::asio::io_service io_service;
 	static tcp::socket socket;
 
-	static std::deque<char> keyQueue;
+	static std::deque<int> keyQueue;
 
 	static char currentHeader[4];
 
-	static char ID;
+	static std::uint32_t ID;
 };
-

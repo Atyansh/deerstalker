@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="test.pb.cc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\..\workarea\protobuf-2.6.1\vsprojects\libprotobuf.vcxproj">
@@ -25,9 +24,6 @@
   <ItemGroup>
     <None Include="ConfigTemplate.ini" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="test.pb.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5EB82752-5ACB-408C-AAFD-9CECDFCD9C89}</ProjectGuid>

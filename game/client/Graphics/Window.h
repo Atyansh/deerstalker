@@ -12,8 +12,6 @@ private:
 	static const int ESC = 27;
 	static const int SPACE = 32;
 
-	static int glfwToAscii(const int key);
-	static int asciiToGLFW(const int key);
 	static void calcMovements(Cube& cube);
 
 public:

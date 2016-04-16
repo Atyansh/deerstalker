@@ -4,13 +4,16 @@
 #include <stdio.h>
 #include <thread>
 #include "Graphics/Window.h"
-#include "Graphics/Globals.h"
+#include "Globals.h"
 
-#include "util\ConfigSettings.h"
-#include "util\Message.h"
 #include <boost/asio.hpp>
 
+#include "util\ConfigSettings.h"
+#include "util\Protos.pb.h"
+#include "util\Util.h"
+
 using boost::asio::ip::tcp;
+using namespace util;
 
 GLFWwindow* window;
 
@@ -94,10 +97,11 @@ void do_read_body(size_t length);
 
 void do_read_header() {
 	boost::asio::async_read(Globals::socket,
-		boost::asio::buffer(Globals::currentHeader, util::Message::header_length),
+		boost::asio::buffer(Globals::currentHeader, HEADER_SIZE),
 		[](boost::system::error_code ec, std::size_t /*length*/) {
 		if (!ec) {
-			do_read_body(util::Message::decode_header(Globals::currentHeader));
+			int length = decode_header(Globals::currentHeader);
+			do_read_body(length);
 		}
 		else {
 			Globals::socket.close();
@@ -109,18 +113,19 @@ void do_read_body(size_t length) {
 	char* body = new char[length];
 	boost::asio::async_read(Globals::socket,
 		boost::asio::buffer(body, length),
-		[body, length](boost::system::error_code ec, std::size_t /*length*/) {
+		[body, length](boost::system::error_code ec, std::size_t) {
 		if (!ec) {
-			std::cerr << length << " length" << std::endl;
-			if (length == 1) {
-				Globals::ID = body[0];
-			}
-			else {
-				Globals::keyQueue.push_back(body[0]);
-				Globals::keyQueue.push_back(body[1]);
-				Globals::keyQueue.push_back(body[2]);
-			}
+			protos::TestEvent event;
+			event.ParseFromArray(body, length);
 			delete body;
+			if (event.type() == protos::TestEvent_Type_ASSIGN) {
+				Globals::ID = event.clientid();
+			}
+			else if (event.type() == protos::TestEvent_Type_MOVE) {
+				Globals::keyQueue.push_back(event.clientid());
+				Globals::keyQueue.push_back(event.keypress());
+				Globals::keyQueue.push_back(event.action());
+			}
 			do_read_header();
 		}
 		else {
@@ -130,6 +135,9 @@ void do_read_body(size_t length) {
 }
 
 int main(int argc, char *argv[]) {
+	boost::asio::io_service io_service;
+	tcp::socket socket(io_service);
+
 	// Create the GLFW window
 	window = Window::create_window(640, 480);
 	// Print OpenGL and GLSL versions
@@ -143,18 +151,18 @@ int main(int argc, char *argv[]) {
 	std::string port;
 
 	// load the settings from the config file
-	if (!util::ConfigSettings::config->checkIfLoaded()) {
-		if (!util::ConfigSettings::config->loadSettingsFile()) {
+	if (!ConfigSettings::config->checkIfLoaded()) {
+		if (!ConfigSettings::config->loadSettingsFile()) {
 			std::cerr << "There was a problem loading the config file\n";
 			return 1;
 		}
 	}
 	// set the hostname and port
-	if (!util::ConfigSettings::config->getValue(util::ConfigSettings::str_host_name, hostname)) {
+	if (!ConfigSettings::config->getValue(ConfigSettings::str_host_name, hostname)) {
 		std::cerr << "There was a problem getting the hostname from the config file\n";
 		return 1;
 	}
-	if (!util::ConfigSettings::config->getValue(util::ConfigSettings::str_port_number, port)) {
+	if (!ConfigSettings::config->getValue(ConfigSettings::str_port_number, port)) {
 		std::cerr << "There was a problem getting the hostname from the config file\n";
 		return 1;
 	}
@@ -169,7 +177,7 @@ int main(int argc, char *argv[]) {
 
 	std::thread t([](){ Globals::io_service.run(); });
 
-	while (Globals::ID == '0') {
+	while (Globals::ID == 0) {
 		Sleep(1);
 	}
 	

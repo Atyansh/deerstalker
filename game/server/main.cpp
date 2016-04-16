@@ -1,13 +1,3 @@
-//
-// async_tcp_echo_server.cpp
-// ~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-// Copyright (c) 2003-2013 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
-
 #include <cstdlib>
 #include <deque>
 #include <iostream>
@@ -15,22 +5,22 @@
 #include <set>
 #include <utility>
 #include <boost/asio.hpp>
-#include "util\Message.h"
+
 #include "util\ConfigSettings.h"
-
-
+#include "util\Protos.pb.h"
+#include "util\Util.h"
 
 using boost::asio::ip::tcp;
 using namespace util;
 
 
-typedef std::deque<Message> message_queue;
+typedef std::deque<protos::TestEvent> message_queue;
 
 
 class Client {
 public:
 	virtual ~Client() {}
-	virtual void deliver(const Message& msg) = 0;
+	virtual void deliver(const protos::TestEvent msg) = 0;
 };
 
 typedef std::shared_ptr<Client> client_ptr;
@@ -39,7 +29,7 @@ typedef std::shared_ptr<Client> client_ptr;
 class Game {
 public:
 	Game(int requiredPlayers)
-		: requiredPlayers_(requiredPlayers), 
+		: requiredPlayers_(requiredPlayers),
 		gameStarted_(false) {
 	}
 
@@ -51,15 +41,18 @@ public:
 		clients_.erase(client);
 	}
 
-	void deliver(const Message& msg) {
-		if (clients_.size() >= requiredPlayers_) {
-			if (!gameStarted_) {
-				initGame();
-				gameStarted_ = true;
-			}
+	void deliver(protos::TestEvent msg) {
+		//if (clients_.size() >= requiredPlayers_) {
+		//	if (!gameStarted_) {
+		//		initGame();
+		//		gameStarted_ = true;
+		//	}
 
-			for (auto client : clients_)
-				client->deliver(msg);
+		//	for (auto client : clients_)
+		//		client->deliver(msg);
+		//}
+		for (auto client : clients_) {
+			client->deliver(msg);
 		}
 	}
 
@@ -69,6 +62,7 @@ public:
 
 private:
 	void initGame() {
+		gameStarted_ = true;
 	}
 
 	std::set<client_ptr> clients_;
@@ -82,22 +76,21 @@ class Session
 	public std::enable_shared_from_this<Session> {
 public:
 	Session(tcp::socket socket, Game& game)
-		: socket_(std::move(socket)), 
+		: socket_(std::move(socket)),
 		game_(game) {
 	}
 
 	void start() {
 		game_.join(shared_from_this());
-		char buffer[2];
-		buffer[0] = (char) ('0' + game_.size());
-		buffer[1] = '\0';
-		cerr << buffer[0] << endl;
-		Message m(buffer);
-		boost::asio::write(socket_, boost::asio::buffer(m.data(), m.length()));
+		protos::TestEvent event;
+		event.set_clientid(game_.size());
+		event.set_type(protos::TestEvent_Type_ASSIGN);
+		
+		sendEvent(socket_, event);
 		do_read_header();
 	}
 
-	void deliver(const Message& msg) {
+	void deliver(const protos::TestEvent msg) {
 		bool write_in_progress = !write_msgs_.empty();
 		write_msgs_.push_back(msg);
 		if (!write_in_progress) {
@@ -109,10 +102,11 @@ private:
 	void do_read_header() {
 		auto self(shared_from_this());
 		boost::asio::async_read(socket_,
-			boost::asio::buffer(current_header_, Message::header_length),
+			boost::asio::buffer(current_header_, HEADER_SIZE),
 			[this, self](boost::system::error_code ec, std::size_t /*length*/) {
 			if (!ec) {
-				do_read_body(Message::decode_header(current_header_));
+				int length = decode_header(current_header_);
+				do_read_body(length);
 			}
 			else {
 				game_.remove(shared_from_this());
@@ -125,9 +119,11 @@ private:
 		auto self(shared_from_this());
 		char* body = new char[length];
 		socket_.async_read_some(boost::asio::buffer(body, length),
-			[this, self, body](boost::system::error_code ec, std::size_t length) {
+			[this, self, body, length](boost::system::error_code ec, std::size_t) {
 			if (!ec) {
-				game_.deliver(std::move(Message(body)));
+				protos::TestEvent event;
+				event.ParseFromArray(body, length);
+				game_.deliver(event);
 				delete body;
 				do_read_header();
 			}
@@ -139,9 +135,21 @@ private:
 
 	void do_write() {
 		auto self(shared_from_this());
+
+		protos::TestEvent event = write_msgs_.front();
+
+		auto messageSize = event.ByteSize();
+
+		if (messageSize > MAX_MESSAGE_SIZE) {
+			return;
+		}
+
+		std::uint8_t message[HEADER_SIZE + MAX_MESSAGE_SIZE] = {};
+		encode_header(messageSize, message);
+		event.SerializeToArray(&message[HEADER_SIZE], messageSize);
+
 		boost::asio::async_write(socket_,
-			boost::asio::buffer(write_msgs_.front().data(), 
-			write_msgs_.front().length()),
+			boost::asio::buffer(message, messageSize + HEADER_SIZE),
 			[this, self](boost::system::error_code ec, std::size_t /*length*/) {
 			if (!ec) {
 				write_msgs_.pop_front();
@@ -150,6 +158,7 @@ private:
 				}
 			}
 		});
+
 	}
 
 	tcp::socket socket_;
@@ -187,8 +196,8 @@ int main(int argc, char* argv[]) {
 	try {
 
 		// load the settings from the config file
-		if (!util::ConfigSettings::config->checkIfLoaded()) {
-			if (!util::ConfigSettings::config->loadSettingsFile()) {
+		if (!ConfigSettings::config->checkIfLoaded()) {
+			if (!ConfigSettings::config->loadSettingsFile()) {
 				std::cerr << "There was a problem loading the config file\n";
 				return 1;
 			}
@@ -196,13 +205,13 @@ int main(int argc, char* argv[]) {
 
 		int port;
 		// set the port
-		if (!util::ConfigSettings::config->getValue(util::ConfigSettings::str_port_number, port)) {
+		if (!ConfigSettings::config->getValue(ConfigSettings::str_port_number, port)) {
 			std::cerr << "There was a problem getting the port number from the config file\n";
 			return 1;
 		}
 
 		int requiredPlayers;
-		if (!util::ConfigSettings::config->getValue(util::ConfigSettings::str_required_players, requiredPlayers)) {
+		if (!ConfigSettings::config->getValue(ConfigSettings::str_required_players, requiredPlayers)) {
 			std::cerr << "There was a problem getting the number of required players from the config file\n";
 			return 1;
 		}

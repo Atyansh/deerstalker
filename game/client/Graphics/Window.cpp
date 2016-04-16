@@ -1,29 +1,30 @@
 #include "Window.h"
-#include "Globals.h"
-#include "util\Message.h"
 #include <unordered_map>
 
-using namespace util;
+#include "client\Globals.h"
 
-enum { max_length = 1024 };
+#include "util\Protos.pb.h"
+#include "util\Util.h"
+
+using namespace util;
 
 const char* window_title = "GLFW Starter Project";
 
 int Window::width;
 int Window::height;
-std::unordered_map<char, std::unique_ptr<Cube>> cubeMap;
+std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 
 void Window::initialize_objects() {
-	cubeMap['1'] = std::make_unique<Cube>(5.0f);
-	cubeMap['2'] = std::make_unique<Cube>(5.0f);
+	cubeMap[1] = std::make_unique<Cube>(5.0f);
+	cubeMap[2] = std::make_unique<Cube>(5.0f);
 
 	glm::mat4 change1(1.0f);
 	change1 = glm::translate(change1, glm::vec3(-8.0f, 0.0f, 0.0f));
-	cubeMap['1']->toWorld *= change1;
+	cubeMap[1]->toWorld *= change1;
 
 	glm::mat4 change2(1.0f);
 	change2 = glm::translate(change2, glm::vec3(8.0f, 0.0f, 0.0f));
-	cubeMap['2']->toWorld *= change2;
+	cubeMap[2]->toWorld *= change2;
 }
 
 void Window::clean_up() {
@@ -85,9 +86,9 @@ void Window::idle_callback(GLFWwindow* window) {
 	while (!Globals::keyQueue.empty()) {
 		Cube& cube = *cubeMap[Globals::keyQueue.front()];
 		Globals::keyQueue.pop_front();
-		char keyPress = Globals::keyQueue.front();
+		int keyPress = Globals::keyQueue.front();
 		Globals::keyQueue.pop_front();
-		int action = Globals::keyQueue.front()-1;
+		int action = Globals::keyQueue.front();
 		Globals::keyQueue.pop_front();
 		if (action == GLFW_PRESS) {
 			switch (keyPress) {
@@ -182,42 +183,13 @@ void Window::calcMovements(Cube& cube) {
 }
 
 void Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	//Server
-	char request[max_length];
+	protos::TestEvent event;
 
-	request[0] = Globals::ID;
-	request[1] = (char) glfwToAscii(key);
-	request[2] = (char) action+1;
-	request[3] = '\0';
+	event.set_action(action);
+	event.set_clientid(Globals::ID);
+	event.set_keypress(key);
 
-	Message m(request);
-	std::cerr << "AJ length: " << m.length() << std::endl;
-	std::cerr << "AJ body_length: " << m.body_length() << std::endl;
-	boost::asio::write(Globals::socket, boost::asio::buffer(m.data(), m.length()));
-}
+	event.set_type(protos::TestEvent_Type_MOVE);
 
-int Window::glfwToAscii(const int key) {
-	switch (key) {
-	case GLFW_KEY_ESCAPE:
-		return ESC;
-	case GLFW_KEY_ENTER:
-		return ENTER;
-	case GLFW_KEY_SPACE:
-		return SPACE;
-	default:
-		return key;
-	}
-}
-
-int Window::asciiToGLFW(const int key) {
-	switch (key) {
-	case ESC:
-		return GLFW_KEY_ESCAPE;
-	case ENTER:
-		return GLFW_KEY_ENTER;
-	case SPACE:
-		return GLFW_KEY_SPACE;
-	default:
-		return key;
-	}
+	sendEvent(Globals::socket, std::move(event));
 }

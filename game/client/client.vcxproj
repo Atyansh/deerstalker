@@ -54,7 +54,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions); _WIN32_WINNT=0x0501</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\workarea\protobuf-2.6.1\src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>C:\Users\ckv001\Source\Repos\deerstalker2\game\client\Graphics</AdditionalUsingDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -88,8 +88,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Graphics\Cube.cpp" />
-    <ClCompile Include="Graphics\Globals.cpp" />
     <ClCompile Include="Graphics\OBJObject.cpp" />
     <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="main.cpp" />
@@ -98,13 +98,16 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\..\workarea\protobuf-2.6.1\vsprojects\libprotobuf.vcxproj">
+      <Project>{3e283f37-a4ed-41b7-a3e6-a2d89d131a30}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\util\util.vcxproj">
       <Project>{7f5e2af9-8a0e-4e82-bc06-ec9de252f439}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="Graphics\Cube.h" />
-    <ClInclude Include="Graphics\Globals.h" />
     <ClInclude Include="Graphics\OBJObject.h" />
     <ClInclude Include="Graphics\Window.h" />
   </ItemGroup>
