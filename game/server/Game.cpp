@@ -32,6 +32,30 @@ int Game::size() {
 }
 
 void Game::initialize() {
+	world_ = World::createNewWorld();
+	world_->setGravity(btVector3(0, -10, 0));
+
+	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
+
+	btTransform groundTransform;
+	groundTransform.setIdentity();
+	groundTransform.setOrigin(btVector3(0, -56, 0));
+
+	{
+		btScalar mass(0.);
+
+		bool isDynamic = (mass != 0.f);
+
+		btVector3 localInertia(0, 0, 0);
+		if (isDynamic)
+			groundShape->calculateLocalInertia(mass, localInertia);
+
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
+		btRigidBody* body = new btRigidBody(rbInfo);
+
+		world_->addRigidBody(body);
+	}
 }
 
 void Game::startGameLoop() {
@@ -41,6 +65,8 @@ void Game::startGameLoop() {
 	while (true) {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
+
+		world_->stepSimulation(1.f / 60.f, 10);
 
 		while (!eventQueue_.empty()) {
 			protos::TestEvent event = eventQueue_.front();
@@ -53,8 +79,8 @@ void Game::startGameLoop() {
 				handleMoveLogic(event);
 			}
 
-			sendStateToClients();
 		}
+		sendStateToClients();
 
 		milliseconds stamp2 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
@@ -66,7 +92,10 @@ void Game::startGameLoop() {
 
 void Game::handleSpawnLogic(protos::TestEvent& event) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
-	playerMap_[event.clientid()] = Player::createNewPlayer(event.clientid());
+	Player* player = Player::createNewPlayer(event.clientid());
+	playerMap_[event.clientid()] = player;
+	world_->addRigidBody(player);
+
 }
 
 void Game::handleMoveLogic(protos::TestEvent& event) {
@@ -74,7 +103,6 @@ void Game::handleMoveLogic(protos::TestEvent& event) {
 
 void Game::sendStateToClients() {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
-	std::cerr << "TRIED THIS" << std::endl;
 
 	protos::TestEvent event;
 
