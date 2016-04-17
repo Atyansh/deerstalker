@@ -66,7 +66,7 @@ void Game::startGameLoop() {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
-		world_->stepSimulation(1.f / 60.f, 10);
+		world_->stepSimulation(1.f / 30.f, 10);
 
 		while (!eventQueue_.empty()) {
 			protos::TestEvent event = eventQueue_.front();
