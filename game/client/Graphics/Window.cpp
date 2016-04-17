@@ -68,11 +68,6 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 }
 
 void Window::idle_callback(GLFWwindow* window) {
-	// Perform any updates as necessary. Here, we will spin the cube slightly.
-	//for (auto& pair : cubeMap) {
-	//	pair.second->update();
-	//}
-	
 	while (!Globals::eventQueue.empty()) {
 		protos::TestEvent event = Globals::eventQueue.front();
 		Globals::eventQueue.pop_front();
@@ -119,10 +114,8 @@ void Window::display_callback(GLFWwindow* window) {
 void Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	protos::TestEvent event;
 
-	//event.set_action(action);
 	event.set_clientid(Globals::ID);
-	//event.set_keypress(key);
-
+	
 	event.set_type(protos::TestEvent_Type_MOVE);
 
 	bool validEvent = true;
@@ -155,54 +148,4 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			sendEvent(Globals::socket, std::move(event));
 		}
 	}
-
-	/*
-	if (action == GLFW_PRESS) {
-		switch (keyPress) {
-		case GLFW_KEY_ESCAPE:
-			// Close the window. This causes the program to also terminate.
-			glfwSetWindowShouldClose(window, GL_TRUE);
-			break;
-		case GLFW_KEY_D:
-			//move right
-			cube.holdRight = true;
-			break;
-		case GLFW_KEY_A:
-			//move left
-			cube.holdLeft = true;
-			break;
-		case GLFW_KEY_W:
-			//move right
-			cube.holdUp = true;
-			break;
-		case GLFW_KEY_S:
-			//move left
-			cube.holdDown = true;
-			break;
-		}
-	}
-	if (action == GLFW_RELEASE) {
-		switch (keyPress) {
-		case GLFW_KEY_ESCAPE:
-			// Close the window. This causes the program to also terminate.
-			glfwSetWindowShouldClose(window, GL_TRUE);
-			break;
-		case GLFW_KEY_D:
-			//move right
-			cube.holdRight = false;
-			break;
-		case GLFW_KEY_A:
-			//move left
-			cube.holdLeft = false;
-			break;
-		case GLFW_KEY_W:
-			//move right
-			cube.holdUp = false;
-			break;
-		case GLFW_KEY_S:
-			//move left
-			cube.holdDown = false;
-			break;
-		}
-	}*/
 }

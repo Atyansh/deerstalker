@@ -30,9 +30,6 @@
     <ClInclude Include="Util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Position.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ConfigSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>

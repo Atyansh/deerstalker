@@ -79,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConfigSettings.h" />
-    <ClInclude Include="Position.h" />
     <ClInclude Include="Protos.pb.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>

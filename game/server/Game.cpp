@@ -22,9 +22,6 @@ void Game::remove(client_ptr client) {
 
 void Game::deliver(protos::TestEvent msg) {
 	eventQueue_.push_back(msg);
-	//for (auto client : clients_) {
-	//	client->deliver(msg);
-	//}
 }
 
 int Game::size() {
