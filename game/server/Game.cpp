@@ -6,6 +6,10 @@ using namespace std::this_thread;
 Game::Game() {
 }
 
+Game::~Game() {
+	// TODO(Atyansh): Deal with cleaning up game objects.
+}
+
 void Game::join(client_ptr client) {
 	clients_.insert(client);
 }

@@ -1,23 +1,40 @@
 #include "Window.h"
-#include <unordered_map>
+#include "client\Globals.h"
+#include "LightShader.h"
+#include "Mango.h"
+#include "Model.h"
+#include "SNode.h"
+#include "SMatrixTransform.h"
+#include <glm/ext.hpp>
 
 #include "client\Globals.h"
 
 #include "util\Protos.pb.h"
 #include "util\Util.h"
 
+#include <unordered_map>
+
 using namespace util;
 
 const char* window_title = "GLFW Starter Project";
 
+bool cubeMode;
+
 int Window::width;
 int Window::height;
+std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 
-void Window::initialize_objects() {
+
+void Window::initialize_objects()
+{
+	glm::mat4 loc = glm::translate(glm::mat4(), glm::vec3(0.0f, -0.5f, -20.0f));
+	loc = glm::scale(loc, glm::vec3(0.8f));
+	Globals::drawData.matrix = loc;
 }
 
 void Window::clean_up() {
+	// TODO(Atyansh): Deal with cleaning up stuff.
 }
 
 GLFWwindow* Window::create_window(int width, int height) {
@@ -57,14 +74,25 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	Window::height = height;
 	// Set the viewport size
 	glViewport(0, 0, width, height);
-	// Set the matrix mode to GL_PROJECTION to determine the proper camera properties
-	glMatrixMode(GL_PROJECTION);
-	// Load the identity matrix
-	glLoadIdentity();
-	// Set the perspective of the projection viewing frustum
-	gluPerspective(60.0, double(width) / (double)height, 1.0, 1000.0);
-	// Move camera back 20 units so that it looks at the origin (or else it's in the origin)
-	glTranslatef(0, 0, -20);
+
+	if (cubeMode) {
+		// Set the matrix mode to GL_PROJECTION to determine the proper camera properties
+		glMatrixMode(GL_PROJECTION);
+		// Load the identity matrix
+		glLoadIdentity();
+		// Set the perspective of the projection viewing frustum
+		gluPerspective(60.0, double(width) / (double)height, 1.0, 1000.0);
+		// Move camera back 20 units so that it looks at the origin (or else it's in the origin)
+		glTranslatef(0, 0, -20);
+	}
+	else {
+		Globals::drawData.projection = glm::perspective(45.0f, float(width) / (float)height, 0.1f, 100.0f);
+		//Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		Globals::drawData.view = Globals::camera.getView();
+
+		cout << "projection in window \n";
+		cout << glm::to_string(Globals::drawData.projection) << endl;
+	}
 }
 
 void Window::idle_callback(GLFWwindow* window) {
@@ -75,19 +103,28 @@ void Window::idle_callback(GLFWwindow* window) {
 		for (int i = 0; i < event.gameobject_size(); i++){
 			auto& gameObject = event.gameobject(i);
 			int id = gameObject.id();
-			if (cubeMap.find(id) == cubeMap.end()) {
-				cubeMap[id] = std::make_unique<Cube>(2.0f);
-			}
 
-			Cube& cube = *cubeMap[id];
 			float matrix[16];
 			for (int j = 0; j < gameObject.matrix_size(); j++) {
 				matrix[j] = gameObject.matrix(j);
 			}
-			cube.toWorld = glm::make_mat4(matrix);
 
-			// TODO(Atyansh): Didn't need to transpose. Someone was wrong.
-			//cube.toWorld = glm::transpose(cube.toWorld);
+			if (cubeMode) {
+				if (cubeMap.find(id) == cubeMap.end()) {
+					cubeMap[id] = std::make_unique<Cube>(2.0);
+				}
+
+				auto& cube = *cubeMap[id];
+				cube.toWorld = glm::make_mat4(matrix);
+			}
+			else {
+				if (playerMap.find(id) == playerMap.end()) {
+					playerMap[id] = Mango::createNewMango();
+				}
+
+				auto& player = *playerMap[id];
+				player.setMatrix(glm::make_mat4(matrix));
+			}
 		}
 	}
 }
@@ -95,14 +132,22 @@ void Window::idle_callback(GLFWwindow* window) {
 void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	// Set the matrix mode to GL_MODELVIEW
-	glMatrixMode(GL_MODELVIEW);
-	// Load the identity matrix
-	glLoadIdentity();
-	
-	// Render objects
-	for (auto& pair : cubeMap) {
-		pair.second->draw();
+	if (cubeMode) {
+		// Set the matrix mode to GL_MODELVIEW
+		glMatrixMode(GL_MODELVIEW);
+		// Load the identity matrix
+		glLoadIdentity();
+
+		// Render objects
+		for (auto& pair : cubeMap) {
+			pair.second->draw();
+		}
+	}
+	else {
+		// Render objects
+		for (auto& pair : playerMap) {
+			pair.second->draw(Globals::drawData);
+		}
 	}
 
 	// Gets events, including input such as keyboard and mouse or window resizing
@@ -115,7 +160,7 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 	protos::TestEvent event;
 
 	event.set_clientid(Globals::ID);
-	
+
 	event.set_type(protos::TestEvent_Type_MOVE);
 
 	bool validEvent = true;
@@ -143,7 +188,6 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		default:
 			validEvent = false;
 		}
-
 		if (validEvent) {
 			sendEvent(Globals::socket, std::move(event));
 		}

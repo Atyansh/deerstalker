@@ -14,6 +14,7 @@
 class Game {
 public:
 	Game();
+	~Game();
 
 	void join(client_ptr client);
 	void remove(client_ptr client);

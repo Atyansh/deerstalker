@@ -17,6 +17,7 @@ using namespace util;
 
 GLFWwindow* window;
 
+extern bool cubeMode;
 
 void error_callback(int error, const char* description) {
 	// Print error
@@ -132,21 +133,11 @@ void do_read_body(size_t length) {
 	});
 }
 
-int main(int argc, char *argv[]) {
-	boost::asio::io_service io_service;
-	tcp::socket socket(io_service);
-
-	// Create the GLFW window
-	window = Window::create_window(640, 480);
-	// Print OpenGL and GLSL versions
-	print_versions();
-	// Setup callbacks
-	setup_callbacks();
-	// Setup OpenGL settings, including lighting, materials, etc.
-	setup_opengl_settings();
-
+int main(int argc, char *argv[])
+{
 	std::string hostname;
 	std::string port;
+	std::string str_cubeMode;
 
 	// load the settings from the config file
 	if (!ConfigSettings::config->checkIfLoaded()) {
@@ -163,6 +154,32 @@ int main(int argc, char *argv[]) {
 	if (!ConfigSettings::config->getValue(ConfigSettings::str_port_number, port)) {
 		std::cerr << "There was a problem getting the hostname from the config file\n";
 		return 1;
+	}
+
+	if (!ConfigSettings::config->getValue("cubeMode", str_cubeMode)) {
+		std::cerr << "There was a problem getting the hostname from the config file\n";
+		return 1;
+	}
+
+	cubeMode = str_cubeMode.compare("true") == 0;
+
+
+	// Create the GLFW window
+	window = Window::create_window(640, 480);
+	// Print OpenGL and GLSL versions
+	print_versions();
+	// Setup callbacks
+	setup_callbacks();
+	// Setup OpenGL settings, including lighting, materials, etc.
+	setup_opengl_settings();
+	glewExperimental = GL_TRUE;
+	
+	// Initialize GLEW to setup the OpenGL Function pointers
+	GLenum glew_err = glewInit();
+	if (glew_err != GLEW_OK)
+	{
+		fprintf(stderr, "GLEW NOT INITIALIZED");
+		exit(-1);
 	}
 
 	tcp::resolver resolver(Globals::io_service);
