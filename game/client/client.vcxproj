@@ -87,10 +87,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Drawable.cpp" />
     <ClCompile Include="Graphics\DrawData.cpp" />
-    <ClCompile Include="Graphics\Globals.cpp" />
     <ClCompile Include="Graphics\Hashtable.cpp" />
     <ClCompile Include="Graphics\LightShader.cpp" />
     <ClCompile Include="Graphics\Mango.cpp" />
@@ -114,10 +114,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Drawable.h" />
     <ClInclude Include="Graphics\DrawData.h" />
-    <ClInclude Include="Graphics\Globals.h" />
     <ClInclude Include="Graphics\Hashtable.h" />
     <ClInclude Include="Graphics\LightShader.h" />
     <ClInclude Include="Graphics\Mango.h" />

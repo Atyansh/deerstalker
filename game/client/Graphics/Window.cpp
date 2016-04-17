@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "Globals.h"
+#include "client\Globals.h"
 #include "LightShader.h"
 #include "Mango.h"
 #include "Model.h"

@@ -2,11 +2,10 @@
 
 #include <boost/asio.hpp>
 #include <deque>
-#include "DrawData.h"
-#include "UpdateData.h"
-#include "Camera.h"
-#include "Hashtable.h"
-#include "Model.h"
+#include "Graphics\DrawData.h"
+#include "Graphics\UpdateData.h"
+#include "Graphics\Camera.h"
+#include "Graphics\Model.h"
 
 using boost::asio::ip::tcp;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Globals.h"
+#include "client\Globals.h"
 #include "Model.h"
 #include "LightShader.h"
 #include "SMatrixTransform.h"

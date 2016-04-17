@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <thread>
 #include "Graphics/Window.h"
-#include "Graphics/Globals.h"
+#include "Globals.h"
 
 #include "util\ConfigSettings.h"
 #include "util\Message.h"
