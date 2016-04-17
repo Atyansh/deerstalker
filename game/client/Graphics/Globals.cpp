@@ -3,7 +3,6 @@
 DrawData Globals::drawData = DrawData();
 UpdateData Globals::updateData = UpdateData();
 Camera Globals::camera = Camera();
-HashTable<Model*> Globals::modelHashTable = HashTable<Model*>();
 
 boost::asio::io_service Globals::io_service = boost::asio::io_service();
 tcp::socket Globals::socket = tcp::socket(Globals::io_service);

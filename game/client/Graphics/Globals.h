@@ -15,8 +15,6 @@ public:
 	static DrawData drawData;
 	static UpdateData updateData;
 	static Camera camera;
-	static HashTable<Model*> modelHashTable;
-
 	static boost::asio::io_service io_service;
 	static tcp::socket socket;
 	static std::deque<char> keyQueue;

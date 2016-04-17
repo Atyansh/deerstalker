@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Globals.h"
 #include "LightShader.h"
+#include "Mango.h"
 #include "Model.h"
 #include "SNode.h"
 #include "SMatrixTransform.h"
@@ -26,58 +27,20 @@ bool Window::holdRight;
 bool Window::holdLRot;
 bool Window::holdRRot;
 
-SMatrixTransform *root;
-SMatrixTransform *guy1;
-SMatrixTransform *guy2;
+Mango *guy;
 //Model *ourModel;
 
 void Window::initialize_objects()
 {
-	holdUp = false;
-	holdDown = false;
-	holdLeft = false;
-	holdRight = false;
-	LightShader *lightShader = new LightShader(Globals::camera.getPosition() , "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
-	Shader *shader = new Shader("Graphics/Shaders/shader.vert", "Graphics/Shaders/shader.frag");
-
-	// Will factor out
-	// Point light positions
-	glm::vec3 pointLightPositions[] = {
-		glm::vec3(2.3f, -1.6f, -3.0f),
-		glm::vec3(-1.7f, 0.9f, 1.0f)
-	};
-	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
-	//lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
-	//lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
-	//lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
-	
-	//Scene Graph
-	guy1 = new SMatrixTransform();
-	guy1->setMatrix(glm::translate(glm::mat4(), glm::vec3(-5.0f, 0.0f, 0.0f)));
-	//Model *ourModel = new Model("Graphics/Assets/OBJ/Astro/nanosuit.obj", lightShader);
-	Model *ourModel = new Model("Graphics/Assets/OBJ/Mango/mango.obj", lightShader);
-	
-	Globals::modelHashTable.Enter(player1, ourModel);
-
-	guy1->addNode(Globals::modelHashTable.Lookup(player1));
-
-
-	guy2 = new SMatrixTransform();
-	guy2->setMatrix(glm::rotate(glm::scale(glm::translate(glm::mat4(), glm::vec3(5.0f, 0.0f, 0.0f)), glm::vec3(5.0f)), -45.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-	guy2->addNode(Globals::modelHashTable.Lookup(player1));
-	root = new SMatrixTransform();
-	root->addNode(guy1);
-	root->addNode(guy2);
+	guy = Mango::createNewMango();
 
 	glm::mat4 loc = glm::translate(glm::mat4(), glm::vec3(0.0f, -0.5f, -20.0f));
 	loc = glm::scale(loc, glm::vec3(0.8f));
 	Globals::drawData.matrix = loc;
-
 }
 
 void Window::clean_up()
 {
-	delete root;
 }
 
 GLFWwindow* Window::create_window(int width, int height)
@@ -132,7 +95,7 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 void Window::idle_callback(GLFWwindow* window)
 {
 	// Perform any updates as necessary. Here, we will spin the cube slightly.
-	root->update(Globals::updateData);
+	guy->update(Globals::updateData);
 
 	while (!Globals::keyQueue.empty()) {
 		char keyPress = Globals::keyQueue.front();
@@ -217,7 +180,7 @@ void Window::display_callback(GLFWwindow* window)
 	calcMovements();
 
 	// Render objects
-	root->draw(Globals::drawData);
+	guy->draw(Globals::drawData);
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
@@ -229,14 +192,13 @@ void Window::calcMovements() {
 	glm::mat4 change(1.0f);
 	if (holdLRot == true) {
 		//glm::mat4 rot = glm::rotate(glm::mat4(), -1.0f / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f));
-		guy1->setMatrix(guy1->getDrawData().matrix * glm::rotate(glm::mat4(1.0f), -1.0f / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f)));
-		guy2->setMatrix(guy2->getDrawData().matrix * glm::rotate(glm::mat4(1.0f), -1.0f / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 0.0f, 5.0f)));
+		guy->setMatrix(guy->getDrawData().matrix * glm::rotate(glm::mat4(1.0f), -1.0f / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f)));
 		
 	}
 	if (holdRRot == true) {
 		//glm::mat4 rot = glm::rotate(glm::mat4(), 1.0f / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f));
-		guy1->setMatrix(guy1->getDrawData().matrix * glm::rotate(glm::mat4(1.0f), 1.0f / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f)));
-		guy2->setMatrix(guy2->getDrawData().matrix * glm::rotate(glm::mat4(1.0f), 1.0f / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 0.0f, 5.0f)));
+		guy->setMatrix(guy->getDrawData().matrix * glm::rotate(glm::mat4(1.0f), 1.0f / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f)));
+		
 	}
 	if (holdDown == true) {
 		change = glm::translate(change, glm::vec3(0.0f, -0.2f, 0.0f));
