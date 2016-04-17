@@ -84,11 +84,13 @@ enum Direction {
   UP = 1,
   DOWN = 2,
   LEFT = 3,
-  RIGHT = 4
+  RIGHT = 4,
+  FORWARD = 5,
+  BACKWARD = 6
 };
 bool Direction_IsValid(int value);
 const Direction Direction_MIN = UP;
-const Direction Direction_MAX = RIGHT;
+const Direction Direction_MAX = BACKWARD;
 const int Direction_ARRAYSIZE = Direction_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Direction_descriptor();
@@ -603,6 +605,13 @@ class TestEvent : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 clientid() const;
   inline void set_clientid(::google::protobuf::int32 value);
 
+  // optional .protos.Direction direction = 7;
+  inline bool has_direction() const;
+  inline void clear_direction();
+  static const int kDirectionFieldNumber = 7;
+  inline ::protos::Direction direction() const;
+  inline void set_direction(::protos::Direction value);
+
   // @@protoc_insertion_point(class_scope:protos.TestEvent)
  private:
   inline void set_has_id();
@@ -615,6 +624,8 @@ class TestEvent : public ::google::protobuf::Message {
   inline void clear_has_keypress();
   inline void set_has_clientid();
   inline void clear_has_clientid();
+  inline void set_has_direction();
+  inline void clear_has_direction();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -626,6 +637,7 @@ class TestEvent : public ::google::protobuf::Message {
   ::google::protobuf::int32 action_;
   ::google::protobuf::int32 keypress_;
   ::google::protobuf::int32 clientid_;
+  int direction_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -1041,6 +1053,31 @@ inline void TestEvent::set_clientid(::google::protobuf::int32 value) {
   set_has_clientid();
   clientid_ = value;
   // @@protoc_insertion_point(field_set:protos.TestEvent.clientID)
+}
+
+// optional .protos.Direction direction = 7;
+inline bool TestEvent::has_direction() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void TestEvent::set_has_direction() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void TestEvent::clear_has_direction() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void TestEvent::clear_direction() {
+  direction_ = 1;
+  clear_has_direction();
+}
+inline ::protos::Direction TestEvent::direction() const {
+  // @@protoc_insertion_point(field_get:protos.TestEvent.direction)
+  return static_cast< ::protos::Direction >(direction_);
+}
+inline void TestEvent::set_direction(::protos::Direction value) {
+  assert(::protos::Direction_IsValid(value));
+  set_has_direction();
+  direction_ = value;
+  // @@protoc_insertion_point(field_set:protos.TestEvent.direction)
 }
 
 

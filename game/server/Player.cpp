@@ -20,7 +20,7 @@ Player* Player::createNewPlayer(ClientId clientId) {
 	btTransform startTransform;
 	startTransform.setIdentity();
 
-	startTransform.setOrigin(btVector3(clientId*2, 10, 0));
+	startTransform.setOrigin(btVector3(clientId, 10, 0));
 
 	btMotionState* motionState = new btDefaultMotionState(startTransform);
 

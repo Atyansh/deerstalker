@@ -81,7 +81,7 @@ void Window::idle_callback(GLFWwindow* window) {
 			auto& gameObject = event.gameobject(i);
 			int id = gameObject.id();
 			if (cubeMap.find(id) == cubeMap.end()) {
-				cubeMap[id] = std::make_unique<Cube>(1.0f);
+				cubeMap[id] = std::make_unique<Cube>(2.0f);
 			}
 
 			Cube& cube = *cubeMap[id];
@@ -95,61 +95,6 @@ void Window::idle_callback(GLFWwindow* window) {
 			//cube.toWorld = glm::transpose(cube.toWorld);
 		}
 	}
-		/*
-		Cube& cube = *cubeMap[Globals::keyQueue.front()];
-		Globals::keyQueue.pop_front();
-		int keyPress = Globals::keyQueue.front();
-		Globals::keyQueue.pop_front();
-		int action = Globals::keyQueue.front();
-		Globals::keyQueue.pop_front();
-		if (action == GLFW_PRESS) {
-			switch (keyPress) {
-			case GLFW_KEY_ESCAPE:
-				// Close the window. This causes the program to also terminate.
-				glfwSetWindowShouldClose(window, GL_TRUE);
-				break;
-			case GLFW_KEY_D:
-				//move right
-				cube.holdRight = true;
-				break;
-			case GLFW_KEY_A:
-				//move left
-				cube.holdLeft = true;
-				break;
-			case GLFW_KEY_W:
-				//move right
-				cube.holdUp = true;
-				break;
-			case GLFW_KEY_S:
-				//move left
-				cube.holdDown = true;
-				break;
-			}
-		}
-		if (action == GLFW_RELEASE) {
-			switch (keyPress) {
-			case GLFW_KEY_ESCAPE:
-				// Close the window. This causes the program to also terminate.
-				glfwSetWindowShouldClose(window, GL_TRUE);
-				break;
-			case GLFW_KEY_D:
-				//move right
-				cube.holdRight = false;
-				break;
-			case GLFW_KEY_A:
-				//move left
-				cube.holdLeft = false;
-				break;
-			case GLFW_KEY_W:
-				//move right
-				cube.holdUp = false;
-				break;
-			case GLFW_KEY_S:
-				//move left
-				cube.holdDown = false;
-				break;
-			}
-		}*/
 }
 
 void Window::display_callback(GLFWwindow* window) {
@@ -159,11 +104,6 @@ void Window::display_callback(GLFWwindow* window) {
 	glMatrixMode(GL_MODELVIEW);
 	// Load the identity matrix
 	glLoadIdentity();
-
-	//Movement
-	/*for (auto& pair : cubeMap) {
-		calcMovements(*pair.second);
-	}*/
 	
 	// Render objects
 	for (auto& pair : cubeMap) {
@@ -176,31 +116,93 @@ void Window::display_callback(GLFWwindow* window) {
 	glfwSwapBuffers(window);
 }
 
-void Window::calcMovements(Cube& cube) {
-	glm::mat4 change(1.0f);
-	if (cube.holdDown == true) {
-		change = glm::translate(change, glm::vec3(0.0f, -0.2f, 0.0f));
-	}
-	if (cube.holdUp == true) {
-		change = glm::translate(change, glm::vec3(0.0f, 0.2f, 0.0f));
-	}
-	if (cube.holdRight == true) {
-		change = glm::translate(change, glm::vec3(0.2f, 0.0f, 0.0f));
-	}
-	if (cube.holdLeft == true) {
-		change = glm::translate(change, glm::vec3(-0.2f, 0.0f, 0.0f));
-	}
-	cube.toWorld = change * cube.toWorld;
-}
-
 void Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	protos::TestEvent event;
 
-	event.set_action(action);
+	//event.set_action(action);
 	event.set_clientid(Globals::ID);
-	event.set_keypress(key);
+	//event.set_keypress(key);
 
 	event.set_type(protos::TestEvent_Type_MOVE);
 
-	sendEvent(Globals::socket, std::move(event));
+	bool validEvent = true;
+
+	if (action == GLFW_PRESS) {
+		switch (key) {
+		case GLFW_KEY_D:
+			event.set_direction(protos::RIGHT);
+			break;
+		case GLFW_KEY_A:
+			event.set_direction(protos::LEFT);
+			break;
+		case GLFW_KEY_W:
+			event.set_direction(protos::FORWARD);
+			break;
+		case GLFW_KEY_S:
+			event.set_direction(protos::BACKWARD);
+			break;
+		case GLFW_KEY_UP:
+			event.set_direction(protos::UP);
+			break;
+		case GLFW_KEY_DOWN:
+			event.set_direction(protos::DOWN);
+			break;
+		default:
+			validEvent = false;
+		}
+
+		if (validEvent) {
+			sendEvent(Globals::socket, std::move(event));
+		}
+	}
+
+	/*
+	if (action == GLFW_PRESS) {
+		switch (keyPress) {
+		case GLFW_KEY_ESCAPE:
+			// Close the window. This causes the program to also terminate.
+			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_D:
+			//move right
+			cube.holdRight = true;
+			break;
+		case GLFW_KEY_A:
+			//move left
+			cube.holdLeft = true;
+			break;
+		case GLFW_KEY_W:
+			//move right
+			cube.holdUp = true;
+			break;
+		case GLFW_KEY_S:
+			//move left
+			cube.holdDown = true;
+			break;
+		}
+	}
+	if (action == GLFW_RELEASE) {
+		switch (keyPress) {
+		case GLFW_KEY_ESCAPE:
+			// Close the window. This causes the program to also terminate.
+			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_D:
+			//move right
+			cube.holdRight = false;
+			break;
+		case GLFW_KEY_A:
+			//move left
+			cube.holdLeft = false;
+			break;
+		case GLFW_KEY_W:
+			//move right
+			cube.holdUp = false;
+			break;
+		case GLFW_KEY_S:
+			//move left
+			cube.holdDown = false;
+			break;
+		}
+	}*/
 }

@@ -1,6 +1,5 @@
 package protos;
 
-
 message	ServerEvent {
 	optional int32 id = 1;
 }
@@ -9,13 +8,6 @@ enum TypeClientEvent {
 	MOVE = 1;
 	SHOOT = 2;
 	JUMP = 3;
-}
-
-enum Direction {
-	UP = 1;
-	DOWN = 2;
-	LEFT = 3;
-	RIGHT = 4;
 }
 
 message	ClientEvent {
@@ -36,6 +28,15 @@ message ServerState {
 }
 
 
+enum Direction {
+	UP = 1;
+	DOWN = 2;
+	LEFT = 3;
+	RIGHT = 4;
+	FORWARD = 5;
+	BACKWARD = 6;
+}
+
 message TestEvent {
 	enum Type {
 		SPAWN = 1;
@@ -49,4 +50,5 @@ message TestEvent {
 	optional int32 action = 4;
 	optional int32 keyPress = 5;
 	optional int32 clientID = 6;
+	optional Direction direction = 7;
 }

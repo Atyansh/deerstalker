@@ -16,6 +16,12 @@
     <Filter Include="Protos">
       <UniqueIdentifier>{ee9ae55d-455b-42a5-ab97-94f82b4eded3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Protos">
+      <UniqueIdentifier>{e7ba8294-bcd6-4345-ac51-be32fb93a25d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Protos">
+      <UniqueIdentifier>{6dba1329-73f2-4562-a5af-3f13c1d8b857}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -31,7 +37,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Protos.pb.h">
-      <Filter>Protos</Filter>
+      <Filter>Header Files\Protos</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -39,7 +45,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Protos.pb.cc">
-      <Filter>Protos</Filter>
+      <Filter>Source Files\Protos</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

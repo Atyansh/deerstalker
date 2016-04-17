@@ -114,13 +114,14 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ServerState));
   TestEvent_descriptor_ = file->message_type(4);
-  static const int TestEvent_offsets_[6] = {
+  static const int TestEvent_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, gameobject_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, action_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, keypress_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, clientid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestEvent, direction_),
   };
   TestEvent_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -189,14 +190,16 @@ void protobuf_AddDesc_Protos_2eproto() {
     "eObject\022\n\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\"c\n\013S"
     "erverState\022\n\n\002id\030\001 \001(\005\022#\n\007objects\030\002 \003(\0132"
     "\022.protos.GameObject\022#\n\006events\030\003 \003(\0132\023.pr"
-    "otos.ServerEvent\"\302\001\n\tTestEvent\022\n\n\002id\030\001 \001"
+    "otos.ServerEvent\"\350\001\n\tTestEvent\022\n\n\002id\030\001 \001"
     "(\005\022$\n\004type\030\002 \001(\0162\026.protos.TestEvent.Type"
     "\022&\n\ngameObject\030\003 \003(\0132\022.protos.GameObject"
     "\022\016\n\006action\030\004 \001(\005\022\020\n\010keyPress\030\005 \001(\005\022\020\n\010cl"
-    "ientID\030\006 \001(\005\"\'\n\004Type\022\t\n\005SPAWN\020\001\022\010\n\004MOVE\020"
-    "\002\022\n\n\006ASSIGN\020\003*0\n\017TypeClientEvent\022\010\n\004MOVE"
-    "\020\001\022\t\n\005SHOOT\020\002\022\010\n\004JUMP\020\003*2\n\tDirection\022\006\n\002"
-    "UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004", 595);
+    "ientID\030\006 \001(\005\022$\n\tdirection\030\007 \001(\0162\021.protos"
+    ".Direction\"\'\n\004Type\022\t\n\005SPAWN\020\001\022\010\n\004MOVE\020\002\022"
+    "\n\n\006ASSIGN\020\003*0\n\017TypeClientEvent\022\010\n\004MOVE\020\001"
+    "\022\t\n\005SHOOT\020\002\022\010\n\004JUMP\020\003*M\n\tDirection\022\006\n\002UP"
+    "\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FOR"
+    "WARD\020\005\022\014\n\010BACKWARD\020\006", 660);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   ServerEvent::default_instance_ = new ServerEvent();
@@ -243,6 +246,8 @@ bool Direction_IsValid(int value) {
     case 2:
     case 3:
     case 4:
+    case 5:
+    case 6:
       return true;
     default:
       return false;
@@ -1382,6 +1387,7 @@ const int TestEvent::kGameObjectFieldNumber;
 const int TestEvent::kActionFieldNumber;
 const int TestEvent::kKeyPressFieldNumber;
 const int TestEvent::kClientIDFieldNumber;
+const int TestEvent::kDirectionFieldNumber;
 #endif  // !_MSC_VER
 
 TestEvent::TestEvent()
@@ -1407,6 +1413,7 @@ void TestEvent::SharedCtor() {
   action_ = 0;
   keypress_ = 0;
   clientid_ = 0;
+  direction_ = 1;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1452,10 +1459,11 @@ void TestEvent::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  if (_has_bits_[0 / 32] & 59) {
+  if (_has_bits_[0 / 32] & 123) {
     ZR_(action_, clientid_);
     id_ = 0;
     type_ = 1;
+    direction_ = 1;
   }
 
 #undef OFFSET_OF_FIELD_
@@ -1565,6 +1573,26 @@ bool TestEvent::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(56)) goto parse_direction;
+        break;
+      }
+
+      // optional .protos.Direction direction = 7;
+      case 7: {
+        if (tag == 56) {
+         parse_direction:
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::protos::Direction_IsValid(value)) {
+            set_direction(static_cast< ::protos::Direction >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(7, value);
+          }
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1626,6 +1654,12 @@ void TestEvent::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->clientid(), output);
   }
 
+  // optional .protos.Direction direction = 7;
+  if (has_direction()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      7, this->direction(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1667,6 +1701,12 @@ void TestEvent::SerializeWithCachedSizes(
   // optional int32 clientID = 6;
   if (has_clientid()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->clientid(), target);
+  }
+
+  // optional .protos.Direction direction = 7;
+  if (has_direction()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      7, this->direction(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1713,6 +1753,12 @@ int TestEvent::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->clientid());
+    }
+
+    // optional .protos.Direction direction = 7;
+    if (has_direction()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->direction());
     }
 
   }
@@ -1766,6 +1812,9 @@ void TestEvent::MergeFrom(const TestEvent& from) {
     if (from.has_clientid()) {
       set_clientid(from.clientid());
     }
+    if (from.has_direction()) {
+      set_direction(from.direction());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1795,6 +1844,7 @@ void TestEvent::Swap(TestEvent* other) {
     std::swap(action_, other->action_);
     std::swap(keypress_, other->keypress_);
     std::swap(clientid_, other->clientid_);
+    std::swap(direction_, other->direction_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

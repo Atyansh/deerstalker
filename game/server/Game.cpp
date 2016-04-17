@@ -78,7 +78,6 @@ void Game::startGameLoop() {
 			else if (event.type() == event.MOVE) {
 				handleMoveLogic(event);
 			}
-
 		}
 		sendStateToClients();
 
@@ -95,10 +94,39 @@ void Game::handleSpawnLogic(protos::TestEvent& event) {
 	Player* player = Player::createNewPlayer(event.clientid());
 	playerMap_[event.clientid()] = player;
 	world_->addRigidBody(player);
-
 }
 
 void Game::handleMoveLogic(protos::TestEvent& event) {
+	Player* player = playerMap_[event.clientid()];
+	
+	player->setActivationState(1);
+
+	switch (event.direction()) {
+	case (protos::RIGHT) :
+		std::cerr << "MOVE RIGHT" << std::endl;
+		player->applyCentralForce(btVector3(100, 0, 0));
+		break;
+	case (protos::LEFT) :
+		std::cerr << "MOVE LEFT" << std::endl;
+		player->applyCentralForce(btVector3(-100, 0, 0));
+		break;
+	case (protos::UP) :
+		std::cerr << "MOVE UP" << std::endl;
+		player->applyCentralForce(btVector3(0, 100, 0));
+		break;
+	case (protos::DOWN) :
+		std::cerr << "MOVE DOWN" << std::endl;
+		player->applyCentralForce(btVector3(0, -100, 0));
+		break;
+	case (protos::FORWARD) :
+		std::cerr << "MOVE FORWARD" << std::endl;
+		player->applyCentralForce(btVector3(0, 0, -100));
+		break;
+	case (protos::BACKWARD) :
+		std::cerr << "MOVE BACKWARD" << std::endl;
+		player->applyCentralForce(btVector3(0, 0, 100));
+		break;
+	}
 }
 
 void Game::sendStateToClients() {
