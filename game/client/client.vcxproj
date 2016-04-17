@@ -93,7 +93,6 @@
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Drawable.cpp" />
     <ClCompile Include="Graphics\DrawData.cpp" />
-    <ClCompile Include="Graphics\Hashtable.cpp" />
     <ClCompile Include="Graphics\LightShader.cpp" />
     <ClCompile Include="Graphics\Mango.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
@@ -124,7 +123,6 @@
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Drawable.h" />
     <ClInclude Include="Graphics\DrawData.h" />
-    <ClInclude Include="Graphics\Hashtable.h" />
     <ClInclude Include="Graphics\LightShader.h" />
     <ClInclude Include="Graphics\Mango.h" />
     <ClInclude Include="Graphics\Model.h" />

@@ -60,9 +60,6 @@
     <ClCompile Include="Graphics\SMatrixTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Hashtable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Mango.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -113,10 +110,7 @@
     <ClInclude Include="Graphics\SMatrixTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-	<ClInclude Include="Graphics\Cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Hashtable.h">
+    <ClInclude Include="Graphics\Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Mango.h">

@@ -123,7 +123,9 @@ void Window::idle_callback(GLFWwindow* window) {
 				}
 
 				auto& player = *playerMap[id];
-				player.setMatrix(glm::make_mat4(matrix));
+				glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(0.5f));
+				glm::mat4 mat = glm::make_mat4(matrix);
+				player.setMatrix(mat * scale);
 			}
 		}
 	}
