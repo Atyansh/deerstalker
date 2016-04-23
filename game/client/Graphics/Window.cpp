@@ -9,7 +9,6 @@
 
 #include "client\Globals.h"
 
-#include "util\Protos.pb.h"
 #include "util\Util.h"
 
 #include <unordered_map>
@@ -95,13 +94,14 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	}
 }
 
+// This method handles client side event logic and Controller input parsing
 void Window::idle_callback(GLFWwindow* window) {
-	while (!Globals::eventQueue.empty()) {
-		protos::TestEvent event = Globals::eventQueue.front();
-		Globals::eventQueue.pop_front();
+	while (!Globals::messageQueue.empty()) {
+		protos::Message message = Globals::messageQueue.front();
+		Globals::messageQueue.pop_front();
 
-		for (int i = 0; i < event.gameobject_size(); i++){
-			auto& gameObject = event.gameobject(i);
+		for (int i = 0; i < message.gameobject_size(); i++){
+			auto& gameObject = message.gameobject(i);
 			int id = gameObject.id();
 
 			float matrix[16];
@@ -159,39 +159,88 @@ void Window::display_callback(GLFWwindow* window) {
 }
 
 void Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	protos::TestEvent event;
+	protos::Message message;
 
-	event.set_clientid(Globals::ID);
+	auto event = message.add_event();
 
-	event.set_type(protos::TestEvent_Type_MOVE);
+	event->set_clientid(Globals::ID);
+
+	event->set_type(protos::Event_Type_MOVE);
 
 	bool validEvent = true;
 
 	if (action == GLFW_PRESS) {
 		switch (key) {
 		case GLFW_KEY_D:
-			event.set_direction(protos::RIGHT);
+			event->set_direction(protos::Event_Direction_RIGHT);
 			break;
 		case GLFW_KEY_A:
-			event.set_direction(protos::LEFT);
+			event->set_direction(protos::Event_Direction_LEFT);
 			break;
 		case GLFW_KEY_W:
-			event.set_direction(protos::FORWARD);
+			event->set_direction(protos::Event_Direction_FORWARD);
 			break;
 		case GLFW_KEY_S:
-			event.set_direction(protos::BACKWARD);
+			event->set_direction(protos::Event_Direction_BACKWARD);
 			break;
 		case GLFW_KEY_UP:
-			event.set_direction(protos::UP);
+			event->set_direction(protos::Event_Direction_UP);
 			break;
 		case GLFW_KEY_DOWN:
-			event.set_direction(protos::DOWN);
+			event->set_direction(protos::Event_Direction_DOWN);
 			break;
 		default:
 			validEvent = false;
 		}
+
+
 		if (validEvent) {
-			sendEvent(Globals::socket, std::move(event));
+			sendMessage(Globals::socket, std::move(message));
 		}
 	}
+}
+
+void Window::handle_gamepad(GLFWwindow* window) {
+	protos::Message message;
+
+	bool validEvent = true;
+
+	int count = 0;
+	auto* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+
+	for (int i = 0; i < count; i++) {
+	}
+
+	if (axes[Globals::GAMEPAD_LEFT_STICK_X] > Globals::POS_AXIS_TILT) {
+		addMoveEvent(message, protos::Event_Direction_RIGHT);
+	}
+	else if (axes[Globals::GAMEPAD_LEFT_STICK_X] < Globals::NEG_AXIS_TILT) {
+		addMoveEvent(message, protos::Event_Direction_LEFT);
+	}
+
+	if (axes[Globals::GAMEPAD_LEFT_STICK_Y] > Globals::POS_AXIS_TILT) {
+		addMoveEvent(message, protos::Event_Direction_BACKWARD);
+	}
+	else if (axes[Globals::GAMEPAD_LEFT_STICK_Y] < Globals::NEG_AXIS_TILT) {
+		addMoveEvent(message, protos::Event_Direction_FORWARD);
+	}
+
+	if (axes[Globals::GAMEPAD_TRIGGER_AXIS] > Globals::POS_AXIS_TILT) {
+		addMoveEvent(message, protos::Event_Direction_DOWN);
+	}
+	else if (axes[Globals::GAMEPAD_TRIGGER_AXIS] < Globals::NEG_AXIS_TILT) {
+		addMoveEvent(message, protos::Event_Direction_UP);
+	}
+
+	if (message.event_size()) {
+		sendMessage(Globals::socket, std::move(message));
+	}
+
+}
+
+void Window::addMoveEvent(protos::Message& message, protos::Event_Direction direction) {
+	protos::Event* event = message.add_event();
+	event->set_clientid(Globals::ID);
+	event->set_type(protos::Event_Type_MOVE);
+	event->set_direction(direction);
 }

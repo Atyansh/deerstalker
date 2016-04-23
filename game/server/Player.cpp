@@ -1,6 +1,7 @@
 #include "Player.h"
 
 Player::Player(btRigidBodyConstructionInfo& info) : btRigidBody(info) {
+	setActivationState(DISABLE_DEACTIVATION);
 }
 
 Player::~Player() {
