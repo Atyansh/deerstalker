@@ -22,14 +22,6 @@ public:
 	static char currentHeader[4];
 
 	static uint32_t ID;
-	static float NEG_AXIS_TILT;
-	static float POS_AXIS_TILT;
-
-	static int GAMEPAD_LEFT_STICK_X;
-	static int GAMEPAD_LEFT_STICK_Y;
-	static int GAMEPAD_RIGHT_STICK_X;
-	static int GAMEPAD_RIGHT_STICK_Y;
-	static int GAMEPAD_TRIGGER_AXIS;
 
 private:
 	static float AXIS_TILT;

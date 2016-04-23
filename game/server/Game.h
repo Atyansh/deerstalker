@@ -26,6 +26,7 @@ public:
 
 	void handleSpawnLogic(protos::Event& event);
 	void handleMoveLogic(protos::Event& event);
+	void handleJumpLogic(protos::Event& event);
 
 	void sendStateToClients();
 

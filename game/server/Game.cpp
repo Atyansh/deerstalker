@@ -75,11 +75,14 @@ void Game::startGameLoop() {
 
 			for (int i = 0; i < message.event_size(); i++) {
 				auto event = message.event(i);
-				if (event.type() == event.SPAWN) {
+				if (event.type() == protos::Event_Type_SPAWN) {
 					handleSpawnLogic(event);
 				}
-				else if (event.type() == event.MOVE) {
+				else if (event.type() == protos::Event_Type_MOVE) {
 					handleMoveLogic(event);
+				}
+				else if (event.type() == protos::Event_Type_JUMP) {
+					handleJumpLogic(event);
 				}
 			}
 		}
@@ -130,6 +133,12 @@ void Game::handleMoveLogic(protos::Event& event) {
 		player->applyCentralForce(btVector3(0, 0, 10));
 		break;
 	}
+}
+
+void Game::handleJumpLogic(protos::Event& event) {
+	Player* player = playerMap_[event.clientid()];
+
+	player->applyCentralImpulse(btVector3(0, 1, 0));
 }
 
 void Game::sendStateToClients() {

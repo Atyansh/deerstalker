@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConfigSettings.h" />
+    <ClInclude Include="Gamepad.h" />
     <ClInclude Include="Protos.pb.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>

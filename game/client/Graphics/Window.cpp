@@ -10,10 +10,12 @@
 #include "client\Globals.h"
 
 #include "util\Util.h"
+#include "util\Gamepad.h"
 
 #include <unordered_map>
 
 using namespace util;
+using namespace Gamepad;
 
 const char* window_title = "GLFW Starter Project";
 
@@ -211,25 +213,33 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	for (int i = 0; i < count; i++) {
 	}
 
-	if (axes[Globals::GAMEPAD_LEFT_STICK_X] > Globals::POS_AXIS_TILT) {
+	if (axes[LEFT_STICK_X] > POS_AXIS_TILT) {
 		addMoveEvent(message, protos::Event_Direction_RIGHT);
 	}
-	else if (axes[Globals::GAMEPAD_LEFT_STICK_X] < Globals::NEG_AXIS_TILT) {
+	else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT) {
 		addMoveEvent(message, protos::Event_Direction_LEFT);
 	}
 
-	if (axes[Globals::GAMEPAD_LEFT_STICK_Y] > Globals::POS_AXIS_TILT) {
+	if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) {
 		addMoveEvent(message, protos::Event_Direction_BACKWARD);
 	}
-	else if (axes[Globals::GAMEPAD_LEFT_STICK_Y] < Globals::NEG_AXIS_TILT) {
+	else if (axes[LEFT_STICK_Y] < NEG_AXIS_TILT) {
 		addMoveEvent(message, protos::Event_Direction_FORWARD);
 	}
 
-	if (axes[Globals::GAMEPAD_TRIGGER_AXIS] > Globals::POS_AXIS_TILT) {
+	if (axes[TRIGGER_AXIS] > POS_AXIS_TILT) {
 		addMoveEvent(message, protos::Event_Direction_DOWN);
 	}
-	else if (axes[Globals::GAMEPAD_TRIGGER_AXIS] < Globals::NEG_AXIS_TILT) {
+	else if (axes[TRIGGER_AXIS] < NEG_AXIS_TILT) {
 		addMoveEvent(message, protos::Event_Direction_UP);
+	}
+
+	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+
+	if (buttons[BUTTON_A] == GLFW_PRESS) {
+		auto* event = message.add_event();
+		event->set_clientid(Globals::ID);
+		event->set_type(protos::Event_Type_JUMP);
 	}
 
 	if (message.event_size()) {

@@ -36,6 +36,9 @@
     <ClInclude Include="Protos.pb.h">
       <Filter>Header Files\Protos</Filter>
     </ClInclude>
+    <ClInclude Include="Gamepad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigSettings.cpp">
