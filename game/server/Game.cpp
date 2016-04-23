@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include "Serialize\BulletWorldImporter\btBulletWorldImporter.h"
+
 using namespace std::chrono;
 using namespace std::this_thread;
 
@@ -57,6 +59,14 @@ void Game::initialize() {
 
 		world_->addRigidBody(body);
 	}
+
+	btBulletWorldImporter* fileLoader = new btBulletWorldImporter();
+
+	fileLoader->loadFile("bullet_assets\\Mango.bullet");
+	body_ = fileLoader->getRigidBodyByIndex(0);
+
+	std::cerr << "Num Rigid Bodies: " << fileLoader->getNumCollisionShapes() << std::endl;
+	
 }
 
 void Game::startGameLoop() {
@@ -99,7 +109,7 @@ void Game::startGameLoop() {
 void Game::handleSpawnLogic(protos::Event& event) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	std::cerr << "SPAWN HAPPENED" << std::endl;
-	Player* player = Player::createNewPlayer(event.clientid());
+	Player* player = Player::createNewPlayer(event.clientid(), body_->getCollisionShape());
 	playerMap_[event.clientid()] = player;
 	world_->addRigidBody(player);
 }
@@ -110,27 +120,27 @@ void Game::handleMoveLogic(protos::Event& event) {
 	switch (event.direction()) {
 	case (protos::Event_Direction_RIGHT) :
 		std::cerr << "MOVE RIGHT" << std::endl;
-		player->applyCentralForce(btVector3(10, 0, 0));
+		player->applyCentralForce(btVector3(100, 0, 0));
 		break;
 	case (protos::Event_Direction_LEFT) :
 		std::cerr << "MOVE LEFT" << std::endl;
-		player->applyCentralForce(btVector3(-10, 0, 0));
+		player->applyCentralForce(btVector3(-100, 0, 0));
 		break;
 	case (protos::Event_Direction_UP) :
 		std::cerr << "MOVE UP" << std::endl;
-		player->applyCentralForce(btVector3(0, 10, 0));
+		player->applyCentralForce(btVector3(0, 100, 0));
 		break;
 	case (protos::Event_Direction_DOWN) :
 		std::cerr << "MOVE DOWN" << std::endl;
-		player->applyCentralForce(btVector3(0, -10, 0));
+		player->applyCentralForce(btVector3(0, -100, 0));
 		break;
 	case (protos::Event_Direction_FORWARD) :
 		std::cerr << "MOVE FORWARD" << std::endl;
-		player->applyCentralForce(btVector3(0, 0, -10));
+		player->applyCentralForce(btVector3(0, 0, -100));
 		break;
 	case (protos::Event_Direction_BACKWARD) :
 		std::cerr << "MOVE BACKWARD" << std::endl;
-		player->applyCentralForce(btVector3(0, 0, 10));
+		player->applyCentralForce(btVector3(0, 0, 100));
 		break;
 	}
 }

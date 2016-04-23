@@ -11,10 +11,10 @@ btDiscreteDynamicsWorld(collisionDispatcher, overlappingPairCache, solver, colli
 World::~World() {
 }
 
-std::unique_ptr<World> World::createNewWorld() {
+World* World::createNewWorld() {
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
 	btCollisionDispatcher* dispatcher = new	btCollisionDispatcher(collisionConfiguration);
 	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
 	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-	return std::make_unique<World>(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+	return new World(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 }

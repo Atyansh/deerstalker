@@ -32,7 +32,9 @@ public:
 
 private:
 	std::set<client_ptr> clients_;
-	std::unique_ptr<World> world_;
+	World* world_;
+
+	btCollisionObject* body_;
 
 	std::deque<protos::Message> messageQueue_;
 	std::unordered_map<ClientId, Player*> playerMap_;

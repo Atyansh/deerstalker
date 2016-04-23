@@ -8,7 +8,7 @@ public:
 	Player(btRigidBodyConstructionInfo& info);
 	~Player();
 
-	static Player* createNewPlayer(ClientId clientId);
+	static Player* createNewPlayer(ClientId clientId, btCollisionShape* collisionShape);
 
 private:
 	btScalar mass_;
