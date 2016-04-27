@@ -11,7 +11,7 @@ Session::Session(tcp::socket socket, Game& game)
 void Session::start() {
 	game_.join(shared_from_this());
 
-	int clientId = game_.size();
+	int clientId = game_.generateId();
 	protos::Message message;
 	auto* event = message.add_event();
 

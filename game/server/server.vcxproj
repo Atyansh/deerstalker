@@ -16,6 +16,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +49,7 @@
   <ItemGroup>
     <ClInclude Include="Client.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Session.h" />

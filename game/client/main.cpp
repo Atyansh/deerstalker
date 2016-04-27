@@ -13,6 +13,8 @@
 #include "util\Util.h"
 
 using boost::asio::ip::tcp;
+using namespace std::chrono;
+using namespace std::this_thread;
 using namespace util;
 
 GLFWwindow* window;
@@ -210,16 +212,28 @@ int main(int argc, char *argv[])
 	// Initialize objects/pointers for rendering
 	Window::initialize_objects();
 
+	milliseconds interval = milliseconds(35);
+
 	// Loop while GLFW window should stay open
 	while (!glfwWindowShouldClose(window)) {
 		if (joyStickPresent) {
 			Window::handle_gamepad(window);
 		}
+		milliseconds stamp1 = duration_cast<milliseconds>(
+			system_clock::now().time_since_epoch());
+
+		Window::handle_gamepad(window);
 
 		// Main render display callback. Rendering of objects is done here.
 		Window::display_callback(window);
 		// Idle callback. Updating objects, etc. can be done here.
 		Window::idle_callback(window);
+
+		milliseconds stamp2 = duration_cast<milliseconds>(
+			system_clock::now().time_since_epoch());
+
+		// TODO(Atyansh): Verify this works
+		sleep_for(interval - (stamp2 - stamp1));
 	}
 
 	Window::clean_up();

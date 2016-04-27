@@ -8,6 +8,7 @@
 #include "Client.h"
 #include "World.h"
 #include "Player.h"
+#include "Bullet.h"
 
 #include <mutex>
 
@@ -20,6 +21,7 @@ public:
 	void remove(client_ptr client);
 	void deliver(protos::Message msg);
 	int size();
+	int generateId();
 
 	void initialize();
 	void startGameLoop();
@@ -27,10 +29,12 @@ public:
 	void handleSpawnLogic(protos::Event& event);
 	void handleMoveLogic(protos::Event& event);
 	void handleJumpLogic(protos::Event& event);
+	void handleShootLogic(protos::Event& event);
 
 	void sendStateToClients();
 
 private:
+	int idCounter_;
 	std::set<client_ptr> clients_;
 	World* world_;
 
@@ -38,5 +42,6 @@ private:
 
 	std::deque<protos::Message> messageQueue_;
 	std::unordered_map<ClientId, Player*> playerMap_;
+	std::list<Bullet*> itemList_;
 	std::mutex playerMapLock_;
 };

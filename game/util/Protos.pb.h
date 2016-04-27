@@ -42,11 +42,12 @@ enum Event_Type {
   Event_Type_SPAWN = 1,
   Event_Type_MOVE = 2,
   Event_Type_JUMP = 3,
-  Event_Type_ASSIGN = 4
+  Event_Type_ASSIGN = 4,
+  Event_Type_SHOOT = 5
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
-const Event_Type Event_Type_Type_MAX = Event_Type_ASSIGN;
+const Event_Type Event_Type_Type_MAX = Event_Type_SHOOT;
 const int Event_Type_Type_ARRAYSIZE = Event_Type_Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Event_Type_descriptor();
@@ -81,6 +82,25 @@ inline bool Event_Direction_Parse(
     const ::std::string& name, Event_Direction* value) {
   return ::google::protobuf::internal::ParseNamedEnum<Event_Direction>(
     Event_Direction_descriptor(), name, value);
+}
+enum Message_GameObject_Type {
+  Message_GameObject_Type_PLAYER = 1,
+  Message_GameObject_Type_BULLET = 2
+};
+bool Message_GameObject_Type_IsValid(int value);
+const Message_GameObject_Type Message_GameObject_Type_Type_MIN = Message_GameObject_Type_PLAYER;
+const Message_GameObject_Type Message_GameObject_Type_Type_MAX = Message_GameObject_Type_BULLET;
+const int Message_GameObject_Type_Type_ARRAYSIZE = Message_GameObject_Type_Type_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* Message_GameObject_Type_descriptor();
+inline const ::std::string& Message_GameObject_Type_Name(Message_GameObject_Type value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    Message_GameObject_Type_descriptor(), value);
+}
+inline bool Message_GameObject_Type_Parse(
+    const ::std::string& name, Message_GameObject_Type* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Message_GameObject_Type>(
+    Message_GameObject_Type_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -140,6 +160,7 @@ class Event : public ::google::protobuf::Message {
   static const Type MOVE = Event_Type_MOVE;
   static const Type JUMP = Event_Type_JUMP;
   static const Type ASSIGN = Event_Type_ASSIGN;
+  static const Type SHOOT = Event_Type_SHOOT;
   static inline bool Type_IsValid(int value) {
     return Event_Type_IsValid(value);
   }
@@ -298,6 +319,30 @@ class Message_GameObject : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
+  typedef Message_GameObject_Type Type;
+  static const Type PLAYER = Message_GameObject_Type_PLAYER;
+  static const Type BULLET = Message_GameObject_Type_BULLET;
+  static inline bool Type_IsValid(int value) {
+    return Message_GameObject_Type_IsValid(value);
+  }
+  static const Type Type_MIN =
+    Message_GameObject_Type_Type_MIN;
+  static const Type Type_MAX =
+    Message_GameObject_Type_Type_MAX;
+  static const int Type_ARRAYSIZE =
+    Message_GameObject_Type_Type_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Type_descriptor() {
+    return Message_GameObject_Type_descriptor();
+  }
+  static inline const ::std::string& Type_Name(Type value) {
+    return Message_GameObject_Type_Name(value);
+  }
+  static inline bool Type_Parse(const ::std::string& name,
+      Type* value) {
+    return Message_GameObject_Type_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
   // optional int32 id = 1;
@@ -319,10 +364,19 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< double >*
       mutable_matrix();
 
+  // optional .protos.Message.GameObject.Type type = 3;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 3;
+  inline ::protos::Message_GameObject_Type type() const;
+  inline void set_type(::protos::Message_GameObject_Type value);
+
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
   inline void clear_has_id();
+  inline void set_has_type();
+  inline void clear_has_type();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -330,6 +384,7 @@ class Message_GameObject : public ::google::protobuf::Message {
   mutable int _cached_size_;
   ::google::protobuf::RepeatedField< double > matrix_;
   ::google::protobuf::int32 id_;
+  int type_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -607,6 +662,31 @@ Message_GameObject::mutable_matrix() {
   return &matrix_;
 }
 
+// optional .protos.Message.GameObject.Type type = 3;
+inline bool Message_GameObject::has_type() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Message_GameObject::set_has_type() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Message_GameObject::clear_has_type() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Message_GameObject::clear_type() {
+  type_ = 1;
+  clear_has_type();
+}
+inline ::protos::Message_GameObject_Type Message_GameObject::type() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.type)
+  return static_cast< ::protos::Message_GameObject_Type >(type_);
+}
+inline void Message_GameObject::set_type(::protos::Message_GameObject_Type value) {
+  assert(::protos::Message_GameObject_Type_IsValid(value));
+  set_has_type();
+  type_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.type)
+}
+
 // -------------------------------------------------------------------
 
 // Message
@@ -713,6 +793,11 @@ template <> struct is_proto_enum< ::protos::Event_Direction> : ::google::protobu
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::protos::Event_Direction>() {
   return ::protos::Event_Direction_descriptor();
+}
+template <> struct is_proto_enum< ::protos::Message_GameObject_Type> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::protos::Message_GameObject_Type>() {
+  return ::protos::Message_GameObject_Type_descriptor();
 }
 
 }  // namespace google

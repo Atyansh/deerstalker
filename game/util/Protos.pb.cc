@@ -31,6 +31,7 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* Message_GameObject_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Message_GameObject_reflection_ = NULL;
+const ::google::protobuf::EnumDescriptor* Message_GameObject_Type_descriptor_ = NULL;
 
 }  // namespace
 
@@ -79,9 +80,10 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Message));
   Message_GameObject_descriptor_ = Message_descriptor_->nested_type(0);
-  static const int Message_GameObject_offsets_[2] = {
+  static const int Message_GameObject_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, matrix_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, type_),
   };
   Message_GameObject_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -94,6 +96,7 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Message_GameObject));
+  Message_GameObject_Type_descriptor_ = Message_GameObject_descriptor_->enum_type(0);
 }
 
 namespace {
@@ -132,17 +135,19 @@ void protobuf_AddDesc_Protos_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\014Protos.proto\022\006protos\"\365\001\n\005Event\022\n\n\002id\030\001"
+    "\n\014Protos.proto\022\006protos\"\200\002\n\005Event\022\n\n\002id\030\001"
     " \001(\005\022 \n\004type\030\002 \001(\0162\022.protos.Event.Type\022\020"
     "\n\010clientID\030\006 \001(\005\022*\n\tdirection\030\007 \001(\0162\027.pr"
-    "otos.Event.Direction\"1\n\004Type\022\t\n\005SPAWN\020\001\022"
-    "\010\n\004MOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006ASSIGN\020\004\"M\n\tDirec"
-    "tion\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGH"
-    "T\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\"\215\001\n\007Messa"
-    "ge\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132\r.protos.E"
-    "vent\022.\n\ngameObject\030\003 \003(\0132\032.protos.Messag"
-    "e.GameObject\032(\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016"
-    "\n\006matrix\030\002 \003(\001", 414);
+    "otos.Event.Direction\"<\n\004Type\022\t\n\005SPAWN\020\001\022"
+    "\010\n\004MOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006ASSIGN\020\004\022\t\n\005SHOOT"
+    "\020\005\"M\n\tDirection\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEF"
+    "T\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020"
+    "\006\"\334\001\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\013"
+    "2\r.protos.Event\022.\n\ngameObject\030\003 \003(\0132\032.pr"
+    "otos.Message.GameObject\032w\n\nGameObject\022\n\n"
+    "\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162"
+    "\037.protos.Message.GameObject.Type\"\036\n\004Type"
+    "\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002", 504);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -173,6 +178,7 @@ bool Event_Type_IsValid(int value) {
     case 2:
     case 3:
     case 4:
+    case 5:
       return true;
     default:
       return false;
@@ -184,6 +190,7 @@ const Event_Type Event::SPAWN;
 const Event_Type Event::MOVE;
 const Event_Type Event::JUMP;
 const Event_Type Event::ASSIGN;
+const Event_Type Event::SHOOT;
 const Event_Type Event::Type_MIN;
 const Event_Type Event::Type_MAX;
 const int Event::Type_ARRAYSIZE;
@@ -570,9 +577,31 @@ void Event::Swap(Event* other) {
 
 // ===================================================================
 
+const ::google::protobuf::EnumDescriptor* Message_GameObject_Type_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Message_GameObject_Type_descriptor_;
+}
+bool Message_GameObject_Type_IsValid(int value) {
+  switch(value) {
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#ifndef _MSC_VER
+const Message_GameObject_Type Message_GameObject::PLAYER;
+const Message_GameObject_Type Message_GameObject::BULLET;
+const Message_GameObject_Type Message_GameObject::Type_MIN;
+const Message_GameObject_Type Message_GameObject::Type_MAX;
+const int Message_GameObject::Type_ARRAYSIZE;
+#endif  // _MSC_VER
 #ifndef _MSC_VER
 const int Message_GameObject::kIdFieldNumber;
 const int Message_GameObject::kMatrixFieldNumber;
+const int Message_GameObject::kTypeFieldNumber;
 #endif  // !_MSC_VER
 
 Message_GameObject::Message_GameObject()
@@ -594,6 +623,7 @@ Message_GameObject::Message_GameObject(const Message_GameObject& from)
 void Message_GameObject::SharedCtor() {
   _cached_size_ = 0;
   id_ = 0;
+  type_ = 1;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -629,7 +659,10 @@ Message_GameObject* Message_GameObject::New() const {
 }
 
 void Message_GameObject::Clear() {
-  id_ = 0;
+  if (_has_bits_[0 / 32] & 5) {
+    id_ = 0;
+    type_ = 1;
+  }
   matrix_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -674,6 +707,26 @@ bool Message_GameObject::MergePartialFromCodedStream(
           goto handle_unusual;
         }
         if (input->ExpectTag(17)) goto parse_matrix;
+        if (input->ExpectTag(24)) goto parse_type;
+        break;
+      }
+
+      // optional .protos.Message.GameObject.Type type = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_type:
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::protos::Message_GameObject_Type_IsValid(value)) {
+            set_type(static_cast< ::protos::Message_GameObject_Type >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(3, value);
+          }
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -714,6 +767,12 @@ void Message_GameObject::SerializeWithCachedSizes(
       2, this->matrix(i), output);
   }
 
+  // optional .protos.Message.GameObject.Type type = 3;
+  if (has_type()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      3, this->type(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -735,6 +794,12 @@ void Message_GameObject::SerializeWithCachedSizes(
       WriteDoubleToArray(2, this->matrix(i), target);
   }
 
+  // optional .protos.Message.GameObject.Type type = 3;
+  if (has_type()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      3, this->type(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -752,6 +817,12 @@ int Message_GameObject::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->id());
+    }
+
+    // optional .protos.Message.GameObject.Type type = 3;
+    if (has_type()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
     }
 
   }
@@ -792,6 +863,9 @@ void Message_GameObject::MergeFrom(const Message_GameObject& from) {
     if (from.has_id()) {
       set_id(from.id());
     }
+    if (from.has_type()) {
+      set_type(from.type());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -817,6 +891,7 @@ void Message_GameObject::Swap(Message_GameObject* other) {
   if (other != this) {
     std::swap(id_, other->id_);
     matrix_.Swap(&other->matrix_);
+    std::swap(type_, other->type_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

@@ -25,6 +25,7 @@ bool cubeMode;
 int Window::width;
 int Window::height;
 std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
+std::unordered_map<std::uint32_t, SMatrixTransform*> itemMap;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 
 SMatrixTransform *root;
@@ -140,8 +141,27 @@ void Window::idle_callback(GLFWwindow* window) {
 				cube.toWorld = glm::make_mat4(matrix);
 			}
 			else {
-				if (playerMap.find(id) == playerMap.end()) {
-					playerMap[id] = Mango::createNewMango();
+				if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
+					if (playerMap.find(id) == playerMap.end()) {
+						playerMap[id] = Mango::createNewMango();
+					}
+
+					auto& player = *playerMap[id];
+					//glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(0.5f));
+					glm::mat4 mat = glm::make_mat4(matrix);
+					//player.setMatrix(mat * scale);
+					player.setMatrix(mat);
+				}
+				else if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
+					if (itemMap.find(id) == itemMap.end()) {
+						itemMap[id] = Mango::createNewMango();
+					}
+					
+					auto& item = *itemMap[id];
+					//glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(0.5f));
+					glm::mat4 mat = glm::make_mat4(matrix);
+					//player.setMatrix(mat * scale);
+					item.setMatrix(mat);
 				}
 
 				auto& player = *playerMap[id];
@@ -176,7 +196,10 @@ void Window::display_callback(GLFWwindow* window) {
 		for (auto& pair : playerMap) {
 			pair.second->draw(Globals::drawData);
 		}
-		
+
+		for (auto& pair : itemMap) {
+			pair.second->draw(Globals::drawData);
+		}
 	}
 
 	// Gets events, including input such as keyboard and mouse or window resizing
@@ -265,6 +288,12 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		auto* event = message.add_event();
 		event->set_clientid(Globals::ID);
 		event->set_type(protos::Event_Type_JUMP);
+	}
+
+	if (buttons[BUTTON_RB] == GLFW_PRESS) {
+		auto* event = message.add_event();
+		event->set_clientid(Globals::ID);
+		event->set_type(protos::Event_Type_SHOOT);
 	}
 
 	if (message.event_size()) {

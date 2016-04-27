@@ -5,7 +5,7 @@
 using namespace std::chrono;
 using namespace std::this_thread;
 
-Game::Game() {
+Game::Game() : idCounter_(0) {
 }
 
 Game::~Game() {
@@ -32,6 +32,10 @@ void Game::deliver(protos::Message msg) {
 
 int Game::size() {
 	return clients_.size();
+}
+
+int Game::generateId() {
+	return idCounter_++;
 }
 
 void Game::initialize() {
@@ -95,6 +99,9 @@ void Game::startGameLoop() {
 				else if (event.type() == protos::Event_Type_JUMP) {
 					handleJumpLogic(event);
 				}
+				else if (event.type() == protos::Event_Type_SHOOT) {
+					handleShootLogic(event);
+				}
 			}
 		}
 		sendStateToClients();
@@ -151,6 +158,24 @@ void Game::handleJumpLogic(protos::Event& event) {
 	player->applyCentralImpulse(btVector3(0, 1, 0));
 }
 
+void Game::handleShootLogic(protos::Event& event) {
+	std::lock_guard<std::mutex> lock(playerMapLock_);
+	std::cerr << "SHOOT HAPPENED" << std::endl;
+
+	if (playerMap_.find(event.clientid()) == playerMap_.end()) {
+		std::cerr << "No Client found" << std::endl;
+		return;
+	}
+
+	Player* player = playerMap_[event.clientid()];
+
+	Bullet* bullet = Bullet::createNewBullet(generateId(), event.clientid(), player, body_->getCollisionShape());
+	itemList_.push_back(bullet);
+	world_->addRigidBody(bullet);
+
+	bullet->applyCentralForce(player->getOrientation().getAxis() *= 800);
+}
+
 void Game::sendStateToClients() {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 
@@ -166,6 +191,25 @@ void Game::sendStateToClients() {
 
 		auto* gameObject = message.add_gameobject();
 		gameObject->set_id(pair.first);
+		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
+
+		for (auto v : glm) {
+			gameObject->add_matrix(v);
+		}
+	}
+
+	for (auto* item : itemList_) {
+		btTransform transform;
+		item->getMotionState()->getWorldTransform(transform);
+
+		btScalar glm[16] = {};
+
+		transform.getOpenGLMatrix(glm);
+
+		auto* gameObject = message.add_gameobject();
+		gameObject->set_id(item->getId());
+		gameObject->set_type(protos::Message_GameObject_Type_BULLET);
+
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
 		}

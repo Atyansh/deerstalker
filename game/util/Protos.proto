@@ -6,6 +6,7 @@ message Event {
 		MOVE = 2;
 		JUMP = 3;
 		ASSIGN = 4;
+		SHOOT = 5;
 	}
 
 	enum Direction {
@@ -25,8 +26,13 @@ message Event {
 
 message Message {
 	message GameObject {
+		enum Type {
+			PLAYER = 1;
+			BULLET = 2;
+		}
 		optional int32 id = 1;
 		repeated double matrix = 2;
+		optional Type type = 3;
 	}
 
 	optional int32 id = 1;
