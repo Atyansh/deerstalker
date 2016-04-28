@@ -16,7 +16,7 @@ public:
 	static DrawData drawData;
 	static UpdateData updateData;
 	static Camera camera;
-	static boost::asio::io_service io_service;
+	static boost::asio::io_service * io_service;
 	static tcp::socket socket;
 	static std::deque<protos::TestEvent> eventQueue;
 	static char currentHeader[4];
