@@ -9,7 +9,7 @@ class Shader
 {
 
 private:
-	void setup(const char *vs, const char *fs, bool isFile);
+	void setup(const GLchar *vs, const GLchar *fs, bool isFile);
 
 protected:
 	bool init;

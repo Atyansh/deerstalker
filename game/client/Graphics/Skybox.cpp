@@ -4,8 +4,8 @@
 #include <glm/ext.hpp>
 #include "../Globals.h"
 
-const char* vert = "Assets/Cubemap/Skybox.vert";
-const char* frag = "Assets/Cubemap/Skybox.frag";
+const char* vert = "Graphics/Assets/Cubemap/Skybox.vert";
+const char* frag = "Graphics/Assets/Cubemap/Skybox.frag";
 
 Skybox::Skybox()
 {
@@ -17,55 +17,57 @@ Skybox::~Skybox()
 }
 
 void Skybox::setupVAO() {
-
 	shader = new Shader(vert, frag);
 
-	
+	float skyboxSize = 500.f;
 
 	GLfloat skyboxVertices[] = {
 		// Positions          
-		-1.0f, 1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-		1.0f, 1.0f, -1.0f,
-		-1.0f, 1.0f, -1.0f,
+		-skyboxSize, skyboxSize, -skyboxSize,
+		-skyboxSize, -skyboxSize, -skyboxSize,
+		skyboxSize, -skyboxSize, -skyboxSize,
+		skyboxSize, -skyboxSize, -skyboxSize,
+		skyboxSize, skyboxSize, -skyboxSize,
+		-skyboxSize, skyboxSize, -skyboxSize,
 
-		-1.0f, -1.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, 1.0f, -1.0f,
-		-1.0f, 1.0f, -1.0f,
-		-1.0f, 1.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f,
+		-skyboxSize, -skyboxSize, skyboxSize,
+		-skyboxSize, -skyboxSize, -skyboxSize,
+		-skyboxSize, skyboxSize, -skyboxSize,
+		-skyboxSize, skyboxSize, -skyboxSize,
+		-skyboxSize, skyboxSize, skyboxSize,
+		-skyboxSize, -skyboxSize, skyboxSize,
 
-		1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
+		skyboxSize, -skyboxSize, -skyboxSize,
+		skyboxSize, -skyboxSize, skyboxSize,
+		skyboxSize, skyboxSize, skyboxSize,
+		skyboxSize, skyboxSize, skyboxSize,
+		skyboxSize, skyboxSize, -skyboxSize,
+		skyboxSize, -skyboxSize, -skyboxSize,
 
-		-1.0f, -1.0f, 1.0f,
-		-1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, -1.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f,
+		-skyboxSize, -skyboxSize, skyboxSize,
+		-skyboxSize, skyboxSize, skyboxSize,
+		skyboxSize, skyboxSize, skyboxSize,
+		skyboxSize, skyboxSize, skyboxSize,
+		skyboxSize, -skyboxSize, skyboxSize,
+		-skyboxSize, -skyboxSize, skyboxSize,
 
-		-1.0f, 1.0f, -1.0f,
-		1.0f, 1.0f, -1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f, -1.0f,
+		-skyboxSize, skyboxSize, -skyboxSize,
+		skyboxSize, skyboxSize, -skyboxSize,
+		skyboxSize, skyboxSize, skyboxSize,
+		skyboxSize, skyboxSize, skyboxSize,
+		-skyboxSize, skyboxSize, skyboxSize,
+		-skyboxSize, skyboxSize, -skyboxSize,
 
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f, 1.0f,
-		1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f, 1.0f,
-		1.0f, -1.0f, 1.0f
+		-skyboxSize, -skyboxSize, -skyboxSize,
+		-skyboxSize, -skyboxSize, skyboxSize,
+		skyboxSize, -skyboxSize, -skyboxSize,
+		skyboxSize, -skyboxSize, -skyboxSize,
+		-skyboxSize, -skyboxSize, skyboxSize,
+		skyboxSize, -skyboxSize, skyboxSize
 	};
+
+	skyboxVAO = GLuint();
+	skyboxVBO = GLuint();
 
 	glGenVertexArrays(1, &skyboxVAO);
 	glGenBuffers(1, &skyboxVBO);
@@ -92,6 +94,7 @@ void Skybox::draw() {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
+
 	glDepthFunc(GL_LESS); // Set depth function back to default
 
 	shader->unbind();

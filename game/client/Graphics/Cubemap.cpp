@@ -79,7 +79,7 @@ unsigned char* Cubemap::loadPPM(const char* filename, int& width, int& height)
 
 GLuint Cubemap::loadCubemap(const string& directory) {
 
-	vector<string> faces;
+	vector<const GLchar*> faces;
 	faces.push_back("right.ppm");
 	faces.push_back("left.ppm");
 	faces.push_back("top.ppm");
@@ -94,7 +94,7 @@ GLuint Cubemap::loadCubemap(const string& directory) {
 	int width, height;
 	unsigned char* image;
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < faces.size(); i++) {
 		image = loadPPM((directory + "/" + faces[i]).c_str(), width, height);
 		if (image == NULL) {
 			return 0;

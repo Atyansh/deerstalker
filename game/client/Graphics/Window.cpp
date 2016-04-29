@@ -38,6 +38,7 @@ void Window::initialize_objects()
 		glm::vec3(2.3f, -1.6f, -3.0f),
 		glm::vec3(-1.7f, 0.9f, 1.0f)
 	};
+
 	Globals::lightShader = new LightShader(Globals::camera.getPosition(), "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
 	Globals::lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
 	//Globals::lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
@@ -183,7 +184,7 @@ void Window::display_callback(GLFWwindow* window) {
 		for (auto& pair : playerMap) {
 			pair.second->draw(Globals::drawData);
 		}
-
+		
 	}
 
 	// Gets events, including input such as keyboard and mouse or window resizing
