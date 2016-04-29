@@ -37,7 +37,8 @@ void Game::initialize() {
 	world_->setGravity(btVector3(0, -10, 0));
 
 	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
-
+	
+	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 5);
 	btTransform groundTransform;
 	groundTransform.setIdentity();
 	groundTransform.setOrigin(btVector3(0, -56, 0));

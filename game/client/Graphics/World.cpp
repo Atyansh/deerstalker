@@ -24,18 +24,15 @@ void World::createWorld() {
 		glm::vec3(2.3f, -1.6f, -3.0f),
 		glm::vec3(-1.7f, 0.9f, 1.0f)
 	};
-	LightShader* lightShader = new LightShader(Globals::camera.getPosition(), "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
-	Model* model = new Model(floorPath, lightShader);
-	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
-	//lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
-	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
-	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+	
+	Model* model = new Model(floorPath, Globals::lightShader);
 
-
-	glm::mat4 mat = glm::mat4();//glm::scale(glm::vec3(50.0f, 0.0f, 50.0f));
+	glm::mat4 mat = glm::mat4();
+	
+	glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(10.f, 1.f, 10.f));
 	
 
-	floor->setMatrix(glm::translate(mat, glm::vec3(0.0f, -6.0f, 0.0f)));
+	floor->setMatrix(glm::translate(mat * scale, glm::vec3(0.0f, -6.0f, 0.0f)));
 
 	floor->addNode(model);
 

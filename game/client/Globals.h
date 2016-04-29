@@ -7,6 +7,7 @@
 #include "Graphics\Camera.h"
 #include "Graphics\Model.h"
 #include "Graphics\Skybox.h"
+#include "Graphics\LightShader.h"
 
 #include "util\Protos.pb.h"
 
@@ -17,6 +18,7 @@ public:
 	static DrawData drawData;
 	static UpdateData updateData;
 	static Camera camera;
+	static LightShader* lightShader;
 	static Skybox skybox;
 
 	static boost::asio::io_service io_service;
