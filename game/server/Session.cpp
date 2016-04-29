@@ -72,7 +72,6 @@ void Session::do_write() {
 
 	std::uint8_t message[HEADER_SIZE + MAX_MESSAGE_SIZE] = {};
 	auto messageSize = fillMessage(message, event);
-	//std::cerr << messageSize << std::endl;
 	if (messageSize != 0) {
 		boost::asio::async_write(socket_,
 			boost::asio::buffer(message, messageSize + HEADER_SIZE),
@@ -85,5 +84,4 @@ void Session::do_write() {
 			}
 		});
 	}
-
 }

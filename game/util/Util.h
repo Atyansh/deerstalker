@@ -10,7 +10,7 @@ namespace util {
 
 	static const int MAX_MESSAGE_SIZE = 1000000;
 
-	static const int HEADER_SIZE = 4;
+	static const int HEADER_SIZE = 6;
 
 	static size_t decode_header(const char* data) {
 		char header[HEADER_SIZE + 1] = "";
@@ -21,7 +21,7 @@ namespace util {
 	static void encode_header(size_t body_length, uint8_t* data)
 	{
 		char header[HEADER_SIZE + 1] = "";
-		sprintf_s(header, "%4d", static_cast<int>(body_length));
+		sprintf_s(header, "%6d", static_cast<int>(body_length));
 		std::memcpy(data, header, HEADER_SIZE);
 	}
 

@@ -8,6 +8,7 @@
 #include "Graphics\Model.h"
 
 #include "util\Protos.pb.h"
+#include "util\Util.h"
 
 using boost::asio::ip::tcp;
 
@@ -19,7 +20,7 @@ public:
 	static boost::asio::io_service io_service;
 	static tcp::socket socket;
 	static std::deque<protos::TestEvent> eventQueue;
-	static char currentHeader[4];
+	static char currentHeader[util::HEADER_SIZE + 1];
 	static std::uint32_t ID;
 };
 
