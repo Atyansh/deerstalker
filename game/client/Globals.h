@@ -6,6 +6,7 @@
 #include "Graphics\UpdateData.h"
 #include "Graphics\Camera.h"
 #include "Graphics\Model.h"
+#include "Graphics\Skybox.h"
 
 #include "util\Protos.pb.h"
 
@@ -16,6 +17,8 @@ public:
 	static DrawData drawData;
 	static UpdateData updateData;
 	static Camera camera;
+	static Skybox skybox;
+
 	static boost::asio::io_service io_service;
 	static tcp::socket socket;
 	static std::deque<protos::TestEvent> eventQueue;

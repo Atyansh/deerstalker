@@ -79,7 +79,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	vector<GLuint> indices;
 	vector<Texture> textures;
 
-	fprintf(stderr, "Has textures? : %s", hasTextureFiles() ? "yes" : "no");
+	fprintf(stderr, "Has textures? : %s\n", hasTextureFiles() ? "yes" : "no");
 
 	bool hasTexture = hasTextureFiles();
 
