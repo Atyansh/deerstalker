@@ -31,9 +31,15 @@
 *.sdf
 *.ilk
 *.suo
+game/game.VC.VC.opendb
+game/game.VC.db
+Config.ini
 
 # Packages
 packages/
+
+# Debug stuff
+Debug/
 
 # Don't Ignore
 !game/client/Graphics/Assets/**/*.obj

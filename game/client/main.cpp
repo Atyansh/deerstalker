@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
 		exit(-1);
 	}
 
-	tcp::resolver resolver(*Globals::io_service);
+	tcp::resolver resolver(Globals::io_service);
 	boost::asio::async_connect(Globals::socket, resolver.resolve({ hostname.c_str(), port.c_str() }),
 		[](boost::system::error_code ec, tcp::resolver::iterator) {
 		if (!ec) {
@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
 		}
 	});
 
-	std::thread t([]() {  Globals::io_service->run();  });
+	std::thread t([]() {  Globals::io_service.run();  });
 
 	while (Globals::ID == 0) {
 		Sleep(1);
