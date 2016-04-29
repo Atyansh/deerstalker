@@ -9,7 +9,7 @@ typedef int ClientId;
 class Client {
 public:
 	virtual ~Client() {}
-	virtual void deliver(const protos::TestEvent msg) = 0;
+	virtual void deliver(const protos::Message msg) = 0;
 
 	int getClientId() {
 		return clientId_;

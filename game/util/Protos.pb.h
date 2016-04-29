@@ -34,85 +34,64 @@ void  protobuf_AddDesc_Protos_2eproto();
 void protobuf_AssignDesc_Protos_2eproto();
 void protobuf_ShutdownFile_Protos_2eproto();
 
-class ServerEvent;
-class ClientEvent;
-class GameObject;
-class ServerState;
-class TestEvent;
+class Event;
+class Message;
+class Message_GameObject;
 
-enum TestEvent_Type {
-  TestEvent_Type_SPAWN = 1,
-  TestEvent_Type_MOVE = 2,
-  TestEvent_Type_ASSIGN = 3
+enum Event_Type {
+  Event_Type_SPAWN = 1,
+  Event_Type_MOVE = 2,
+  Event_Type_JUMP = 3,
+  Event_Type_ASSIGN = 4
 };
-bool TestEvent_Type_IsValid(int value);
-const TestEvent_Type TestEvent_Type_Type_MIN = TestEvent_Type_SPAWN;
-const TestEvent_Type TestEvent_Type_Type_MAX = TestEvent_Type_ASSIGN;
-const int TestEvent_Type_Type_ARRAYSIZE = TestEvent_Type_Type_MAX + 1;
+bool Event_Type_IsValid(int value);
+const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
+const Event_Type Event_Type_Type_MAX = Event_Type_ASSIGN;
+const int Event_Type_Type_ARRAYSIZE = Event_Type_Type_MAX + 1;
 
-const ::google::protobuf::EnumDescriptor* TestEvent_Type_descriptor();
-inline const ::std::string& TestEvent_Type_Name(TestEvent_Type value) {
+const ::google::protobuf::EnumDescriptor* Event_Type_descriptor();
+inline const ::std::string& Event_Type_Name(Event_Type value) {
   return ::google::protobuf::internal::NameOfEnum(
-    TestEvent_Type_descriptor(), value);
+    Event_Type_descriptor(), value);
 }
-inline bool TestEvent_Type_Parse(
-    const ::std::string& name, TestEvent_Type* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<TestEvent_Type>(
-    TestEvent_Type_descriptor(), name, value);
+inline bool Event_Type_Parse(
+    const ::std::string& name, Event_Type* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Event_Type>(
+    Event_Type_descriptor(), name, value);
 }
-enum TypeClientEvent {
-  MOVE = 1,
-  SHOOT = 2,
-  JUMP = 3
+enum Event_Direction {
+  Event_Direction_UP = 1,
+  Event_Direction_DOWN = 2,
+  Event_Direction_LEFT = 3,
+  Event_Direction_RIGHT = 4,
+  Event_Direction_FORWARD = 5,
+  Event_Direction_BACKWARD = 6
 };
-bool TypeClientEvent_IsValid(int value);
-const TypeClientEvent TypeClientEvent_MIN = MOVE;
-const TypeClientEvent TypeClientEvent_MAX = JUMP;
-const int TypeClientEvent_ARRAYSIZE = TypeClientEvent_MAX + 1;
+bool Event_Direction_IsValid(int value);
+const Event_Direction Event_Direction_Direction_MIN = Event_Direction_UP;
+const Event_Direction Event_Direction_Direction_MAX = Event_Direction_BACKWARD;
+const int Event_Direction_Direction_ARRAYSIZE = Event_Direction_Direction_MAX + 1;
 
-const ::google::protobuf::EnumDescriptor* TypeClientEvent_descriptor();
-inline const ::std::string& TypeClientEvent_Name(TypeClientEvent value) {
+const ::google::protobuf::EnumDescriptor* Event_Direction_descriptor();
+inline const ::std::string& Event_Direction_Name(Event_Direction value) {
   return ::google::protobuf::internal::NameOfEnum(
-    TypeClientEvent_descriptor(), value);
+    Event_Direction_descriptor(), value);
 }
-inline bool TypeClientEvent_Parse(
-    const ::std::string& name, TypeClientEvent* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<TypeClientEvent>(
-    TypeClientEvent_descriptor(), name, value);
-}
-enum Direction {
-  UP = 1,
-  DOWN = 2,
-  LEFT = 3,
-  RIGHT = 4,
-  FORWARD = 5,
-  BACKWARD = 6
-};
-bool Direction_IsValid(int value);
-const Direction Direction_MIN = UP;
-const Direction Direction_MAX = BACKWARD;
-const int Direction_ARRAYSIZE = Direction_MAX + 1;
-
-const ::google::protobuf::EnumDescriptor* Direction_descriptor();
-inline const ::std::string& Direction_Name(Direction value) {
-  return ::google::protobuf::internal::NameOfEnum(
-    Direction_descriptor(), value);
-}
-inline bool Direction_Parse(
-    const ::std::string& name, Direction* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<Direction>(
-    Direction_descriptor(), name, value);
+inline bool Event_Direction_Parse(
+    const ::std::string& name, Event_Direction* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Event_Direction>(
+    Event_Direction_descriptor(), name, value);
 }
 // ===================================================================
 
-class ServerEvent : public ::google::protobuf::Message {
+class Event : public ::google::protobuf::Message {
  public:
-  ServerEvent();
-  virtual ~ServerEvent();
+  Event();
+  virtual ~Event();
 
-  ServerEvent(const ServerEvent& from);
+  Event(const Event& from);
 
-  inline ServerEvent& operator=(const ServerEvent& from) {
+  inline Event& operator=(const Event& from) {
     CopyFrom(from);
     return *this;
   }
@@ -126,17 +105,17 @@ class ServerEvent : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const ServerEvent& default_instance();
+  static const Event& default_instance();
 
-  void Swap(ServerEvent* other);
+  void Swap(Event* other);
 
   // implements Message ----------------------------------------------
 
-  ServerEvent* New() const;
+  Event* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const ServerEvent& from);
-  void MergeFrom(const ServerEvent& from);
+  void CopyFrom(const Event& from);
+  void MergeFrom(const Event& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -156,84 +135,59 @@ class ServerEvent : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
-  // accessors -------------------------------------------------------
-
-  // optional int32 id = 1;
-  inline bool has_id() const;
-  inline void clear_id();
-  static const int kIdFieldNumber = 1;
-  inline ::google::protobuf::int32 id() const;
-  inline void set_id(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:protos.ServerEvent)
- private:
-  inline void set_has_id();
-  inline void clear_has_id();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 _has_bits_[1];
-  mutable int _cached_size_;
-  ::google::protobuf::int32 id_;
-  friend void  protobuf_AddDesc_Protos_2eproto();
-  friend void protobuf_AssignDesc_Protos_2eproto();
-  friend void protobuf_ShutdownFile_Protos_2eproto();
-
-  void InitAsDefaultInstance();
-  static ServerEvent* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class ClientEvent : public ::google::protobuf::Message {
- public:
-  ClientEvent();
-  virtual ~ClientEvent();
-
-  ClientEvent(const ClientEvent& from);
-
-  inline ClientEvent& operator=(const ClientEvent& from) {
-    CopyFrom(from);
-    return *this;
+  typedef Event_Type Type;
+  static const Type SPAWN = Event_Type_SPAWN;
+  static const Type MOVE = Event_Type_MOVE;
+  static const Type JUMP = Event_Type_JUMP;
+  static const Type ASSIGN = Event_Type_ASSIGN;
+  static inline bool Type_IsValid(int value) {
+    return Event_Type_IsValid(value);
+  }
+  static const Type Type_MIN =
+    Event_Type_Type_MIN;
+  static const Type Type_MAX =
+    Event_Type_Type_MAX;
+  static const int Type_ARRAYSIZE =
+    Event_Type_Type_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Type_descriptor() {
+    return Event_Type_descriptor();
+  }
+  static inline const ::std::string& Type_Name(Type value) {
+    return Event_Type_Name(value);
+  }
+  static inline bool Type_Parse(const ::std::string& name,
+      Type* value) {
+    return Event_Type_Parse(name, value);
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
+  typedef Event_Direction Direction;
+  static const Direction UP = Event_Direction_UP;
+  static const Direction DOWN = Event_Direction_DOWN;
+  static const Direction LEFT = Event_Direction_LEFT;
+  static const Direction RIGHT = Event_Direction_RIGHT;
+  static const Direction FORWARD = Event_Direction_FORWARD;
+  static const Direction BACKWARD = Event_Direction_BACKWARD;
+  static inline bool Direction_IsValid(int value) {
+    return Event_Direction_IsValid(value);
   }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
+  static const Direction Direction_MIN =
+    Event_Direction_Direction_MIN;
+  static const Direction Direction_MAX =
+    Event_Direction_Direction_MAX;
+  static const int Direction_ARRAYSIZE =
+    Event_Direction_Direction_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Direction_descriptor() {
+    return Event_Direction_descriptor();
   }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const ClientEvent& default_instance();
-
-  void Swap(ClientEvent* other);
-
-  // implements Message ----------------------------------------------
-
-  ClientEvent* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const ClientEvent& from);
-  void MergeFrom(const ClientEvent& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
+  static inline const ::std::string& Direction_Name(Direction value) {
+    return Event_Direction_Name(value);
+  }
+  static inline bool Direction_Parse(const ::std::string& name,
+      Direction* value) {
+    return Event_Direction_Parse(name, value);
+  }
 
   // accessors -------------------------------------------------------
 
@@ -244,26 +198,35 @@ class ClientEvent : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 id() const;
   inline void set_id(::google::protobuf::int32 value);
 
-  // optional .protos.TypeClientEvent type = 2;
+  // optional .protos.Event.Type type = 2;
   inline bool has_type() const;
   inline void clear_type();
   static const int kTypeFieldNumber = 2;
-  inline ::protos::TypeClientEvent type() const;
-  inline void set_type(::protos::TypeClientEvent value);
+  inline ::protos::Event_Type type() const;
+  inline void set_type(::protos::Event_Type value);
 
-  // optional .protos.Direction direction = 3;
+  // optional int32 clientID = 6;
+  inline bool has_clientid() const;
+  inline void clear_clientid();
+  static const int kClientIDFieldNumber = 6;
+  inline ::google::protobuf::int32 clientid() const;
+  inline void set_clientid(::google::protobuf::int32 value);
+
+  // optional .protos.Event.Direction direction = 7;
   inline bool has_direction() const;
   inline void clear_direction();
-  static const int kDirectionFieldNumber = 3;
-  inline ::protos::Direction direction() const;
-  inline void set_direction(::protos::Direction value);
+  static const int kDirectionFieldNumber = 7;
+  inline ::protos::Event_Direction direction() const;
+  inline void set_direction(::protos::Event_Direction value);
 
-  // @@protoc_insertion_point(class_scope:protos.ClientEvent)
+  // @@protoc_insertion_point(class_scope:protos.Event)
  private:
   inline void set_has_id();
   inline void clear_has_id();
   inline void set_has_type();
   inline void clear_has_type();
+  inline void set_has_clientid();
+  inline void clear_has_clientid();
   inline void set_has_direction();
   inline void clear_has_direction();
 
@@ -273,24 +236,25 @@ class ClientEvent : public ::google::protobuf::Message {
   mutable int _cached_size_;
   ::google::protobuf::int32 id_;
   int type_;
+  ::google::protobuf::int32 clientid_;
   int direction_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
 
   void InitAsDefaultInstance();
-  static ClientEvent* default_instance_;
+  static Event* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class GameObject : public ::google::protobuf::Message {
+class Message_GameObject : public ::google::protobuf::Message {
  public:
-  GameObject();
-  virtual ~GameObject();
+  Message_GameObject();
+  virtual ~Message_GameObject();
 
-  GameObject(const GameObject& from);
+  Message_GameObject(const Message_GameObject& from);
 
-  inline GameObject& operator=(const GameObject& from) {
+  inline Message_GameObject& operator=(const Message_GameObject& from) {
     CopyFrom(from);
     return *this;
   }
@@ -304,17 +268,17 @@ class GameObject : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const GameObject& default_instance();
+  static const Message_GameObject& default_instance();
 
-  void Swap(GameObject* other);
+  void Swap(Message_GameObject* other);
 
   // implements Message ----------------------------------------------
 
-  GameObject* New() const;
+  Message_GameObject* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const GameObject& from);
-  void MergeFrom(const GameObject& from);
+  void CopyFrom(const Message_GameObject& from);
+  void MergeFrom(const Message_GameObject& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -355,7 +319,7 @@ class GameObject : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< double >*
       mutable_matrix();
 
-  // @@protoc_insertion_point(class_scope:protos.GameObject)
+  // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
   inline void clear_has_id();
@@ -371,18 +335,18 @@ class GameObject : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_Protos_2eproto();
 
   void InitAsDefaultInstance();
-  static GameObject* default_instance_;
+  static Message_GameObject* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class ServerState : public ::google::protobuf::Message {
+class Message : public ::google::protobuf::Message {
  public:
-  ServerState();
-  virtual ~ServerState();
+  Message();
+  virtual ~Message();
 
-  ServerState(const ServerState& from);
+  Message(const Message& from);
 
-  inline ServerState& operator=(const ServerState& from) {
+  inline Message& operator=(const Message& from) {
     CopyFrom(from);
     return *this;
   }
@@ -396,17 +360,17 @@ class ServerState : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const ServerState& default_instance();
+  static const Message& default_instance();
 
-  void Swap(ServerState* other);
+  void Swap(Message* other);
 
   // implements Message ----------------------------------------------
 
-  ServerState* New() const;
+  Message* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const ServerState& from);
-  void MergeFrom(const ServerState& from);
+  void CopyFrom(const Message& from);
+  void MergeFrom(const Message& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -426,135 +390,7 @@ class ServerState : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
-  // accessors -------------------------------------------------------
-
-  // optional int32 id = 1;
-  inline bool has_id() const;
-  inline void clear_id();
-  static const int kIdFieldNumber = 1;
-  inline ::google::protobuf::int32 id() const;
-  inline void set_id(::google::protobuf::int32 value);
-
-  // repeated .protos.GameObject objects = 2;
-  inline int objects_size() const;
-  inline void clear_objects();
-  static const int kObjectsFieldNumber = 2;
-  inline const ::protos::GameObject& objects(int index) const;
-  inline ::protos::GameObject* mutable_objects(int index);
-  inline ::protos::GameObject* add_objects();
-  inline const ::google::protobuf::RepeatedPtrField< ::protos::GameObject >&
-      objects() const;
-  inline ::google::protobuf::RepeatedPtrField< ::protos::GameObject >*
-      mutable_objects();
-
-  // repeated .protos.ServerEvent events = 3;
-  inline int events_size() const;
-  inline void clear_events();
-  static const int kEventsFieldNumber = 3;
-  inline const ::protos::ServerEvent& events(int index) const;
-  inline ::protos::ServerEvent* mutable_events(int index);
-  inline ::protos::ServerEvent* add_events();
-  inline const ::google::protobuf::RepeatedPtrField< ::protos::ServerEvent >&
-      events() const;
-  inline ::google::protobuf::RepeatedPtrField< ::protos::ServerEvent >*
-      mutable_events();
-
-  // @@protoc_insertion_point(class_scope:protos.ServerState)
- private:
-  inline void set_has_id();
-  inline void clear_has_id();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 _has_bits_[1];
-  mutable int _cached_size_;
-  ::google::protobuf::RepeatedPtrField< ::protos::GameObject > objects_;
-  ::google::protobuf::RepeatedPtrField< ::protos::ServerEvent > events_;
-  ::google::protobuf::int32 id_;
-  friend void  protobuf_AddDesc_Protos_2eproto();
-  friend void protobuf_AssignDesc_Protos_2eproto();
-  friend void protobuf_ShutdownFile_Protos_2eproto();
-
-  void InitAsDefaultInstance();
-  static ServerState* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class TestEvent : public ::google::protobuf::Message {
- public:
-  TestEvent();
-  virtual ~TestEvent();
-
-  TestEvent(const TestEvent& from);
-
-  inline TestEvent& operator=(const TestEvent& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const TestEvent& default_instance();
-
-  void Swap(TestEvent* other);
-
-  // implements Message ----------------------------------------------
-
-  TestEvent* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const TestEvent& from);
-  void MergeFrom(const TestEvent& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  typedef TestEvent_Type Type;
-  static const Type SPAWN = TestEvent_Type_SPAWN;
-  static const Type MOVE = TestEvent_Type_MOVE;
-  static const Type ASSIGN = TestEvent_Type_ASSIGN;
-  static inline bool Type_IsValid(int value) {
-    return TestEvent_Type_IsValid(value);
-  }
-  static const Type Type_MIN =
-    TestEvent_Type_Type_MIN;
-  static const Type Type_MAX =
-    TestEvent_Type_Type_MAX;
-  static const int Type_ARRAYSIZE =
-    TestEvent_Type_Type_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  Type_descriptor() {
-    return TestEvent_Type_descriptor();
-  }
-  static inline const ::std::string& Type_Name(Type value) {
-    return TestEvent_Type_Name(value);
-  }
-  static inline bool Type_Parse(const ::std::string& name,
-      Type* value) {
-    return TestEvent_Type_Parse(name, value);
-  }
+  typedef Message_GameObject GameObject;
 
   // accessors -------------------------------------------------------
 
@@ -565,519 +401,298 @@ class TestEvent : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 id() const;
   inline void set_id(::google::protobuf::int32 value);
 
-  // optional .protos.TestEvent.Type type = 2;
-  inline bool has_type() const;
-  inline void clear_type();
-  static const int kTypeFieldNumber = 2;
-  inline ::protos::TestEvent_Type type() const;
-  inline void set_type(::protos::TestEvent_Type value);
+  // repeated .protos.Event event = 2;
+  inline int event_size() const;
+  inline void clear_event();
+  static const int kEventFieldNumber = 2;
+  inline const ::protos::Event& event(int index) const;
+  inline ::protos::Event* mutable_event(int index);
+  inline ::protos::Event* add_event();
+  inline const ::google::protobuf::RepeatedPtrField< ::protos::Event >&
+      event() const;
+  inline ::google::protobuf::RepeatedPtrField< ::protos::Event >*
+      mutable_event();
 
-  // repeated .protos.GameObject gameObject = 3;
+  // repeated .protos.Message.GameObject gameObject = 3;
   inline int gameobject_size() const;
   inline void clear_gameobject();
   static const int kGameObjectFieldNumber = 3;
-  inline const ::protos::GameObject& gameobject(int index) const;
-  inline ::protos::GameObject* mutable_gameobject(int index);
-  inline ::protos::GameObject* add_gameobject();
-  inline const ::google::protobuf::RepeatedPtrField< ::protos::GameObject >&
+  inline const ::protos::Message_GameObject& gameobject(int index) const;
+  inline ::protos::Message_GameObject* mutable_gameobject(int index);
+  inline ::protos::Message_GameObject* add_gameobject();
+  inline const ::google::protobuf::RepeatedPtrField< ::protos::Message_GameObject >&
       gameobject() const;
-  inline ::google::protobuf::RepeatedPtrField< ::protos::GameObject >*
+  inline ::google::protobuf::RepeatedPtrField< ::protos::Message_GameObject >*
       mutable_gameobject();
 
-  // optional int32 action = 4;
-  inline bool has_action() const;
-  inline void clear_action();
-  static const int kActionFieldNumber = 4;
-  inline ::google::protobuf::int32 action() const;
-  inline void set_action(::google::protobuf::int32 value);
-
-  // optional int32 keyPress = 5;
-  inline bool has_keypress() const;
-  inline void clear_keypress();
-  static const int kKeyPressFieldNumber = 5;
-  inline ::google::protobuf::int32 keypress() const;
-  inline void set_keypress(::google::protobuf::int32 value);
-
-  // optional int32 clientID = 6;
-  inline bool has_clientid() const;
-  inline void clear_clientid();
-  static const int kClientIDFieldNumber = 6;
-  inline ::google::protobuf::int32 clientid() const;
-  inline void set_clientid(::google::protobuf::int32 value);
-
-  // optional .protos.Direction direction = 7;
-  inline bool has_direction() const;
-  inline void clear_direction();
-  static const int kDirectionFieldNumber = 7;
-  inline ::protos::Direction direction() const;
-  inline void set_direction(::protos::Direction value);
-
-  // @@protoc_insertion_point(class_scope:protos.TestEvent)
+  // @@protoc_insertion_point(class_scope:protos.Message)
  private:
   inline void set_has_id();
   inline void clear_has_id();
-  inline void set_has_type();
-  inline void clear_has_type();
-  inline void set_has_action();
-  inline void clear_has_action();
-  inline void set_has_keypress();
-  inline void clear_has_keypress();
-  inline void set_has_clientid();
-  inline void clear_has_clientid();
-  inline void set_has_direction();
-  inline void clear_has_direction();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::protos::Event > event_;
+  ::google::protobuf::RepeatedPtrField< ::protos::Message_GameObject > gameobject_;
   ::google::protobuf::int32 id_;
-  int type_;
-  ::google::protobuf::RepeatedPtrField< ::protos::GameObject > gameobject_;
-  ::google::protobuf::int32 action_;
-  ::google::protobuf::int32 keypress_;
-  ::google::protobuf::int32 clientid_;
-  int direction_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
 
   void InitAsDefaultInstance();
-  static TestEvent* default_instance_;
+  static Message* default_instance_;
 };
 // ===================================================================
 
 
 // ===================================================================
 
-// ServerEvent
+// Event
 
 // optional int32 id = 1;
-inline bool ServerEvent::has_id() const {
+inline bool Event::has_id() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void ServerEvent::set_has_id() {
+inline void Event::set_has_id() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void ServerEvent::clear_has_id() {
+inline void Event::clear_has_id() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void ServerEvent::clear_id() {
+inline void Event::clear_id() {
   id_ = 0;
   clear_has_id();
 }
-inline ::google::protobuf::int32 ServerEvent::id() const {
-  // @@protoc_insertion_point(field_get:protos.ServerEvent.id)
+inline ::google::protobuf::int32 Event::id() const {
+  // @@protoc_insertion_point(field_get:protos.Event.id)
   return id_;
 }
-inline void ServerEvent::set_id(::google::protobuf::int32 value) {
+inline void Event::set_id(::google::protobuf::int32 value) {
   set_has_id();
   id_ = value;
-  // @@protoc_insertion_point(field_set:protos.ServerEvent.id)
+  // @@protoc_insertion_point(field_set:protos.Event.id)
 }
 
-// -------------------------------------------------------------------
-
-// ClientEvent
-
-// optional int32 id = 1;
-inline bool ClientEvent::has_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void ClientEvent::set_has_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void ClientEvent::clear_has_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void ClientEvent::clear_id() {
-  id_ = 0;
-  clear_has_id();
-}
-inline ::google::protobuf::int32 ClientEvent::id() const {
-  // @@protoc_insertion_point(field_get:protos.ClientEvent.id)
-  return id_;
-}
-inline void ClientEvent::set_id(::google::protobuf::int32 value) {
-  set_has_id();
-  id_ = value;
-  // @@protoc_insertion_point(field_set:protos.ClientEvent.id)
-}
-
-// optional .protos.TypeClientEvent type = 2;
-inline bool ClientEvent::has_type() const {
+// optional .protos.Event.Type type = 2;
+inline bool Event::has_type() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void ClientEvent::set_has_type() {
+inline void Event::set_has_type() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void ClientEvent::clear_has_type() {
+inline void Event::clear_has_type() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void ClientEvent::clear_type() {
+inline void Event::clear_type() {
   type_ = 1;
   clear_has_type();
 }
-inline ::protos::TypeClientEvent ClientEvent::type() const {
-  // @@protoc_insertion_point(field_get:protos.ClientEvent.type)
-  return static_cast< ::protos::TypeClientEvent >(type_);
+inline ::protos::Event_Type Event::type() const {
+  // @@protoc_insertion_point(field_get:protos.Event.type)
+  return static_cast< ::protos::Event_Type >(type_);
 }
-inline void ClientEvent::set_type(::protos::TypeClientEvent value) {
-  assert(::protos::TypeClientEvent_IsValid(value));
+inline void Event::set_type(::protos::Event_Type value) {
+  assert(::protos::Event_Type_IsValid(value));
   set_has_type();
   type_ = value;
-  // @@protoc_insertion_point(field_set:protos.ClientEvent.type)
+  // @@protoc_insertion_point(field_set:protos.Event.type)
 }
 
-// optional .protos.Direction direction = 3;
-inline bool ClientEvent::has_direction() const {
+// optional int32 clientID = 6;
+inline bool Event::has_clientid() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void ClientEvent::set_has_direction() {
+inline void Event::set_has_clientid() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void ClientEvent::clear_has_direction() {
+inline void Event::clear_has_clientid() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void ClientEvent::clear_direction() {
+inline void Event::clear_clientid() {
+  clientid_ = 0;
+  clear_has_clientid();
+}
+inline ::google::protobuf::int32 Event::clientid() const {
+  // @@protoc_insertion_point(field_get:protos.Event.clientID)
+  return clientid_;
+}
+inline void Event::set_clientid(::google::protobuf::int32 value) {
+  set_has_clientid();
+  clientid_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.clientID)
+}
+
+// optional .protos.Event.Direction direction = 7;
+inline bool Event::has_direction() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Event::set_has_direction() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Event::clear_has_direction() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Event::clear_direction() {
   direction_ = 1;
   clear_has_direction();
 }
-inline ::protos::Direction ClientEvent::direction() const {
-  // @@protoc_insertion_point(field_get:protos.ClientEvent.direction)
-  return static_cast< ::protos::Direction >(direction_);
+inline ::protos::Event_Direction Event::direction() const {
+  // @@protoc_insertion_point(field_get:protos.Event.direction)
+  return static_cast< ::protos::Event_Direction >(direction_);
 }
-inline void ClientEvent::set_direction(::protos::Direction value) {
-  assert(::protos::Direction_IsValid(value));
+inline void Event::set_direction(::protos::Event_Direction value) {
+  assert(::protos::Event_Direction_IsValid(value));
   set_has_direction();
   direction_ = value;
-  // @@protoc_insertion_point(field_set:protos.ClientEvent.direction)
+  // @@protoc_insertion_point(field_set:protos.Event.direction)
 }
 
 // -------------------------------------------------------------------
 
-// GameObject
+// Message_GameObject
 
 // optional int32 id = 1;
-inline bool GameObject::has_id() const {
+inline bool Message_GameObject::has_id() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void GameObject::set_has_id() {
+inline void Message_GameObject::set_has_id() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void GameObject::clear_has_id() {
+inline void Message_GameObject::clear_has_id() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void GameObject::clear_id() {
+inline void Message_GameObject::clear_id() {
   id_ = 0;
   clear_has_id();
 }
-inline ::google::protobuf::int32 GameObject::id() const {
-  // @@protoc_insertion_point(field_get:protos.GameObject.id)
+inline ::google::protobuf::int32 Message_GameObject::id() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.id)
   return id_;
 }
-inline void GameObject::set_id(::google::protobuf::int32 value) {
+inline void Message_GameObject::set_id(::google::protobuf::int32 value) {
   set_has_id();
   id_ = value;
-  // @@protoc_insertion_point(field_set:protos.GameObject.id)
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.id)
 }
 
 // repeated double matrix = 2;
-inline int GameObject::matrix_size() const {
+inline int Message_GameObject::matrix_size() const {
   return matrix_.size();
 }
-inline void GameObject::clear_matrix() {
+inline void Message_GameObject::clear_matrix() {
   matrix_.Clear();
 }
-inline double GameObject::matrix(int index) const {
-  // @@protoc_insertion_point(field_get:protos.GameObject.matrix)
+inline double Message_GameObject::matrix(int index) const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.matrix)
   return matrix_.Get(index);
 }
-inline void GameObject::set_matrix(int index, double value) {
+inline void Message_GameObject::set_matrix(int index, double value) {
   matrix_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protos.GameObject.matrix)
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.matrix)
 }
-inline void GameObject::add_matrix(double value) {
+inline void Message_GameObject::add_matrix(double value) {
   matrix_.Add(value);
-  // @@protoc_insertion_point(field_add:protos.GameObject.matrix)
+  // @@protoc_insertion_point(field_add:protos.Message.GameObject.matrix)
 }
 inline const ::google::protobuf::RepeatedField< double >&
-GameObject::matrix() const {
-  // @@protoc_insertion_point(field_list:protos.GameObject.matrix)
+Message_GameObject::matrix() const {
+  // @@protoc_insertion_point(field_list:protos.Message.GameObject.matrix)
   return matrix_;
 }
 inline ::google::protobuf::RepeatedField< double >*
-GameObject::mutable_matrix() {
-  // @@protoc_insertion_point(field_mutable_list:protos.GameObject.matrix)
+Message_GameObject::mutable_matrix() {
+  // @@protoc_insertion_point(field_mutable_list:protos.Message.GameObject.matrix)
   return &matrix_;
 }
 
 // -------------------------------------------------------------------
 
-// ServerState
+// Message
 
 // optional int32 id = 1;
-inline bool ServerState::has_id() const {
+inline bool Message::has_id() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void ServerState::set_has_id() {
+inline void Message::set_has_id() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void ServerState::clear_has_id() {
+inline void Message::clear_has_id() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void ServerState::clear_id() {
+inline void Message::clear_id() {
   id_ = 0;
   clear_has_id();
 }
-inline ::google::protobuf::int32 ServerState::id() const {
-  // @@protoc_insertion_point(field_get:protos.ServerState.id)
+inline ::google::protobuf::int32 Message::id() const {
+  // @@protoc_insertion_point(field_get:protos.Message.id)
   return id_;
 }
-inline void ServerState::set_id(::google::protobuf::int32 value) {
+inline void Message::set_id(::google::protobuf::int32 value) {
   set_has_id();
   id_ = value;
-  // @@protoc_insertion_point(field_set:protos.ServerState.id)
+  // @@protoc_insertion_point(field_set:protos.Message.id)
 }
 
-// repeated .protos.GameObject objects = 2;
-inline int ServerState::objects_size() const {
-  return objects_.size();
+// repeated .protos.Event event = 2;
+inline int Message::event_size() const {
+  return event_.size();
 }
-inline void ServerState::clear_objects() {
-  objects_.Clear();
+inline void Message::clear_event() {
+  event_.Clear();
 }
-inline const ::protos::GameObject& ServerState::objects(int index) const {
-  // @@protoc_insertion_point(field_get:protos.ServerState.objects)
-  return objects_.Get(index);
+inline const ::protos::Event& Message::event(int index) const {
+  // @@protoc_insertion_point(field_get:protos.Message.event)
+  return event_.Get(index);
 }
-inline ::protos::GameObject* ServerState::mutable_objects(int index) {
-  // @@protoc_insertion_point(field_mutable:protos.ServerState.objects)
-  return objects_.Mutable(index);
+inline ::protos::Event* Message::mutable_event(int index) {
+  // @@protoc_insertion_point(field_mutable:protos.Message.event)
+  return event_.Mutable(index);
 }
-inline ::protos::GameObject* ServerState::add_objects() {
-  // @@protoc_insertion_point(field_add:protos.ServerState.objects)
-  return objects_.Add();
+inline ::protos::Event* Message::add_event() {
+  // @@protoc_insertion_point(field_add:protos.Message.event)
+  return event_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protos::GameObject >&
-ServerState::objects() const {
-  // @@protoc_insertion_point(field_list:protos.ServerState.objects)
-  return objects_;
+inline const ::google::protobuf::RepeatedPtrField< ::protos::Event >&
+Message::event() const {
+  // @@protoc_insertion_point(field_list:protos.Message.event)
+  return event_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::protos::GameObject >*
-ServerState::mutable_objects() {
-  // @@protoc_insertion_point(field_mutable_list:protos.ServerState.objects)
-  return &objects_;
-}
-
-// repeated .protos.ServerEvent events = 3;
-inline int ServerState::events_size() const {
-  return events_.size();
-}
-inline void ServerState::clear_events() {
-  events_.Clear();
-}
-inline const ::protos::ServerEvent& ServerState::events(int index) const {
-  // @@protoc_insertion_point(field_get:protos.ServerState.events)
-  return events_.Get(index);
-}
-inline ::protos::ServerEvent* ServerState::mutable_events(int index) {
-  // @@protoc_insertion_point(field_mutable:protos.ServerState.events)
-  return events_.Mutable(index);
-}
-inline ::protos::ServerEvent* ServerState::add_events() {
-  // @@protoc_insertion_point(field_add:protos.ServerState.events)
-  return events_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::protos::ServerEvent >&
-ServerState::events() const {
-  // @@protoc_insertion_point(field_list:protos.ServerState.events)
-  return events_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::protos::ServerEvent >*
-ServerState::mutable_events() {
-  // @@protoc_insertion_point(field_mutable_list:protos.ServerState.events)
-  return &events_;
+inline ::google::protobuf::RepeatedPtrField< ::protos::Event >*
+Message::mutable_event() {
+  // @@protoc_insertion_point(field_mutable_list:protos.Message.event)
+  return &event_;
 }
 
-// -------------------------------------------------------------------
-
-// TestEvent
-
-// optional int32 id = 1;
-inline bool TestEvent::has_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void TestEvent::set_has_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void TestEvent::clear_has_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void TestEvent::clear_id() {
-  id_ = 0;
-  clear_has_id();
-}
-inline ::google::protobuf::int32 TestEvent::id() const {
-  // @@protoc_insertion_point(field_get:protos.TestEvent.id)
-  return id_;
-}
-inline void TestEvent::set_id(::google::protobuf::int32 value) {
-  set_has_id();
-  id_ = value;
-  // @@protoc_insertion_point(field_set:protos.TestEvent.id)
-}
-
-// optional .protos.TestEvent.Type type = 2;
-inline bool TestEvent::has_type() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void TestEvent::set_has_type() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void TestEvent::clear_has_type() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void TestEvent::clear_type() {
-  type_ = 1;
-  clear_has_type();
-}
-inline ::protos::TestEvent_Type TestEvent::type() const {
-  // @@protoc_insertion_point(field_get:protos.TestEvent.type)
-  return static_cast< ::protos::TestEvent_Type >(type_);
-}
-inline void TestEvent::set_type(::protos::TestEvent_Type value) {
-  assert(::protos::TestEvent_Type_IsValid(value));
-  set_has_type();
-  type_ = value;
-  // @@protoc_insertion_point(field_set:protos.TestEvent.type)
-}
-
-// repeated .protos.GameObject gameObject = 3;
-inline int TestEvent::gameobject_size() const {
+// repeated .protos.Message.GameObject gameObject = 3;
+inline int Message::gameobject_size() const {
   return gameobject_.size();
 }
-inline void TestEvent::clear_gameobject() {
+inline void Message::clear_gameobject() {
   gameobject_.Clear();
 }
-inline const ::protos::GameObject& TestEvent::gameobject(int index) const {
-  // @@protoc_insertion_point(field_get:protos.TestEvent.gameObject)
+inline const ::protos::Message_GameObject& Message::gameobject(int index) const {
+  // @@protoc_insertion_point(field_get:protos.Message.gameObject)
   return gameobject_.Get(index);
 }
-inline ::protos::GameObject* TestEvent::mutable_gameobject(int index) {
-  // @@protoc_insertion_point(field_mutable:protos.TestEvent.gameObject)
+inline ::protos::Message_GameObject* Message::mutable_gameobject(int index) {
+  // @@protoc_insertion_point(field_mutable:protos.Message.gameObject)
   return gameobject_.Mutable(index);
 }
-inline ::protos::GameObject* TestEvent::add_gameobject() {
-  // @@protoc_insertion_point(field_add:protos.TestEvent.gameObject)
+inline ::protos::Message_GameObject* Message::add_gameobject() {
+  // @@protoc_insertion_point(field_add:protos.Message.gameObject)
   return gameobject_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protos::GameObject >&
-TestEvent::gameobject() const {
-  // @@protoc_insertion_point(field_list:protos.TestEvent.gameObject)
+inline const ::google::protobuf::RepeatedPtrField< ::protos::Message_GameObject >&
+Message::gameobject() const {
+  // @@protoc_insertion_point(field_list:protos.Message.gameObject)
   return gameobject_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::protos::GameObject >*
-TestEvent::mutable_gameobject() {
-  // @@protoc_insertion_point(field_mutable_list:protos.TestEvent.gameObject)
+inline ::google::protobuf::RepeatedPtrField< ::protos::Message_GameObject >*
+Message::mutable_gameobject() {
+  // @@protoc_insertion_point(field_mutable_list:protos.Message.gameObject)
   return &gameobject_;
-}
-
-// optional int32 action = 4;
-inline bool TestEvent::has_action() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void TestEvent::set_has_action() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void TestEvent::clear_has_action() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void TestEvent::clear_action() {
-  action_ = 0;
-  clear_has_action();
-}
-inline ::google::protobuf::int32 TestEvent::action() const {
-  // @@protoc_insertion_point(field_get:protos.TestEvent.action)
-  return action_;
-}
-inline void TestEvent::set_action(::google::protobuf::int32 value) {
-  set_has_action();
-  action_ = value;
-  // @@protoc_insertion_point(field_set:protos.TestEvent.action)
-}
-
-// optional int32 keyPress = 5;
-inline bool TestEvent::has_keypress() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void TestEvent::set_has_keypress() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void TestEvent::clear_has_keypress() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void TestEvent::clear_keypress() {
-  keypress_ = 0;
-  clear_has_keypress();
-}
-inline ::google::protobuf::int32 TestEvent::keypress() const {
-  // @@protoc_insertion_point(field_get:protos.TestEvent.keyPress)
-  return keypress_;
-}
-inline void TestEvent::set_keypress(::google::protobuf::int32 value) {
-  set_has_keypress();
-  keypress_ = value;
-  // @@protoc_insertion_point(field_set:protos.TestEvent.keyPress)
-}
-
-// optional int32 clientID = 6;
-inline bool TestEvent::has_clientid() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void TestEvent::set_has_clientid() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void TestEvent::clear_has_clientid() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void TestEvent::clear_clientid() {
-  clientid_ = 0;
-  clear_has_clientid();
-}
-inline ::google::protobuf::int32 TestEvent::clientid() const {
-  // @@protoc_insertion_point(field_get:protos.TestEvent.clientID)
-  return clientid_;
-}
-inline void TestEvent::set_clientid(::google::protobuf::int32 value) {
-  set_has_clientid();
-  clientid_ = value;
-  // @@protoc_insertion_point(field_set:protos.TestEvent.clientID)
-}
-
-// optional .protos.Direction direction = 7;
-inline bool TestEvent::has_direction() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
-}
-inline void TestEvent::set_has_direction() {
-  _has_bits_[0] |= 0x00000040u;
-}
-inline void TestEvent::clear_has_direction() {
-  _has_bits_[0] &= ~0x00000040u;
-}
-inline void TestEvent::clear_direction() {
-  direction_ = 1;
-  clear_has_direction();
-}
-inline ::protos::Direction TestEvent::direction() const {
-  // @@protoc_insertion_point(field_get:protos.TestEvent.direction)
-  return static_cast< ::protos::Direction >(direction_);
-}
-inline void TestEvent::set_direction(::protos::Direction value) {
-  assert(::protos::Direction_IsValid(value));
-  set_has_direction();
-  direction_ = value;
-  // @@protoc_insertion_point(field_set:protos.TestEvent.direction)
 }
 
 
@@ -1089,20 +704,15 @@ inline void TestEvent::set_direction(::protos::Direction value) {
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::protos::TestEvent_Type> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::protos::Event_Type> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protos::TestEvent_Type>() {
-  return ::protos::TestEvent_Type_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::protos::Event_Type>() {
+  return ::protos::Event_Type_descriptor();
 }
-template <> struct is_proto_enum< ::protos::TypeClientEvent> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::protos::Event_Direction> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protos::TypeClientEvent>() {
-  return ::protos::TypeClientEvent_descriptor();
-}
-template <> struct is_proto_enum< ::protos::Direction> : ::google::protobuf::internal::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protos::Direction>() {
-  return ::protos::Direction_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::protos::Event_Direction>() {
+  return ::protos::Event_Direction_descriptor();
 }
 
 }  // namespace google

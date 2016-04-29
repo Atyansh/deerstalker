@@ -13,7 +13,7 @@ public:
 		btCollisionConfiguration* collisionConfiguration);
 	~World();
 
-	static std::unique_ptr<World> createNewWorld();
+	static World* createNewWorld();
 
 private:
 };

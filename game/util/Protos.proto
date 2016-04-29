@@ -1,54 +1,35 @@
 package protos;
 
-message	ServerEvent {
-	optional int32 id = 1;
-}
-
-enum TypeClientEvent {
-	MOVE = 1;
-	SHOOT = 2;
-	JUMP = 3;
-}
-
-message	ClientEvent {
-	optional int32 id = 1;
-	optional TypeClientEvent type = 2;
-	optional Direction direction = 3;
-}
-
-message GameObject {
-	optional int32 id = 1;
-	repeated double matrix = 2;
-}
-
-message ServerState {
-	optional int32 id = 1;
-	repeated GameObject objects = 2;
-	repeated ServerEvent events = 3;
-}
-
-
-enum Direction {
-	UP = 1;
-	DOWN = 2;
-	LEFT = 3;
-	RIGHT = 4;
-	FORWARD = 5;
-	BACKWARD = 6;
-}
-
-message TestEvent {
+message Event {
 	enum Type {
 		SPAWN = 1;
 		MOVE = 2;
-		ASSIGN = 3;
+		JUMP = 3;
+		ASSIGN = 4;
+	}
+
+	enum Direction {
+		UP = 1;
+		DOWN = 2;
+		LEFT = 3;
+		RIGHT = 4;
+		FORWARD = 5;
+		BACKWARD = 6;
 	}
 
 	optional int32 id = 1;
 	optional Type type = 2;
-	repeated GameObject gameObject = 3;
-	optional int32 action = 4;
-	optional int32 keyPress = 5;
 	optional int32 clientID = 6;
 	optional Direction direction = 7;
+}
+
+message Message {
+	message GameObject {
+		optional int32 id = 1;
+		repeated double matrix = 2;
+	}
+
+	optional int32 id = 1;
+	repeated Event event = 2;
+	repeated GameObject gameObject = 3;
 }

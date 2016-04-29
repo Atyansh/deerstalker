@@ -10,20 +10,23 @@ Session::Session(tcp::socket socket, Game& game)
 
 void Session::start() {
 	game_.join(shared_from_this());
-	int clientId = game_.size();
-	protos::TestEvent event;
-	event.set_clientid(clientId);
-	event.set_type(event.ASSIGN);
-	sendEvent(socket_, event);
 
-	event.Clear();
-	event.set_clientid(clientId);
-	event.set_type(event.SPAWN);
-	game_.deliver(event);
+	int clientId = game_.size();
+	protos::Message message;
+	auto* event = message.add_event();
+
+	event->set_clientid(clientId);
+	event->set_type(event->ASSIGN);
+	sendMessage(socket_, message);
+	message.Clear();
+	event = message.add_event();
+	event->set_clientid(clientId);
+	event->set_type(event->SPAWN);
+	game_.deliver(message);
 	do_read_header();
 }
 
-void Session::deliver(const protos::TestEvent msg) {
+void Session::deliver(const protos::Message msg) {
 	bool write_in_progress = !write_msgs_.empty();
 	write_msgs_.push_back(msg);
 	if (!write_in_progress) {
@@ -53,9 +56,9 @@ void Session::do_read_body(size_t length) {
 	socket_.async_read_some(boost::asio::buffer(body, length),
 		[this, self, body, length](boost::system::error_code ec, std::size_t) {
 		if (!ec) {
-			protos::TestEvent event;
-			event.ParseFromArray(body, length);
-			game_.deliver(event);
+			protos::Message message;
+			message.ParseFromArray(body, length);
+			game_.deliver(message);
 			delete body;
 			do_read_header();
 		}
@@ -68,14 +71,14 @@ void Session::do_read_body(size_t length) {
 void Session::do_write() {
 	auto self(shared_from_this());
 
-	protos::TestEvent event = write_msgs_.front();
+	protos::Message message = write_msgs_.front();
 
-	std::uint8_t message[HEADER_SIZE + MAX_MESSAGE_SIZE] = {};
-	auto messageSize = fillMessage(message, event);
+	std::uint8_t arr[HEADER_SIZE + MAX_MESSAGE_SIZE] = {};
+	auto messageSize = fillMessage(arr, message);
 
 	if (messageSize != 0) {
 		boost::asio::async_write(socket_,
-			boost::asio::buffer(message, messageSize + HEADER_SIZE),
+			boost::asio::buffer(arr, messageSize + HEADER_SIZE),
 			[this, self](boost::system::error_code ec, std::size_t /*length*/) {
 			if (!ec) {
 				write_msgs_.pop_front();

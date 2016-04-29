@@ -23,8 +23,12 @@ public:
 
 	static boost::asio::io_service io_service;
 	static tcp::socket socket;
-	static std::deque<protos::TestEvent> eventQueue;
+	static std::deque<protos::Message> messageQueue;
 	static char currentHeader[4];
-	static std::uint32_t ID;
+
+	static uint32_t ID;
+
+private:
+	static float AXIS_TILT;
 };
 

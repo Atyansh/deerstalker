@@ -19,16 +19,22 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\BulletCollision.vcxproj">
+    <ProjectReference Include="C:\workarea\bullet3-2.83.7\build3\vs2010\BulletCollision.vcxproj">
       <Project>{59e07962-d728-454f-b5d1-3f819d0bda7b}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\BulletDynamics.vcxproj">
+    <ProjectReference Include="C:\workarea\bullet3-2.83.7\build3\vs2010\BulletDynamics.vcxproj">
       <Project>{dcfe7723-6742-df40-ae67-fa84d5672c78}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\..\workarea\bullet3-2.83.7\build3\vs2010\LinearMath.vcxproj">
+    <ProjectReference Include="C:\workarea\bullet3-2.83.7\build3\vs2010\BulletFileLoader.vcxproj">
+      <Project>{96c12776-101e-cc48-bbd7-c606f6b25f02}</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:\workarea\bullet3-2.83.7\build3\vs2010\BulletWorldImporter.vcxproj">
+      <Project>{1bf8372c-29d2-3044-bcf3-9a3db2b5d58d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:\workarea\bullet3-2.83.7\build3\vs2010\LinearMath.vcxproj">
       <Project>{19993c3e-4a48-4c43-8704-fef6d7d8a48b}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\..\workarea\protobuf-2.6.1\vsprojects\libprotobuf.vcxproj">
+    <ProjectReference Include="C:\workarea\protobuf-2.6.1\vsprojects\libprotobuf.vcxproj">
       <Project>{3e283f37-a4ed-41b7-a3e6-a2d89d131a30}</Project>
     </ProjectReference>
     <ProjectReference Include="..\util\util.vcxproj">
@@ -93,7 +99,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions);_WIN32_WINNT=0x0501; _SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\workarea\protobuf-2.6.1\src;C:\workarea\bullet3-2.83.7\src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\workarea\protobuf-2.6.1\src;C:\workarea\bullet3-2.83.7\Extras\;C:\workarea\bullet3-2.83.7\src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>

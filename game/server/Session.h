@@ -12,7 +12,7 @@
 using boost::asio::ip::tcp;
 using namespace util;
 
-typedef std::deque<protos::TestEvent> message_queue;
+typedef std::deque<protos::Message> message_queue;
 
 
 class Session
@@ -21,7 +21,7 @@ class Session
 public:
 	Session(tcp::socket socket, Game& game);
 	void start();
-	void deliver(const protos::TestEvent msg);
+	void deliver(const protos::Message msg);
 
 private:
 	void do_read_header();

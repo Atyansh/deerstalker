@@ -116,15 +116,20 @@ void do_read_body(size_t length) {
 		boost::asio::buffer(body, length),
 		[body, length](boost::system::error_code ec, std::size_t) {
 		if (!ec) {
-			protos::TestEvent event;
-			event.ParseFromArray(body, length);
+			protos::Message message;
+			message.ParseFromArray(body, length);
 			delete body;
-			if (event.type() == event.ASSIGN) {
-				Globals::ID = event.clientid();
+
+			for (int i = 0; i < message.event_size(); i++) {
+				auto& event = message.event(i);
+
+				if (event.type() == event.ASSIGN) {
+					Globals::ID = event.clientid();
+				}
 			}
-			else if (event.type() == event.MOVE) {
-				Globals::eventQueue.push_back(event);
-			}
+			
+			Globals::messageQueue.push_back(message);
+
 			do_read_header();
 		}
 		else {
@@ -195,12 +200,18 @@ int main(int argc, char *argv[])
 	while (Globals::ID == 0) {
 		Sleep(1);
 	}
+
+	if (glfwJoystickPresent(GLFW_JOYSTICK_1)) {
+		cerr << "JOYSTICK PRESENT" << endl;
+	}
 	
 	// Initialize objects/pointers for rendering
 	Window::initialize_objects();
 
 	// Loop while GLFW window should stay open
 	while (!glfwWindowShouldClose(window)) {
+		Window::handle_gamepad(window);
+
 		// Main render display callback. Rendering of objects is done here.
 		Window::display_callback(window);
 		// Idle callback. Updating objects, etc. can be done here.
