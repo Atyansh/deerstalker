@@ -8,6 +8,10 @@
 
 using namespace std;
 
+#define POSITION_LOCATION 0
+#define NORMAL_LOCATION 1
+#define TEX_COORD_LOCATION 2
+
 struct Vertex {
 	glm::vec3 Position;
 	glm::vec3 Normal;
@@ -28,8 +32,6 @@ private:
 	vector<GLuint> indices;
 	vector<Texture> textures;
 
-	bool hasTexture;
-
 	/*  Render data  */
 	GLuint VAO, VBO, EBO;
 
@@ -38,7 +40,7 @@ private:
 	void setupMesh();
 
 public:
-	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader, bool hasTexture);
+	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader);
 	virtual ~Mesh(void);
 
 	virtual void update(UpdateData&);
