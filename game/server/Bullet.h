@@ -14,6 +14,7 @@ public:
 	int getId();
 
 private:
+	static const int bulletVelocity_ = 200;
 	int id_;
 	ClientId clientId_;
 	btScalar mass_;

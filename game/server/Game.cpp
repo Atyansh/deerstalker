@@ -172,8 +172,6 @@ void Game::handleShootLogic(protos::Event& event) {
 	Bullet* bullet = Bullet::createNewBullet(generateId(), event.clientid(), player, body_->getCollisionShape());
 	itemList_.push_back(bullet);
 	world_->addRigidBody(bullet);
-
-	bullet->applyCentralForce(player->getOrientation().getAxis() *= 800);
 }
 
 void Game::sendStateToClients() {

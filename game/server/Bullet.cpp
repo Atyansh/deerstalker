@@ -22,13 +22,20 @@ Bullet* Bullet::createNewBullet(int id, ClientId clientId, Player* player, btCol
 	btTransform startTransform;
 	startTransform.setIdentity();
 
-	startTransform.setOrigin(player->getCenterOfMassPosition() + btVector3(5,5,5));
+	btVector3 centerOfMassPosition = player->getCenterOfMassPosition();
+	btVector3 direction = player->getOrientation().getAxis().normalize();
+
+	startTransform.setOrigin(centerOfMassPosition + (direction * 2));
 
 	btMotionState* motionState = new btDefaultMotionState(startTransform);
 
 	btRigidBodyConstructionInfo info(mass, motionState, collisionShape, localInertia);
 
-	return new Bullet(info, id, clientId);
+	Bullet* newBullet = new Bullet(info, id, clientId);
+	
+	newBullet->setLinearVelocity(player->getLinearVelocity() + direction * bulletVelocity_);
+
+	return newBullet;
 }
 
 ClientId Bullet::getClientId() {
