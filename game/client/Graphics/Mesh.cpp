@@ -7,14 +7,12 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader, bool hasTexture) : SGeode()
+Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader) : SGeode()
 {
 	this->vertices = vertices;
 	this->indices = indices;
 	this->textures = textures;
 	this->shader = shader;
-
-	this->hasTexture = hasTexture;
 
 	this->setupMesh();
 }
@@ -37,9 +35,9 @@ void Mesh::draw(DrawData& data)
 	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "model"), 1, GL_FALSE, glm::value_ptr(data.matrix));
 	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "view"), 1, GL_FALSE, glm::value_ptr(data.view));
 	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "projection"), 1, GL_FALSE, glm::value_ptr(data.projection));
-	glUniform1i(glGetUniformLocation(shader->getPid(), "hasTexture"), hasTexture);
+	glUniform1i(glGetUniformLocation(shader->getPid(), "hasTexture"), textures.size() > 0 );
 
-	if (hasTexture) {
+	if (textures.size() > 0) {
 
 		// Bind appropriate textures
 		GLuint diffuseNr = 1;
@@ -73,7 +71,7 @@ void Mesh::draw(DrawData& data)
 	glBindVertexArray(0);
 
 	// Always good practice to set everything back to defaults once configured.
-	for (GLuint i = 0; i < this->textures.size() && hasTexture; i++)
+	for (GLuint i = 0; i < this->textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -103,15 +101,15 @@ void Mesh::setupMesh(){
 
 	// Set the vertex attribute pointers
 	// Vertex Positions
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
+	glEnableVertexAttribArray(POSITION_LOCATION);
+	glVertexAttribPointer(POSITION_LOCATION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
 	// Vertex Normals
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, Normal));
+	glEnableVertexAttribArray(NORMAL_LOCATION);
+	glVertexAttribPointer(NORMAL_LOCATION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, Normal));
 	// Vertex Texture Coords
-	if (hasTexture) {
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, TexCoords));
+	if (textures.size() > 0) {
+		glEnableVertexAttribArray(TEX_COORD_LOCATION);
+		glVertexAttribPointer(TEX_COORD_LOCATION, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, TexCoords));
 	}
 
 	glBindVertexArray(0);

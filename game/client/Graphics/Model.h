@@ -15,14 +15,18 @@ private:
 	string directory;
 	vector<Texture> textures_loaded;
 	Shader *shader;
+	aiMatrix4x4 modelInverseMat;
 
 	void loadModel(string path);
 	void processNode(aiNode* node, const aiScene* scene);
+	void processVerts(aiMesh* mesh, vector<Vertex> &vertices);
+	void processFaces(aiMesh* mesh, vector<GLuint> &indices);
+	void processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> &textures);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 	GLint TextureFromFile(const char* path, string directory);
 	unsigned char* loadPPM(const char*, int&, int&);
-	bool hasTextureFiles();
+	// bool hasPPMTextureFiles();
 
 
 public:
