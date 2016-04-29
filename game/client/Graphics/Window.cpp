@@ -126,19 +126,10 @@ void Window::idle_callback(GLFWwindow* window) {
 			auto& gameObject = message.gameobject(i);
 			int id = gameObject.id();
 
-			//cout << "Matrix: \n";
-
 			float matrix[16];
 			for (int j = 0; j < gameObject.matrix_size(); j++) {
 				matrix[j] = gameObject.matrix(j);
-				
-				/*
-				cout << matrix[j] << " ";
-				if (j % 4 == 3) {
-					cout << endl;
-				}*/
 			}
-			//cout << endl;
 
 			if (cubeMode) {
 				if (cubeMap.find(id) == cubeMap.end()) {
@@ -154,9 +145,7 @@ void Window::idle_callback(GLFWwindow* window) {
 				}
 
 				auto& player = *playerMap[id];
-				//glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(0.5f));
 				glm::mat4 mat = glm::make_mat4(matrix);
-				//player.setMatrix(mat * scale);
 				player.setMatrix(mat);
 			}
 		}

@@ -102,7 +102,6 @@ void Game::startGameLoop() {
 		milliseconds stamp2 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
-		// TODO(Atyansh): Verify this works
 		sleep_for(interval - (stamp2-stamp1));
 	}
 }
