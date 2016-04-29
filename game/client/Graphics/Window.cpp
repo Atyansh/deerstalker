@@ -48,7 +48,7 @@ void Window::initialize_objects()
 
 	World *world = new World();
 	Globals::skybox.setupVAO();
-
+	cerr << "A" << endl;;
 	root = new SMatrixTransform();
 	root->addNode(world);
 

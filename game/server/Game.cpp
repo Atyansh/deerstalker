@@ -121,27 +121,27 @@ void Game::handleMoveLogic(protos::Event& event) {
 	switch (event.direction()) {
 	case (protos::Event_Direction_RIGHT) :
 		std::cerr << "MOVE RIGHT" << std::endl;
-		player->applyCentralForce(btVector3(100, 0, 0));
+		player->applyCentralForce(btVector3(10, 0, 0));
 		break;
 	case (protos::Event_Direction_LEFT) :
 		std::cerr << "MOVE LEFT" << std::endl;
-		player->applyCentralForce(btVector3(-100, 0, 0));
+		player->applyCentralForce(btVector3(-10, 0, 0));
 		break;
 	case (protos::Event_Direction_UP) :
 		std::cerr << "MOVE UP" << std::endl;
-		player->applyCentralForce(btVector3(0, 100, 0));
+		player->applyCentralForce(btVector3(0, 10, 0));
 		break;
 	case (protos::Event_Direction_DOWN) :
 		std::cerr << "MOVE DOWN" << std::endl;
-		player->applyCentralForce(btVector3(0, -100, 0));
+		player->applyCentralForce(btVector3(0, -10, 0));
 		break;
 	case (protos::Event_Direction_FORWARD) :
 		std::cerr << "MOVE FORWARD" << std::endl;
-		player->applyCentralForce(btVector3(0, 0, -100));
+		player->applyCentralForce(btVector3(0, 0, -10));
 		break;
 	case (protos::Event_Direction_BACKWARD) :
 		std::cerr << "MOVE BACKWARD" << std::endl;
-		player->applyCentralForce(btVector3(0, 0, 100));
+		player->applyCentralForce(btVector3(0, 0, 10));
 		break;
 	}
 }

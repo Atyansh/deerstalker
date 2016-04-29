@@ -9,8 +9,8 @@ Camera::Camera() {
 	//direction = glm::normalize(glm::vec3(0.0f, 0.0f, 0.0f));
 	//worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	position = glm::vec3(0.f, 10.f, 50.f);
-	target = glm::vec3(0.0f, 0.0f, 0.f);
+	position = glm::vec3(0.f, 30.f, 70.f);
+	target = glm::vec3(0.0f, 20.0f, 0.f);
 	direction = glm::normalize(position - target);
 
 	up = glm::vec3(0.0f, 1.0f, 0.0f);

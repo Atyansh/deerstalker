@@ -201,8 +201,10 @@ int main(int argc, char *argv[])
 		Sleep(1);
 	}
 
-	if (glfwJoystickPresent(GLFW_JOYSTICK_1)) {
-		cerr << "JOYSTICK PRESENT" << endl;
+	bool joyStickPresent = glfwJoystickPresent(GLFW_JOYSTICK_1);
+
+	if (!joyStickPresent) {
+		cerr << "JOYSTICK NOT PRESENT" << endl;
 	}
 	
 	// Initialize objects/pointers for rendering
@@ -210,7 +212,9 @@ int main(int argc, char *argv[])
 
 	// Loop while GLFW window should stay open
 	while (!glfwWindowShouldClose(window)) {
-		Window::handle_gamepad(window);
+		if (joyStickPresent) {
+			Window::handle_gamepad(window);
+		}
 
 		// Main render display callback. Rendering of objects is done here.
 		Window::display_callback(window);
