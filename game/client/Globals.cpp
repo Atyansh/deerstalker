@@ -3,6 +3,7 @@
 DrawData Globals::drawData = DrawData();
 UpdateData Globals::updateData = UpdateData();
 Camera Globals::camera = Camera();
+Skybox Globals::skybox = Skybox();
 
 
 boost::asio::io_service Globals::io_service;

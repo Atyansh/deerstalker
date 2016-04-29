@@ -91,6 +91,7 @@
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Graphics\Cube.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
+    <ClCompile Include="Graphics\Cubemap.cpp" />
     <ClCompile Include="Graphics\Drawable.cpp" />
     <ClCompile Include="Graphics\DrawData.cpp" />
     <ClCompile Include="Graphics\LightShader.cpp" />
@@ -100,10 +101,12 @@
     <ClCompile Include="Graphics\SGeode.cpp" />
     <ClCompile Include="Graphics\SGroup.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
+    <ClCompile Include="Graphics\Skybox.cpp" />
     <ClCompile Include="Graphics\SMatrixTransform.cpp" />
     <ClCompile Include="Graphics\SNode.cpp" />
     <ClCompile Include="Graphics\UpdateData.cpp" />
     <ClCompile Include="Graphics\Window.cpp" />
+    <ClCompile Include="Graphics\World.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +124,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Graphics\Cube.h" />
     <ClInclude Include="Graphics\Camera.h" />
+    <ClInclude Include="Graphics\Cubemap.h" />
     <ClInclude Include="Graphics\Drawable.h" />
     <ClInclude Include="Graphics\DrawData.h" />
     <ClInclude Include="Graphics\LightShader.h" />
@@ -130,10 +134,12 @@
     <ClInclude Include="Graphics\SGroup.h" />
     <ClInclude Include="Graphics\Shader.h" />
     <ClInclude Include="Graphics\Mesh.h" />
+    <ClInclude Include="Graphics\Skybox.h" />
     <ClInclude Include="Graphics\SMatrixTransform.h" />
     <ClInclude Include="Graphics\SNode.h" />
     <ClInclude Include="Graphics\UpdateData.h" />
     <ClInclude Include="Graphics\Window.h" />
+    <ClInclude Include="Graphics\World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

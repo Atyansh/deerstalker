@@ -6,8 +6,8 @@
 Camera::Camera() {
 
 	// Default position, target and up
-	position = glm::vec3(0.0f, 0.0f, 0.0f);
-	front = glm::vec3(0.0f, 0.0f, -20.0f);
+	position = glm::vec3(0.0f, 10.f, 0.0f);
+	front = glm::vec3(0.0f, -10.0f, -10.0f);
 	direction = glm::normalize(front);
 	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 }
@@ -28,6 +28,7 @@ Camera::~Camera() {
 glm::mat4 Camera::getView() {
 
 	return glm::lookAt(position, position + front, worldUp);
+	//return glm::lookAt(glm::vec3(0.0f, -6.0f, -20.0f), glm::vec3(0.0f, 0.0f, 0.0f), worldUp);
 
 }
 

@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "SNode.h"
 #include "SMatrixTransform.h"
+#include "World.h"
 #include <glm/ext.hpp>
 
 #include "client\Globals.h"
@@ -25,12 +26,32 @@ int Window::height;
 std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 
+SMatrixTransform *root;
 
 void Window::initialize_objects()
 {
 	glm::mat4 loc = glm::translate(glm::mat4(), glm::vec3(0.0f, -0.5f, -20.0f));
 	loc = glm::scale(loc, glm::vec3(0.8f));
 	Globals::drawData.matrix = loc;
+
+	World *world = new World();
+	//world->createWorld();
+	//glm::vec3 pointLightPositions[] = {
+	//	glm::vec3(2.3f, -1.6f, -3.0f),
+	//	glm::vec3(-1.7f, 0.9f, 1.0f)
+	//};
+	//LightShader* lightShader = new LightShader(Globals::camera.getPosition(), "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
+	//Model* model = new Model("Graphics/Assets/OBJ/Floor/floor.obj", lightShader);
+	//lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
+	////lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
+	//lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+	//lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+
+	Globals::skybox.setupVAO();
+
+	root = new SMatrixTransform();
+	root->addNode(world);
+
 }
 
 void Window::clean_up() {
@@ -104,10 +125,19 @@ void Window::idle_callback(GLFWwindow* window) {
 			auto& gameObject = event.gameobject(i);
 			int id = gameObject.id();
 
+			//cout << "Matrix: \n";
+
 			float matrix[16];
 			for (int j = 0; j < gameObject.matrix_size(); j++) {
 				matrix[j] = gameObject.matrix(j);
+				
+				/*
+				cout << matrix[j] << " ";
+				if (j % 4 == 3) {
+					cout << endl;
+				}*/
 			}
+			//cout << endl;
 
 			if (cubeMode) {
 				if (cubeMap.find(id) == cubeMap.end()) {
@@ -134,6 +164,11 @@ void Window::idle_callback(GLFWwindow* window) {
 void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	Globals::skybox.draw();
+
+	root->draw(Globals::drawData);
+
 	if (cubeMode) {
 		// Set the matrix mode to GL_MODELVIEW
 		glMatrixMode(GL_MODELVIEW);
@@ -150,6 +185,7 @@ void Window::display_callback(GLFWwindow* window) {
 		for (auto& pair : playerMap) {
 			pair.second->draw(Globals::drawData);
 		}
+
 	}
 
 	// Gets events, including input such as keyboard and mouse or window resizing
