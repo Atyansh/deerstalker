@@ -23,6 +23,7 @@ bool cubeMode;
 int Window::width;
 int Window::height;
 std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
+std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 
 
@@ -104,6 +105,15 @@ void Window::idle_callback(GLFWwindow* window) {
 			auto& gameObject = event.gameobject(i);
 			int id = gameObject.id();
 
+			auto* map = &playerMap;
+
+			if (gameObject.type() == protos::GameObject_GameObjectType_PLAYER) {
+				map = &playerMap;
+			}
+			else if (gameObject.type() == protos::GameObject_GameObjectType_HAT) {
+				map = &hatMap;
+			}
+
 			float matrix[16];
 			for (int j = 0; j < gameObject.matrix_size(); j++) {
 				matrix[j] = gameObject.matrix(j);
@@ -118,11 +128,11 @@ void Window::idle_callback(GLFWwindow* window) {
 				cube.toWorld = glm::make_mat4(matrix);
 			}
 			else {
-				if (playerMap.find(id) == playerMap.end()) {
-					playerMap[id] = Mango::createNewMango();
+				if ((*map).find(id) == (*map).end()) {
+					(*map)[id] = Mango::createNewMango();
 				}
 
-				auto& player = *playerMap[id];
+				auto& player = *(*map)[id];
 				glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(0.5f));
 				glm::mat4 mat = glm::make_mat4(matrix);
 				player.setMatrix(mat * scale);
@@ -148,6 +158,10 @@ void Window::display_callback(GLFWwindow* window) {
 	else {
 		// Render objects
 		for (auto& pair : playerMap) {
+			pair.second->draw(Globals::drawData);
+		}
+		// hat
+		for (auto& pair : hatMap) {
 			pair.second->draw(Globals::drawData);
 		}
 	}

@@ -62,6 +62,7 @@ void Game::initialize() {
 void Game::startGameLoop() {
 	// TODO(Atyansh): Make this part of config settings 
 	milliseconds interval = milliseconds(33);
+	int frameCounter = 0;
 
 	while (true) {
 		milliseconds stamp1 = duration_cast<milliseconds>(
@@ -87,6 +88,14 @@ void Game::startGameLoop() {
 
 		// TODO(Atyansh): Verify this works
 		sleep_for(interval - (stamp2-stamp1));
+
+		if (frameCounter > 300) {
+			spawnNewHat();
+			frameCounter = 0;
+		}
+		else {
+			frameCounter++;
+		}
 	}
 }
 
@@ -135,6 +144,8 @@ void Game::sendStateToClients() {
 
 	protos::TestEvent event;
 
+	event.set_type(event.MOVE);
+
 	for (auto& pair : playerMap_) {
 		btTransform transform;
 		pair.second->getMotionState()->getWorldTransform(transform);
@@ -143,16 +154,39 @@ void Game::sendStateToClients() {
 
 		transform.getOpenGLMatrix(glm);
 
-		event.set_type(event.MOVE);
-
 		protos::GameObject* gameObject = event.add_gameobject();
+		gameObject->set_type(protos::GameObject_GameObjectType_PLAYER);
 		gameObject->set_id(pair.first);
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
 		}
 	}
 
+	for (auto* hat : hatSet_) {
+		btTransform transform;
+		hat->getMotionState()->getWorldTransform(transform);
+
+		btScalar glm[16] = {};
+
+		transform.getOpenGLMatrix(glm);
+
+		protos::GameObject* gameObject = event.add_gameobject();
+		gameObject->set_type(protos::GameObject_GameObjectType_HAT);
+		gameObject->set_id(hat->getHatId());
+		for (auto v : glm) {
+			gameObject->add_matrix(v);
+		}
+	}
+
+
+
 	for (auto client : clients_) {
 		client->deliver(event);
 	}
+}
+
+void Game::spawnNewHat() {
+	Hat* hat = Hat::createNewHat(Hat::WIZARD_HAT);
+	hatSet_.insert(hat);
+	world_->addRigidBody(hat);
 }

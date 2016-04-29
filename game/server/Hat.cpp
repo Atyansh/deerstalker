@@ -1,6 +1,8 @@
 #include "Hat.h"
 
-Hat::Hat(btRigidBodyConstructionInfo& info) : btRigidBody(info) {
+int Hat::idCounter = 0;
+
+Hat::Hat(btRigidBodyConstructionInfo& info) : btRigidBody(info), id_(idCounter++) {
 }
 
 Hat::~Hat() {
@@ -11,7 +13,7 @@ Hat::~Hat() {
 	delete motionState;
 }
 
-Hat* Hat::createNewHat(ClientId clientId, int hatType) {
+Hat* Hat::createNewHat(int hatType) {
 	btScalar mass = 1.0;
 	btVector3 localInertia(0, 0, 0);
 	btCollisionShape* collisionShape = new btBoxShape(btVector3(1, 1, 1));
@@ -20,7 +22,11 @@ Hat* Hat::createNewHat(ClientId clientId, int hatType) {
 	btTransform startTransform;
 	startTransform.setIdentity();
 
-	startTransform.setOrigin(btVector3(clientId, 10, 0));
+	int worldSize = 21;
+	int xPosition = rand() % worldSize - 10;
+	int yPosition = 10;
+	int zPosition = rand() % worldSize - 10;
+	startTransform.setOrigin(btVector3(xPosition, yPosition, zPosition));
 
 	btMotionState* motionState = new btDefaultMotionState(startTransform);
 
@@ -31,4 +37,8 @@ Hat* Hat::createNewHat(ClientId clientId, int hatType) {
 
 int Hat::getHatType() {
 	return hatType_;
+}
+
+int Hat::getHatId() {
+	return id_;
 }

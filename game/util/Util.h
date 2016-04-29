@@ -8,7 +8,7 @@ using boost::asio::ip::tcp;
 
 namespace util {
 
-	static const int MAX_MESSAGE_SIZE = 1024;
+	static const int MAX_MESSAGE_SIZE = 1000000;
 
 	static const int HEADER_SIZE = 4;
 

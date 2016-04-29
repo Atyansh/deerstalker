@@ -17,8 +17,13 @@ message	ClientEvent {
 }
 
 message GameObject {
+	enum GameObjectType {
+		PLAYER = 1;
+		HAT = 2;
+	}
 	optional int32 id = 1;
 	repeated double matrix = 2;
+	optional GameObjectType type = 3;
 }
 
 message ServerState {
