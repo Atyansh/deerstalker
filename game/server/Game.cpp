@@ -38,12 +38,12 @@ void Game::initialize() {
 	world_ = World::createNewWorld();
 	world_->setGravity(btVector3(0, -10, 0));
 
-	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
+	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(500.), btScalar(500.), btScalar(500.)));
 	
 	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 5);
 	btTransform groundTransform;
 	groundTransform.setIdentity();
-	groundTransform.setOrigin(btVector3(0, -56, 0));
+	groundTransform.setOrigin(btVector3(0, -506, 0));
 
 	{
 		btScalar mass(0.);
@@ -63,7 +63,7 @@ void Game::initialize() {
 
 	btBulletWorldImporter* fileLoader = new btBulletWorldImporter();
 
-	fileLoader->loadFile("bullet_assets\\Mango.bullet");
+	fileLoader->loadFile("bullet_assets\\Player.bullet");
 	body_ = fileLoader->getRigidBodyByIndex(0);
 
 	std::cerr << "Num Rigid Bodies: " << fileLoader->getNumCollisionShapes() << std::endl;

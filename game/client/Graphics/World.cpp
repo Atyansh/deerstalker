@@ -29,7 +29,7 @@ void World::createWorld() {
 
 	glm::mat4 mat = glm::mat4();
 	
-	glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(10.f, 1.f, 10.f));
+	glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(100.f, 1.f, 100.f));
 	
 
 	floor->setMatrix(glm::translate(mat * scale, glm::vec3(0.0f, -6.0f, 0.0f)));

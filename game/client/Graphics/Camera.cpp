@@ -4,8 +4,8 @@
 
 
 Camera::Camera() {
-	position = glm::vec3(0.f, 30.f, 70.f);
-	target = glm::vec3(0.0f, 20.0f, 0.f);
+	position = glm::vec3(0.f, 300.f, 400.f);
+	target = glm::vec3(0.0f, 0.0f, 0.f);
 	direction = glm::normalize(position - target);
 
 	up = glm::vec3(0.0f, 1.0f, 0.0f);

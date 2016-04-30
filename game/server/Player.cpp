@@ -2,6 +2,7 @@
 
 Player::Player(btRigidBodyConstructionInfo& info) : btRigidBody(info) {
 	setActivationState(DISABLE_DEACTIVATION);
+	//this->setGravity(btVector3(0.f, 100.f, 0.f));
 }
 
 Player::~Player() {
@@ -17,6 +18,7 @@ Player* Player::createNewPlayer(ClientId clientId, btCollisionShape* collisionSh
 	btVector3 localInertia(0, 0, 0);
 	//btCollisionShape* collisionShape = new btBoxShape(btVector3(1, 1, 1));
 	collisionShape->calculateLocalInertia(mass, localInertia);
+	collisionShape->setLocalScaling(btVector3(2, 2, 2));
 
 	btTransform startTransform;
 	startTransform.setIdentity();

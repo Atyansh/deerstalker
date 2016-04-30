@@ -146,7 +146,8 @@ void Window::idle_callback(GLFWwindow* window) {
 
 				auto& player = *playerMap[id];
 				glm::mat4 mat = glm::make_mat4(matrix);
-				player.setMatrix(mat);
+				glm::mat4 scale = glm::scale(glm::vec3(2.f));
+				player.setMatrix(mat*scale);
 			}
 		}
 	}

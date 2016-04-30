@@ -19,7 +19,7 @@ Skybox::~Skybox()
 void Skybox::setupVAO() {
 	shader = new Shader(vert, frag);
 
-	float skyboxSize = 500.f;
+	float skyboxSize = 7000.f;
 
 	GLfloat skyboxVertices[] = {
 		// Positions          
