@@ -3,6 +3,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <assimp/scene.h>
+#include <unordered_map>
 
 #include "SGeode.h"
 #include "Mesh.h"
@@ -17,6 +18,15 @@ private:
 	Shader *shader;
 	aiMatrix4x4 modelInverseMat;
 
+	struct BoneInfo
+	{
+		aiMatrix4x4 BoneOffset;
+		aiMatrix4x4 FinalTransformation;
+	};
+	unsigned int numBones;
+	 unordered_map<string, unsigned int> boneMapping;
+	 vector<BoneInfo> boneInfos; //index based in boneMapping
+
 	void loadModel(string path);
 	void processNode(aiNode* node, const aiScene* scene);
 	void processVerts(aiMesh* mesh, vector<Vertex> &vertices);
@@ -26,6 +36,7 @@ private:
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 	GLint TextureFromFile(const char* path, string directory);
 	unsigned char* loadPPM(const char*, int&, int&);
+	 void loadBones(const aiMesh* mesh, vector<Vertex>& bones);
 	// bool hasPPMTextureFiles();
 
 

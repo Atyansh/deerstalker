@@ -11,11 +11,17 @@ using namespace std;
 #define POSITION_LOCATION 0
 #define NORMAL_LOCATION 1
 #define TEX_COORD_LOCATION 2
+#define BONE_ID_LOCATION     3
+#define BONE_WEIGHT_LOCATION 4
+
+#define MAX_BONES 100
 
 struct Vertex {
 	glm::vec3 Position;
 	glm::vec3 Normal;
 	glm::vec2 TexCoords;
+	glm::ivec4 BoneIds;
+	glm::vec4 Weights;
 };
 
 struct Texture {
@@ -31,6 +37,7 @@ private:
 	vector<Vertex> vertices;
 	vector<GLuint> indices;
 	vector<Texture> textures;
+	bool hasBones;
 
 	/*  Render data  */
 	GLuint VAO, VBO, EBO;
@@ -40,7 +47,7 @@ private:
 	void setupMesh();
 
 public:
-	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader);
+	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader, bool hasBones);
 	virtual ~Mesh(void);
 
 	virtual void update(UpdateData&);
