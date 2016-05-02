@@ -19,10 +19,64 @@ Model::~Model()
 
 }
 
-void Model::draw(DrawData &data){
+//			boneInfos[j].FinalTransformation = modelInverseMat /* * GlobalTransformation*/ * boneInfos[j].BoneOffset;
 
+
+void Model::draw(DrawData &data){
+	if (boneMapping.size() > 0 && boneInfos.size() > 0) {
+		aiMatrix4x4 rootMatrix;
+		cout << "has bones" << endl;
+		this->readNodeHeirarchy(0, this->rootScene->mRootNode, rootMatrix);
+	}
+
+	cout << "read hierarchy" << endl;
 	for (GLuint i = 0; i < this->meshes.size(); i++){
+		//for (int j = 0; j < boneInfos.size(); j++) {
+		//	this->meshes[i].setBoneMatrix(j, boneInfos[j].FinalTransformation); //set the transforms
+		//}
+		for (int j = 0; j < boneInfos.size(); j++) {
+			boneInfos[j].FinalTransformation = modelInverseMat /* * GlobalTransformation*/ * boneInfos[j].BoneOffset;
+			this->meshes[i].setBoneMatrix(j, boneInfos[j].FinalTransformation);
+		}
 		this->meshes[i].draw(data);
+	}
+	cout << "done draw" << endl;
+}
+
+void Model::readNodeHeirarchy(float AnimationTime, const aiNode* node, const aiMatrix4x4& ParentTransform) {
+	
+	// string NodeName(node->mName.data);
+
+	//aiMatrix4x4 NodeTransformation(node->mTransformation);
+
+	////TODO animation code
+
+	//aiMatrix4x4 GlobalTransformation = ParentTransform * NodeTransformation;
+
+	//if (boneMapping.find(NodeName) != boneMapping.end()) {
+	//	unsigned int boneIndex = boneMapping[NodeName];
+	//	
+	//	boneInfos[boneIndex].FinalTransformation = modelInverseMat * GlobalTransformation * boneInfos[boneIndex].BoneOffset;
+	//}
+	/*for (GLuint i = 0; i < node->mNumMeshes; i++)
+	{
+		aiMesh* mesh = rootScene->mMeshes[node->mMeshes[i]];
+		for (unsigned int i = 0; i < mesh->mNumBones; i++) {
+			string boneName(mesh->mBones[i]->mName.data);
+		}
+	}*/
+
+	// BUG: num of children is null
+	cout << "inside hierarchy" << endl;
+	if (!node) {
+		cout << "node null" << endl;
+	}
+	cout << node->mNumChildren << endl;
+	for (unsigned int i = 0; i < node->mNumChildren; i++) {
+		if (!node->mChildren[i]) {
+			cout << "child null" << endl;
+		}
+		readNodeHeirarchy(AnimationTime, node->mChildren[i], ParentTransform);
 	}
 }
 
@@ -35,18 +89,18 @@ void Model::update(UpdateData &updateData){
 void Model::loadModel(string path)
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
+	rootScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	if (!rootScene || rootScene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !rootScene->mRootNode) // if is Not Zero
 	{
 		cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
 		return;
 	}
 	this->directory = path.substr(0, path.find_last_of('/'));
 
-	modelInverseMat = scene->mRootNode->mTransformation;
+	modelInverseMat = rootScene->mRootNode->mTransformation;
 	modelInverseMat.Inverse();
 
-	this->processNode(scene->mRootNode, scene);
+	this->processNode(rootScene->mRootNode, rootScene);
 }
 
 // Processes a node in a recursive fashio
@@ -147,13 +201,15 @@ void Model::loadBones(const aiMesh* mesh, vector<Vertex>& vertices)
 		for (unsigned int j = 0; j < mesh->mBones[i]->mNumWeights; j++) {
 			unsigned int VertexID = mesh->mBones[i]->mWeights[j].mVertexId;
 			float weight = mesh->mBones[i]->mWeights[j].mWeight;
-			for (int i = 0; i < vertices[VertexID].BoneIds.length(); i++) {
-				if (vertices[VertexID].Weights[i] == 0.0f) {
-					vertices[VertexID].BoneIds[i] = boneIndex;
-					vertices[VertexID].Weights[i] = weight;
-					//cout << glm::to_string(vertices[VertexID].BoneIds) << endl;
-					//cout << glm::to_string(vertices[VertexID].Weights) << endl;
-					//cout << endl;
+			for (int k = 0; k < vertices[VertexID].BoneIds.length(); k++) {
+				if (vertices[VertexID].Weights[k] == 0.0f) {
+					vertices[VertexID].BoneIds[k] = boneIndex;
+					vertices[VertexID].Weights[k] = weight;
+					/*cout << VertexID << endl;
+					cout << glm::to_string(vertices[VertexID].Position) << endl;
+					cout << glm::to_string(vertices[VertexID].BoneIds) << endl;
+					cout << glm::to_string(vertices[VertexID].Weights) << endl;
+					cout << endl;*/
 					break;
 				}
 			}
