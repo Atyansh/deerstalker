@@ -7,12 +7,13 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader) : SGeode()
+Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader, bool hasBones=false) : SGeode()
 {
 	this->vertices = vertices;
 	this->indices = indices;
 	this->textures = textures;
 	this->shader = shader;
+	this->hasBones = hasBones;
 
 	this->setupMesh();
 }
@@ -36,6 +37,14 @@ void Mesh::draw(DrawData& data)
 	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "view"), 1, GL_FALSE, glm::value_ptr(data.view));
 	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "projection"), 1, GL_FALSE, glm::value_ptr(data.projection));
 	glUniform1i(glGetUniformLocation(shader->getPid(), "hasTexture"), textures.size() > 0 );
+	glUniform1i(glGetUniformLocation(shader->getPid(), "hasBones"), this->hasBones);
+	if (this->hasBones) {
+		for (size_t i = 0; i < MAX_BONES; i++) {
+			string tmp = "bones[" + to_string(i) + "].";
+			glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), tmp.c_str()), 1, GL_TRUE, glm::value_ptr(glm::mat4())); // will need to refactor for animation
+		}
+	}
+
 
 	if (textures.size() > 0) {
 
@@ -77,7 +86,7 @@ void Mesh::draw(DrawData& data)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	//shader->unbind();
+	shader->unbind();
 }
 
 void Mesh::update(UpdateData& data)
@@ -110,6 +119,14 @@ void Mesh::setupMesh(){
 	if (textures.size() > 0) {
 		glEnableVertexAttribArray(TEX_COORD_LOCATION);
 		glVertexAttribPointer(TEX_COORD_LOCATION, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, TexCoords));
+	}
+
+	if (this->hasBones) {
+		glEnableVertexAttribArray(BONE_ID_LOCATION);
+		glVertexAttribIPointer(BONE_ID_LOCATION, 4, GL_INT, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, BoneIds));
+
+		glEnableVertexAttribArray(BONE_WEIGHT_LOCATION);
+		glVertexAttribPointer(BONE_WEIGHT_LOCATION, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, Weights));
 	}
 
 	glBindVertexArray(0);

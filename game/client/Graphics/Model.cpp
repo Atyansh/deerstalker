@@ -10,6 +10,7 @@
 Model::Model(const char* path, Shader *shader) : SGeode()
 {
 	this->shader = shader;
+	numBones = 0;
 	this->loadModel(path);
 }
 
@@ -77,16 +78,19 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	//process vertices
 	processVerts(mesh, vertices);
 
+	//process bones
+	cout << "Bones: " << mesh->mNumBones << endl;
+	if (mesh->mNumBones > 0) {
+		loadBones(mesh, vertices);
+	}
+
 	//process faces
 	processFaces(mesh, indices);
-
-	//process bones
-	cout << mesh->mNumBones << endl;
 
 	//process material w/ textures
 	processMaterial(mesh, scene, textures);
 
-	return Mesh(vertices, indices, textures, this->shader);
+	return Mesh(vertices, indices, textures, this->shader, mesh->mNumBones > 0);
 }
 
 void Model::processVerts(aiMesh* mesh, vector<Vertex> &vertices){
@@ -114,7 +118,48 @@ void Model::processVerts(aiMesh* mesh, vector<Vertex> &vertices){
 		}
 		else
 			vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+
 		vertices.push_back(vertex);
+	}
+}
+
+void Model::loadBones(const aiMesh* mesh, vector<Vertex>& vertices)
+{
+	for (unsigned int i = 0; i < mesh->mNumBones; i++) {
+		string boneName(mesh->mBones[i]->mName.data);
+		unsigned int boneIndex = 0;
+		cout << boneName << endl;
+
+		//for animation
+		if (boneMapping.find(boneName) == boneMapping.end()) {
+			// Allocate a new bone
+			boneIndex = numBones;
+			numBones++;
+			BoneInfo bi;
+			bi.BoneOffset = mesh->mBones[i]->mOffsetMatrix;
+			boneInfos.push_back(bi);
+			boneMapping.insert(pair<string, unsigned int>(boneName, boneIndex));
+		} else {
+			boneIndex = boneMapping[boneName];
+		}
+
+		//bone stuff
+		for (unsigned int j = 0; j < mesh->mBones[i]->mNumWeights; j++) {
+			unsigned int VertexID = mesh->mBones[i]->mWeights[j].mVertexId;
+			float weight = mesh->mBones[i]->mWeights[j].mWeight;
+			for (int i = 0; i < vertices[VertexID].BoneIds.length(); i++) {
+				if (vertices[VertexID].Weights[i] == 0.0f) {
+					vertices[VertexID].BoneIds[i] = boneIndex;
+					vertices[VertexID].Weights[i] = weight;
+					//cout << glm::to_string(vertices[VertexID].BoneIds) << endl;
+					//cout << glm::to_string(vertices[VertexID].Weights) << endl;
+					//cout << endl;
+					break;
+				}
+			}
+			
+		}
+		
 	}
 }
 
