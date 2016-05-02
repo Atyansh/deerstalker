@@ -1,4 +1,7 @@
 #pragma once
+
+#define _USE_MATH_DEFINES
+
 #include <iostream>
 
 #include <chrono>
@@ -9,8 +12,10 @@
 #include "World.h"
 #include "Player.h"
 #include "Bullet.h"
-
+#include <tuple>
 #include <mutex>
+#include <cmath>
+
 
 class Game {
 public:
@@ -30,10 +35,14 @@ public:
 	void handleMoveLogic(protos::Event& event);
 	void handleJumpLogic(protos::Event& event);
 	void handleShootLogic(protos::Event& event);
+	void handleViewLogic(protos::Event& event);
 
 	void sendStateToClients();
-
+   
 private:
+	// TODO MOVE TO CONSTANTS LOCATION
+	const btScalar ROT_DELTA = M_PI / 8;
+	
 	int idCounter_;
 	std::set<client_ptr> clients_;
 	World* world_;
@@ -44,4 +53,6 @@ private:
 	std::unordered_map<ClientId, Player*> playerMap_;
 	std::list<Bullet*> itemList_;
 	std::mutex playerMapLock_;
+
+	std::tuple<btVector3, btScalar> getRotation(protos::Event_Direction direction, Player * player);
 };

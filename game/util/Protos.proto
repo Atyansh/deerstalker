@@ -3,10 +3,11 @@ package protos;
 message Event {
 	enum Type {
 		SPAWN = 1;
-		MOVE = 2;
+		LMOVE = 2;
 		JUMP = 3;
 		ASSIGN = 4;
 		SHOOT = 5;
+		RMOVE = 6;
 	}
 
 	enum Direction {

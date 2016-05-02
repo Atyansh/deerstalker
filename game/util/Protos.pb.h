@@ -40,14 +40,15 @@ class Message_GameObject;
 
 enum Event_Type {
   Event_Type_SPAWN = 1,
-  Event_Type_MOVE = 2,
+  Event_Type_LMOVE = 2,
   Event_Type_JUMP = 3,
   Event_Type_ASSIGN = 4,
-  Event_Type_SHOOT = 5
+  Event_Type_SHOOT = 5,
+  Event_Type_RMOVE = 6
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
-const Event_Type Event_Type_Type_MAX = Event_Type_SHOOT;
+const Event_Type Event_Type_Type_MAX = Event_Type_RMOVE;
 const int Event_Type_Type_ARRAYSIZE = Event_Type_Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Event_Type_descriptor();
@@ -157,10 +158,11 @@ class Event : public ::google::protobuf::Message {
 
   typedef Event_Type Type;
   static const Type SPAWN = Event_Type_SPAWN;
-  static const Type MOVE = Event_Type_MOVE;
+  static const Type LMOVE = Event_Type_LMOVE;
   static const Type JUMP = Event_Type_JUMP;
   static const Type ASSIGN = Event_Type_ASSIGN;
   static const Type SHOOT = Event_Type_SHOOT;
+  static const Type RMOVE = Event_Type_RMOVE;
   static inline bool Type_IsValid(int value) {
     return Event_Type_IsValid(value);
   }

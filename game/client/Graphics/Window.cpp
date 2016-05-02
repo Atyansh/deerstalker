@@ -147,9 +147,7 @@ void Window::idle_callback(GLFWwindow* window) {
 					}
 
 					auto& player = *playerMap[id];
-					//glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(0.5f));
 					glm::mat4 mat = glm::make_mat4(matrix);
-					//player.setMatrix(mat * scale);
 					player.setMatrix(mat);
 				}
 				else if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
@@ -158,15 +156,9 @@ void Window::idle_callback(GLFWwindow* window) {
 					}
 					
 					auto& item = *itemMap[id];
-					//glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(0.5f));
 					glm::mat4 mat = glm::make_mat4(matrix);
-					//player.setMatrix(mat * scale);
 					item.setMatrix(mat);
 				}
-
-				auto& player = *playerMap[id];
-				glm::mat4 mat = glm::make_mat4(matrix);
-				player.setMatrix(mat);
 			}
 		}
 	}
@@ -215,7 +207,7 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 
 	event->set_clientid(Globals::ID);
 
-	event->set_type(protos::Event_Type_MOVE);
+	event->set_type(protos::Event_Type_LMOVE);
 
 	bool validEvent = true;
 
@@ -262,25 +254,28 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	}
 
 	if (axes[LEFT_STICK_X] > POS_AXIS_TILT) {
-		addMoveEvent(message, protos::Event_Direction_RIGHT);
+		addMoveEvent(message, protos::Event_Direction_RIGHT, protos::Event_Type_LMOVE);
 	}
 	else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT) {
-		addMoveEvent(message, protos::Event_Direction_LEFT);
+		addMoveEvent(message, protos::Event_Direction_LEFT, protos::Event_Type_LMOVE);
 	}
 
 	if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) {
-		addMoveEvent(message, protos::Event_Direction_BACKWARD);
+		addMoveEvent(message, protos::Event_Direction_BACKWARD, protos::Event_Type_LMOVE);
 	}
 	else if (axes[LEFT_STICK_Y] < NEG_AXIS_TILT) {
-		addMoveEvent(message, protos::Event_Direction_FORWARD);
+		addMoveEvent(message, protos::Event_Direction_FORWARD, protos::Event_Type_LMOVE);
 	}
 
 	if (axes[TRIGGER_AXIS] > POS_AXIS_TILT) {
-		addMoveEvent(message, protos::Event_Direction_DOWN);
+		addMoveEvent(message, protos::Event_Direction_DOWN, protos::Event_Type_LMOVE);
 	}
 	else if (axes[TRIGGER_AXIS] < NEG_AXIS_TILT) {
-		addMoveEvent(message, protos::Event_Direction_UP);
+		addMoveEvent(message, protos::Event_Direction_UP, protos::Event_Type_LMOVE);
 	}
+
+
+	handleDirection(axes, message);
 
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
@@ -302,9 +297,25 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 }
 
-void Window::addMoveEvent(protos::Message& message, protos::Event_Direction direction) {
+void Window::handleDirection(const float * axes, protos::Message& message) {
+	if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
+		addMoveEvent(message, protos::Event_Direction_RIGHT, protos::Event_Type_RMOVE);
+	}
+	else if (axes[RIGHT_STICK_X] < NEG_AXIS_TILT) {
+		addMoveEvent(message, protos::Event_Direction_LEFT, protos::Event_Type_RMOVE);
+	}
+
+	if (axes[RIGHT_STICK_Y] > POS_AXIS_TILT) {
+		addMoveEvent(message, protos::Event_Direction_BACKWARD, protos::Event_Type_RMOVE);
+	}
+	else if (axes[RIGHT_STICK_Y] < NEG_AXIS_TILT) {
+		addMoveEvent(message, protos::Event_Direction_FORWARD, protos::Event_Type_RMOVE);
+	}
+}
+
+void Window::addMoveEvent(protos::Message& message, protos::Event_Direction direction, protos::Event_Type event_type) {
 	protos::Event* event = message.add_event();
 	event->set_clientid(Globals::ID);
-	event->set_type(protos::Event_Type_MOVE);
+	event->set_type(event_type);
 	event->set_direction(direction);
 }

@@ -6,17 +6,16 @@
 
 class Bullet : public btRigidBody {
 public:
-	Bullet(btRigidBodyConstructionInfo& info, int id, ClientId clientId);
+	Bullet(btRigidBodyConstructionInfo& info, int id, int ownerId);
 	~Bullet();
 
-	static Bullet* createNewBullet(int id, ClientId clientId, Player* player, btCollisionShape* collisionShape);
-	ClientId getClientId();
+	static Bullet* createNewBullet(int id, Player* player, btCollisionShape* collisionShape);
 	int getId();
 
 private:
 	static const int bulletVelocity_ = 200;
 	int id_;
-	ClientId clientId_;
+	int ownerId_;
 	btScalar mass_;
 	btMotionState* motionState_;
 	btCollisionShape* collisionShape_;

@@ -1,7 +1,7 @@
 #include "Bullet.h"
 
-Bullet::Bullet(btRigidBodyConstructionInfo& info, int id, ClientId clientId) 
-	: btRigidBody(info), id_(id), clientId_(clientId) {
+Bullet::Bullet(btRigidBodyConstructionInfo& info, int id, int ownerId) 
+	: btRigidBody(info), id_(id), ownerId_(ownerId) {
 	setActivationState(DISABLE_DEACTIVATION);
 }
 
@@ -13,33 +13,28 @@ Bullet::~Bullet() {
 	delete motionState;
 }
 
-Bullet* Bullet::createNewBullet(int id, ClientId clientId, Player* player, btCollisionShape* collisionShape) {
-	btScalar mass = 1.0;
+Bullet* Bullet::createNewBullet(int id, Player* player, btCollisionShape* collisionShape) {
+	btScalar mass = 0.5;
 	btVector3 localInertia(0, 0, 0);
-	//btCollisionShape* collisionShape = new btSphereShape(btScalar(1.));
 	collisionShape->calculateLocalInertia(mass, localInertia);
 
 	btTransform startTransform;
 	startTransform.setIdentity();
 
 	btVector3 centerOfMassPosition = player->getCenterOfMassPosition();
-	btVector3 direction = player->getOrientation().getAxis().normalize();
+	btVector3 direction = player->getLookAt();
 
-	startTransform.setOrigin(centerOfMassPosition + (direction * 2));
+	startTransform.setOrigin(centerOfMassPosition + (direction * 5));
 
 	btMotionState* motionState = new btDefaultMotionState(startTransform);
 
 	btRigidBodyConstructionInfo info(mass, motionState, collisionShape, localInertia);
 
-	Bullet* newBullet = new Bullet(info, id, clientId);
+	Bullet* newBullet = new Bullet(info, id, player->getId());
 	
 	newBullet->setLinearVelocity(player->getLinearVelocity() + direction * bulletVelocity_);
 
 	return newBullet;
-}
-
-ClientId Bullet::getClientId() {
-	return clientId_;
 }
 
 int Bullet::getId() {

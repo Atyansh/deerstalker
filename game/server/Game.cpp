@@ -93,8 +93,11 @@ void Game::startGameLoop() {
 				if (event.type() == protos::Event_Type_SPAWN) {
 					handleSpawnLogic(event);
 				}
-				else if (event.type() == protos::Event_Type_MOVE) {
+				else if (event.type() == protos::Event_Type_LMOVE) {
 					handleMoveLogic(event);
+				}
+				else if (event.type() == protos::Event_Type_RMOVE) {
+					handleViewLogic(event);
 				}
 				else if (event.type() == protos::Event_Type_JUMP) {
 					handleJumpLogic(event);
@@ -116,41 +119,12 @@ void Game::startGameLoop() {
 void Game::handleSpawnLogic(protos::Event& event) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	std::cerr << "SPAWN HAPPENED" << std::endl;
-	Player* player = Player::createNewPlayer(event.clientid(), body_->getCollisionShape());
+	Player* player = Player::createNewPlayer(event.clientid(), generateId(), body_->getCollisionShape());
 	playerMap_[event.clientid()] = player;
 	world_->addRigidBody(player);
 }
 
-void Game::handleMoveLogic(protos::Event& event) {
-	Player* player = playerMap_[event.clientid()];
 
-	switch (event.direction()) {
-	case (protos::Event_Direction_RIGHT) :
-		std::cerr << "MOVE RIGHT" << std::endl;
-		player->applyCentralForce(btVector3(10, 0, 0));
-		break;
-	case (protos::Event_Direction_LEFT) :
-		std::cerr << "MOVE LEFT" << std::endl;
-		player->applyCentralForce(btVector3(-10, 0, 0));
-		break;
-	case (protos::Event_Direction_UP) :
-		std::cerr << "MOVE UP" << std::endl;
-		player->applyCentralForce(btVector3(0, 10, 0));
-		break;
-	case (protos::Event_Direction_DOWN) :
-		std::cerr << "MOVE DOWN" << std::endl;
-		player->applyCentralForce(btVector3(0, -10, 0));
-		break;
-	case (protos::Event_Direction_FORWARD) :
-		std::cerr << "MOVE FORWARD" << std::endl;
-		player->applyCentralForce(btVector3(0, 0, -10));
-		break;
-	case (protos::Event_Direction_BACKWARD) :
-		std::cerr << "MOVE BACKWARD" << std::endl;
-		player->applyCentralForce(btVector3(0, 0, 10));
-		break;
-	}
-}
 
 void Game::handleJumpLogic(protos::Event& event) {
 	Player* player = playerMap_[event.clientid()];
@@ -169,9 +143,56 @@ void Game::handleShootLogic(protos::Event& event) {
 
 	Player* player = playerMap_[event.clientid()];
 
-	Bullet* bullet = Bullet::createNewBullet(generateId(), event.clientid(), player, body_->getCollisionShape());
+	Bullet* bullet = Bullet::createNewBullet(generateId(), player, body_->getCollisionShape());
 	itemList_.push_back(bullet);
 	world_->addRigidBody(bullet);
+}
+
+std::tuple<btVector3, btScalar> Game::getRotation(protos::Event_Direction direction,Player * player) {
+	btVector3 rotAxis = direction == protos::Event_Direction_LEFT || direction == protos::Event_Direction_RIGHT ? player->getUpAxis() : player->getSideAxis();
+	btScalar angle = (direction == protos::Event_Direction_LEFT || direction == protos::Event_Direction_DOWN ? -1 : 1)* ROT_DELTA;
+	return std::make_tuple(rotAxis, angle);
+}
+
+void Game::handleMoveLogic(protos::Event& event) {
+	Player* player = playerMap_[event.clientid()];
+
+	switch (event.direction()) {
+	case (protos::Event_Direction_RIGHT):
+		std::cerr << "MOVE RIGHT" << std::endl;
+		player->applyCentralForce(btVector3(10, 0, 0));
+		break;
+	case (protos::Event_Direction_LEFT):
+		std::cerr << "MOVE LEFT" << std::endl;
+		player->applyCentralForce(btVector3(-10, 0, 0));
+		break;
+	case (protos::Event_Direction_UP):
+		std::cerr << "MOVE UP" << std::endl;
+		player->applyCentralForce(btVector3(0, 10, 0));
+		break;
+	case (protos::Event_Direction_DOWN):
+		std::cerr << "MOVE DOWN" << std::endl;
+		player->applyCentralForce(btVector3(0, -10, 0));
+		break;
+	case (protos::Event_Direction_FORWARD):
+		std::cerr << "MOVE FORWARD" << std::endl;
+		player->applyCentralForce(btVector3(0, 0, -10));
+		break;
+	case (protos::Event_Direction_BACKWARD):
+		std::cerr << "MOVE BACKWARD" << std::endl;
+		player->applyCentralForce(btVector3(0, 0, 10));
+		break;
+	}
+}
+
+void Game::handleViewLogic(protos::Event& event) {
+	Player* player = playerMap_[event.clientid()];
+	auto rotData = getRotation(event.direction(), player);
+
+	auto transform = btMatrix3x3();	
+	transform.setRotation(btQuaternion(std::get<0>(rotData), std::get<1>(rotData)));
+	btVector3 nLook = transform*(player->getLookAt());
+	player->setLookAt(&nLook);
 }
 
 void Game::sendStateToClients() {

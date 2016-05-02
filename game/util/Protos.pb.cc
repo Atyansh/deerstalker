@@ -135,19 +135,19 @@ void protobuf_AddDesc_Protos_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\014Protos.proto\022\006protos\"\200\002\n\005Event\022\n\n\002id\030\001"
+    "\n\014Protos.proto\022\006protos\"\214\002\n\005Event\022\n\n\002id\030\001"
     " \001(\005\022 \n\004type\030\002 \001(\0162\022.protos.Event.Type\022\020"
     "\n\010clientID\030\006 \001(\005\022*\n\tdirection\030\007 \001(\0162\027.pr"
-    "otos.Event.Direction\"<\n\004Type\022\t\n\005SPAWN\020\001\022"
-    "\010\n\004MOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006ASSIGN\020\004\022\t\n\005SHOOT"
-    "\020\005\"M\n\tDirection\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEF"
-    "T\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020"
-    "\006\"\334\001\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\013"
-    "2\r.protos.Event\022.\n\ngameObject\030\003 \003(\0132\032.pr"
-    "otos.Message.GameObject\032w\n\nGameObject\022\n\n"
-    "\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162"
-    "\037.protos.Message.GameObject.Type\"\036\n\004Type"
-    "\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002", 504);
+    "otos.Event.Direction\"H\n\004Type\022\t\n\005SPAWN\020\001\022"
+    "\t\n\005LMOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006ASSIGN\020\004\022\t\n\005SHOO"
+    "T\020\005\022\t\n\005RMOVE\020\006\"M\n\tDirection\022\006\n\002UP\020\001\022\010\n\004D"
+    "OWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022"
+    "\014\n\010BACKWARD\020\006\"\334\001\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n"
+    "\005event\030\002 \003(\0132\r.protos.Event\022.\n\ngameObjec"
+    "t\030\003 \003(\0132\032.protos.Message.GameObject\032w\n\nG"
+    "ameObject\022\n\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n"
+    "\004type\030\003 \001(\0162\037.protos.Message.GameObject."
+    "Type\"\036\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002", 516);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -179,6 +179,7 @@ bool Event_Type_IsValid(int value) {
     case 3:
     case 4:
     case 5:
+    case 6:
       return true;
     default:
       return false;
@@ -187,10 +188,11 @@ bool Event_Type_IsValid(int value) {
 
 #ifndef _MSC_VER
 const Event_Type Event::SPAWN;
-const Event_Type Event::MOVE;
+const Event_Type Event::LMOVE;
 const Event_Type Event::JUMP;
 const Event_Type Event::ASSIGN;
 const Event_Type Event::SHOOT;
+const Event_Type Event::RMOVE;
 const Event_Type Event::Type_MIN;
 const Event_Type Event::Type_MAX;
 const int Event::Type_ARRAYSIZE;

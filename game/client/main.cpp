@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
 	// Initialize objects/pointers for rendering
 	Window::initialize_objects();
 
-	milliseconds interval = milliseconds(35);
+	milliseconds interval = milliseconds(33);
 
 	// Loop while GLFW window should stay open
 	while (!glfwWindowShouldClose(window)) {

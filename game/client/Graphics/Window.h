@@ -21,5 +21,6 @@ public:
 	static void handle_gamepad(GLFWwindow* window);
 
 private:
-	static void addMoveEvent(protos::Message& message, protos::Event_Direction direction);
+	static void addMoveEvent(protos::Message& message, protos::Event_Direction direction, protos::Event_Type event_type);
+	static void handleDirection(const float* axes, protos::Message& message);
 };
