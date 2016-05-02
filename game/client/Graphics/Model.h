@@ -12,6 +12,7 @@ class Model : public SGeode
 {
 private:
 	/*  Model Data  */
+	const aiScene* rootScene;
 	vector<Mesh> meshes;
 	string directory;
 	vector<Texture> textures_loaded;
@@ -24,8 +25,8 @@ private:
 		aiMatrix4x4 FinalTransformation;
 	};
 	unsigned int numBones;
-	 unordered_map<string, unsigned int> boneMapping;
-	 vector<BoneInfo> boneInfos; //index based in boneMapping
+	unordered_map<string, unsigned int> boneMapping;
+	vector<BoneInfo> boneInfos; // transformation for bones
 
 	void loadModel(string path);
 	void processNode(aiNode* node, const aiScene* scene);
@@ -36,7 +37,8 @@ private:
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 	GLint TextureFromFile(const char* path, string directory);
 	unsigned char* loadPPM(const char*, int&, int&);
-	 void loadBones(const aiMesh* mesh, vector<Vertex>& bones);
+	void loadBones(const aiMesh* mesh, vector<Vertex>& bones);
+	void readNodeHeirarchy(float AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform);
 	// bool hasPPMTextureFiles();
 
 

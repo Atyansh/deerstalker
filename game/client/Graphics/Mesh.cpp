@@ -15,7 +15,10 @@ Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> text
 	this->shader = shader;
 	this->hasBones = hasBones;
 
+	cout << "hi" << endl;
+
 	this->setupMesh();
+	this->setupUniformLoc();
 }
 
 Mesh::~Mesh()
@@ -33,18 +36,11 @@ void Mesh::draw(DrawData& data)
 
 	shader->bind();
 
-	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "model"), 1, GL_FALSE, glm::value_ptr(data.matrix));
-	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "view"), 1, GL_FALSE, glm::value_ptr(data.view));
-	glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), "projection"), 1, GL_FALSE, glm::value_ptr(data.projection));
-	glUniform1i(glGetUniformLocation(shader->getPid(), "hasTexture"), textures.size() > 0 );
-	glUniform1i(glGetUniformLocation(shader->getPid(), "hasBones"), this->hasBones);
-	if (this->hasBones) {
-		for (size_t i = 0; i < MAX_BONES; i++) {
-			string tmp = "bones[" + to_string(i) + "].";
-			glUniformMatrix4fv(glGetUniformLocation(shader->getPid(), tmp.c_str()), 1, GL_TRUE, glm::value_ptr(glm::mat4())); // will need to refactor for animation
-		}
-	}
-
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(data.matrix));
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(data.view));
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(data.projection));
+	glUniform1i(hasTexLoc, textures.size() > 0 );
+	glUniform1i(hasBonesLoc, this->hasBones);
 
 	if (textures.size() > 0) {
 
@@ -94,6 +90,13 @@ void Mesh::update(UpdateData& data)
 	//
 }
 
+// Sets bone transformation matrices
+void Mesh::setBoneMatrix(GLint index, aiMatrix4x4 matrix)
+{
+	glm::mat4 mat = glm::transpose(glm::make_mat4(&matrix.a1));
+	glUniformMatrix4fv(boneLocs[index], 1, GL_FALSE, glm::value_ptr(mat));
+}
+
 void Mesh::setupMesh(){
 	// Create buffers/arrays
 	glGenVertexArrays(1, &this->VAO);
@@ -130,4 +133,27 @@ void Mesh::setupMesh(){
 	}
 
 	glBindVertexArray(0);
+}
+
+void Mesh::setupUniformLoc() {
+	if (!shader->isInitilized()) {
+		cerr << "Shader not initialized" << endl;
+		exit(-1);
+	}
+
+	shader->bind();
+
+	modelLoc = glGetUniformLocation(shader->getPid(), "model");
+	viewLoc = glGetUniformLocation(shader->getPid(), "view");
+	projLoc = glGetUniformLocation(shader->getPid(), "projection");
+	hasTexLoc = glGetUniformLocation(shader->getPid(), "hasTexture");
+	hasBonesLoc = glGetUniformLocation(shader->getPid(), "hasBones");
+	if (this->hasBones) {
+		for (size_t i = 0; i < MAX_BONES; i++) {
+			string tmp = "bones[" + to_string(i) + "]";
+			boneLocs.push_back(glGetUniformLocation(shader->getPid(), tmp.c_str()));
+		}
+	}
+
+	shader->unbind();
 }

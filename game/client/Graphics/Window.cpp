@@ -219,6 +219,7 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 
 	if (action == GLFW_PRESS) {
 		switch (key) {
+			cout << key << endl;
 		case GLFW_KEY_D:
 			event->set_direction(protos::Event_Direction_RIGHT);
 			break;

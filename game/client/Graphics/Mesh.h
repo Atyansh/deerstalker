@@ -39,16 +39,27 @@ private:
 	vector<Texture> textures;
 	bool hasBones;
 
+	/* Uniform Loc*/
+	GLuint modelLoc;
+	GLuint viewLoc;
+	GLuint projLoc;
+	GLuint hasTexLoc;
+	GLuint hasBonesLoc;
+	vector<GLuint> boneLocs;
+
 	/*  Render data  */
 	GLuint VAO, VBO, EBO;
 
 	Shader *shader;
 
 	void setupMesh();
+	void setupUniformLoc();
 
 public:
 	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader, bool hasBones);
 	virtual ~Mesh(void);
+
+	void setBoneMatrix(GLint index, aiMatrix4x4 matrix);
 
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);

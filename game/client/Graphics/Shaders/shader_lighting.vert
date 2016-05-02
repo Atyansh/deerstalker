@@ -8,6 +8,7 @@ layout (location = 4) in vec4 weights;
 out vec2 TexCoords;
 out vec3 fragPosition;
 out vec3 Normal;
+out vec4 boneColor;
 
 #define MAX_BONES 100
 
@@ -19,18 +20,20 @@ uniform int hasBones;
 
 void main()
 {
-	mat4 BoneTransform = bones[boneIDs[0]] * weights[0];
-    BoneTransform     += bones[boneIDs[1]] * weights[1];
-    BoneTransform     += bones[boneIDs[2]] * weights[2];
-    BoneTransform     += bones[boneIDs[3]] * weights[3];
+	vec4 newPos = vec4(position, 1.0f); ;
+	boneColor = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+    if (hasBones == 1 && weights != vec4(0.0f, 0.0f, 0.0f, 0.0f))
+    {
+        mat4 boneTransform = bones[boneIDs[0]] * weights[0];
+        boneTransform += bones[boneIDs[1]] * weights[1];
+        boneTransform += bones[boneIDs[2]] * weights[2];
+        boneTransform += bones[boneIDs[3]] * weights[3];
 
-	vec4 newPos;
-
-	if (hasBones == 1) {
-		newPos = /*BoneTransform * */vec4(position, 1.0f);
-	} else {
-		newPos = vec4(position, 1.0f); 
-	}
+        // newPos = boneTransform * vec4(position, 1.0);
+        vec4 test = vec4(1.0);
+        boneColor = boneTransform * test;
+        // newPos = boneTransform * newPos;
+    }
 	
     gl_Position = projection * view * model  * newPos;
     fragPosition = vec3(model * vec4(position, 1.0f));

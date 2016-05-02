@@ -47,6 +47,7 @@ struct SpotLight {
 in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
+in vec4 boneColor;
 
 out vec4 color;
 
@@ -86,7 +87,8 @@ void main()
 	for(int i = 0; i < SpotSize && i < MAX_SPOT_LIGHTS; i++)
 		result += CalcSpotLight(spotLight[i], norm, FragPos, viewDir);    
     
-    color = vec4(result, 1.0);
+	// color = vec4(result, 1.0);
+	color = boneColor;
 }
 
 // Calculates the color when using a directional light.
