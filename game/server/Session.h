@@ -30,6 +30,6 @@ private:
 
 	tcp::socket socket_;
 	Game& game_;
-	char current_header_[4];
+	char current_header_[HEADER_SIZE];
 	message_queue write_msgs_;
 };

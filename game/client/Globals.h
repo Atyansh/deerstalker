@@ -20,7 +20,7 @@ public:
 	static boost::asio::io_service io_service;
 	static tcp::socket socket;
 	static std::deque<protos::TestEvent> eventQueue;
-	static char currentHeader[util::HEADER_SIZE + 1];
+	static char currentHeader[util::HEADER_SIZE];
 	static std::uint32_t ID;
 };
 
