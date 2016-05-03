@@ -3,20 +3,15 @@
 #include <glm/glm.hpp>
 
 class Camera {
-private:
-	glm::vec3 position;
-	glm::vec3 direction;
-	glm::vec3 target;
-	glm::vec3 up;
-	glm::vec3 right;
-	glm::vec3 cameraUp;
-public:
 
+private:
+	glm::vec3 camPosition;
+	glm::vec3 ballPosition;
+	glm::vec3 worldUp;
+
+
+public:	
 	Camera();
 	~Camera();
 
-	glm::mat4 getView();
-	glm::vec3 getPosition();
-	glm::vec3 getDirection();
 };
-
