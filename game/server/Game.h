@@ -47,7 +47,8 @@ private:
 	std::set<client_ptr> clients_;
 	World* world_;
 
-	btCollisionObject* body_;
+	btCollisionObject* mango_body_;
+	btCollisionObject* player_body_;
 
 	std::deque<protos::Message> messageQueue_;
 	std::unordered_map<ClientId, Player*> playerMap_;

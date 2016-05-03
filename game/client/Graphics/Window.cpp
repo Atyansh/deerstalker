@@ -3,6 +3,7 @@
 #include "LightShader.h"
 #include "Mango.h"
 #include "Model.h"
+#include "Player.h"
 #include "SNode.h"
 #include "SMatrixTransform.h"
 #include "World.h"
@@ -143,12 +144,13 @@ void Window::idle_callback(GLFWwindow* window) {
 			else {
 				if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 					if (playerMap.find(id) == playerMap.end()) {
-						playerMap[id] = Mango::createNewMango();
+						playerMap[id] = Player::createNewPlayer();
 					}
 
 					auto& player = *playerMap[id];
 					glm::mat4 mat = glm::make_mat4(matrix);
-					player.setMatrix(mat);
+					//glm::mat4 scale = glm::scale(glm::vec3(0.3));
+					player.setMatrix(mat);// * scale);
 				}
 				else if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
 					if (itemMap.find(id) == itemMap.end()) {

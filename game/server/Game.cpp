@@ -5,7 +5,7 @@
 using namespace std::chrono;
 using namespace std::this_thread;
 
-Game::Game() : idCounter_(0) {
+Game::Game() : idCounter_(1) {
 }
 
 Game::~Game() {
@@ -65,12 +65,15 @@ void Game::initialize() {
 		world_->addRigidBody(body);
 	}
 
-	btBulletWorldImporter* fileLoader = new btBulletWorldImporter();
+	btBulletWorldImporter* fileLoader1 = new btBulletWorldImporter();
+	btBulletWorldImporter* fileLoader2 = new btBulletWorldImporter();
 
-	fileLoader->loadFile("bullet_assets\\Mango.bullet");
-	body_ = fileLoader->getRigidBodyByIndex(0);
+	fileLoader1->loadFile("bullet_assets\\Mango.bullet");
+	fileLoader2->loadFile("bullet_assets\\Player.bullet");
+	mango_body_ = fileLoader1->getRigidBodyByIndex(0);
+	player_body_ = fileLoader2->getRigidBodyByIndex(0);
 
-	std::cerr << "Num Rigid Bodies: " << fileLoader->getNumCollisionShapes() << std::endl;
+	//std::cerr << "Num Rigid Bodies: " << fileLoader1->getNumCollisionShapes() << std::endl;
 	
 }
 
@@ -119,7 +122,7 @@ void Game::startGameLoop() {
 void Game::handleSpawnLogic(protos::Event& event) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	std::cerr << "SPAWN HAPPENED" << std::endl;
-	Player* player = Player::createNewPlayer(event.clientid(), generateId(), body_->getCollisionShape());
+	Player* player = Player::createNewPlayer(event.clientid(), generateId(), player_body_->getCollisionShape());
 	playerMap_[event.clientid()] = player;
 	world_->addRigidBody(player);
 }
@@ -143,7 +146,7 @@ void Game::handleShootLogic(protos::Event& event) {
 
 	Player* player = playerMap_[event.clientid()];
 
-	Bullet* bullet = Bullet::createNewBullet(generateId(), player, body_->getCollisionShape());
+	Bullet* bullet = Bullet::createNewBullet(generateId(), player, mango_body_->getCollisionShape());
 	itemList_.push_back(bullet);
 	world_->addRigidBody(bullet);
 }

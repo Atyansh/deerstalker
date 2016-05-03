@@ -98,6 +98,7 @@
     <ClCompile Include="Graphics\Mango.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
+    <ClCompile Include="Graphics\Player.cpp" />
     <ClCompile Include="Graphics\SGeode.cpp" />
     <ClCompile Include="Graphics\SGroup.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="Graphics\LightShader.h" />
     <ClInclude Include="Graphics\Mango.h" />
     <ClInclude Include="Graphics\Model.h" />
+    <ClInclude Include="Graphics\Player.h" />
     <ClInclude Include="Graphics\SGeode.h" />
     <ClInclude Include="Graphics\SGroup.h" />
     <ClInclude Include="Graphics\Shader.h" />

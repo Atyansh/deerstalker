@@ -5,11 +5,11 @@
 #include "LightShader.h"
 #include "SMatrixTransform.h"
 
-class Mango : public SMatrixTransform {
+class Player : public SMatrixTransform {
 public:
-	Mango();
-	~Mango();
+	Player();
+	~Player();
 
-	static Mango* createNewMango();
+	static Player* createNewPlayer();
 	static char* modelPath;
 };
