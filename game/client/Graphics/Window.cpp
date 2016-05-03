@@ -285,12 +285,15 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		event->set_type(protos::Event_Type_JUMP);
 	}
 
-	if (buttons[BUTTON_RB] == GLFW_PRESS) {
+	if (buttons[BUTTON_RB] == GLFW_PRESS && !Globals::pressed) {
 		auto* event = message.add_event();
 		event->set_clientid(Globals::ID);
 		event->set_type(protos::Event_Type_SHOOT);
+		Globals::pressed = true;
 	}
-
+	else if(buttons[BUTTON_RB] != GLFW_PRESS) {
+		Globals::pressed = false;
+	}
 	if (message.event_size()) {
 		sendMessage(Globals::socket, std::move(message));
 	}

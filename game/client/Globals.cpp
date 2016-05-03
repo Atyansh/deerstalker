@@ -17,3 +17,4 @@ std::deque<protos::Message> Globals::messageQueue = std::deque<protos::Message>(
 char Globals::currentHeader[4] = "";
 
 uint32_t Globals::ID = 0;
+bool Globals::pressed = false;

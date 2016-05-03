@@ -27,6 +27,7 @@ public:
 	static char currentHeader[4];
 
 	static uint32_t ID;
+	static bool pressed;
 
 private:
 	static float AXIS_TILT;
