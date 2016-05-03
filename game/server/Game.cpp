@@ -5,7 +5,7 @@
 using namespace std::chrono;
 using namespace std::this_thread;
 
-Game::Game() : idCounter_(0) {
+Game::Game() : idCounter_(1) {
 }
 
 Game::~Game() {
