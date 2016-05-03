@@ -41,7 +41,7 @@ void Window::initialize_objects()
 		glm::vec3(-1.7f, 0.9f, 1.0f)
 	};
 
-	Globals::lightShader = new LightShader(Globals::camera.getPosition(), "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
+//	Globals::lightShader = new LightShader(Globals::camera.getPosition(), "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
 	Globals::lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
 	//Globals::lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
 	Globals::lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
@@ -110,7 +110,7 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	else {
 		Globals::drawData.projection = glm::perspective(45.0f, float(width) / (float)height, 0.1f, 1000.0f);
 		//Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		Globals::drawData.view = Globals::camera.getView();
+//		Globals::drawData.view = Globals::camera.getView();
 
 		cout << "projection in window \n";
 		cout << glm::to_string(Globals::drawData.projection) << endl;
