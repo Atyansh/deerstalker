@@ -87,8 +87,8 @@ void main()
 	for(int i = 0; i < SpotSize && i < MAX_SPOT_LIGHTS; i++)
 		result += CalcSpotLight(spotLight[i], norm, FragPos, viewDir);    
     
-	// color = vec4(result, 1.0);
-	color = boneColor;
+	color = vec4(result, 1.0);
+	// color = boneColor;
 }
 
 // Calculates the color when using a directional light.

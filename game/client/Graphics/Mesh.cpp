@@ -15,8 +15,6 @@ Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> text
 	this->shader = shader;
 	this->hasBones = hasBones;
 
-	cout << "hi" << endl;
-
 	this->setupMesh();
 	this->setupUniformLoc();
 }
