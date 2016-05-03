@@ -19,65 +19,28 @@ Model::~Model()
 
 }
 
-//			boneInfos[j].FinalTransformation = modelInverseMat /* * GlobalTransformation*/ * boneInfos[j].BoneOffset;
-
-
 void Model::draw(DrawData &data){
-	if (boneMapping.size() > 0 && boneInfos.size() > 0) {
-		aiMatrix4x4 rootMatrix;
-		cout << "has bones" << endl;
-		this->readNodeHeirarchy(0, this->rootScene->mRootNode, rootMatrix);
-	}
+	//if (boneMapping.size() > 0 && boneInfos.size() > 0) {
+	//	aiMatrix4x4 rootMatrix;
+	//	this->readNodeHeirarchy(0, this->rootScene->mRootNode, rootMatrix);
+	//}
 
-	cout << "read hierarchy" << endl;
+	shader->bind();
+
 	for (GLuint i = 0; i < this->meshes.size(); i++){
 		//for (int j = 0; j < boneInfos.size(); j++) {
 		//	this->meshes[i].setBoneMatrix(j, boneInfos[j].FinalTransformation); //set the transforms
 		//}
 		for (int j = 0; j < boneInfos.size(); j++) {
-			boneInfos[j].FinalTransformation = modelInverseMat /* * GlobalTransformation*/ * boneInfos[j].BoneOffset;
+			boneInfos[j].FinalTransformation = modelInverseMat * boneInfos[j].BoneOffset;
 			this->meshes[i].setBoneMatrix(j, boneInfos[j].FinalTransformation);
 		}
 		this->meshes[i].draw(data);
 	}
-	cout << "done draw" << endl;
 }
 
 void Model::readNodeHeirarchy(float AnimationTime, const aiNode* node, const aiMatrix4x4& ParentTransform) {
 	
-	// string NodeName(node->mName.data);
-
-	//aiMatrix4x4 NodeTransformation(node->mTransformation);
-
-	////TODO animation code
-
-	//aiMatrix4x4 GlobalTransformation = ParentTransform * NodeTransformation;
-
-	//if (boneMapping.find(NodeName) != boneMapping.end()) {
-	//	unsigned int boneIndex = boneMapping[NodeName];
-	//	
-	//	boneInfos[boneIndex].FinalTransformation = modelInverseMat * GlobalTransformation * boneInfos[boneIndex].BoneOffset;
-	//}
-	/*for (GLuint i = 0; i < node->mNumMeshes; i++)
-	{
-		aiMesh* mesh = rootScene->mMeshes[node->mMeshes[i]];
-		for (unsigned int i = 0; i < mesh->mNumBones; i++) {
-			string boneName(mesh->mBones[i]->mName.data);
-		}
-	}*/
-
-	// BUG: num of children is null
-	cout << "inside hierarchy" << endl;
-	if (!node) {
-		cout << "node null" << endl;
-	}
-	cout << node->mNumChildren << endl;
-	for (unsigned int i = 0; i < node->mNumChildren; i++) {
-		if (!node->mChildren[i]) {
-			cout << "child null" << endl;
-		}
-		readNodeHeirarchy(AnimationTime, node->mChildren[i], ParentTransform);
-	}
 }
 
 void Model::update(UpdateData &updateData){

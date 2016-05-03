@@ -29,7 +29,7 @@ void main()
         boneTransform += bones[boneIDs[2]] * weights[2];
         boneTransform += bones[boneIDs[3]] * weights[3];
 
-        // newPos = boneTransform * vec4(position, 1.0);
+        newPos = boneTransform * vec4(position, 1.0);
         vec4 test = vec4(1.0);
         boneColor = boneTransform * test;
         // newPos = boneTransform * newPos;
