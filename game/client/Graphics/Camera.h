@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 class Camera {
 
@@ -14,9 +15,7 @@ private:
 	glm::vec3 _worldUp;
 	glm::vec3 _camUp;
 
-	void pitch(glm::vec3 rotDir); // Move camera up and down
-	void yaw(glm::vec3 rotDir);	  // Move camera left and right
-	void roll(glm::vec3 rotDir);  
+	
 
 public:	
 	Camera();
@@ -26,4 +25,9 @@ public:
 
 	// Gonna pass data from server. Haven't figure it out yet.
 	void update(/*TBD*/);
+	void pitch(int up); // Move camera up and down
+	void yaw(int up);	  // Move camera left and right
+	void roll(int up);
+
+	glm::vec3 getPosition() { return glm::vec3(_camMatrix[3]); }
 };

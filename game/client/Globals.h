@@ -5,6 +5,7 @@
 #include "Graphics\DrawData.h"
 #include "Graphics\UpdateData.h"
 #include "Graphics\Camera.h"
+#include "Graphics\Camera_Original.h"
 #include "Graphics\Model.h"
 #include "Graphics\Skybox.h"
 #include "Graphics\LightShader.h"
@@ -17,7 +18,8 @@ class Globals {
 public:
 	static DrawData drawData;
 	static UpdateData updateData;
-	static Camera camera;
+	static Camera_Original camera;
+	static Camera cam;
 	static LightShader* lightShader;
 	static Skybox skybox;
 
