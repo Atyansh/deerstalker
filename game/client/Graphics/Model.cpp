@@ -11,7 +11,9 @@ Model::Model(const char* path, Shader *shader) : SGeode()
 {
 	this->shader = shader;
 	numBones = 0;
+	mAnimTree = AnimationTree();
 	this->loadModel(path);
+	cout << endl;
 }
 
 Model::~Model()
@@ -20,27 +22,22 @@ Model::~Model()
 }
 
 void Model::draw(DrawData &data){
-	//if (boneMapping.size() > 0 && boneInfos.size() > 0) {
-	//	aiMatrix4x4 rootMatrix;
-	//	this->readNodeHeirarchy(0, this->rootScene->mRootNode, rootMatrix);
-	//}
+	if (boneMapping.size() > 0 && boneInfos.size() > 0) {
+		this->mAnimTree.readNodeHierarchy(0, boneInfos, boneMapping);
+	}
 
 	shader->bind();
 
 	for (GLuint i = 0; i < this->meshes.size(); i++){
-		//for (int j = 0; j < boneInfos.size(); j++) {
-		//	this->meshes[i].setBoneMatrix(j, boneInfos[j].FinalTransformation); //set the transforms
-		//}
 		for (int j = 0; j < boneInfos.size(); j++) {
+			this->meshes[i].setBoneMatrix(j, boneInfos[j].FinalTransformation); //set the transforms
+		}
+		/*for (int j = 0; j < boneInfos.size(); j++) {
 			boneInfos[j].FinalTransformation = modelInverseMat * boneInfos[j].BoneOffset;
 			this->meshes[i].setBoneMatrix(j, boneInfos[j].FinalTransformation);
-		}
+		}*/
 		this->meshes[i].draw(data);
 	}
-}
-
-void Model::readNodeHeirarchy(float AnimationTime, const aiNode* node, const aiMatrix4x4& ParentTransform) {
-	
 }
 
 void Model::update(UpdateData &updateData){
@@ -52,32 +49,38 @@ void Model::update(UpdateData &updateData){
 void Model::loadModel(string path)
 {
 	Assimp::Importer importer;
-	rootScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-	if (!rootScene || rootScene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !rootScene->mRootNode) // if is Not Zero
+	const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 	{
 		cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
 		return;
 	}
 	this->directory = path.substr(0, path.find_last_of('/'));
 
-	modelInverseMat = rootScene->mRootNode->mTransformation;
+	modelInverseMat = scene->mRootNode->mTransformation;
 	modelInverseMat.Inverse();
 
-	this->processNode(rootScene->mRootNode, rootScene);
+	this->processNode(scene->mRootNode, scene, this->mAnimTree);
 }
 
 // Processes a node in a recursive fashio
-void Model::processNode(aiNode* node, const aiScene* scene)
+void Model::processNode(aiNode* node, const aiScene* scene, AnimationTree &animTree)
 {
+	animTree.setInverseMat(this->modelInverseMat);
+	animTree.setTransform(node->mTransformation);
+	animTree.setName(node->mName.C_Str());
+
 	for (GLuint i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		this->meshes.push_back(this->processMesh(mesh, scene));
 	}
-
+	
 	for (GLuint i = 0; i < node->mNumChildren; i++)
 	{
-		this->processNode(node->mChildren[i], scene);
+		AnimationTree childAnimTree;
+		this->processNode(node->mChildren[i], scene, childAnimTree);
+		animTree.addNode(childAnimTree);
 	}
 
 }
