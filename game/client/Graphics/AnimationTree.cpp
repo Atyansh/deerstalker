@@ -37,7 +37,7 @@ void AnimationTree::readNodeHierarchy(float animationTime, vector<BoneInfo> &bon
 		//boneInfos[BoneIndex].FinalTransformation = boneInfos[BoneIndex].BoneOffset * globalTransform * inverseMat;
 	}
 
-	for(int i =0; i<this->children.size(); i++){
+	for(int i =0; i<this->children.size() && i < 1; i++){
 		readNodeHierarchy(animationTime, this->children[i], globalTransform, boneInfos, boneMapping);
 	}
 }
@@ -58,6 +58,6 @@ void AnimationTree::readNodeHierarchy(float animationTime, AnimationTree tree, a
 	}
 
 	for(int i =0; i<tree.children.size(); i++){
-		readNodeHierarchy(animationTime, tree.children[i], parentMatrix, boneInfos, boneMapping);
+		readNodeHierarchy(animationTime, tree.children[i], globalTransform, boneInfos, boneMapping);
 	}
 }
