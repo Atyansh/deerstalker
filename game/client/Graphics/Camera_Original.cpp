@@ -11,7 +11,7 @@ Camera_Original::Camera_Original() {
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
 	right = glm::normalize(glm::cross(up, direction));
 
-	Camera_OriginalUp = glm::cross(direction, right);
+	cameraUp = glm::cross(direction, right);
 }
 
 Camera_Original::~Camera_Original() {

@@ -2,7 +2,8 @@
 
 DrawData Globals::drawData = DrawData();
 UpdateData Globals::updateData = UpdateData();
-Camera Globals::camera = Camera();
+Camera_Original Globals::camera = Camera_Original();
+Camera Globals::cam = Camera();
 
 LightShader* Globals::lightShader;
 
