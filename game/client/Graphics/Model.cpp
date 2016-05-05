@@ -13,7 +13,11 @@ Model::Model(const char* path, Shader *shader) : SGeode()
 	numBones = 0;
 	mAnimTree = AnimationTree();
 	this->loadModel(path);
-	cout << endl;
+	
+	if (boneMapping.size() > 0 && boneInfos.size() > 0) {
+		this->mAnimTree.readNodeHierarchy(0, boneInfos, boneMapping);
+	}
+
 }
 
 Model::~Model()
@@ -22,20 +26,12 @@ Model::~Model()
 }
 
 void Model::draw(DrawData &data){
-	if (boneMapping.size() > 0 && boneInfos.size() > 0) {
-		this->mAnimTree.readNodeHierarchy(0, boneInfos, boneMapping);
-	}
-
 	shader->bind();
 
 	for (GLuint i = 0; i < this->meshes.size(); i++){
 		for (int j = 0; j < boneInfos.size(); j++) {
 			this->meshes[i].setBoneMatrix(j, boneInfos[j].FinalTransformation); //set the transforms
 		}
-		/*for (int j = 0; j < boneInfos.size(); j++) {
-			boneInfos[j].FinalTransformation = modelInverseMat * boneInfos[j].BoneOffset;
-			this->meshes[i].setBoneMatrix(j, boneInfos[j].FinalTransformation);
-		}*/
 		this->meshes[i].draw(data);
 	}
 }
