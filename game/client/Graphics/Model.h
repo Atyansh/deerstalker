@@ -22,10 +22,14 @@ private:
 	unsigned int numBones;
 	unordered_map<string, unsigned int> boneMapping;
 	vector<BoneInfo> boneInfos; // transformation for bones
-	AnimationTree mAnimTree;
+	Assimp::Importer importer;
+	const aiScene *scene;
+	AnimationTree *mAnimTree;
+	int count = 0;
+	float animationFrame = 0;
 
 	void loadModel(string path);
-	void processNode(aiNode* node, const aiScene* scene, AnimationTree &animTree);
+	void processNode(aiNode* node, const aiScene* scene);
 	void processVerts(aiMesh* mesh, vector<Vertex> &vertices);
 	void processFaces(aiMesh* mesh, vector<GLuint> &indices);
 	void processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> &textures);
