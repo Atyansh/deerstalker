@@ -11,16 +11,8 @@ Model::Model(const char* path, Shader *shader) : SGeode()
 {
 	this->shader = shader;
 	numBones = 0;
-	this->mAnimTree = new AnimationTree();
+	this->mAnimTree = NULL;
 	this->loadModel(path);
-	
-	/*if (boneMapping.size() > 0 && boneInfos.size() > 0) {
-		this->mAnimTree.readNodeHierarchy(0, boneInfos, boneMapping);
-	}*/
-
-	this->mAnimTree->getScene();
-	cout << endl;
-
 }
 
 Model::~Model()
@@ -31,12 +23,16 @@ Model::~Model()
 void Model::draw(DrawData &data){
 	shader->bind();
 
-	animationFrame = animationFrame + 0.05f;
-	if (animationFrame >= 3.7f) {
-		animationFrame = 0;
-	}
+	if (this->mAnimTree != NULL) {
 
-	this->mAnimTree->boneTransfrom(animationFrame, boneInfos, boneMapping);
+		float time = clock() / float(CLOCKS_PER_SEC);
+		float delta = time - prevTime;
+		prevTime = time;
+
+		currAnimTime += min(delta, 0.07f);
+
+		this->mAnimTree->boneTransfrom(currAnimTime, boneInfos, boneMapping);
+	}
 
 	for (GLuint i = 0; i < this->meshes.size(); i++){
 		for (int j = 0; j < boneInfos.size(); j++) {
@@ -75,10 +71,6 @@ void Model::loadModel(string path)
 // Processes a node in a recursive fashio
 void Model::processNode(aiNode* node, const aiScene* scene)
 {
-	/*animTree.setInverseMat(this->modelInverseMat);
-	animTree.setTransform(node->mTransformation);
-	animTree.setName(node->mName.C_Str());*/
-
 	for (GLuint i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -87,9 +79,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 	
 	for (GLuint i = 0; i < node->mNumChildren; i++)
 	{
-		//AnimationTree childAnimTree;
 		this->processNode(node->mChildren[i], scene);
-		//animTree.addNode(childAnimTree);
 	}
 
 }
