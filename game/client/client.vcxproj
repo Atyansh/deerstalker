@@ -91,7 +91,6 @@
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Graphics\AnimationTree.cpp" />
     <ClCompile Include="Graphics\BoneInfo.cpp" />
-    <ClCompile Include="Graphics\Cube.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Camera_Original.cpp" />
     <ClCompile Include="Graphics\Cube.cpp" />
@@ -128,7 +127,6 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Graphics\AnimationTree.h" />
     <ClInclude Include="Graphics\BoneInfo.h" />
-    <ClInclude Include="Graphics\Cube.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Camera_Original.h" />
     <ClInclude Include="Graphics\Cube.h" />

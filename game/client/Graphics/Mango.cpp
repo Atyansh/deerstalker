@@ -2,7 +2,7 @@
 
 //const char* modelPath = "Graphics/Assets/OBJ/Mango/mango.obj";
  //const char* modelPath = "Graphics/Assets/OBJ/Cube/Cube.obj";
- const char* modelPath = "Graphics/Assets/FBX/VampMechRunTest.fbx";
+ const char* modelPath = "Graphics/Assets/FBX/chicken_dance.fbx";
  //const char* modelPath = "Graphics/Assets/FBX/characterFBX.fbx";
 
 Mango::Mango() {

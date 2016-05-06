@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Graphics\Cube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,6 +54,9 @@
     <ClCompile Include="Graphics\SMatrixTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+	  <ClCompile Include="Graphics\Cube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\Mango.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -76,6 +76,8 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Camera_Original.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\AnimationTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,6 +147,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Camera_Original.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\AnimationTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -11,12 +11,15 @@ Model::Model(const char* path, Shader *shader) : SGeode()
 {
 	this->shader = shader;
 	numBones = 0;
-	mAnimTree = AnimationTree();
+	this->mAnimTree = new AnimationTree();
 	this->loadModel(path);
 	
-	if (boneMapping.size() > 0 && boneInfos.size() > 0) {
+	/*if (boneMapping.size() > 0 && boneInfos.size() > 0) {
 		this->mAnimTree.readNodeHierarchy(0, boneInfos, boneMapping);
-	}
+	}*/
+
+	this->mAnimTree->getScene();
+	cout << endl;
 
 }
 
@@ -27,6 +30,13 @@ Model::~Model()
 
 void Model::draw(DrawData &data){
 	shader->bind();
+
+	animationFrame = animationFrame + 0.05f;
+	if (animationFrame >= 3.7f) {
+		animationFrame = 0;
+	}
+
+	this->mAnimTree->boneTransfrom(animationFrame, boneInfos, boneMapping);
 
 	for (GLuint i = 0; i < this->meshes.size(); i++){
 		for (int j = 0; j < boneInfos.size(); j++) {
@@ -44,8 +54,7 @@ void Model::update(UpdateData &updateData){
 // Loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
 void Model::loadModel(string path)
 {
-	Assimp::Importer importer;
-	const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 	{
 		cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
@@ -56,15 +65,19 @@ void Model::loadModel(string path)
 	modelInverseMat = scene->mRootNode->mTransformation;
 	modelInverseMat.Inverse();
 
-	this->processNode(scene->mRootNode, scene, this->mAnimTree);
+	this->processNode(scene->mRootNode, scene);
+	if (boneMapping.size() > 0 && boneInfos.size() > 0) {
+		this->mAnimTree = new AnimationTree(scene, modelInverseMat);
+	}
+	cout << endl;
 }
 
 // Processes a node in a recursive fashio
-void Model::processNode(aiNode* node, const aiScene* scene, AnimationTree &animTree)
+void Model::processNode(aiNode* node, const aiScene* scene)
 {
-	animTree.setInverseMat(this->modelInverseMat);
+	/*animTree.setInverseMat(this->modelInverseMat);
 	animTree.setTransform(node->mTransformation);
-	animTree.setName(node->mName.C_Str());
+	animTree.setName(node->mName.C_Str());*/
 
 	for (GLuint i = 0; i < node->mNumMeshes; i++)
 	{
@@ -74,9 +87,9 @@ void Model::processNode(aiNode* node, const aiScene* scene, AnimationTree &animT
 	
 	for (GLuint i = 0; i < node->mNumChildren; i++)
 	{
-		AnimationTree childAnimTree;
-		this->processNode(node->mChildren[i], scene, childAnimTree);
-		animTree.addNode(childAnimTree);
+		//AnimationTree childAnimTree;
+		this->processNode(node->mChildren[i], scene);
+		//animTree.addNode(childAnimTree);
 	}
 
 }
@@ -125,7 +138,7 @@ void Model::processVerts(aiMesh* mesh, vector<Vertex> &vertices){
 		vector.z = mesh->mNormals[i].z;
 		vertex.Normal = vector;
 		
-		if (mesh->mTextureCoords[0]) // Does the mesh contain texture coordinates?
+		if (mesh->HasTextureCoords(0)) // Does the mesh contain texture coordinates?
 		{
 			glm::vec2 vec;
 			vec.x = mesh->mTextureCoords[0][i].x;
