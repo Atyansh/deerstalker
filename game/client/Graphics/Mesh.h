@@ -64,8 +64,4 @@ public:
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
 
-	//void printShaderPID() {
-	//	fprintf(stderr, "Shader PID in mesh: %u\n", shader->getPid());
-	//}
-
 };

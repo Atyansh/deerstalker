@@ -1,9 +1,5 @@
 #include "AnimationTree.h"
 
-AnimationTree::AnimationTree() {
-	this->scene = NULL;
-}
-
 AnimationTree::AnimationTree(const aiScene *scene, aiMatrix4x4 globalInverse) {
 	this->scene = scene;
 	this->globalInverse = globalInverse;
@@ -23,229 +19,166 @@ void AnimationTree::boneTransfrom(float animationTime, vector<BoneInfo> &boneInf
 
 	float TicksPerSecond = (float)(this->scene->mAnimations[0]->mTicksPerSecond != 0 ? this->scene->mAnimations[0]->mTicksPerSecond : 25.0f);
 	float TimeInTicks = animationTime * TicksPerSecond;
-	float AnimationTime = fmod(TimeInTicks, (float)this->scene->mAnimations[0]->mDuration);
+	float newAnimationTime = fmod(TimeInTicks, (float)this->scene->mAnimations[0]->mDuration);
 
-	readNodeHierarchy(AnimationTime, this->scene->mRootNode, identity, boneInfos, boneMapping);
+	readNodeHierarchy(newAnimationTime, this->scene->mRootNode, identity, boneInfos, boneMapping);
+}
+
+aiAnimation* AnimationTree::getAnim() {
+	return this->scene->mAnimations[0];
 }
 
 void AnimationTree::readNodeHierarchy(float animationTime, const aiNode* node, aiMatrix4x4 parentMatrix, vector<BoneInfo> &boneInfos, unordered_map<string, unsigned int> boneMapping) {
 
-	string NodeName(node->mName.data);
+	string nodeName(node->mName.data);
 
 	const aiAnimation* pAnimation = this->scene->mAnimations[0];
 
-	aiMatrix4x4 NodeTransformation(node->mTransformation);
+	aiMatrix4x4 nodeTransformation(node->mTransformation);
 
-	const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
+	const aiNodeAnim* pNodeAnim = findNodeAnim(pAnimation, nodeName);
 
 	if (pNodeAnim) {
 		// Interpolate scaling and generate scaling transformation matrix
-		aiVector3D Scaling;
-		CalcInterpolatedScaling(Scaling, animationTime, pNodeAnim);
-		aiMatrix4x4 ScalingM;
-		ScalingM.Scaling(Scaling, ScalingM);
+		aiVector3D scaling;
+		calcInterpolatedScaling(scaling, animationTime, pNodeAnim);
+		aiMatrix4x4 scalingM;
+		scalingM.Scaling(scaling, scalingM);
 
 		// Interpolate rotation and generate rotation transformation matrix
-		aiQuaternion RotationQ;
-		CalcInterpolatedRotation(RotationQ, animationTime, pNodeAnim);
-		aiMatrix4x4 RotationM = aiMatrix4x4(RotationQ.GetMatrix());
+		aiQuaternion rotationQ;
+		calcInterpolatedRotation(rotationQ, animationTime, pNodeAnim);
+		aiMatrix4x4 rotationM = aiMatrix4x4(rotationQ.GetMatrix());
 
 		// Interpolate translation and generate translation transformation matrix
-		aiVector3D Translation;
-		CalcInterpolatedPosition(Translation, animationTime, pNodeAnim);
-		aiMatrix4x4 TranslationM;
-		TranslationM.Translation(Translation, TranslationM);
+		aiVector3D translation;
+		calcInterpolatedPosition(translation, animationTime, pNodeAnim);
+		aiMatrix4x4 translationM;
+		translationM.Translation(translation, translationM);
 
 		// Combine the above transformations
-		NodeTransformation = TranslationM * RotationM * ScalingM;
+		nodeTransformation = translationM * rotationM * scalingM;
 	}
 
-	aiMatrix4x4 GlobalTransformation = parentMatrix * NodeTransformation;
+	aiMatrix4x4 globalTransformation = parentMatrix * nodeTransformation;
 
-	if (boneMapping.find(NodeName) != boneMapping.end()) {
-		unsigned int BoneIndex = boneMapping[NodeName];
-		boneInfos[BoneIndex].FinalTransformation = this->globalInverse * GlobalTransformation * boneInfos[BoneIndex].BoneOffset;
+	if (boneMapping.find(nodeName) != boneMapping.end()) {
+		unsigned int boneIndex = boneMapping[nodeName];
+		boneInfos[boneIndex].FinalTransformation = this->globalInverse * globalTransformation * boneInfos[boneIndex].BoneOffset;
 	}
 
 	for (unsigned int i = 0; i < node->mNumChildren; i++) {
-		readNodeHierarchy(animationTime, node->mChildren[i], GlobalTransformation, boneInfos, boneMapping);
+		readNodeHierarchy(animationTime, node->mChildren[i], globalTransformation, boneInfos, boneMapping);
 	}
 
 }
 
-unsigned int AnimationTree::FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim)
+unsigned int AnimationTree::findPosition(float animationTime, const aiNodeAnim* pNodeAnim)
 {
 	for (unsigned int i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
-		if (AnimationTime < (float)pNodeAnim->mPositionKeys[i + 1].mTime) {
+		if (animationTime < (float)pNodeAnim->mPositionKeys[i + 1].mTime) {
 			return i;
 		}
 	}
-
-	assert(0);
 
 	return 0;
 }
 
 
-unsigned int AnimationTree::FindRotation(float AnimationTime, const aiNodeAnim* pNodeAnim)
+unsigned int AnimationTree::findRotation(float animationTime, const aiNodeAnim* pNodeAnim)
 {
 	assert(pNodeAnim->mNumRotationKeys > 0);
 
 	for (unsigned int i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
-		if (AnimationTime < (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
+		if (animationTime < (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
 			return i;
 		}
 	}
-
-	assert(0);
 
 	return 0;
 }
 
 
-unsigned int AnimationTree::FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim)
+unsigned int AnimationTree::findScaling(float animationTime, const aiNodeAnim* pNodeAnim)
 {
 	assert(pNodeAnim->mNumScalingKeys > 0);
 
 	for (unsigned int i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
-		if (AnimationTime < (float)pNodeAnim->mScalingKeys[i + 1].mTime) {
+		if (animationTime < (float)pNodeAnim->mScalingKeys[i + 1].mTime) {
 			return i;
 		}
 	}
-
-	assert(0);
 
 	return 0;
 }
 
 
-void AnimationTree::CalcInterpolatedPosition(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim)
+void AnimationTree::calcInterpolatedPosition(aiVector3D& outVec, float animationTime, const aiNodeAnim* pNodeAnim)
 {
 	if (pNodeAnim->mNumPositionKeys == 1) {
-		Out = pNodeAnim->mPositionKeys[0].mValue;
+		outVec = pNodeAnim->mPositionKeys[0].mValue;
 		return;
 	}
 
-	unsigned int PositionIndex = FindPosition(AnimationTime, pNodeAnim);
-	unsigned int NextPositionIndex = (PositionIndex + 1);
-	assert(NextPositionIndex < pNodeAnim->mNumPositionKeys);
-	float DeltaTime = (float)(pNodeAnim->mPositionKeys[NextPositionIndex].mTime - pNodeAnim->mPositionKeys[PositionIndex].mTime);
-	float Factor = (AnimationTime - (float)pNodeAnim->mPositionKeys[PositionIndex].mTime) / DeltaTime;
-	assert(Factor >= 0.0f && Factor <= 1.0f);
-	const aiVector3D& Start = pNodeAnim->mPositionKeys[PositionIndex].mValue;
-	const aiVector3D& End = pNodeAnim->mPositionKeys[NextPositionIndex].mValue;
-	aiVector3D Delta = End - Start;
-	Out = Start + Factor * Delta;
+	unsigned int positionIndex = findPosition(animationTime, pNodeAnim);
+	unsigned int nextPositionIndex = (positionIndex + 1);
+	assert(nextPositionIndex < pNodeAnim->mNumPositionKeys);
+	float deltaTime = (float)(pNodeAnim->mPositionKeys[nextPositionIndex].mTime - pNodeAnim->mPositionKeys[positionIndex].mTime);
+	float factor = (animationTime - (float)pNodeAnim->mPositionKeys[positionIndex].mTime) / deltaTime;
+	const aiVector3D& start = pNodeAnim->mPositionKeys[positionIndex].mValue;
+	const aiVector3D& end = pNodeAnim->mPositionKeys[nextPositionIndex].mValue;
+	aiVector3D delta = end - start;
+	outVec = start + factor * delta;
 }
 
 
-void AnimationTree::CalcInterpolatedRotation(aiQuaternion& Out, float AnimationTime, const aiNodeAnim* pNodeAnim)
+void AnimationTree::calcInterpolatedRotation(aiQuaternion& outVec, float animationTime, const aiNodeAnim* pNodeAnim)
 {
 	// we need at least two values to interpolate...
 	if (pNodeAnim->mNumRotationKeys == 1) {
-		Out = pNodeAnim->mRotationKeys[0].mValue;
+		outVec = pNodeAnim->mRotationKeys[0].mValue;
 		return;
 	}
 
-	unsigned int RotationIndex = FindRotation(AnimationTime, pNodeAnim);
-	unsigned int NextRotationIndex = (RotationIndex + 1);
-	assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
-	float DeltaTime = (float)(pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime);
-	float Factor = (AnimationTime - (float)pNodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
-	assert(Factor >= 0.0f && Factor <= 1.0f);
-	const aiQuaternion& StartRotationQ = pNodeAnim->mRotationKeys[RotationIndex].mValue;
-	const aiQuaternion& EndRotationQ = pNodeAnim->mRotationKeys[NextRotationIndex].mValue;
-	aiQuaternion::Interpolate(Out, StartRotationQ, EndRotationQ, Factor);
-	Out = Out.Normalize();
+	unsigned int rotationIndex = findRotation(animationTime, pNodeAnim);
+	unsigned int nextRotationIndex = (rotationIndex + 1);
+	assert(nextRotationIndex < pNodeAnim->mNumRotationKeys);
+	float deltaTime = (float)(pNodeAnim->mRotationKeys[nextRotationIndex].mTime - pNodeAnim->mRotationKeys[rotationIndex].mTime);
+	float factor = (animationTime - (float)pNodeAnim->mRotationKeys[rotationIndex].mTime) / deltaTime;
+	const aiQuaternion& startRotationQ = pNodeAnim->mRotationKeys[rotationIndex].mValue;
+	const aiQuaternion& endRotationQ = pNodeAnim->mRotationKeys[nextRotationIndex].mValue;
+	aiQuaternion::Interpolate(outVec, startRotationQ, endRotationQ, factor);
+	outVec = outVec.Normalize();
 }
 
 
-void AnimationTree::CalcInterpolatedScaling(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim)
+void AnimationTree::calcInterpolatedScaling(aiVector3D& outVec, float animationTime, const aiNodeAnim* pNodeAnim)
 {
 	if (pNodeAnim->mNumScalingKeys == 1) {
-		Out = pNodeAnim->mScalingKeys[0].mValue;
+		outVec = pNodeAnim->mScalingKeys[0].mValue;
 		return;
 	}
 
-	unsigned int ScalingIndex = FindScaling(AnimationTime, pNodeAnim);
-	unsigned int NextScalingIndex = (ScalingIndex + 1);
-	assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
-	float DeltaTime = (float)(pNodeAnim->mScalingKeys[NextScalingIndex].mTime - pNodeAnim->mScalingKeys[ScalingIndex].mTime);
-	float Factor = (AnimationTime - (float)pNodeAnim->mScalingKeys[ScalingIndex].mTime) / DeltaTime;
-	assert(Factor >= 0.0f && Factor <= 1.0f);
-	const aiVector3D& Start = pNodeAnim->mScalingKeys[ScalingIndex].mValue;
-	const aiVector3D& End = pNodeAnim->mScalingKeys[NextScalingIndex].mValue;
-	aiVector3D Delta = End - Start;
-	Out = Start + Factor * Delta;
+	unsigned int scalingIndex = findScaling(animationTime, pNodeAnim);
+	unsigned int nextScalingIndex = (scalingIndex + 1);
+	assert(nextScalingIndex < pNodeAnim->mNumScalingKeys);
+	float deltaTime = (float)(pNodeAnim->mScalingKeys[nextScalingIndex].mTime - pNodeAnim->mScalingKeys[scalingIndex].mTime);
+	float factor = (animationTime - (float)pNodeAnim->mScalingKeys[scalingIndex].mTime) / deltaTime;
+	const aiVector3D& start = pNodeAnim->mScalingKeys[scalingIndex].mValue;
+	const aiVector3D& end = pNodeAnim->mScalingKeys[nextScalingIndex].mValue;
+	aiVector3D delta = end - start;
+	outVec = start + factor * delta;
 }
 
-const aiNodeAnim* AnimationTree::FindNodeAnim(const aiAnimation* pAnimation, const string NodeName)
+const aiNodeAnim* AnimationTree::findNodeAnim(const aiAnimation* pAnimation, const string nodeName)
 {
 	for (unsigned int i = 0; i < pAnimation->mNumChannels; i++) {
 		const aiNodeAnim* pNodeAnim = pAnimation->mChannels[i];
 
-		if (string(pNodeAnim->mNodeName.data) == NodeName) {
+		if (string(pNodeAnim->mNodeName.data) == nodeName) {
 			return pNodeAnim;
 		}
 	}
 
 	return NULL;
 }
-
-const aiScene* AnimationTree::getScene() {
-	return this->scene;
-}
-
-//void AnimationTree::setTransform(aiMatrix4x4 transform){
-//	this->transform = transform;
-//}
-//
-//void AnimationTree::setInverseMat(aiMatrix4x4 inverseMat){
-//	this->inverseMat = inverseMat;
-//}
-//
-//void AnimationTree::setName(string name) {
-//	this->name = name;
-//}
-//
-//void AnimationTree::addNode(AnimationTree node) {
-//	this->children.push_back(node);
-//}
-//
-//void AnimationTree::readNodeHierarchy(float animationTime, vector<BoneInfo> &boneInfos, unordered_map<string, unsigned int> boneMapping){
-//	aiMatrix4x4 NodeTransformation(transform);
-//	
-//	//animation
-//
-//	aiMatrix4x4 globalTransform = NodeTransformation;
-//
-//	if (boneMapping.find(name) != boneMapping.end()) {
-//		unsigned int BoneIndex = boneMapping[name];
-//		 boneInfos[BoneIndex].FinalTransformation = inverseMat * globalTransform * boneInfos[BoneIndex].BoneOffset;
-//		//boneInfos[BoneIndex].FinalTransformation = boneInfos[BoneIndex].BoneOffset * globalTransform * inverseMat;
-//	}
-//
-//	for(int i =0; i<this->children.size() && i < 1; i++){
-//		readNodeHierarchy(animationTime, this->children[i], globalTransform, boneInfos, boneMapping);
-//	}
-//}
-//
-//void AnimationTree::readNodeHierarchy(float animationTime, AnimationTree tree, aiMatrix4x4 parentMatrix, vector<BoneInfo> &boneInfos, unordered_map<string, unsigned int> boneMapping){
-//	aiMatrix4x4 NodeTransformation(tree.transform);
-//	
-//	//animation
-//
-//	aiMatrix4x4 globalTransform = parentMatrix * NodeTransformation;
-//	//aiMatrix4x4 globalTransform =  NodeTransformation * parentMatrix;
-//
-//	if (boneMapping.find(tree.name) != boneMapping.end()) {
-//		unsigned int BoneIndex = boneMapping[tree.name];
-//		boneInfos[BoneIndex].FinalTransformation = tree.inverseMat * globalTransform * boneInfos[BoneIndex].BoneOffset;
-//		//boneInfos[BoneIndex].FinalTransformation = boneInfos[BoneIndex].BoneOffset * globalTransform * tree.inverseMat;
-//
-//	}
-//
-//	for(int i =0; i<tree.children.size(); i++){
-//		readNodeHierarchy(animationTime, tree.children[i], globalTransform, boneInfos, boneMapping);
-//	}
-//}

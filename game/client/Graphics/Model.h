@@ -22,11 +22,13 @@ private:
 	unsigned int numBones;
 	unordered_map<string, unsigned int> boneMapping;
 	vector<BoneInfo> boneInfos; // transformation for bones
+
+	/* Animation */
 	Assimp::Importer importer;
 	const aiScene *scene;
 	AnimationTree *mAnimTree;
-	int count = 0;
-	float animationFrame = 0;
+	float prevTime = 0;
+	float currAnimTime = 0;
 
 	void loadModel(string path);
 	void processNode(aiNode* node, const aiScene* scene);
@@ -48,11 +50,4 @@ public:
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
 
-	/*void printShaderPID() {
-		fprintf(stderr, "Shader PID in model: %u\n", shader->getPid());
-		for (int i = 0; i < meshes.size(); i++) {
-			fprintf(stderr, "Mesh #%d:\n", i);
-			meshes[i].printShaderPID();
-		}
-	}*/
 };
