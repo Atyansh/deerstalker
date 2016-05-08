@@ -25,6 +25,7 @@ bool cubeMode;
 int Window::width;
 int Window::height;
 std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
+std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 
 SMatrixTransform *root;
@@ -125,6 +126,15 @@ void Window::idle_callback(GLFWwindow* window) {
 		for (int i = 0; i < message.gameobject_size(); i++){
 			auto& gameObject = message.gameobject(i);
 			int id = gameObject.id();
+
+			auto* map = &playerMap;
+
+			if (gameObject.type() == protos::GameObject_GameObjectType_PLAYER) {
+				map = &playerMap;
+			}
+			else if (gameObject.type() == protos::GameObject_GameObjectType_HAT) {
+				map = &hatMap;
+			}
 
 			float matrix[16];
 			for (int j = 0; j < gameObject.matrix_size(); j++) {

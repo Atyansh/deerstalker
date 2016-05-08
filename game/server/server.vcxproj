@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Hat.cpp" />
+    <ClCompile Include="Hat.h" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="Game.cpp" />

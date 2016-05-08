@@ -73,6 +73,7 @@ void Game::initialize() {
 void Game::startGameLoop() {
 	// TODO(Atyansh): Make this part of config settings 
 	milliseconds interval = milliseconds(33);
+	int frameCounter = 0;
 
 	while (true) {
 		milliseconds stamp1 = duration_cast<milliseconds>(
@@ -103,6 +104,14 @@ void Game::startGameLoop() {
 			system_clock::now().time_since_epoch());
 
 		sleep_for(interval - (stamp2-stamp1));
+
+		if (frameCounter > 300) {
+			spawnNewHat();
+			frameCounter = 0;
+		}
+		else {
+			frameCounter++;
+		}
 	}
 }
 
@@ -174,4 +183,10 @@ void Game::sendStateToClients() {
 	for (auto client : clients_) {
 		client->deliver(message);
 	}
+}
+
+void Game::spawnNewHat() {
+	Hat* hat = Hat::createNewHat(Hat::WIZARD_HAT);
+	hatSet_.insert(hat);
+	world_->addRigidBody(hat);
 }

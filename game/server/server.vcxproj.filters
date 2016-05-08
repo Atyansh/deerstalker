@@ -36,6 +36,12 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Hat.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
