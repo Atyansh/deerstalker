@@ -18,7 +18,7 @@
 using namespace util;
 using namespace Gamepad;
 
-const char* window_title = "GLFW Starter Project";
+const char* window_title = "Deerstalker";
 
 bool cubeMode;
 
@@ -107,7 +107,8 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 		glTranslatef(0, 0, -20);
 	}
 	else {
-		Globals::drawData.projection = glm::perspective(45.0f, float(width) / (float)height, 0.1f, 1000.0f);
+		float aspect = height == 0 ? 0 : float(width) / (float)height;
+		Globals::drawData.projection = glm::perspective(45.0f, aspect, 0.1f, 1000.0f);
 		//Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		Globals::drawData.view = Globals::cam.getView();
 
