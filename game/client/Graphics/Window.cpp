@@ -111,7 +111,7 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 		//Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		Globals::drawData.view = Globals::cam.getView();
 
-		cout << "projection in window \n";
+		cout << "projection in winodw \n";
 		cout << glm::to_string(Globals::drawData.projection) << endl;
 	}
 }
@@ -147,6 +147,8 @@ void Window::idle_callback(GLFWwindow* window) {
 				auto& player = *playerMap[id];
 				glm::mat4 mat = glm::make_mat4(matrix);
 				player.setMatrix(mat);
+
+				Globals::cam.updateCamObjectMat(mat, Globals::drawData.matrix);
 			}
 		}
 	}
@@ -156,7 +158,10 @@ void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	Globals::drawData.view = Globals::cam.getView();
 	Globals::skybox.draw();
+
+		
 
 	root->draw(Globals::drawData);
 
@@ -175,6 +180,7 @@ void Window::display_callback(GLFWwindow* window) {
 		// Render objects
 		for (auto& pair : playerMap) {
 			pair.second->draw(Globals::drawData);
+			Globals::cam.updateCamObjectMat(pair.second->getDrawData().matrix, Globals::drawData.matrix);
 		}
 		
 	}
@@ -261,25 +267,24 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 	if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
 		fprintf(stderr, "Going Down\n");
-		Globals::cam.pitch(1);
-		Globals::drawData.view = Globals::cam.getView();
+		Globals::cam.pitch(0);
 	}
 	else if (axes[RIGHT_STICK_X] < NEG_AXIS_TILT) {
 		fprintf(stderr, "Going Up\n");
-		Globals::cam.pitch(0);
-		Globals::drawData.view = Globals::cam.getView();
+		Globals::cam.pitch(1);
+		//Globals::drawData.view = Globals::cam.getView();
 	}
 
 	if (axes[RIGHT_STICK_Y] > POS_AXIS_TILT) {
 		fprintf(stderr, "Going Right\n");
-		Globals::cam.yaw(1);
-		Globals::drawData.view = Globals::cam.getView();
+		Globals::cam.yaw(0);
+		//Globals::drawData.view = Globals::cam.getView();
 	}
 
 	else if (axes[RIGHT_STICK_Y] < NEG_AXIS_TILT) {
 		fprintf(stderr, "Going Left\n");
-		Globals::cam.yaw(0);
-		Globals::drawData.view = Globals::cam.getView();
+		Globals::cam.yaw(1);
+		//Globals::drawData.view = Globals::cam.getView();
 	}
 
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
