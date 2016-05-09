@@ -11,7 +11,7 @@ AnimationTree::~AnimationTree() {
 }
 
 void AnimationTree::boneTransfrom(float animationTime, vector<BoneInfo> &boneInfos, unordered_map<string, unsigned int> boneMapping) {
-	if (scene == NULL) {
+	if (scene == NULL || !this->scene->HasAnimations()) {
 		return;
 	}
 
@@ -40,23 +40,21 @@ void AnimationTree::readNodeHierarchy(float animationTime, const aiNode* node, a
 
 	if (pNodeAnim) {
 		// Interpolate scaling and generate scaling transformation matrix
-		aiVector3D scaling;
-		calcInterpolatedScaling(scaling, animationTime, pNodeAnim);
+		aiVector3D scaling = calcInterpolatedScaling(animationTime, pNodeAnim);
 		aiMatrix4x4 scalingM;
 		scalingM.Scaling(scaling, scalingM);
 
 		// Interpolate rotation and generate rotation transformation matrix
-		aiQuaternion rotationQ;
-		calcInterpolatedRotation(rotationQ, animationTime, pNodeAnim);
+		aiQuaternion rotationQ = calcInterpolatedRotation(animationTime, pNodeAnim);
 		aiMatrix4x4 rotationM = aiMatrix4x4(rotationQ.GetMatrix());
 
 		// Interpolate translation and generate translation transformation matrix
-		aiVector3D translation;
-		calcInterpolatedPosition(translation, animationTime, pNodeAnim);
+		aiVector3D translation = calcInterpolatedPosition(animationTime, pNodeAnim);
 		aiMatrix4x4 translationM;
 		translationM.Translation(translation, translationM);
 
 		// Combine the above transformations
+		// LATER, optimize by doing calculations manually 
 		nodeTransformation = translationM * rotationM * scalingM;
 	}
 
@@ -113,11 +111,11 @@ unsigned int AnimationTree::findScaling(float animationTime, const aiNodeAnim* p
 }
 
 
-void AnimationTree::calcInterpolatedPosition(aiVector3D& outVec, float animationTime, const aiNodeAnim* pNodeAnim)
+aiVector3D AnimationTree::calcInterpolatedPosition(float animationTime, const aiNodeAnim* pNodeAnim)
 {
+	aiVector3D outVec;
 	if (pNodeAnim->mNumPositionKeys == 1) {
-		outVec = pNodeAnim->mPositionKeys[0].mValue;
-		return;
+		return pNodeAnim->mPositionKeys[0].mValue;
 	}
 
 	unsigned int positionIndex = findPosition(animationTime, pNodeAnim);
@@ -128,16 +126,16 @@ void AnimationTree::calcInterpolatedPosition(aiVector3D& outVec, float animation
 	const aiVector3D& start = pNodeAnim->mPositionKeys[positionIndex].mValue;
 	const aiVector3D& end = pNodeAnim->mPositionKeys[nextPositionIndex].mValue;
 	aiVector3D delta = end - start;
-	outVec = start + factor * delta;
+	return start + factor * delta;
 }
 
 
-void AnimationTree::calcInterpolatedRotation(aiQuaternion& outVec, float animationTime, const aiNodeAnim* pNodeAnim)
+aiQuaternion AnimationTree::calcInterpolatedRotation(float animationTime, const aiNodeAnim* pNodeAnim)
 {
+	aiQuaternion outVec;
 	// we need at least two values to interpolate...
 	if (pNodeAnim->mNumRotationKeys == 1) {
-		outVec = pNodeAnim->mRotationKeys[0].mValue;
-		return;
+		return pNodeAnim->mRotationKeys[0].mValue;
 	}
 
 	unsigned int rotationIndex = findRotation(animationTime, pNodeAnim);
@@ -148,15 +146,14 @@ void AnimationTree::calcInterpolatedRotation(aiQuaternion& outVec, float animati
 	const aiQuaternion& startRotationQ = pNodeAnim->mRotationKeys[rotationIndex].mValue;
 	const aiQuaternion& endRotationQ = pNodeAnim->mRotationKeys[nextRotationIndex].mValue;
 	aiQuaternion::Interpolate(outVec, startRotationQ, endRotationQ, factor);
-	outVec = outVec.Normalize();
+	return outVec.Normalize();
 }
 
 
-void AnimationTree::calcInterpolatedScaling(aiVector3D& outVec, float animationTime, const aiNodeAnim* pNodeAnim)
+aiVector3D AnimationTree::calcInterpolatedScaling(float animationTime, const aiNodeAnim* pNodeAnim)
 {
 	if (pNodeAnim->mNumScalingKeys == 1) {
-		outVec = pNodeAnim->mScalingKeys[0].mValue;
-		return;
+		return pNodeAnim->mScalingKeys[0].mValue;
 	}
 
 	unsigned int scalingIndex = findScaling(animationTime, pNodeAnim);
@@ -167,7 +164,7 @@ void AnimationTree::calcInterpolatedScaling(aiVector3D& outVec, float animationT
 	const aiVector3D& start = pNodeAnim->mScalingKeys[scalingIndex].mValue;
 	const aiVector3D& end = pNodeAnim->mScalingKeys[nextScalingIndex].mValue;
 	aiVector3D delta = end - start;
-	outVec = start + factor * delta;
+	return start + factor * delta;
 }
 
 const aiNodeAnim* AnimationTree::findNodeAnim(const aiAnimation* pAnimation, const string nodeName)
