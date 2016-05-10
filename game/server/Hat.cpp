@@ -22,10 +22,10 @@ Hat* Hat::createNewHat(int hatType) {
 	btTransform startTransform;
 	startTransform.setIdentity();
 
-	int worldSize = 21;
-	int xPosition = rand() % worldSize - 10;
+	int worldSize = 50;
+	int xPosition = (rand() % worldSize) - 25;
 	int yPosition = 10;
-	int zPosition = rand() % worldSize - 10;
+	int zPosition = (rand() % worldSize) - 25;
 	startTransform.setOrigin(btVector3(xPosition, yPosition, zPosition));
 
 	btMotionState* motionState = new btDefaultMotionState(startTransform);

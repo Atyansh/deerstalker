@@ -71,6 +71,9 @@ void Session::do_read_body(size_t length) {
 void Session::do_write() {
 	auto self(shared_from_this());
 
+	if (write_msgs_.empty()) {
+		return;
+	}
 	protos::Message message = write_msgs_.front();
 
 	std::uint8_t arr[HEADER_SIZE + MAX_MESSAGE_SIZE] = {};
@@ -81,7 +84,9 @@ void Session::do_write() {
 			boost::asio::buffer(arr, messageSize + HEADER_SIZE),
 			[this, self](boost::system::error_code ec, std::size_t /*length*/) {
 			if (!ec) {
-				write_msgs_.pop_front();
+				if (!write_msgs_.empty()) {
+					write_msgs_.pop_front();
+				}
 				if (!write_msgs_.empty()) {
 					do_write();
 				}
