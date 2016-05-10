@@ -25,8 +25,14 @@ message Event {
 
 message Message {
 	message GameObject {
+		enum Type {
+			PLAYER = 1;
+			BULLET = 2;
+			HAT = 3;
+		}
 		optional int32 id = 1;
 		repeated double matrix = 2;
+		optional Type type = 3;
 	}
 
 	optional int32 id = 1;

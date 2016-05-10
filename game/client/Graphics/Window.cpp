@@ -129,10 +129,10 @@ void Window::idle_callback(GLFWwindow* window) {
 
 			auto* map = &playerMap;
 
-			if (gameObject.type() == protos::GameObject_GameObjectType_PLAYER) {
+			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 				map = &playerMap;
 			}
-			else if (gameObject.type() == protos::GameObject_GameObjectType_HAT) {
+			else if (gameObject.type() == protos::Message_GameObject_Type_HAT) {
 				map = &hatMap;
 			}
 

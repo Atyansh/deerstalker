@@ -165,8 +165,6 @@ void Game::sendStateToClients() {
 
 	protos::Message message;
 
-	event.set_type(event.MOVE);
-
 	for (auto& pair : playerMap_) {
 		btTransform transform;
 		pair.second->getMotionState()->getWorldTransform(transform);
@@ -176,7 +174,7 @@ void Game::sendStateToClients() {
 		transform.getOpenGLMatrix(glm);
 
 		auto* gameObject = message.add_gameobject();
-		gameObject->set_type(protos::GameObject_GameObjectType_PLAYER);
+		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
 		gameObject->set_id(pair.first);
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
@@ -191,8 +189,8 @@ void Game::sendStateToClients() {
 
 		transform.getOpenGLMatrix(glm);
 
-		protos::GameObject* gameObject = event.add_gameobject();
-		gameObject->set_type(protos::GameObject_GameObjectType_HAT);
+		auto* gameObject = message.add_gameobject();
+		gameObject->set_type(protos::Message_GameObject_Type_HAT);
 		gameObject->set_id(hat->getHatId());
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
