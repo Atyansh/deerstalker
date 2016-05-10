@@ -180,6 +180,22 @@ void Game::sendStateToClients() {
 		}
 	}
 
+	for (auto* hat : hatSet_) {
+		btTransform transform;
+		hat->getMotionState()->getWorldTransform(transform);
+
+		btScalar glm[16] = {};
+
+		transform.getOpenGLMatrix(glm);
+
+		auto* gameObject = message.add_gameobject();
+		gameObject->set_type(protos::GameObject_GameObjectType_HAT);
+		gameObject->set_id(hat->getHatId());
+		for (auto v : glm) {
+			gameObject->add_matrix(v);
+		}
+	}
+
 	for (auto client : clients_) {
 		client->deliver(message);
 	}
