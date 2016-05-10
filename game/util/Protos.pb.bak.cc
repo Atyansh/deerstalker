@@ -31,7 +31,6 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* Message_GameObject_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Message_GameObject_reflection_ = NULL;
-const ::google::protobuf::EnumDescriptor* Message_GameObject_GameObjectType_descriptor_ = NULL;
 
 }  // namespace
 
@@ -80,10 +79,9 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Message));
   Message_GameObject_descriptor_ = Message_descriptor_->nested_type(0);
-  static const int Message_GameObject_offsets_[3] = {
+  static const int Message_GameObject_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, matrix_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, type_),
   };
   Message_GameObject_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -96,7 +94,6 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Message_GameObject));
-  Message_GameObject_GameObjectType_descriptor_ = Message_GameObject_descriptor_->enum_type(0);
 }
 
 namespace {
@@ -141,13 +138,11 @@ void protobuf_AddDesc_Protos_2eproto() {
     "otos.Event.Direction\"1\n\004Type\022\t\n\005SPAWN\020\001\022"
     "\010\n\004MOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006ASSIGN\020\004\"M\n\tDirec"
     "tion\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGH"
-    "T\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\"\356\001\n\007Messa"
+    "T\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\"\215\001\n\007Messa"
     "ge\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132\r.protos.E"
     "vent\022.\n\ngameObject\030\003 \003(\0132\032.protos.Messag"
-    "e.GameObject\032\210\001\n\nGameObject\022\n\n\002id\030\001 \001(\005\022"
-    "\016\n\006matrix\030\002 \003(\001\0227\n\004type\030\003 \001(\0162).protos.M"
-    "essage.GameObject.GameObjectType\"%\n\016Game"
-    "ObjectType\022\n\n\006PLAYER\020\001\022\007\n\003HAT\020\002", 511);
+    "e.GameObject\032(\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016"
+    "\n\006matrix\030\002 \003(\001", 414);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -575,31 +570,9 @@ void Event::Swap(Event* other) {
 
 // ===================================================================
 
-const ::google::protobuf::EnumDescriptor* Message_GameObject_GameObjectType_descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return Message_GameObject_GameObjectType_descriptor_;
-}
-bool Message_GameObject_GameObjectType_IsValid(int value) {
-  switch(value) {
-    case 1:
-    case 2:
-      return true;
-    default:
-      return false;
-  }
-}
-
-#ifndef _MSC_VER
-const Message_GameObject_GameObjectType Message_GameObject::PLAYER;
-const Message_GameObject_GameObjectType Message_GameObject::HAT;
-const Message_GameObject_GameObjectType Message_GameObject::GameObjectType_MIN;
-const Message_GameObject_GameObjectType Message_GameObject::GameObjectType_MAX;
-const int Message_GameObject::GameObjectType_ARRAYSIZE;
-#endif  // _MSC_VER
 #ifndef _MSC_VER
 const int Message_GameObject::kIdFieldNumber;
 const int Message_GameObject::kMatrixFieldNumber;
-const int Message_GameObject::kTypeFieldNumber;
 #endif  // !_MSC_VER
 
 Message_GameObject::Message_GameObject()
@@ -621,7 +594,6 @@ Message_GameObject::Message_GameObject(const Message_GameObject& from)
 void Message_GameObject::SharedCtor() {
   _cached_size_ = 0;
   id_ = 0;
-  type_ = 1;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -657,10 +629,7 @@ Message_GameObject* Message_GameObject::New() const {
 }
 
 void Message_GameObject::Clear() {
-  if (_has_bits_[0 / 32] & 5) {
-    id_ = 0;
-    type_ = 1;
-  }
+  id_ = 0;
   matrix_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -705,26 +674,6 @@ bool Message_GameObject::MergePartialFromCodedStream(
           goto handle_unusual;
         }
         if (input->ExpectTag(17)) goto parse_matrix;
-        if (input->ExpectTag(24)) goto parse_type;
-        break;
-      }
-
-      // optional .protos.Message.GameObject.GameObjectType type = 3;
-      case 3: {
-        if (tag == 24) {
-         parse_type:
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          if (::protos::Message_GameObject_GameObjectType_IsValid(value)) {
-            set_type(static_cast< ::protos::Message_GameObject_GameObjectType >(value));
-          } else {
-            mutable_unknown_fields()->AddVarint(3, value);
-          }
-        } else {
-          goto handle_unusual;
-        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -765,12 +714,6 @@ void Message_GameObject::SerializeWithCachedSizes(
       2, this->matrix(i), output);
   }
 
-  // optional .protos.Message.GameObject.GameObjectType type = 3;
-  if (has_type()) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      3, this->type(), output);
-  }
-
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -792,12 +735,6 @@ void Message_GameObject::SerializeWithCachedSizes(
       WriteDoubleToArray(2, this->matrix(i), target);
   }
 
-  // optional .protos.Message.GameObject.GameObjectType type = 3;
-  if (has_type()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      3, this->type(), target);
-  }
-
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -815,12 +752,6 @@ int Message_GameObject::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->id());
-    }
-
-    // optional .protos.Message.GameObject.GameObjectType type = 3;
-    if (has_type()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
     }
 
   }
@@ -861,9 +792,6 @@ void Message_GameObject::MergeFrom(const Message_GameObject& from) {
     if (from.has_id()) {
       set_id(from.id());
     }
-    if (from.has_type()) {
-      set_type(from.type());
-    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -889,7 +817,6 @@ void Message_GameObject::Swap(Message_GameObject* other) {
   if (other != this) {
     std::swap(id_, other->id_);
     matrix_.Swap(&other->matrix_);
-    std::swap(type_, other->type_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

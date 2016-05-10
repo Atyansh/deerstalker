@@ -129,10 +129,10 @@ void Window::idle_callback(GLFWwindow* window) {
 
 			auto* map = &playerMap;
 
-			if (gameObject.type() == protos::GameObject_GameObjectType_PLAYER) {
+			if (gameObject.type() == protos::Message_GameObject_GameObjectType_PLAYER) {
 				map = &playerMap;
 			}
-			else if (gameObject.type() == protos::GameObject_GameObjectType_HAT) {
+			else if (gameObject.type() == protos::Message_GameObject_GameObjectType_HAT) {
 				map = &hatMap;
 			}
 
@@ -184,6 +184,10 @@ void Window::display_callback(GLFWwindow* window) {
 	else {
 		// Render objects
 		for (auto& pair : playerMap) {
+			pair.second->draw(Globals::drawData);
+		}
+		// hat
+		for (auto& pair : hatMap) {
 			pair.second->draw(Globals::drawData);
 		}
 		

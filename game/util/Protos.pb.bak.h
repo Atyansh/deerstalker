@@ -82,25 +82,6 @@ inline bool Event_Direction_Parse(
   return ::google::protobuf::internal::ParseNamedEnum<Event_Direction>(
     Event_Direction_descriptor(), name, value);
 }
-enum Message_GameObject_GameObjectType {
-  Message_GameObject_GameObjectType_PLAYER = 1,
-  Message_GameObject_GameObjectType_HAT = 2
-};
-bool Message_GameObject_GameObjectType_IsValid(int value);
-const Message_GameObject_GameObjectType Message_GameObject_GameObjectType_GameObjectType_MIN = Message_GameObject_GameObjectType_PLAYER;
-const Message_GameObject_GameObjectType Message_GameObject_GameObjectType_GameObjectType_MAX = Message_GameObject_GameObjectType_HAT;
-const int Message_GameObject_GameObjectType_GameObjectType_ARRAYSIZE = Message_GameObject_GameObjectType_GameObjectType_MAX + 1;
-
-const ::google::protobuf::EnumDescriptor* Message_GameObject_GameObjectType_descriptor();
-inline const ::std::string& Message_GameObject_GameObjectType_Name(Message_GameObject_GameObjectType value) {
-  return ::google::protobuf::internal::NameOfEnum(
-    Message_GameObject_GameObjectType_descriptor(), value);
-}
-inline bool Message_GameObject_GameObjectType_Parse(
-    const ::std::string& name, Message_GameObject_GameObjectType* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<Message_GameObject_GameObjectType>(
-    Message_GameObject_GameObjectType_descriptor(), name, value);
-}
 // ===================================================================
 
 class Event : public ::google::protobuf::Message {
@@ -317,30 +298,6 @@ class Message_GameObject : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
-  typedef Message_GameObject_GameObjectType GameObjectType;
-  static const GameObjectType PLAYER = Message_GameObject_GameObjectType_PLAYER;
-  static const GameObjectType HAT = Message_GameObject_GameObjectType_HAT;
-  static inline bool GameObjectType_IsValid(int value) {
-    return Message_GameObject_GameObjectType_IsValid(value);
-  }
-  static const GameObjectType GameObjectType_MIN =
-    Message_GameObject_GameObjectType_GameObjectType_MIN;
-  static const GameObjectType GameObjectType_MAX =
-    Message_GameObject_GameObjectType_GameObjectType_MAX;
-  static const int GameObjectType_ARRAYSIZE =
-    Message_GameObject_GameObjectType_GameObjectType_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  GameObjectType_descriptor() {
-    return Message_GameObject_GameObjectType_descriptor();
-  }
-  static inline const ::std::string& GameObjectType_Name(GameObjectType value) {
-    return Message_GameObject_GameObjectType_Name(value);
-  }
-  static inline bool GameObjectType_Parse(const ::std::string& name,
-      GameObjectType* value) {
-    return Message_GameObject_GameObjectType_Parse(name, value);
-  }
-
   // accessors -------------------------------------------------------
 
   // optional int32 id = 1;
@@ -362,19 +319,10 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< double >*
       mutable_matrix();
 
-  // optional .protos.Message.GameObject.GameObjectType type = 3;
-  inline bool has_type() const;
-  inline void clear_type();
-  static const int kTypeFieldNumber = 3;
-  inline ::protos::Message_GameObject_GameObjectType type() const;
-  inline void set_type(::protos::Message_GameObject_GameObjectType value);
-
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
   inline void clear_has_id();
-  inline void set_has_type();
-  inline void clear_has_type();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -382,7 +330,6 @@ class Message_GameObject : public ::google::protobuf::Message {
   mutable int _cached_size_;
   ::google::protobuf::RepeatedField< double > matrix_;
   ::google::protobuf::int32 id_;
-  int type_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -660,31 +607,6 @@ Message_GameObject::mutable_matrix() {
   return &matrix_;
 }
 
-// optional .protos.Message.GameObject.GameObjectType type = 3;
-inline bool Message_GameObject::has_type() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void Message_GameObject::set_has_type() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void Message_GameObject::clear_has_type() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void Message_GameObject::clear_type() {
-  type_ = 1;
-  clear_has_type();
-}
-inline ::protos::Message_GameObject_GameObjectType Message_GameObject::type() const {
-  // @@protoc_insertion_point(field_get:protos.Message.GameObject.type)
-  return static_cast< ::protos::Message_GameObject_GameObjectType >(type_);
-}
-inline void Message_GameObject::set_type(::protos::Message_GameObject_GameObjectType value) {
-  assert(::protos::Message_GameObject_GameObjectType_IsValid(value));
-  set_has_type();
-  type_ = value;
-  // @@protoc_insertion_point(field_set:protos.Message.GameObject.type)
-}
-
 // -------------------------------------------------------------------
 
 // Message
@@ -791,11 +713,6 @@ template <> struct is_proto_enum< ::protos::Event_Direction> : ::google::protobu
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::protos::Event_Direction>() {
   return ::protos::Event_Direction_descriptor();
-}
-template <> struct is_proto_enum< ::protos::Message_GameObject_GameObjectType> : ::google::protobuf::internal::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protos::Message_GameObject_GameObjectType>() {
-  return ::protos::Message_GameObject_GameObjectType_descriptor();
 }
 
 }  // namespace google

@@ -175,6 +175,7 @@ void Game::sendStateToClients() {
 
 		auto* gameObject = message.add_gameobject();
 		gameObject->set_id(pair.first);
+		gameObject->set_type(protos::Message_GameObject_GameObjectType_PLAYER);
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
 		}
@@ -189,8 +190,8 @@ void Game::sendStateToClients() {
 		transform.getOpenGLMatrix(glm);
 
 		auto* gameObject = message.add_gameobject();
-		gameObject->set_type(protos::GameObject_GameObjectType_HAT);
-		gameObject->set_id(hat->getHatId());
+		gameObject->set_type(protos::Message_GameObject_GameObjectType_HAT);
+		//gameObject->set_id(hat->getHatId());
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
 		}
@@ -203,6 +204,6 @@ void Game::sendStateToClients() {
 
 void Game::spawnNewHat() {
 	Hat* hat = Hat::createNewHat(Hat::WIZARD_HAT);
-	hatSet_.insert(hat);
-	world_->addRigidBody(hat);
+	//hatSet_.insert(hat);
+	//world_->addRigidBody(hat);
 }
