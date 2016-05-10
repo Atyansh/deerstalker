@@ -88,5 +88,4 @@ void Session::do_write() {
 			}
 		});
 	}
-
 }

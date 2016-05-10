@@ -8,7 +8,9 @@
 #include "Client.h"
 #include "World.h"
 #include "Player.h"
+#include "Hat.h"
 
+#include <unordered_set>
 #include <mutex>
 
 class Game {
@@ -29,6 +31,7 @@ public:
 	void handleJumpLogic(protos::Event& event);
 
 	void sendStateToClients();
+	void spawnNewHat();
 
 private:
 	std::set<client_ptr> clients_;
@@ -39,4 +42,5 @@ private:
 	std::deque<protos::Message> messageQueue_;
 	std::unordered_map<ClientId, Player*> playerMap_;
 	std::mutex playerMapLock_;
+	std::unordered_set<Hat*> hatSet_;
 };

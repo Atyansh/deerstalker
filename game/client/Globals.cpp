@@ -14,6 +14,6 @@ tcp::socket Globals::socket = tcp::socket(Globals::io_service);
 
 std::deque<protos::Message> Globals::messageQueue = std::deque<protos::Message>();
 
-char Globals::currentHeader[4] = "";
+char Globals::currentHeader[util::HEADER_SIZE] = "";
 
 uint32_t Globals::ID = 0;

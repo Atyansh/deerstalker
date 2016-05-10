@@ -10,6 +10,8 @@ void Server::do_accept() {
 	acceptor_.async_accept(socket_,
 		[this](boost::system::error_code ec) {
 		if (!ec) {
+			boost::asio::socket_base::receive_buffer_size option(1000000);
+			socket_.set_option(option);
 			socket_.set_option(tcp::no_delay(true));
 			std::make_shared<Session>(std::move(socket_), game_)->start();
 		}
