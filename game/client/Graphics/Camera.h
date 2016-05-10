@@ -7,12 +7,10 @@ class Camera {
 
 private:
 
-	glm::mat4 _objectMat;
+	glm::vec3 _objectVec;
 
-	glm::mat4 _camMatrix;  //Matrix of the camera
+	glm::vec3 _camVec;  //Matrix of the camera
 	
-	glm::vec3 _ballCamOffset; // Vector of where camera is from ball
-
 	void update(glm::mat4 rotMat);
 
 public:	
@@ -26,6 +24,6 @@ public:
 	void yaw(int up);	  // Move camera left and right
 	void roll(int up);
 
-	glm::vec3 getPosition() { return glm::vec3(_camMatrix[3]); }
-	void updateCamObjectMat(glm::mat4 mat, glm::mat4 world) { _objectMat = world * mat; }
+	glm::vec3 getPosition() { return glm::vec3(_camVec); }
+	void updateCamObjectMat(glm::vec3 pos) { _objectVec = pos; }
 };

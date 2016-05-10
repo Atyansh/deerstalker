@@ -148,7 +148,8 @@ void Window::idle_callback(GLFWwindow* window) {
 				glm::mat4 mat = glm::make_mat4(matrix);
 				player.setMatrix(mat);
 
-				Globals::cam.updateCamObjectMat(mat, Globals::drawData.matrix);
+				glm::mat4 toWorld = Globals::drawData.matrix * mat;
+				Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
 			}
 		}
 	}
@@ -180,7 +181,8 @@ void Window::display_callback(GLFWwindow* window) {
 		// Render objects
 		for (auto& pair : playerMap) {
 			pair.second->draw(Globals::drawData);
-			Globals::cam.updateCamObjectMat(pair.second->getDrawData().matrix, Globals::drawData.matrix);
+			glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
+			Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
 		}
 		
 	}
