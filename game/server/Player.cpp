@@ -6,7 +6,7 @@
 #include "LinearMath/btDefaultMotionState.h"
 #include "Player.h"
 
-Player::Player(int id, btScalar height, btScalar width, btScalar stepHeight) {
+Player::Player(int id, btScalar height, btScalar width, btScalar stepHeight,btCollisionShape * m_shape) {
 	m_rayLambda[0] = 1.0;
 	m_rayLambda[1] = 1.0;
 	m_halfHeight = 1.0;
@@ -14,20 +14,9 @@ Player::Player(int id, btScalar height, btScalar width, btScalar stepHeight) {
 	m_maxLinearVelocity = 10.0;
 	m_walkVelocity = 8.0; // meters/sec
 	m_turnVelocity = 1.0; // radians/sec
-	m_shape = NULL;
 	m_rigidBody = NULL;
 
-	btVector3 spherePositions[2];
-	btScalar sphereRadii[2];
-
-	sphereRadii[0] = width;
-	sphereRadii[1] = width;
-	spherePositions[0] = btVector3(0.0, (height / btScalar(2.0) - width), 0.0);
-	spherePositions[1] = btVector3(0.0, (-height / btScalar(2.0) + width), 0.0);
-
-	m_halfHeight = height / btScalar(2.0);
-
-	m_shape = new btMultiSphereShape(&spherePositions[0], &sphereRadii[0], 2);
+	
 
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -104,19 +93,15 @@ void Player::preStep(const btCollisionWorld* collisionWorld) {
 }
 
 void Player::playerStep(const btCollisionWorld* dynaWorld, btScalar dt,
-	int forward,
-	int backward,
-	int left,
-	int right,
-	int jump) {
+	protos::Event_Direction dir){
 	btTransform xform;
 	m_rigidBody->getMotionState()->getWorldTransform(xform);
 
 	/* Handle turning */
-	if (left) {
+	if (dir == protos::Event_Direction_LEFT) {
 		m_turnAngle -= dt * m_turnVelocity;
 	}
-	if (right) {
+	if (dir == protos::Event_Direction_RIGHT) {
 		m_turnAngle += dt * m_turnVelocity;
 	}
 
@@ -130,15 +115,15 @@ void Player::playerStep(const btCollisionWorld* dynaWorld, btScalar dt,
 	btVector3 walkDirection = btVector3(0.0, 0.0, 0.0);
 	btScalar walkSpeed = m_walkVelocity * dt;
 
-	if (forward) {
+	if (dir == protos::Event_Direction_FORWARD) {
 		walkDirection += forwardDir;
 	}
-	if (backward) {
+	if (dir == protos::Event_Direction_BACKWARD) {
 		walkDirection -= forwardDir;
 	}
 
 
-	if (!forward && !backward && onGround()) {
+	if ( dir!= protos::Event_Direction_FORWARD && dir != protos::Event_Direction_BACKWARD && onGround()) {
 		/* Dampen when on the ground and not being moved by the player */
 		linearVelocity *= btScalar(0.2);
 		m_rigidBody->setLinearVelocity(linearVelocity);
@@ -187,4 +172,7 @@ void Player::registerPairCacheAndDispatcher(btOverlappingPairCache* pairCache, b
 
 int Player::getId() {
 	return id_;
+}
+btMotionState * Player::getMotionState() {
+	return m_rigidBody->getMotionState();
 }

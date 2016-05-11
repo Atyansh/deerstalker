@@ -9,7 +9,7 @@
 class Player : public btCharacterControllerInterface {
 
 public:
-	Player(int id, btScalar height = 2.0, btScalar width = 0.25, btScalar stepHeight = 0.25);
+	Player(int id, btCollisionShape * m_shape, btScalar height = 2.0, btScalar width = 0.25, btScalar stepHeight = 0.25);
 	~Player();
 
 	void reset();
@@ -20,16 +20,12 @@ public:
 
 	void preStep(const btCollisionWorld* collisionWorld);
 	void playerStep(const btCollisionWorld* collisionWorld, btScalar dt,
-		int forward,
-		int backward,
-		int left,
-		int right,
-		int jump);
+		protos::Event_Direction dir);
 	bool canJump() const;
 	void jump();
 
 	bool onGround() const;
-
+	btMotionState * getMotionState();
 	int getId();
 
 private:
@@ -45,7 +41,7 @@ private:
 	btVector3 m_rayNormal[2];
 
 	btScalar m_turnAngle;
-
+	
 	btScalar m_maxLinearVelocity;
 	btScalar m_walkVelocity;
 	btScalar m_turnVelocity;
