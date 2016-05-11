@@ -22,7 +22,7 @@ public:
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void handle_gamepad(GLFWwindow* window);
 	static SMatrixTransform* objectToMatrixTransform(Model* model);
-	static void 
+	static void generateWorld(string directory);
 
 private:
 	static void addMoveEvent(protos::Message& message, protos::Event_Direction direction);

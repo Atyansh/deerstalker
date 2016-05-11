@@ -18,6 +18,7 @@ using namespace util;
 using namespace Gamepad;
 
 const char* window_title = "Deerstalker";
+string skyboxDirectory = "Graphics/Assets/Cubemap";
 
 bool cubeMode;
 
@@ -63,11 +64,7 @@ void Window::initialize_objects()
 
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
 
-	World *world = new World();
-	Globals::skybox.setupVAO();
-	cerr << "A" << endl;;
-	root = new SMatrixTransform();
-	root->addNode(world);
+	Window::generateWorld(skyboxDirectory);
 
 }
 
@@ -345,4 +342,13 @@ SMatrixTransform* Window::objectToMatrixTransform(Model* model) {
 	SMatrixTransform* transform = new SMatrixTransform();
 	transform->addNode(model);
 	return transform;
+}
+
+void Window::generateWorld(string directory) {
+	World *world = new World();
+	world->createWorld(shaderMap[_LtShader]);
+	Globals::skybox.setupVAO(directory);
+	cerr << "A" << endl;;
+	root = new SMatrixTransform();
+	root->addNode(world);
 }
