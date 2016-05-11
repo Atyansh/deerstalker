@@ -5,8 +5,6 @@ UpdateData Globals::updateData = UpdateData();
 Camera_Original Globals::camera = Camera_Original();
 Camera Globals::cam = Camera();
 
-LightShader* Globals::lightShader;
-
 Skybox Globals::skybox = Skybox();
 
 boost::asio::io_service Globals::io_service;

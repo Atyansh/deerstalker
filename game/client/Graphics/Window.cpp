@@ -1,7 +1,6 @@
 #include "Window.h"
 #include "client\Globals.h"
 #include "LightShader.h"
-#include "Mango.h"
 #include "Model.h"
 #include "SNode.h"
 #include "SMatrixTransform.h"
@@ -22,11 +21,24 @@ const char* window_title = "Deerstalker";
 
 bool cubeMode;
 
+enum Models {
+	_Player, _Mango
+};
+
+enum Shaders {
+	_BShader,
+	_LtShader
+};
+
 int Window::width;
 int Window::height;
 std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
 std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
+std::unordered_map<std::uint32_t, Model*> modelMap;
+std::unordered_map<std::uint32_t, Shader*> shaderMap;
+
+const char* mangoPath = "Graphics/Assets/OBJ/Mango/mango.obj";
 
 SMatrixTransform *root;
 
@@ -41,11 +53,15 @@ void Window::initialize_objects()
 		glm::vec3(-1.7f, 0.9f, 1.0f)
 	};
 
-	Globals::lightShader = new LightShader(Globals::cam.getPosition(), "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
-	Globals::lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
-	//Globals::lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
-	Globals::lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
-	Globals::lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+	LightShader* lightShader = new LightShader(Globals::cam.getPosition(), "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
+	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
+	//lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
+	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+
+	shaderMap[_LtShader] = lightShader;
+
+	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
 
 	World *world = new World();
 	Globals::skybox.setupVAO();
@@ -152,7 +168,7 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 			else {
 				if ((*map).find(id) == (*map).end()) {
-					(*map)[id] = Mango::createNewMango();
+					(*map)[id] = Window::objectToMatrixTransform(modelMap[_Mango]);
 				}
 
 				auto& player = *(*map)[id];
@@ -323,4 +339,10 @@ void Window::addMoveEvent(protos::Message& message, protos::Event_Direction dire
 	event->set_clientid(Globals::ID);
 	event->set_type(protos::Event_Type_MOVE);
 	event->set_direction(direction);
+}
+
+SMatrixTransform* Window::objectToMatrixTransform(Model* model) {
+	SMatrixTransform* transform = new SMatrixTransform();
+	transform->addNode(model);
+	return transform;
 }
