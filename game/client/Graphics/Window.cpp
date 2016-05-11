@@ -153,6 +153,18 @@ void Window::idle_callback(GLFWwindow* window) {
 				if ((*map).find(id) == (*map).end()) {
 					(*map)[id] = Mango::createNewMango();
 				}
+				else {
+					if ((gameObject.type() == protos::Message_GameObject_Type_HAT) &&
+						(gameObject.status() == protos::Message_GameObject_Status_DEAD)) {
+
+						auto iter = (*map).find(id);
+						if (iter != (*map).end()) {
+							(*map).erase(iter);
+						}
+						break;
+					}
+				}
+				
 
 				auto& player = *(*map)[id];
 				glm::mat4 mat = glm::make_mat4(matrix);

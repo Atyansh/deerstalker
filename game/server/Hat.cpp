@@ -2,7 +2,7 @@
 
 int Hat::idCounter = 0;
 
-Hat::Hat(btRigidBodyConstructionInfo& info) : btRigidBody(info), id_(idCounter++) {
+Hat::Hat(btRigidBodyConstructionInfo& info) : btRigidBody(info), id_(idCounter++), isLive_(true), spawnTime_(std::clock()){
 }
 
 Hat::~Hat() {
@@ -41,4 +41,8 @@ int Hat::getHatType() {
 
 int Hat::getHatId() {
 	return id_;
+}
+
+int Hat::getDuration() {
+	return (std::clock() - spawnTime_) / (int)CLOCKS_PER_SEC;
 }

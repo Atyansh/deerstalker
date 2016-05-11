@@ -102,6 +102,25 @@ inline bool Message_GameObject_Type_Parse(
   return ::google::protobuf::internal::ParseNamedEnum<Message_GameObject_Type>(
     Message_GameObject_Type_descriptor(), name, value);
 }
+enum Message_GameObject_Status {
+  Message_GameObject_Status_LIVE = 1,
+  Message_GameObject_Status_DEAD = 2
+};
+bool Message_GameObject_Status_IsValid(int value);
+const Message_GameObject_Status Message_GameObject_Status_Status_MIN = Message_GameObject_Status_LIVE;
+const Message_GameObject_Status Message_GameObject_Status_Status_MAX = Message_GameObject_Status_DEAD;
+const int Message_GameObject_Status_Status_ARRAYSIZE = Message_GameObject_Status_Status_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* Message_GameObject_Status_descriptor();
+inline const ::std::string& Message_GameObject_Status_Name(Message_GameObject_Status value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    Message_GameObject_Status_descriptor(), value);
+}
+inline bool Message_GameObject_Status_Parse(
+    const ::std::string& name, Message_GameObject_Status* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Message_GameObject_Status>(
+    Message_GameObject_Status_descriptor(), name, value);
+}
 // ===================================================================
 
 class Event : public ::google::protobuf::Message {
@@ -343,6 +362,30 @@ class Message_GameObject : public ::google::protobuf::Message {
     return Message_GameObject_Type_Parse(name, value);
   }
 
+  typedef Message_GameObject_Status Status;
+  static const Status LIVE = Message_GameObject_Status_LIVE;
+  static const Status DEAD = Message_GameObject_Status_DEAD;
+  static inline bool Status_IsValid(int value) {
+    return Message_GameObject_Status_IsValid(value);
+  }
+  static const Status Status_MIN =
+    Message_GameObject_Status_Status_MIN;
+  static const Status Status_MAX =
+    Message_GameObject_Status_Status_MAX;
+  static const int Status_ARRAYSIZE =
+    Message_GameObject_Status_Status_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Status_descriptor() {
+    return Message_GameObject_Status_descriptor();
+  }
+  static inline const ::std::string& Status_Name(Status value) {
+    return Message_GameObject_Status_Name(value);
+  }
+  static inline bool Status_Parse(const ::std::string& name,
+      Status* value) {
+    return Message_GameObject_Status_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
   // optional int32 id = 1;
@@ -371,12 +414,21 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline ::protos::Message_GameObject_Type type() const;
   inline void set_type(::protos::Message_GameObject_Type value);
 
+  // optional .protos.Message.GameObject.Status status = 4;
+  inline bool has_status() const;
+  inline void clear_status();
+  static const int kStatusFieldNumber = 4;
+  inline ::protos::Message_GameObject_Status status() const;
+  inline void set_status(::protos::Message_GameObject_Status value);
+
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
   inline void clear_has_id();
   inline void set_has_type();
   inline void clear_has_type();
+  inline void set_has_status();
+  inline void clear_has_status();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -385,6 +437,7 @@ class Message_GameObject : public ::google::protobuf::Message {
   ::google::protobuf::RepeatedField< double > matrix_;
   ::google::protobuf::int32 id_;
   int type_;
+  int status_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -687,6 +740,31 @@ inline void Message_GameObject::set_type(::protos::Message_GameObject_Type value
   // @@protoc_insertion_point(field_set:protos.Message.GameObject.type)
 }
 
+// optional .protos.Message.GameObject.Status status = 4;
+inline bool Message_GameObject::has_status() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Message_GameObject::set_has_status() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Message_GameObject::clear_has_status() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Message_GameObject::clear_status() {
+  status_ = 1;
+  clear_has_status();
+}
+inline ::protos::Message_GameObject_Status Message_GameObject::status() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.status)
+  return static_cast< ::protos::Message_GameObject_Status >(status_);
+}
+inline void Message_GameObject::set_status(::protos::Message_GameObject_Status value) {
+  assert(::protos::Message_GameObject_Status_IsValid(value));
+  set_has_status();
+  status_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.status)
+}
+
 // -------------------------------------------------------------------
 
 // Message
@@ -798,6 +876,11 @@ template <> struct is_proto_enum< ::protos::Message_GameObject_Type> : ::google:
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::protos::Message_GameObject_Type>() {
   return ::protos::Message_GameObject_Type_descriptor();
+}
+template <> struct is_proto_enum< ::protos::Message_GameObject_Status> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::protos::Message_GameObject_Status>() {
+  return ::protos::Message_GameObject_Status_descriptor();
 }
 
 }  // namespace google

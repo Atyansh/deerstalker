@@ -32,6 +32,7 @@ public:
 
 	void sendStateToClients();
 	void spawnNewHat();
+	void removeHat(Hat *hat);
 
 private:
 	std::set<client_ptr> clients_;

@@ -30,9 +30,14 @@ message Message {
 			BULLET = 2;
 			HAT = 3;
 		}
+		enum Status {
+			LIVE = 1;
+			DEAD = 2;
+		}
 		optional int32 id = 1;
 		repeated double matrix = 2;
 		optional Type type = 3;
+		optional Status status = 4;
 	}
 
 	optional int32 id = 1;

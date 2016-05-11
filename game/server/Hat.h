@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctime>
 #include "btBulletDynamicsCommon.h"
 #include "Client.h"
 
@@ -11,6 +12,9 @@ public:
 	static Hat* createNewHat(int hatType);
 	int getHatType();
 	int getHatId();
+	bool isLive() { return isLive_; }
+	void setStatus(bool newStatus) { isLive_ = newStatus; }
+	int getDuration();
 
 	const static int WIZARD_HAT = 0;
 	const static int BASEBALL_HAT = 1;
@@ -23,4 +27,6 @@ private:
 	btCollisionShape* collisionShape_;
 	int hatType_;
 	int id_;
+	bool isLive_;
+	std::clock_t spawnTime_;
 };

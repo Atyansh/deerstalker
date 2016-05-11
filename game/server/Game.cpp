@@ -112,6 +112,19 @@ void Game::startGameLoop() {
 		else {
 			frameCounter++;
 		}
+		
+		//delete item
+		int checkFreqInSec = 1; // check the status every second
+		int deleteEvery = 5;
+
+		if (frameCounter % (30 * checkFreqInSec) == 0) {
+			for (auto* hat : hatSet_) {
+				int duration = hat->getDuration();
+				if (duration > deleteEvery) {
+					hat->setStatus(false);
+				}
+			}
+		}
 	}
 }
 
@@ -192,6 +205,14 @@ void Game::sendStateToClients() {
 		auto* gameObject = message.add_gameobject();
 		gameObject->set_type(protos::Message_GameObject_Type_HAT);
 		gameObject->set_id(hat->getHatId());
+		if (hat->isLive()) {
+			gameObject->set_status(protos::Message_GameObject_Status_LIVE);
+		}
+		else {
+			gameObject->set_status(protos::Message_GameObject_Status_DEAD);
+			removeHat(hat);
+			break;
+		}
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
 		}
@@ -208,4 +229,10 @@ void Game::spawnNewHat() {
 	Hat* hat = Hat::createNewHat(Hat::WIZARD_HAT);
 	hatSet_.insert(hat);
 	world_->addRigidBody(hat);
+}
+
+void Game::removeHat(Hat * hat) {
+	hatSet_.erase(hat);
+	world_->removeRigidBody(hat);
+	//std::cerr << "Removing hat: " << hat->getHatId() << " Duration: " << hat->getDuration() << std::endl;
 }
