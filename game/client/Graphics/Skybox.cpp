@@ -16,8 +16,11 @@ Skybox::~Skybox()
 {
 }
 
-void Skybox::setupVAO() {
-	shader = new Shader(vert, frag);
+void Skybox::setupVAO(string directory) {
+	string vert = (directory + "/" + "Skybox.vert");
+	string frag = (directory + "/" + "Skybox.frag");
+
+	shader = new Shader(vert.c_str(), frag.c_str());
 
 	float skyboxSize = 500.f;
 
@@ -78,7 +81,7 @@ void Skybox::setupVAO() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	glBindVertexArray(0);
 	
-	cubemap = Cubemap::loadCubemap("Graphics/Assets/Cubemap");
+	cubemap = Cubemap::loadCubemap(directory);
 }
 
 void Skybox::draw() {

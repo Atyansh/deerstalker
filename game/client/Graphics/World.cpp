@@ -1,15 +1,12 @@
 #include "World.h"
-#include "LightShader.h"
 #include "Model.h"
 #include "client\Globals.h"
 #include <glm/gtx/transform.hpp>
-#include "Mango.h"
 
 const char* floorPath = "Graphics/Assets/OBJ/Floor/Floor.obj";
 
 World::World() {
 	//this->drawData.matrix = glm::mat4();
-	this->createWorld();
 }
 
 
@@ -17,7 +14,7 @@ World::~World() {
 
 }
 
-void World::createWorld() {
+void World::createWorld(Shader* shader) {
 	floor = new SMatrixTransform();
 	
 	glm::vec3 pointLightPositions[] = {
@@ -25,7 +22,7 @@ void World::createWorld() {
 		glm::vec3(-1.7f, 0.9f, 1.0f)
 	};
 	
-	Model* model = new Model(floorPath, Globals::lightShader);
+	Model* model = new Model(floorPath, shader);
 
 	glm::mat4 mat = glm::mat4();
 	

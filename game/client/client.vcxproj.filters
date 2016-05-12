@@ -54,10 +54,7 @@
     <ClCompile Include="Graphics\SMatrixTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-	  <ClCompile Include="Graphics\Cube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Mango.cpp">
+    <ClCompile Include="Graphics\Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Globals.cpp">
@@ -126,9 +123,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Mango.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Globals.h">

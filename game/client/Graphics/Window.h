@@ -4,6 +4,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "Cube.h"
+#include "SMatrixTransform.h"
+#include "Model.h"
 
 #include "util\Protos.pb.h"
 
@@ -19,6 +21,8 @@ public:
 	static void display_callback(GLFWwindow*);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void handle_gamepad(GLFWwindow* window);
+	static SMatrixTransform* objectToMatrixTransform(Model* model);
+	static void generateWorld(string directory);
 
 private:
 	static void addMoveEvent(protos::Message& message, protos::Event_Direction direction);

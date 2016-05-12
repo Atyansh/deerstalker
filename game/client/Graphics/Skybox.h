@@ -17,7 +17,7 @@ public:
 	Skybox();
 	~Skybox();
 
-	void setupVAO();
+	void setupVAO(string directory);
 	void draw();
 };
 

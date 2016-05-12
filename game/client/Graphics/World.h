@@ -3,6 +3,7 @@
 #include <list>
 #include <glm/glm.hpp>
 #include "SMatrixTransform.h"
+#include "Shader.h"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ public:
 	World();
 	~World();
 
-	void createWorld();
+	void createWorld(Shader *shader);
 
 
 };

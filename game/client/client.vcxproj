@@ -98,7 +98,6 @@
     <ClCompile Include="Graphics\Drawable.cpp" />
     <ClCompile Include="Graphics\DrawData.cpp" />
     <ClCompile Include="Graphics\LightShader.cpp" />
-    <ClCompile Include="Graphics\Mango.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\SGeode.cpp" />
@@ -134,7 +133,6 @@
     <ClInclude Include="Graphics\Drawable.h" />
     <ClInclude Include="Graphics\DrawData.h" />
     <ClInclude Include="Graphics\LightShader.h" />
-    <ClInclude Include="Graphics\Mango.h" />
     <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="Graphics\SGeode.h" />
     <ClInclude Include="Graphics\SGroup.h" />
