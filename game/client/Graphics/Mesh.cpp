@@ -69,7 +69,7 @@ void Mesh::draw(DrawData& data)
 		glUniform3fv(ambient, 1, glm::value_ptr(this->materialNoTex.ambient));
 		glUniform3fv(diffuse, 1, glm::value_ptr(this->materialNoTex.diffuse));
 		glUniform3fv(specular, 1, glm::value_ptr(this->materialNoTex.specular)); // Specular doesn't have full effect on this object's material
-		glUniform1f(shininess, 32.0f);
+		glUniform1f(shininess, materialNoTex.shininess);
 	}
 	
 	//// Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
