@@ -30,6 +30,13 @@ struct Texture {
 	aiString path;
 };
 
+struct MaterialNoTex {
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+	float shininess;
+};
+
 class Mesh : public SGeode
 {
 private:
@@ -37,6 +44,7 @@ private:
 	vector<Vertex> vertices;
 	vector<GLuint> indices;
 	vector<Texture> textures;
+	MaterialNoTex materialNoTex;
 	bool hasBones;
 
 	/* Uniform Loc*/
@@ -46,6 +54,11 @@ private:
 	GLuint hasTexLoc;
 	GLuint hasBonesLoc;
 	vector<GLuint> boneLocs;
+	GLuint ambient;
+	GLuint diffuse;
+	GLuint specular;
+	GLuint shininess;
+
 
 	/*  Render data  */
 	GLuint VAO, VBO, EBO;
@@ -56,7 +69,7 @@ private:
 	void setupUniformLoc();
 
 public:
-	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader, bool hasBones);
+	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, MaterialNoTex materialNoTex, Shader *shader, bool hasBones);
 	virtual ~Mesh(void);
 
 	void setBoneMatrix(GLint index, aiMatrix4x4 matrix);

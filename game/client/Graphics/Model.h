@@ -34,7 +34,7 @@ private:
 	void processNode(aiNode* node, const aiScene* scene);
 	void processVerts(aiMesh* mesh, vector<Vertex> &vertices);
 	void processFaces(aiMesh* mesh, vector<GLuint> &indices);
-	void processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> &textures);
+	void processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> &textures, MaterialNoTex &materialNoTex);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 	GLint TextureFromFile(const char* path, string directory);

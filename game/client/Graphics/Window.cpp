@@ -23,7 +23,8 @@ string skyboxDirectory = "Graphics/Assets/Cubemap";
 bool cubeMode;
 
 enum Models {
-	_Player, _Mango
+	_Player, 
+	_Mango
 };
 
 enum Shaders {
@@ -40,6 +41,7 @@ std::unordered_map<std::uint32_t, Model*> modelMap;
 std::unordered_map<std::uint32_t, Shader*> shaderMap;
 
 const char* mangoPath = "Graphics/Assets/OBJ/Mango/mango.obj";
+const char* chickenPath = "Graphics/Assets/FBX/chicken_dance.fbx";
 
 SMatrixTransform *root;
 
@@ -165,11 +167,15 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 			else {
 				if ((*map).find(id) == (*map).end()) {
-					(*map)[id] = Window::objectToMatrixTransform(modelMap[_Mango]);
+					(*map)[id] = Window::createGameObj(modelMap[_Mango]);
 				}
 
 				auto& player = *(*map)[id];
 				glm::mat4 mat = glm::make_mat4(matrix);
+
+				/*glm::mat4 mat2 = glm::scale(mat, glm::vec3(.01f));
+				player.setMatrix(mat2);*/
+
 				player.setMatrix(mat);
 
 				glm::mat4 toWorld = Globals::drawData.matrix * mat;
@@ -338,7 +344,7 @@ void Window::addMoveEvent(protos::Message& message, protos::Event_Direction dire
 	event->set_direction(direction);
 }
 
-SMatrixTransform* Window::objectToMatrixTransform(Model* model) {
+SMatrixTransform* Window::createGameObj(Model* model) {
 	SMatrixTransform* transform = new SMatrixTransform();
 	transform->addNode(model);
 	return transform;

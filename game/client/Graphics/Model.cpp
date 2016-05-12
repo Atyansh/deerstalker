@@ -90,6 +90,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	vector<Vertex> vertices;
 	vector<GLuint> indices;
 	vector<Texture> textures;
+	MaterialNoTex materialNoTex;
 
 	// bool hasTexture = hasPPMTextureFiles();
 	// fprintf(stderr, "Has textures? : %s", hasTexture ? "yes" : "no");
@@ -107,9 +108,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	processFaces(mesh, indices);
 
 	//process material w/ textures
-	processMaterial(mesh, scene, textures);
+	processMaterial(mesh, scene, textures, materialNoTex);
 
-	return Mesh(vertices, indices, textures, this->shader, mesh->mNumBones > 0);
+	return Mesh(vertices, indices, textures, materialNoTex, this->shader, mesh->mNumBones > 0);
 }
 
 void Model::processVerts(aiMesh* mesh, vector<Vertex> &vertices){
@@ -193,23 +194,31 @@ void Model::processFaces(aiMesh* mesh, vector<GLuint> &indices){
 	}
 }
 
-void Model::processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> &textures){
+void Model::processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> &textures, MaterialNoTex &materialNoTex){
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		// We assume a convention for sampler names in the shaders. Each diffuse texture should be named
-		// as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
-		// Same applies to other texture as the following list summarizes:
-		// Diffuse: texture_diffuseN
-		// Specular: texture_specularN
-		// Normal: texture_normalN
 
-		// 1. Diffuse maps
-		vector<Texture> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-		// 2. Specular maps
-		vector<Texture> specularMaps = this->loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+		if (mesh->HasTextureCoords(0)) // Does the mesh contain texture coordinates?
+		{
+			// 1. Diffuse maps
+			vector<Texture> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+			// 2. Specular maps
+			vector<Texture> specularMaps = this->loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+		} else {
+			aiColor3D color(0.f, 0.f, 0.f);
+			float shininess = 0.0f;
+			material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+			materialNoTex.ambient = glm::vec3(color[0], color[1], color[2]);
+			material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+			materialNoTex.diffuse = glm::vec3(color[0], color[1], color[2]);
+			material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+			materialNoTex.specular = glm::vec3(color[0], color[1], color[2]);
+			material->Get(AI_MATKEY_SHININESS, shininess);
+			materialNoTex.shininess = shininess;
+		}
 	}
 }
 
