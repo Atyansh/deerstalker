@@ -2,16 +2,17 @@
 
 #include "btBulletDynamicsCommon.h"
 #include "Client.h"
+#include "DynamicCharacterController.h"
 
-class Player : public btRigidBody {
+#include "BulletDynamics/Character/btCharacterControllerInterface.h"
+
+class Player {
 public:
-	Player(btRigidBodyConstructionInfo& info);
+	Player();
 	~Player();
 
-	static Player* createNewPlayer(ClientId clientId, btCollisionShape* collisionShape);
+	DynamicCharacterController* getController();
 
 private:
-	btScalar mass_;
-	btMotionState* motionState_;
-	btCollisionShape* collisionShape_;
+	DynamicCharacterController* controller_;
 };

@@ -118,38 +118,45 @@ void Game::startGameLoop() {
 void Game::handleSpawnLogic(protos::Event& event) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	std::cerr << "SPAWN HAPPENED" << std::endl;
-	Player* player = Player::createNewPlayer(event.clientid(), body_->getCollisionShape());
+	Player* player = new Player();
 	playerMap_[event.clientid()] = player;
-	world_->addRigidBody(player);
+	world_->addRigidBody(player->getController()->getRigidBody());
+	world_->addAction(player->getController());
 }
 
 void Game::handleMoveLogic(protos::Event& event) {
 	Player* player = playerMap_[event.clientid()];
 
+	player->getController()->preStep(world_);
+
 	switch (event.direction()) {
 	case (protos::Event_Direction_RIGHT) :
 		std::cerr << "MOVE RIGHT" << std::endl;
-		player->applyCentralForce(btVector3(10, 0, 0));
+		player->getController()->playerStep(world_, 0.5, 0, 0, 0, 1, 0);
+		//player->applyCentralForce(btVector3(10, 0, 0));
 		break;
 	case (protos::Event_Direction_LEFT) :
 		std::cerr << "MOVE LEFT" << std::endl;
-		player->applyCentralForce(btVector3(-10, 0, 0));
+		player->getController()->playerStep(world_, 0.5, 0, 0, 1, 0, 0);
+		//player->applyCentralForce(btVector3(-10, 0, 0));
 		break;
 	case (protos::Event_Direction_UP) :
 		std::cerr << "MOVE UP" << std::endl;
-		player->applyCentralForce(btVector3(0, 10, 0));
+		//player->applyCentralForce(btVector3(0, 10, 0));
 		break;
 	case (protos::Event_Direction_DOWN) :
 		std::cerr << "MOVE DOWN" << std::endl;
-		player->applyCentralForce(btVector3(0, -10, 0));
+		//player->applyCentralForce(btVector3(0, -10, 0));
 		break;
 	case (protos::Event_Direction_FORWARD) :
 		std::cerr << "MOVE FORWARD" << std::endl;
-		player->applyCentralForce(btVector3(0, 0, -10));
+		player->getController()->playerStep(world_, 10.0, 1, 0, 0, 0, 0);
+		//player->applyCentralForce(btVector3(0, 0, -10));
 		break;
 	case (protos::Event_Direction_BACKWARD) :
 		std::cerr << "MOVE BACKWARD" << std::endl;
-		player->applyCentralForce(btVector3(0, 0, 10));
+		player->getController()->playerStep(world_, 10.0, 0, 1, 0, 0, 0);
+		//player->applyCentralForce(btVector3(0, 0, 10));
 		break;
 	}
 }
@@ -157,7 +164,9 @@ void Game::handleMoveLogic(protos::Event& event) {
 void Game::handleJumpLogic(protos::Event& event) {
 	Player* player = playerMap_[event.clientid()];
 
-	player->applyCentralImpulse(btVector3(0, 1, 0));
+	player->getController()->preStep(world_);
+
+	player->getController()->playerStep(world_, 10.0, 0, 0, 0, 0, 1);
 }
 
 void Game::sendStateToClients() {
@@ -167,8 +176,7 @@ void Game::sendStateToClients() {
 
 	for (auto& pair : playerMap_) {
 		btTransform transform;
-		pair.second->getMotionState()->getWorldTransform(transform);
-
+		pair.second->getController()->getRigidBody()->getMotionState()->getWorldTransform(transform);
 		btScalar glm[16] = {};
 
 		transform.getOpenGLMatrix(glm);
