@@ -24,7 +24,7 @@ Hat* Hat::createNewHat(int hatType) {
 
 	int worldSize = 50;
 	int xPosition = (rand() % worldSize) - 25;
-	int yPosition = 10;
+	int yPosition = 30;
 	int zPosition = (rand() % worldSize) - 25;
 	startTransform.setOrigin(btVector3(xPosition, yPosition, zPosition));
 

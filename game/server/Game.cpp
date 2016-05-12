@@ -113,17 +113,10 @@ void Game::startGameLoop() {
 			frameCounter++;
 		}
 		
-		//delete item
 		int checkFreqInSec = 1; // check the status every second
 		int deleteEvery = 5;
-
 		if (frameCounter % (30 * checkFreqInSec) == 0) {
-			for (auto* hat : hatSet_) {
-				int duration = hat->getDuration();
-				if (duration > deleteEvery) {
-					hat->setStatus(false);
-				}
-			}
+			killOldHats(deleteEvery);
 		}
 	}
 }
@@ -234,5 +227,13 @@ void Game::spawnNewHat() {
 void Game::removeHat(Hat * hat) {
 	hatSet_.erase(hat);
 	world_->removeRigidBody(hat);
-	//std::cerr << "Removing hat: " << hat->getHatId() << " Duration: " << hat->getDuration() << std::endl;
+}
+
+void Game::killOldHats(int spawnTime) {
+	for (auto* hat : hatSet_) {
+		int duration = hat->getDuration();
+		if (duration > spawnTime) {
+			hat->setStatus(false);
+		}
+	}
 }
