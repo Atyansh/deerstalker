@@ -15,7 +15,7 @@ Player::~Player() {
 Player* Player::createNewPlayer(ClientId clientId, btCollisionShape* collisionShape) {
 	btScalar mass = 1.0;
 	btVector3 localInertia(0, 0, 0);
-	collisionShape = new btBoxShape(btVector3(1, 1, 1));
+	//collisionShape = new btBoxShape(btVector3(1, 1, 1));
 	collisionShape->calculateLocalInertia(mass, localInertia);
 
 	btTransform startTransform;
