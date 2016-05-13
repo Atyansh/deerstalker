@@ -20,8 +20,6 @@ using namespace Gamepad;
 const char* window_title = "Deerstalker";
 string skyboxDirectory = "Graphics/Assets/Cubemap";
 
-bool cubeMode;
-
 enum Models {
 	_Player, 
 	_Mango,
@@ -115,26 +113,13 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	Window::height = height;
 	// Set the viewport size
 	glViewport(0, 0, width, height);
+	float aspect = height == 0 ? 0 : float(width) / (float)height;
+	Globals::drawData.projection = glm::perspective(45.0f, aspect, 0.1f, 1000.0f);
+	//Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	Globals::drawData.view = Globals::cam.getView();
 
-	if (cubeMode) {
-		// Set the matrix mode to GL_PROJECTION to determine the proper camera properties
-		glMatrixMode(GL_PROJECTION);
-		// Load the identity matrix
-		glLoadIdentity();
-		// Set the perspective of the projection viewing frustum
-		gluPerspective(60.0, double(width) / (double)height, 1.0, 1000.0);
-		// Move camera back 20 units so that it looks at the origin (or else it's in the origin)
-		glTranslatef(0, 0, -20);
-	}
-	else {
-		float aspect = height == 0 ? 0 : float(width) / (float)height;
-		Globals::drawData.projection = glm::perspective(45.0f, aspect, 0.1f, 1000.0f);
-		//Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		Globals::drawData.view = Globals::cam.getView();
-
-		cout << "projection in winodw \n";
-		cout << glm::to_string(Globals::drawData.projection) << endl;
-	}
+	cout << "projection in winodw \n";
+	cout << glm::to_string(Globals::drawData.projection) << endl;
 }
 
 // This method handles client side event logic and Controller input parsing
@@ -164,32 +149,23 @@ void Window::idle_callback(GLFWwindow* window) {
 				matrix[j] = gameObject.matrix(j);
 			}
 
-			if (cubeMode) {
-				if (cubeMap.find(id) == cubeMap.end()) {
-					cubeMap[id] = std::make_unique<Cube>(2.0);
-				}
-
-				auto& cube = *cubeMap[id];
-				cube.toWorld = glm::make_mat4(matrix);
+			if ((*map).find(id) == (*map).end()) {
+				(*map)[id] = Window::createGameObj(modelMap[model]);
 			}
-			else {
-				if ((*map).find(id) == (*map).end()) {
-					(*map)[id] = Window::createGameObj(modelMap[model]);
-				}
 
-				auto& player = *(*map)[id];
-				glm::mat4 mat = glm::make_mat4(matrix);
+			auto& player = *(*map)[id];
+			glm::mat4 mat = glm::make_mat4(matrix);
 
-				/*glm::mat4 mat2 = glm::scale(mat, glm::vec3(.01f));
-				player.setMatrix(mat2);*/
+			/*glm::mat4 mat2 = glm::scale(mat, glm::vec3(.01f));
+			player.setMatrix(mat2);*/
 
-				player.setMatrix(mat);
-				if (gameObject.type() == protos::Message_GameObject_Type_PLAYER &&
-					gameObject.id() == Globals::ID) {
-					glm::mat4 toWorld = Globals::drawData.matrix * mat;
-					Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
-				}
+			player.setMatrix(mat);
+			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER &&
+				gameObject.id() == Globals::ID) {
+				glm::mat4 toWorld = Globals::drawData.matrix * mat;
+				Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
 			}
+
 		}
 	}
 }
@@ -199,36 +175,21 @@ void Window::display_callback(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Globals::drawData.view = Globals::cam.getView();
-	Globals::skybox.draw();
-
-		
+	Globals::skybox.draw();	
 
 	root->draw(Globals::drawData);
 
-	if (cubeMode) {
-		// Set the matrix mode to GL_MODELVIEW
-		glMatrixMode(GL_MODELVIEW);
-		// Load the identity matrix
-		glLoadIdentity();
+	// Render objects
+	for (auto& pair : playerMap) {
+		//pair.second->draw(Globals::drawData);
+		glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
+		Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
+		pair.second->draw(Globals::drawData);
 
-		// Render objects
-		for (auto& pair : cubeMap) {
-			pair.second->draw();
-		}
 	}
-	else {
-		// Render objects
-		for (auto& pair : playerMap) {
-			//pair.second->draw(Globals::drawData);
-			glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
-			Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
-			pair.second->draw(Globals::drawData);
-
-		}
-		// hat
-		for (auto& pair : hatMap) {
-			pair.second->draw(Globals::drawData);
-		}
+	// hat
+	for (auto& pair : hatMap) {
+		pair.second->draw(Globals::drawData);
 	}
 
 	// Gets events, including input such as keyboard and mouse or window resizing

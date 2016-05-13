@@ -17,8 +17,6 @@ using namespace util;
 
 GLFWwindow* window;
 
-extern bool cubeMode;
-
 void error_callback(int error, const char* description) {
 	// Print error
 	fputs(description, stderr);
@@ -142,7 +140,6 @@ int main(int argc, char *argv[])
 {
 	std::string hostname;
 	std::string port;
-	std::string str_cubeMode;
 
 	// load the settings from the config file
 	if (!ConfigSettings::config->checkIfLoaded()) {
@@ -160,14 +157,6 @@ int main(int argc, char *argv[])
 		std::cerr << "There was a problem getting the hostname from the config file\n";
 		return 1;
 	}
-
-	if (!ConfigSettings::config->getValue("cubeMode", str_cubeMode)) {
-		std::cerr << "There was a problem getting the hostname from the config file\n";
-		return 1;
-	}
-
-	cubeMode = str_cubeMode.compare("true") == 0;
-
 
 	// Create the GLFW window
 	window = Window::create_window(640, 480);
