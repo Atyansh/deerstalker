@@ -9,7 +9,6 @@
 #include "World.h"
 #include "Player.h"
 #include "Hat.h"
-
 #include <unordered_set>
 #include <mutex>
 
@@ -36,9 +35,8 @@ public:
 private:
 	std::set<client_ptr> clients_;
 	World* world_;
-
+	void handleReSpawnLogic(std::vector<Player *>& players);
 	btCollisionObject* body_;
-
 	std::deque<protos::Message> messageQueue_;
 	std::unordered_map<ClientId, Player*> playerMap_;
 	std::mutex playerMapLock_;

@@ -3,7 +3,8 @@
 #include <unordered_map>
 #include "Client.h"
 #include "btBulletDynamicsCommon.h"
-
+#include "Player.h"
+#include <iostream>
 
 class World : public btDiscreteDynamicsWorld {
 public:
@@ -14,6 +15,11 @@ public:
 	~World();
 
 	static World* createNewWorld();
-
+	static World* loadNewWorld(std::string filePath);
+	bool isDead(Player * p);
+	void spawnPlayer(Player *p);
+	
 private:
+	float lowestPoint_;
+	static World* generateDefaultWorld();
 };

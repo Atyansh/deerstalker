@@ -35,32 +35,8 @@ int Game::size() {
 }
 
 void Game::initialize() {
-	world_ = World::createNewWorld();
-	world_->setGravity(btVector3(0, -10, 0));
-
-	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
+	world_ = World::loadNewWorld("");
 	
-	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 5);
-	btTransform groundTransform;
-	groundTransform.setIdentity();
-	groundTransform.setOrigin(btVector3(0, -56, 0));
-
-	{
-		btScalar mass(0.);
-
-		bool isDynamic = (mass != 0.f);
-
-		btVector3 localInertia(0, 0, 0);
-		if (isDynamic)
-			groundShape->calculateLocalInertia(mass, localInertia);
-
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
-		btRigidBody* body = new btRigidBody(rbInfo);
-
-		world_->addRigidBody(body);
-	}
-
 	btBulletWorldImporter* fileLoader = new btBulletWorldImporter();
 
 	fileLoader->loadFile("bullet_assets\\Mango.bullet");
@@ -97,7 +73,17 @@ void Game::startGameLoop() {
 					handleJumpLogic(event);
 				}
 			}
+		
+			
+		}	
+		
+		std::vector<Player *> deadPlayers;
+		for (auto it = playerMap_.begin(); it != playerMap_.end(); it++) {
+			if (world_->isDead(it->second)) {
+				deadPlayers.push_back(it->second);
+			}
 		}
+		handleReSpawnLogic(deadPlayers);
 		sendStateToClients();
 
 		milliseconds stamp2 = duration_cast<milliseconds>(
@@ -106,7 +92,7 @@ void Game::startGameLoop() {
 		sleep_for(interval - (stamp2-stamp1));
 
 		if (frameCounter > 300) {
-			spawnNewHat();
+			//spawnNewHat();
 			frameCounter = 0;
 		}
 		else {
@@ -208,4 +194,11 @@ void Game::spawnNewHat() {
 	Hat* hat = Hat::createNewHat(Hat::WIZARD_HAT);
 	hatSet_.insert(hat);
 	world_->addRigidBody(hat);
+}
+
+void Game::handleReSpawnLogic(std::vector<Player*>& players){
+	for (auto player = players.begin(); player != players.end(); player++) {
+		world_->spawnPlayer(*player);
+		std::cout << "Player " << (*player)->getId() << std::endl;
+	}
 }
