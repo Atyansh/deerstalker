@@ -24,7 +24,9 @@ bool cubeMode;
 
 enum Models {
 	_Player, 
-	_Mango
+	_Mango,
+	_Crate,
+	_PokeBall
 };
 
 enum Shaders {
@@ -42,6 +44,7 @@ std::unordered_map<std::uint32_t, Shader*> shaderMap;
 
 const char* mangoPath = "Graphics/Assets/OBJ/Mango/mango.obj";
 const char* chickenPath = "Graphics/Assets/FBX/chicken_dance.fbx";
+const char* cratePath = "Graphics/Assets/OBJ/Crate/Crate1.obj";
 
 SMatrixTransform *root;
 
@@ -58,13 +61,14 @@ void Window::initialize_objects()
 
 	LightShader* lightShader = new LightShader(Globals::cam.getPosition(), "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
 	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
-	//lightShader->addDirectionalLight(glm::vec3(0.2f, 10.0f, 0.f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
+	lightShader->addDirectionalLight(glm::vec3(0.2f, 10.0f, 0.f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
 	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 
 	shaderMap[_LtShader] = lightShader;
 
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
+	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
 
 	Window::generateWorld(skyboxDirectory);
 
@@ -167,7 +171,7 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 			else {
 				if ((*map).find(id) == (*map).end()) {
-					(*map)[id] = Window::createGameObj(modelMap[_Mango]);
+					(*map)[id] = Window::createGameObj(modelMap[_Crate]);
 				}
 
 				auto& player = *(*map)[id];
