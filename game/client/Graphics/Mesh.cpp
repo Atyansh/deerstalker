@@ -7,11 +7,12 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Shader *shader, bool hasBones=false) : SGeode()
+Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, MaterialNoTex materialNoTex, Shader *shader, bool hasBones=false) : SGeode()
 {
 	this->vertices = vertices;
 	this->indices = indices;
 	this->textures = textures;
+	this->materialNoTex = materialNoTex;
 	this->shader = shader;
 	this->hasBones = hasBones;
 
@@ -37,11 +38,10 @@ void Mesh::draw(DrawData& data)
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(data.matrix));
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(data.view));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(data.projection));
-	glUniform1i(hasTexLoc, textures.size() > 0 );
+	glUniform1i(hasTexLoc, this->textures.size() > 0 );
 	glUniform1i(hasBonesLoc, this->hasBones);
 
-	if (textures.size() > 0) {
-
+	if (this->textures.size() > 0) {
 		// Bind appropriate textures
 		GLuint diffuseNr = 1;
 		GLuint specularNr = 1;
@@ -61,11 +61,19 @@ void Mesh::draw(DrawData& data)
 			glUniform1i(glGetUniformLocation(shader->getPid(), (name + number).c_str()), i);
 			// And finally bind the texture
 			glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
+
+			// Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
+			glUniform1f(glGetUniformLocation(shader->getPid(), "material.shininess"), 16.0f);
 		}
+	} else {
+		glUniform3fv(ambient, 1, glm::value_ptr(this->materialNoTex.ambient));
+		glUniform3fv(diffuse, 1, glm::value_ptr(this->materialNoTex.diffuse));
+		glUniform3fv(specular, 1, glm::value_ptr(this->materialNoTex.specular)); // Specular doesn't have full effect on this object's material
+		glUniform1f(shininess, materialNoTex.shininess);
 	}
 	
-	// Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
-	glUniform1f(glGetUniformLocation(shader->getPid(), "material.shininess"), 16.0f);
+	//// Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
+	//glUniform1f(glGetUniformLocation(shader->getPid(), "material.shininess"), 16.0f);
 	
 
 	// Draw mesh
@@ -117,7 +125,7 @@ void Mesh::setupMesh(){
 	glEnableVertexAttribArray(NORMAL_LOCATION);
 	glVertexAttribPointer(NORMAL_LOCATION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, Normal));
 	// Vertex Texture Coords
-	if (textures.size() > 0) {
+	if (this->textures.size() > 0) {
 		glEnableVertexAttribArray(TEX_COORD_LOCATION);
 		glVertexAttribPointer(TEX_COORD_LOCATION, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, TexCoords));
 	}
@@ -152,6 +160,11 @@ void Mesh::setupUniformLoc() {
 			boneLocs.push_back(glGetUniformLocation(shader->getPid(), tmp.c_str()));
 		}
 	}
+
+	ambient = glGetUniformLocation(shader->getPid(), "materialNoTex.ambient");
+	diffuse = glGetUniformLocation(shader->getPid(), "materialNoTex.diffuse");
+	specular = glGetUniformLocation(shader->getPid(), "materialNoTex.specular");
+	shininess = glGetUniformLocation(shader->getPid(), "materialNoTex.shininess");
 
 	shader->unbind();
 }
