@@ -58,3 +58,8 @@ glm::mat4 Camera::getView() {
 	return glm::lookAt((_camVec + _objectVec), _objectVec, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
+glm::vec3 Camera::getCamDirection() {
+	glm::vec3 dir = _camVec - _objectVec;
+	dir.y = 0;
+	return glm::normalize(dir);
+}
