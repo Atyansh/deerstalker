@@ -106,7 +106,7 @@ void Game::startGameLoop() {
 		sleep_for(interval - (stamp2-stamp1));
 
 		if (frameCounter > 300) {
-			//spawnNewHat();
+			spawnNewHat();
 			frameCounter = 0;
 		}
 		else {

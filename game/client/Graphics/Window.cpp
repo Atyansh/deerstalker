@@ -144,6 +144,7 @@ void Window::idle_callback(GLFWwindow* window) {
 		Globals::messageQueue.pop_front();
 
 		for (int i = 0; i < message.gameobject_size(); i++){
+			Models model;
 			auto& gameObject = message.gameobject(i);
 			int id = gameObject.id();
 
@@ -151,9 +152,11 @@ void Window::idle_callback(GLFWwindow* window) {
 
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 				map = &playerMap;
+				model = _Mango;
 			}
 			else if (gameObject.type() == protos::Message_GameObject_Type_HAT) {
 				map = &hatMap;
+				model = _Crate;
 			}
 
 			float matrix[16];
@@ -171,7 +174,7 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 			else {
 				if ((*map).find(id) == (*map).end()) {
-					(*map)[id] = Window::createGameObj(modelMap[_Crate]);
+					(*map)[id] = Window::createGameObj(modelMap[model]);
 				}
 
 				auto& player = *(*map)[id];
@@ -181,9 +184,11 @@ void Window::idle_callback(GLFWwindow* window) {
 				player.setMatrix(mat2);*/
 
 				player.setMatrix(mat);
-
-				glm::mat4 toWorld = Globals::drawData.matrix * mat;
-				Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
+				if (gameObject.type() == protos::Message_GameObject_Type_PLAYER &&
+					gameObject.id() == Globals::ID) {
+					glm::mat4 toWorld = Globals::drawData.matrix * mat;
+					Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
+				}
 			}
 		}
 	}
