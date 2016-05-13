@@ -26,4 +26,5 @@ public:
 
 	glm::vec3 getPosition() { return glm::vec3(_camVec); }
 	void updateCamObjectMat(glm::vec3 pos) { _objectVec = pos; }
+	glm::vec3 getCamDirection();
 };

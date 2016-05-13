@@ -23,6 +23,7 @@ public:
 	static void handle_gamepad(GLFWwindow* window);
 	static SMatrixTransform* createGameObj(Model* model);
 	static void generateWorld(string directory);
+	static glm::mat4 moveBasedOnCamera(int direction);
 
 private:
 	static void addMoveEvent(protos::Message& message, protos::Event_Direction direction);

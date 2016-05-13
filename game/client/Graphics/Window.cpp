@@ -24,7 +24,9 @@ bool cubeMode;
 
 enum Models {
 	_Player, 
-	_Mango
+	_Mango,
+	_Crate,
+	_PokeBall
 };
 
 enum Shaders {
@@ -42,6 +44,7 @@ std::unordered_map<std::uint32_t, Shader*> shaderMap;
 
 const char* mangoPath = "Graphics/Assets/OBJ/Mango/mango.obj";
 const char* chickenPath = "Graphics/Assets/FBX/chicken_dance.fbx";
+const char* cratePath = "Graphics/Assets/OBJ/Crate/Crate1.obj";
 
 SMatrixTransform *root;
 
@@ -58,13 +61,14 @@ void Window::initialize_objects()
 
 	LightShader* lightShader = new LightShader(Globals::cam.getPosition(), "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
 	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
-	//lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
+	lightShader->addDirectionalLight(glm::vec3(0.2f, 10.0f, 0.f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
 	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 
 	shaderMap[_LtShader] = lightShader;
 
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
+	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
 
 	Window::generateWorld(skyboxDirectory);
 
@@ -167,7 +171,7 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 			else {
 				if ((*map).find(id) == (*map).end()) {
-					(*map)[id] = Window::createGameObj(modelMap[_Mango]);
+					(*map)[id] = Window::createGameObj(modelMap[_Crate]);
 				}
 
 				auto& player = *(*map)[id];
@@ -210,9 +214,11 @@ void Window::display_callback(GLFWwindow* window) {
 	else {
 		// Render objects
 		for (auto& pair : playerMap) {
-			pair.second->draw(Globals::drawData);
+			//pair.second->draw(Globals::drawData);
 			glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
 			Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
+			pair.second->draw(Globals::drawData);
+
 		}
 		// hat
 		for (auto& pair : hatMap) {
@@ -280,17 +286,17 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	for (int i = 0; i < count; i++) {
 	}
 
-	if (axes[LEFT_STICK_X] > POS_AXIS_TILT) {
+	if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
 		addMoveEvent(message, protos::Event_Direction_RIGHT);
 	}
-	else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT) {
+	else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT) { // Left
 		addMoveEvent(message, protos::Event_Direction_LEFT);
 	}
 
-	if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) {
+	if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) { // Down
 		addMoveEvent(message, protos::Event_Direction_BACKWARD);
 	}
-	else if (axes[LEFT_STICK_Y] < NEG_AXIS_TILT) {
+	else if (axes[LEFT_STICK_Y] < NEG_AXIS_TILT) { // Up
 		addMoveEvent(message, protos::Event_Direction_FORWARD);
 	}
 
@@ -357,4 +363,46 @@ void Window::generateWorld(string directory) {
 	cerr << "A" << endl;;
 	root = new SMatrixTransform();
 	root->addNode(world);
+}
+
+glm::mat4 Window::moveBasedOnCamera(int direction) {
+	// 0 = up
+	// 1 = down
+	// 2 = left
+	// 3 = right
+
+	glm::vec3 b(0.0f, 0.0f, -1.0f);
+
+	//switch (direction) {
+	//case 0: // up
+	//	b = glm::vec3(0.0f, 0.0f, -1.0f);
+	//	break;
+	//case 1: // down
+	//	b = glm::vec3(0.0f, 0.0f, 1.0f);
+	//	break;
+	//case 2:
+	//	b = glm::vec3(-1.0f, 0.0f, 0.0f);
+	//	break;
+	//case 3:
+	//	b = glm::vec3(1.0f, 0.0f, 0.0f);
+	//	break;
+	//}
+
+	glm::vec3 a = Globals::cam.getCamDirection();
+	cout << glm::to_string(a) << endl;
+
+	float angle = acosf(glm::dot(a, b));
+
+	if (angle > 180) {
+		angle -= 180;
+	}
+	cout << "Angle: " << angle << endl;
+
+
+	glm::mat4 rot = glm::rotate(glm::mat4(), angle, glm::vec3(0.0f, 1.0f, 0.0f));
+	return rot;
+
+
+
+
 }
