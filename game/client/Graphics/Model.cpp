@@ -201,12 +201,25 @@ void Model::processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> 
 
 		if (mesh->HasTextureCoords(0)) // Does the mesh contain texture coordinates?
 		{
-			// 1. Diffuse maps
 			vector<Texture> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-			// 2. Specular maps
 			vector<Texture> specularMaps = this->loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+
+			if (diffuseMaps.size() == 0 && specularMaps.size() == 0) {
+				aiColor3D color(0.f, 0.f, 0.f);
+				float shininess = 0.0f;
+				material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+				materialNoTex.ambient = glm::vec3(color[0], color[1], color[2]);
+				material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+				materialNoTex.diffuse = glm::vec3(color[0], color[1], color[2]);
+				material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+				materialNoTex.specular = glm::vec3(color[0], color[1], color[2]);
+				material->Get(AI_MATKEY_SHININESS, shininess);
+				materialNoTex.shininess = shininess;
+			} else {
+				textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+				textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+			}
+			
 		} else {
 			aiColor3D color(0.f, 0.f, 0.f);
 			float shininess = 0.0f;
@@ -249,7 +262,10 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type,
 			texture.type = typeName;
 			texture.path = str;
 			textures.push_back(texture);
-			this->textures_loaded.push_back(texture);  // Store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
+			this->textures_loaded.push_back(texture);
+
+			//TODO, be able to load texture from FBX
+			// https://github.com/acgessler/open3mod/blob/047be0a5be39f36064c97af08d5b7b37cc1182b1/open3mod/MaterialMapperClassicGl.cs
 		}
 	}
 	return textures;
@@ -263,6 +279,9 @@ GLint Model::TextureFromFile(const char* path, string directory)
 
 	int width, height;
 	unsigned char* image = loadPPM(filename.c_str(), width, height);
+	if (image == NULL || image[0] == '\0') {
+		return -1;
+	}
 
 	// Create Texture
 	GLuint textureID;
