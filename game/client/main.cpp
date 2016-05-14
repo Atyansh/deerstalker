@@ -125,8 +125,10 @@ void do_read_body(size_t length) {
 					Globals::ID = event.clientid();
 				}
 			}
-			
+
+			Globals::queueLock.lock();
 			Globals::messageQueue.push_back(message);
+			Globals::queueLock.unlock();
 
 			do_read_header();
 		}

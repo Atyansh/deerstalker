@@ -124,11 +124,11 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 
 // This method handles client side event logic and Controller input parsing
 void Window::idle_callback(GLFWwindow* window) {
+	Globals::queueLock.lock();
 	while (!Globals::messageQueue.empty()) {
-		protos::Message message = Globals::messageQueue.front();
-		Globals::messageQueue.pop_front();
+		protos::Message& message = Globals::messageQueue.front();
 
-		for (int i = 0; i < message.gameobject_size(); i++){
+		for (int i = 0; i < message.gameobject_size(); i++) {
 			Models model;
 			auto& gameObject = message.gameobject(i);
 			int id = gameObject.id();
@@ -167,7 +167,11 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 
 		}
+
+		Globals::messageQueue.pop_front();
 	}
+
+	Globals::queueLock.unlock();
 }
 
 void Window::display_callback(GLFWwindow* window) {
