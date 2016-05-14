@@ -12,6 +12,8 @@
 #include "util\Protos.pb.h"
 #include "util\Util.h"
 
+#include <mutex>
+
 using boost::asio::ip::tcp;
 
 class Globals {
@@ -25,6 +27,7 @@ public:
 	static boost::asio::io_service io_service;
 	static tcp::socket socket;
 	static std::deque<protos::Message> messageQueue;
+	static std::mutex queueLock;
 	static char currentHeader[util::HEADER_SIZE];
 	static std::uint32_t ID;
 };
