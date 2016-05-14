@@ -189,7 +189,6 @@ void Window::display_callback(GLFWwindow* window) {
 	for (auto& pair : playerMap) {
 		//pair.second->draw(Globals::drawData);
 		glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
-		Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
 		pair.second->draw(Globals::drawData);
 
 	}
