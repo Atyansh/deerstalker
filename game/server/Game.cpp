@@ -82,8 +82,7 @@ void Game::startGameLoop() {
 		world_->stepSimulation(1.f / 30.f, 10);
 
 		while (!messageQueue_.empty()) {
-			protos::Message message = messageQueue_.front();
-			messageQueue_.pop_front();
+			protos::Message& message = messageQueue_.front();
 
 			for (int i = 0; i < message.event_size(); i++) {
 				auto event = message.event(i);
@@ -97,6 +96,8 @@ void Game::startGameLoop() {
 					handleJumpLogic(event);
 				}
 			}
+
+			messageQueue_.pop_front();
 		}
 		sendStateToClients();
 
@@ -196,8 +197,6 @@ void Game::sendStateToClients() {
 			gameObject->add_matrix(v);
 		}
 	}
-
-
 
 	for (auto client : clients_) {
 		client->deliver(message);
