@@ -154,18 +154,24 @@ void Window::idle_callback(GLFWwindow* window) {
 			player.setMatrix(mat2);*/
 
 			player.setMatrix(mat);
-			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER &&
-				gameObject.id() == Globals::ID) {
+			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 
-				/*if (Globals::ID == 1) {
-					dynamic_cast<Player*>(&player)->attachHat(_wizard);
+				if (gameObject.id() == Globals::ID) { // follow camera based player
+					glm::mat4 toWorld = Globals::drawData.matrix * mat;
+					Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
 				}
-				else {
-					dynamic_cast<Player*>(&player)->attachHat(_mango);
-				}*/
 
-				glm::mat4 toWorld = Globals::drawData.matrix * mat;
-				Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
+				switch (gameObject.id()) // attach hats
+				{
+					case 1:
+						cout << "ahh " << gameObject.id() << endl;
+						dynamic_cast<Player*>(&player)->attachHat(_wizard);
+						break;
+					default:
+						cout << "hmmm " << gameObject.id() << endl;
+						dynamic_cast<Player*>(&player)->attachHat(_mango);
+						break;
+				}
 			}
 
 		}
