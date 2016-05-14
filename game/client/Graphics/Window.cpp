@@ -59,7 +59,8 @@ void Window::initialize_objects()
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
 
-	playerHatMap[_wizard] = new Hat(_wizard, cratePath, shaderMap[_LtShader]);
+	playerHatMap[_wizard] = new Hat(_wizard, modelMap[_Crate]);
+	playerHatMap[_mango] = new Hat(_mango, modelMap[_Mango]);
 
 	Window::generateWorld(skyboxDirectory);
 
@@ -155,6 +156,14 @@ void Window::idle_callback(GLFWwindow* window) {
 			player.setMatrix(mat);
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER &&
 				gameObject.id() == Globals::ID) {
+
+				/*if (Globals::ID == 1) {
+					dynamic_cast<Player*>(&player)->attachHat(_wizard);
+				}
+				else {
+					dynamic_cast<Player*>(&player)->attachHat(_mango);
+				}*/
+
 				glm::mat4 toWorld = Globals::drawData.matrix * mat;
 				Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
 			}
@@ -318,8 +327,7 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	switch (modelType)
 	{
 		case _Mango: // WILL CHANGE
-			transform->addNode(new Player(model, playerHatMap));
-			break;
+			return new Player(model, playerHatMap);
 		default:
 			transform->addNode(model);
 			break;

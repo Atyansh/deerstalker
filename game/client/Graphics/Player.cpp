@@ -32,8 +32,6 @@ void Player::createPlayer() {
 
 	// add player
 	this->addNode(player);
-
-	attachHat(_wizard);
 }
 
 void Player::detachHat() {
