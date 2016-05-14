@@ -5,6 +5,8 @@
 #include "SNode.h"
 #include "SMatrixTransform.h"
 #include "World.h"
+#include "Player.h"
+#include "Hat.h"
 #include <glm/ext.hpp>
 
 #include "client\Globals.h"
@@ -20,24 +22,13 @@ using namespace Gamepad;
 const char* window_title = "Deerstalker";
 string skyboxDirectory = "Graphics/Assets/Cubemap";
 
-enum Models {
-	_Player, 
-	_Mango,
-	_Crate,
-	_PokeBall
-};
-
-enum Shaders {
-	_BShader,
-	_LtShader
-};
-
 int Window::width;
 int Window::height;
 std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
 std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 std::unordered_map<std::uint32_t, Model*> modelMap;
+std::unordered_map<std::uint32_t, Hat*> playerHatMap;
 std::unordered_map<std::uint32_t, Shader*> shaderMap;
 
 const char* mangoPath = "Graphics/Assets/OBJ/Mango/mango.obj";
@@ -67,6 +58,8 @@ void Window::initialize_objects()
 
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
+
+	playerHatMap[_wizard] = new Hat(_wizard, cratePath, shaderMap[_LtShader]);
 
 	Window::generateWorld(skyboxDirectory);
 
@@ -150,7 +143,7 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 
 			if ((*map).find(id) == (*map).end()) {
-				(*map)[id] = Window::createGameObj(modelMap[model]);
+				(*map)[id] = Window::createGameObj(model, modelMap[model]);
 			}
 
 			auto& player = *(*map)[id];
@@ -316,9 +309,17 @@ void Window::addMoveEvent(protos::Message& message, protos::Event_Direction dire
 	event->set_direction(direction);
 }
 
-SMatrixTransform* Window::createGameObj(Model* model) {
+SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	SMatrixTransform* transform = new SMatrixTransform();
-	transform->addNode(model);
+	switch (modelType)
+	{
+		case _Mango: // WILL CHANGE
+			transform->addNode(new Player(model, playerHatMap));
+			break;
+		default:
+			transform->addNode(model);
+			break;
+	}
 	return transform;
 }
 

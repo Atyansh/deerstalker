@@ -9,6 +9,18 @@
 
 #include "util\Protos.pb.h"
 
+enum Models {
+	_Player,
+	_Mango,
+	_Crate,
+	_PokeBall
+};
+
+enum Shaders {
+	_BShader,
+	_LtShader
+};
+
 class Window {
 public:
 	static int width;
@@ -21,7 +33,7 @@ public:
 	static void display_callback(GLFWwindow*);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void handle_gamepad(GLFWwindow* window);
-	static SMatrixTransform* createGameObj(Model* model);
+	static SMatrixTransform* createGameObj(Models modelType, Model* model);
 	static void generateWorld(string directory);
 	static glm::mat4 moveBasedOnCamera(int direction);
 

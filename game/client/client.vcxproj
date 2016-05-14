@@ -97,9 +97,11 @@
     <ClCompile Include="Graphics\Cubemap.cpp" />
     <ClCompile Include="Graphics\Drawable.cpp" />
     <ClCompile Include="Graphics\DrawData.cpp" />
+    <ClCompile Include="Graphics\Hat.cpp" />
     <ClCompile Include="Graphics\LightShader.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
+    <ClCompile Include="Graphics\Player.cpp" />
     <ClCompile Include="Graphics\SGeode.cpp" />
     <ClCompile Include="Graphics\SGroup.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
@@ -132,8 +134,10 @@
     <ClInclude Include="Graphics\Cubemap.h" />
     <ClInclude Include="Graphics\Drawable.h" />
     <ClInclude Include="Graphics\DrawData.h" />
+    <ClInclude Include="Graphics\Hat.h" />
     <ClInclude Include="Graphics\LightShader.h" />
     <ClInclude Include="Graphics\Model.h" />
+    <ClInclude Include="Graphics\Player.h" />
     <ClInclude Include="Graphics\SGeode.h" />
     <ClInclude Include="Graphics\SGroup.h" />
     <ClInclude Include="Graphics\Shader.h" />
