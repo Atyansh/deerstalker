@@ -124,55 +124,49 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld)
 	m_rigidBody->setLinearVelocity(linearVelocity);
 }
 
-void DynamicCharacterController::playerStep(const btCollisionWorld* dynaWorld, btScalar dt,
-	int forward,
-	int backward,
-	int left,
-	int right,
-	int jump)
+void DynamicCharacterController::playerStep(const btCollisionWorld*, btVector3& dir)
 {
 	btTransform xform;
 	m_rigidBody->getMotionState()->getWorldTransform(xform);
 
 	/* Handle turning */
+	/*
 	if (left)
 		m_turnAngle -= dt * m_turnVelocity;
 	if (right)
 		m_turnAngle += dt * m_turnVelocity;
+	*/
 
-	xform.setRotation(btQuaternion(btVector3(0.0, 1.0, 0.0), m_turnAngle));
+	//xform.setRotation(btQuaternion(btVector3(0.0, 1.0, 0.0), m_turnAngle));
 
 	btVector3 linearVelocity = m_rigidBody->getLinearVelocity();
-	btScalar speed = m_rigidBody->getLinearVelocity().length();
+	//btScalar speed = m_rigidBody->getLinearVelocity().length();
 
-	btVector3 forwardDir = xform.getBasis()[2];
-	forwardDir.normalize();
-	btVector3 walkDirection = btVector3(0.0, 0.0, 0.0);
-	btScalar walkSpeed = dt;
+	//btVector3 forwardDir = xform.getBasis()[2];
+	//forwardDir.normalize();
+	//btVector3 walkDirection = btVector3(0.0, 0.0, 0.0);
+	btScalar walkSpeed = 30;
 
+	/*
 	if (forward) {
 		walkDirection += forwardDir;
 	}
 	if (backward) {
 		walkDirection -= forwardDir;
 	}
+	*/
 
-	if (forward || backward) {
-		btVector3 velocity = walkDirection * walkSpeed;
-		velocity.setY(m_rigidBody->getLinearVelocity().getY());
-		m_rigidBody->setLinearVelocity(velocity);
-	}
+	btVector3 velocity = dir * walkSpeed;
+	velocity.setY(m_rigidBody->getLinearVelocity().getY());
+	m_rigidBody->setLinearVelocity(velocity);
 
 	m_rigidBody->getMotionState()->setWorldTransform(xform);
 
+	/*
 	if (right || left) {
 		m_rigidBody->setCenterOfMassTransform(xform);
 	}
-
-	if (jump) {
-		this->jump();
-	}
-
+	*/
 }
 
 bool DynamicCharacterController::canJump() const

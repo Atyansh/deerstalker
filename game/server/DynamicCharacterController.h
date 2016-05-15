@@ -38,12 +38,7 @@ public:
 	btCollisionObject* getCollisionObject();
 
 	void preStep(btCollisionWorld* collisionWorld);
-	void playerStep(const btCollisionWorld* collisionWorld, btScalar dt,
-		int forward,
-		int backward,
-		int left,
-		int right,
-		int jump);
+	void playerStep(const btCollisionWorld* collisionWorld, btVector3& dir);
 	bool canJump() const;
 	void jump();
 

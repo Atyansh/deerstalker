@@ -43,6 +43,7 @@ std::unordered_map<std::uint32_t, Shader*> shaderMap;
 const char* mangoPath = "Graphics/Assets/OBJ/Mango/mango.obj";
 const char* chickenPath = "Graphics/Assets/FBX/chicken_dance.fbx";
 const char* cratePath = "Graphics/Assets/OBJ/Crate/Crate1.obj";
+const char* playerPath = "Graphics/Assets/OBJ/Player/Player.obj";
 
 SMatrixTransform *root;
 
@@ -66,6 +67,7 @@ void Window::initialize_objects()
 	shaderMap[_LtShader] = lightShader;
 
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
+	modelMap[_Player] = new Model(playerPath, shaderMap[_LtShader]);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
 
 	Window::generateWorld(skyboxDirectory);
@@ -137,7 +139,7 @@ void Window::idle_callback(GLFWwindow* window) {
 
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 				map = &playerMap;
-				model = _Mango;
+				model = _Player;
 			}
 			else if (gameObject.type() == protos::Message_GameObject_Type_HAT) {
 				map = &hatMap;
