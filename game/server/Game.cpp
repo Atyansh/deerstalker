@@ -59,7 +59,7 @@ void Game::initialize() {
 		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
 		btRigidBody* body = new btRigidBody(rbInfo);
 
-		world_->addRigidBody(body);
+		//world_->addRigidBody(body);
 	}
 
 	btBulletWorldImporter* playerLoader = new btBulletWorldImporter();
@@ -67,8 +67,12 @@ void Game::initialize() {
 	playerBody_ = playerLoader->getRigidBodyByIndex(0);
 
 	btBulletWorldImporter* mangoLoader = new btBulletWorldImporter();
-	playerLoader->loadFile("bullet_assets\\mango.bullet");
+	mangoLoader->loadFile("bullet_assets\\mango.bullet");
 	mangoBody_ = playerLoader->getRigidBodyByIndex(0);
+
+	btBulletWorldImporter* worldLoader = new btBulletWorldImporter(world_);
+	worldLoader->loadFile("bullet_assets\\Construction_Stage_Bullet_Scaled.bullet");
+
 }
 
 void Game::startGameLoop() {
@@ -111,7 +115,7 @@ void Game::startGameLoop() {
 		sleep_for(interval - (stamp2-stamp1));
 
 		if (frameCounter > 300) {
-			spawnNewHat();
+			//spawnNewHat();
 			frameCounter = 0;
 		}
 		else {

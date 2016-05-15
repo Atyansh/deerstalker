@@ -4,6 +4,7 @@
 #include <glm/gtx/transform.hpp>
 
 const char* floorPath = "Graphics/Assets/OBJ/Floor/Floor.obj";
+const char* constructionStagePath = "Graphics/Assets/OBJ/Construction_Stage_OBJ_Scaled/Construction_Stage_Scaled.obj";
 
 World::World() {
 	//this->drawData.matrix = glm::mat4();
@@ -22,14 +23,14 @@ void World::createWorld(Shader* shader) {
 		glm::vec3(-1.7f, 0.9f, 1.0f)
 	};
 	
-	Model* model = new Model(floorPath, shader);
+	Model* model = new Model(constructionStagePath, shader);
 
 	glm::mat4 mat = glm::mat4();
 	
-	glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(10.f, 1.f, 10.f));
+	//glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(10.f, 1.f, 10.f));
 	
 
-	floor->setMatrix(glm::translate(mat * scale, glm::vec3(0.0f, -6.0f, 0.0f)));
+	floor->setMatrix(mat);
 
 	floor->addNode(model);
 
