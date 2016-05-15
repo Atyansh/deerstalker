@@ -74,7 +74,7 @@ void Session::do_write() {
 	if (write_msgs_.empty()) {
 		return;
 	}
-	protos::Message message = write_msgs_.front();
+	protos::Message& message = write_msgs_.front();
 
 	std::uint8_t arr[HEADER_SIZE + MAX_MESSAGE_SIZE] = {};
 	auto messageSize = fillMessage(arr, message);
