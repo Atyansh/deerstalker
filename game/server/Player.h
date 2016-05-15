@@ -8,7 +8,7 @@
 
 class Player {
 public:
-	Player();
+	Player(btCollisionObject* body);
 	~Player();
 
 	DynamicCharacterController* getController();

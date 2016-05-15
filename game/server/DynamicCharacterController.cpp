@@ -4,7 +4,7 @@
 #include "LinearMath/btDefaultMotionState.h"
 #include "DynamicCharacterController.h"
 
-DynamicCharacterController::DynamicCharacterController()
+DynamicCharacterController::DynamicCharacterController(btCollisionObject* body)
 {
 	m_rayLambda[0] = 1.0;
 	m_rayLambda[1] = 1.0;
@@ -13,7 +13,7 @@ DynamicCharacterController::DynamicCharacterController()
 	m_maxLinearVelocity = 10.0;
 	m_walkVelocity = 8.0; // meters/sec
 	m_turnVelocity = 1.0; // radians/sec
-	m_shape = NULL;
+	m_shape = body->getCollisionShape();
 	m_rigidBody = NULL;
 	setup(10.0, 1.0, 20.0);
 }
@@ -33,8 +33,8 @@ void DynamicCharacterController::setup(btScalar height, btScalar width, btScalar
 	spherePositions[1] = btVector3(0.0, (-height / btScalar(2.0) + width), 0.0);
 
 	m_halfHeight = height / btScalar(2.0);
-
-	m_shape = new btMultiSphereShape(&spherePositions[0], &sphereRadii[0], 2);
+	
+	//m_shape = new btMultiSphereShape(&spherePositions[0], &sphereRadii[0], 2);
 
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -109,7 +109,7 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld)
 	for (i = 0; i < 2; i++)
 	{
 		rayCallback.m_closestHitFraction = 1.0;
-		collisionWorld->rayTest(m_raySource[i], m_rayTarget[i], rayCallback);
+		//collisionWorld->rayTest(m_raySource[i], m_rayTarget[i], rayCallback);
 		if (rayCallback.hasHit())
 		{
 			m_rayLambda[i] = rayCallback.m_closestHitFraction;
@@ -119,11 +119,9 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld)
 		}
 	}
 
-	if (onGround()) {
-		btVector3 linearVelocity = m_rigidBody->getLinearVelocity();
-		linearVelocity *= btVector3(0.2, 1, 0.2);
-		m_rigidBody->setLinearVelocity(linearVelocity);
-	}
+	btVector3 linearVelocity = m_rigidBody->getLinearVelocity();
+	linearVelocity *= btVector3(0.2, 1, 0.2);
+	m_rigidBody->setLinearVelocity(linearVelocity);
 }
 
 void DynamicCharacterController::playerStep(const btCollisionWorld* dynaWorld, btScalar dt,

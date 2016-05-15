@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player() : controller_(new DynamicCharacterController()) {
+Player::Player(btCollisionObject* body) : controller_(new DynamicCharacterController(body)) {
 }
 
 Player::~Player() {

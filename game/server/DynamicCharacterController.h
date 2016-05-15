@@ -30,7 +30,7 @@ protected:
 	btScalar m_walkVelocity;
 	btScalar m_turnVelocity;
 public:
-	DynamicCharacterController();
+	DynamicCharacterController(btCollisionObject* body);
 	~DynamicCharacterController();
 	void setup(btScalar height = 2.0, btScalar width = 0.25, btScalar stepHeight = 0.25);
 	void destroy();

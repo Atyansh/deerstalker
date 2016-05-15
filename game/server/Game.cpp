@@ -27,6 +27,7 @@ void Game::remove(client_ptr client) {
 }
 
 void Game::deliver(protos::Message msg) {
+	std::lock_guard<std::mutex> lock(queueLock_);
 	messageQueue_.push_back(msg);
 }
 
@@ -61,13 +62,13 @@ void Game::initialize() {
 		world_->addRigidBody(body);
 	}
 
-	btBulletWorldImporter* fileLoader = new btBulletWorldImporter();
+	btBulletWorldImporter* playerLoader = new btBulletWorldImporter();
+	playerLoader->loadFile("bullet_assets\\Player.bullet");
+	playerBody_ = playerLoader->getRigidBodyByIndex(0);
 
-	fileLoader->loadFile("bullet_assets\\Mango.bullet");
-	body_ = fileLoader->getRigidBodyByIndex(0);
-
-	std::cerr << "Num Rigid Bodies: " << fileLoader->getNumCollisionShapes() << std::endl;
-	
+	btBulletWorldImporter* mangoLoader = new btBulletWorldImporter();
+	playerLoader->loadFile("bullet_assets\\mango.bullet");
+	mangoBody_ = playerLoader->getRigidBodyByIndex(0);
 }
 
 void Game::startGameLoop() {
@@ -81,24 +82,27 @@ void Game::startGameLoop() {
 
 		world_->stepSimulation(1.f / 30.f, 10);
 
+		queueLock_.lock();
 		while (!messageQueue_.empty()) {
 			protos::Message& message = messageQueue_.front();
 
 			for (int i = 0; i < message.event_size(); i++) {
-				auto event = message.event(i);
-				if (event.type() == protos::Event_Type_SPAWN) {
+				auto event = &message.event(i);
+				if (event->type() == protos::Event_Type_SPAWN) {
 					handleSpawnLogic(event);
 				}
-				else if (event.type() == protos::Event_Type_MOVE) {
+				else if (event->type() == protos::Event_Type_MOVE) {
 					handleMoveLogic(event);
 				}
-				else if (event.type() == protos::Event_Type_JUMP) {
+				else if (event->type() == protos::Event_Type_JUMP) {
 					handleJumpLogic(event);
 				}
 			}
 
 			messageQueue_.pop_front();
 		}
+		queueLock_.unlock();
+
 		sendStateToClients();
 
 		milliseconds stamp2 = duration_cast<milliseconds>(
@@ -116,21 +120,21 @@ void Game::startGameLoop() {
 	}
 }
 
-void Game::handleSpawnLogic(protos::Event& event) {
+void Game::handleSpawnLogic(const protos::Event* event) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	std::cerr << "SPAWN HAPPENED" << std::endl;
-	Player* player = new Player();
-	playerMap_[event.clientid()] = player;
+	Player* player = new Player(playerBody_);
+	playerMap_[event->clientid()] = player;
 	world_->addRigidBody(player->getController()->getRigidBody());
 	world_->addAction(player->getController());
 }
 
-void Game::handleMoveLogic(protos::Event& event) {
-	Player* player = playerMap_[event.clientid()];
+void Game::handleMoveLogic(const protos::Event* event) {
+	Player* player = playerMap_[event->clientid()];
 
 	player->getController()->preStep(world_);
 
-	switch (event.direction()) {
+	switch (event->direction()) {
 	case (protos::Event_Direction_RIGHT) :
 		std::cerr << "MOVE RIGHT" << std::endl;
 		player->getController()->playerStep(world_, 0.1, 0, 0, 0, 1, 0);
@@ -144,10 +148,12 @@ void Game::handleMoveLogic(protos::Event& event) {
 	case (protos::Event_Direction_UP) :
 		std::cerr << "MOVE UP" << std::endl;
 		//player->applyCentralForce(btVector3(0, 10, 0));
+		player->getController()->getRigidBody()->applyCentralForce(btVector3(0, 10, 0));
 		break;
 	case (protos::Event_Direction_DOWN) :
 		std::cerr << "MOVE DOWN" << std::endl;
 		//player->applyCentralForce(btVector3(0, -10, 0));
+		player->getController()->getRigidBody()->applyCentralForce(btVector3(0, -10, 0));
 		break;
 	case (protos::Event_Direction_FORWARD) :
 		std::cerr << "MOVE FORWARD" << std::endl;
@@ -162,8 +168,8 @@ void Game::handleMoveLogic(protos::Event& event) {
 	}
 }
 
-void Game::handleJumpLogic(protos::Event& event) {
-	Player* player = playerMap_[event.clientid()];
+void Game::handleJumpLogic(const protos::Event* event) {
+	Player* player = playerMap_[event->clientid()];
 
 	player->getController()->preStep(world_);
 

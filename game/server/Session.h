@@ -9,6 +9,8 @@
 #include "util\Protos.pb.h"
 #include "util\Util.h"
 
+#include <mutex>
+
 using boost::asio::ip::tcp;
 using namespace util;
 
@@ -32,4 +34,5 @@ private:
 	Game& game_;
 	char current_header_[HEADER_SIZE];
 	message_queue write_msgs_;
+	std::mutex queueLock_;
 };
