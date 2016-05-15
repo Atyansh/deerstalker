@@ -45,6 +45,8 @@ const char* chickenPath = "Graphics/Assets/FBX/chicken_dance.fbx";
 const char* cratePath = "Graphics/Assets/OBJ/Crate/Crate1.obj";
 const char* playerPath = "Graphics/Assets/OBJ/Player/Player.obj";
 
+
+
 SMatrixTransform *root;
 
 void Window::initialize_objects()
@@ -60,7 +62,7 @@ void Window::initialize_objects()
 
 	LightShader* lightShader = new LightShader(Globals::cam.getPosition(), "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
 	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
-	lightShader->addDirectionalLight(glm::vec3(0.2f, 10.0f, 0.f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
+	//lightShader->addDirectionalLight(glm::vec3(0.2f, 10.0f, 0.f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
 	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 
