@@ -28,7 +28,6 @@ std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
 std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 std::unordered_map<std::uint32_t, Model*> modelMap;
-std::unordered_map<std::uint32_t, Hat*> playerHatMap;
 std::unordered_map<std::uint32_t, Shader*> shaderMap;
 
 const char* mangoPath = "Graphics/Assets/OBJ/Mango/mango.obj";
@@ -58,9 +57,6 @@ void Window::initialize_objects()
 
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
-
-	playerHatMap[_wizard] = new Hat(_wizard, modelMap[_Crate]);
-	playerHatMap[_mango] = new Hat(_mango, modelMap[_Mango]);
 
 	Window::generateWorld(skyboxDirectory);
 
@@ -161,14 +157,12 @@ void Window::idle_callback(GLFWwindow* window) {
 					Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
 				}
 
-				switch (gameObject.id()) // attach hats
+				switch (id) // attach hats
 				{
 					case 1:
-						cout << "ahh " << gameObject.id() << endl;
 						dynamic_cast<Player*>(&player)->attachHat(_wizard);
 						break;
 					default:
-						cout << "hmmm " << gameObject.id() << endl;
 						dynamic_cast<Player*>(&player)->attachHat(_mango);
 						break;
 				}
@@ -329,9 +323,12 @@ void Window::addMoveEvent(protos::Message& message, protos::Event_Direction dire
 
 SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	SMatrixTransform* transform = new SMatrixTransform();
+	std::unordered_map<std::uint32_t, Hat*> playerHatMap;
 	switch (modelType)
 	{
 		case _Mango: // WILL CHANGE
+			playerHatMap[_wizard] = new Hat(_wizard, modelMap[_Crate]);
+			playerHatMap[_mango] = new Hat(_mango, modelMap[_Mango]);
 			return new Player(model, playerHatMap);
 		default:
 			transform->addNode(model);
