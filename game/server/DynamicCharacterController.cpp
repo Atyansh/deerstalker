@@ -15,7 +15,7 @@ DynamicCharacterController::DynamicCharacterController(btCollisionObject* body)
 	m_turnVelocity = 1.0; // radians/sec
 	m_shape = body->getCollisionShape();
 	m_rigidBody = NULL;
-	setup(10.0, 1.0, 20.0);
+	setup(100.0, 1.0, 20.0);
 }
 
 DynamicCharacterController::~DynamicCharacterController()
@@ -24,6 +24,7 @@ DynamicCharacterController::~DynamicCharacterController()
 
 void DynamicCharacterController::setup(btScalar height, btScalar width, btScalar stepHeight)
 {
+	/*
 	btVector3 spherePositions[2];
 	btScalar sphereRadii[2];
 
@@ -33,8 +34,10 @@ void DynamicCharacterController::setup(btScalar height, btScalar width, btScalar
 	spherePositions[1] = btVector3(0.0, (-height / btScalar(2.0) + width), 0.0);
 
 	m_halfHeight = height / btScalar(2.0);
-	
+	*/
 	//m_shape = new btMultiSphereShape(&spherePositions[0], &sphereRadii[0], 2);
+
+	m_halfHeight = 5.0;
 
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -77,11 +80,14 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld)
 	down.normalize();
 	forward.normalize();
 
-	m_raySource[0] = xform.getOrigin();
+	m_raySource[0] = xform.getOrigin() + btVector3(0.0, 0.1, 0.0);
 	m_raySource[1] = xform.getOrigin();
 
-	m_rayTarget[0] = m_raySource[0] + down * m_halfHeight * btScalar(1.1);
+	m_rayTarget[0] = m_raySource[0] + down * btScalar(1.1);
 	m_rayTarget[1] = m_raySource[1] + forward * m_halfHeight * btScalar(1.1);
+
+	std::cerr << "sourceY: " << m_raySource[0].getY() << std::endl;
+	std::cerr << "targetY: " << m_rayTarget[0].getY() << std::endl;
 
 	class ClosestNotMe : public btCollisionWorld::ClosestRayResultCallback
 	{
@@ -109,12 +115,14 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld)
 	for (i = 0; i < 2; i++)
 	{
 		rayCallback.m_closestHitFraction = 1.0;
-		//collisionWorld->rayTest(m_raySource[i], m_rayTarget[i], rayCallback);
+		collisionWorld->rayTest(m_raySource[i], m_rayTarget[i], rayCallback);
 		if (rayCallback.hasHit())
 		{
+			std::cerr << "hasHit" << std::endl;
 			m_rayLambda[i] = rayCallback.m_closestHitFraction;
 		}
 		else {
+			std::cerr << "NOT HIT" << std::endl;
 			m_rayLambda[i] = 1.0;
 		}
 	}
@@ -183,7 +191,7 @@ void DynamicCharacterController::jump()
 	m_rigidBody->getMotionState()->getWorldTransform(xform);
 	btVector3 up = xform.getBasis()[1];
 	up.normalize();
-	btScalar magnitude = 2;
+	btScalar magnitude = 1;
 	m_rigidBody->applyCentralImpulse(up * magnitude);
 }
 

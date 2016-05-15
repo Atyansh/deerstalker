@@ -139,12 +139,12 @@ void Game::handleMoveLogic(const protos::Event* event) {
 	switch (event->direction()) {
 	case (protos::Event_Direction_RIGHT) :
 		std::cerr << "MOVE RIGHT" << std::endl;
-		player->getController()->playerStep(world_, btVector3(-z, -y, -x));
+		player->getController()->playerStep(world_, btVector3(z, -y, -x));
 		//player->applyCentralForce(btVector3(10, 0, 0));
 		break;
 	case (protos::Event_Direction_LEFT) :
 		std::cerr << "MOVE LEFT" << std::endl;
-		player->getController()->playerStep(world_, btVector3(z, y, x));
+		player->getController()->playerStep(world_, btVector3(-z, y, x));
 		//player->applyCentralForce(btVector3(-10, 0, 0));
 		break;
 	case (protos::Event_Direction_UP) :
