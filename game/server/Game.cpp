@@ -58,12 +58,14 @@ void Game::initialize() {
 		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
 		btRigidBody* body = new btRigidBody(rbInfo);
 
-		world_->addRigidBody(body);
+		//world_->addRigidBody(body);
 	}
 
 	btBulletWorldImporter* fileLoader = new btBulletWorldImporter();
+	btBulletWorldImporter* worldLoader = new btBulletWorldImporter(world_);
 
 	fileLoader->loadFile("bullet_assets\\Mango.bullet");
+	worldLoader->loadFile("bullet_assets\\Construction_Stage_Bullet_Scaled.bullet");
 	body_ = fileLoader->getRigidBodyByIndex(0);
 
 	std::cerr << "Num Rigid Bodies: " << fileLoader->getNumCollisionShapes() << std::endl;
@@ -107,7 +109,7 @@ void Game::startGameLoop() {
 		sleep_for(interval - (stamp2-stamp1));
 
 		if (frameCounter > 300) {
-			spawnNewHat();
+			//spawnNewHat();
 			frameCounter = 0;
 		}
 		else {
