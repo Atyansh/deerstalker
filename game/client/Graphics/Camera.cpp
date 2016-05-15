@@ -59,7 +59,7 @@ glm::mat4 Camera::getView() {
 }
 
 glm::vec3 Camera::getCamDirection() {
-	glm::vec3 dir = _camVec - _objectVec;
+	glm::vec3 dir = _camVec;
 	dir.y = 0;
 	return glm::normalize(dir);
 }
