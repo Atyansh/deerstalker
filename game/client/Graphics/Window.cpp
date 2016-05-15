@@ -211,6 +211,11 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 
 	event->set_type(protos::Event_Type_MOVE);
 
+	glm::vec3 camDir = Globals::cam.getCamDirection();
+	event->add_cameravector(camDir.x);
+	event->add_cameravector(camDir.y);
+	event->add_cameravector(camDir.z);
+
 	bool validEvent = true;
 
 	if (action == GLFW_PRESS) {
@@ -247,8 +252,6 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 
 void Window::handle_gamepad(GLFWwindow* window) {
 	protos::Message message;
-
-	bool validEvent = true;
 
 	int count = 0;
 	auto* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
@@ -318,6 +321,11 @@ void Window::addMoveEvent(protos::Message& message, protos::Event_Direction dire
 	event->set_clientid(Globals::ID);
 	event->set_type(protos::Event_Type_MOVE);
 	event->set_direction(direction);
+
+	glm::vec3 camDir = Globals::cam.getCamDirection();
+	event->add_cameravector(camDir.x);
+	event->add_cameravector(camDir.y);
+	event->add_cameravector(camDir.z);
 }
 
 SMatrixTransform* Window::createGameObj(Model* model) {

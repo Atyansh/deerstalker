@@ -225,19 +225,31 @@ class Event : public ::google::protobuf::Message {
   inline ::protos::Event_Type type() const;
   inline void set_type(::protos::Event_Type value);
 
-  // optional int32 clientID = 6;
+  // optional int32 clientID = 3;
   inline bool has_clientid() const;
   inline void clear_clientid();
-  static const int kClientIDFieldNumber = 6;
+  static const int kClientIDFieldNumber = 3;
   inline ::google::protobuf::int32 clientid() const;
   inline void set_clientid(::google::protobuf::int32 value);
 
-  // optional .protos.Event.Direction direction = 7;
+  // optional .protos.Event.Direction direction = 4;
   inline bool has_direction() const;
   inline void clear_direction();
-  static const int kDirectionFieldNumber = 7;
+  static const int kDirectionFieldNumber = 4;
   inline ::protos::Event_Direction direction() const;
   inline void set_direction(::protos::Event_Direction value);
+
+  // repeated double cameraVector = 5;
+  inline int cameravector_size() const;
+  inline void clear_cameravector();
+  static const int kCameraVectorFieldNumber = 5;
+  inline double cameravector(int index) const;
+  inline void set_cameravector(int index, double value);
+  inline void add_cameravector(double value);
+  inline const ::google::protobuf::RepeatedField< double >&
+      cameravector() const;
+  inline ::google::protobuf::RepeatedField< double >*
+      mutable_cameravector();
 
   // @@protoc_insertion_point(class_scope:protos.Event)
  private:
@@ -258,6 +270,7 @@ class Event : public ::google::protobuf::Message {
   int type_;
   ::google::protobuf::int32 clientid_;
   int direction_;
+  ::google::protobuf::RepeatedField< double > cameravector_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -555,7 +568,7 @@ inline void Event::set_type(::protos::Event_Type value) {
   // @@protoc_insertion_point(field_set:protos.Event.type)
 }
 
-// optional int32 clientID = 6;
+// optional int32 clientID = 3;
 inline bool Event::has_clientid() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
@@ -579,7 +592,7 @@ inline void Event::set_clientid(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:protos.Event.clientID)
 }
 
-// optional .protos.Event.Direction direction = 7;
+// optional .protos.Event.Direction direction = 4;
 inline bool Event::has_direction() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
@@ -602,6 +615,36 @@ inline void Event::set_direction(::protos::Event_Direction value) {
   set_has_direction();
   direction_ = value;
   // @@protoc_insertion_point(field_set:protos.Event.direction)
+}
+
+// repeated double cameraVector = 5;
+inline int Event::cameravector_size() const {
+  return cameravector_.size();
+}
+inline void Event::clear_cameravector() {
+  cameravector_.Clear();
+}
+inline double Event::cameravector(int index) const {
+  // @@protoc_insertion_point(field_get:protos.Event.cameraVector)
+  return cameravector_.Get(index);
+}
+inline void Event::set_cameravector(int index, double value) {
+  cameravector_.Set(index, value);
+  // @@protoc_insertion_point(field_set:protos.Event.cameraVector)
+}
+inline void Event::add_cameravector(double value) {
+  cameravector_.Add(value);
+  // @@protoc_insertion_point(field_add:protos.Event.cameraVector)
+}
+inline const ::google::protobuf::RepeatedField< double >&
+Event::cameravector() const {
+  // @@protoc_insertion_point(field_list:protos.Event.cameraVector)
+  return cameravector_;
+}
+inline ::google::protobuf::RepeatedField< double >*
+Event::mutable_cameravector() {
+  // @@protoc_insertion_point(field_mutable_list:protos.Event.cameraVector)
+  return &cameravector_;
 }
 
 // -------------------------------------------------------------------

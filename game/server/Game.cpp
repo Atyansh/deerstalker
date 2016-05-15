@@ -127,14 +127,18 @@ void Game::handleSpawnLogic(protos::Event& event) {
 void Game::handleMoveLogic(protos::Event& event) {
 	Player* player = playerMap_[event.clientid()];
 
+	double x = event.cameravector(0);
+	double y = event.cameravector(1);
+	double z = event.cameravector(2);
+
 	switch (event.direction()) {
 	case (protos::Event_Direction_RIGHT) :
 		std::cerr << "MOVE RIGHT" << std::endl;
-		player->applyCentralForce(btVector3(10, 0, 0));
+		player->applyCentralForce(btVector3(z, y, x)*(10));
 		break;
 	case (protos::Event_Direction_LEFT) :
 		std::cerr << "MOVE LEFT" << std::endl;
-		player->applyCentralForce(btVector3(-10, 0, 0));
+		player->applyCentralForce(btVector3(z, y, x)*(-10));
 		break;
 	case (protos::Event_Direction_UP) :
 		std::cerr << "MOVE UP" << std::endl;
@@ -146,13 +150,14 @@ void Game::handleMoveLogic(protos::Event& event) {
 		break;
 	case (protos::Event_Direction_FORWARD) :
 		std::cerr << "MOVE FORWARD" << std::endl;
-		player->applyCentralForce(btVector3(0, 0, -10));
+		player->applyCentralForce(btVector3(x, y, z)*(-10));
 		break;
 	case (protos::Event_Direction_BACKWARD) :
 		std::cerr << "MOVE BACKWARD" << std::endl;
-		player->applyCentralForce(btVector3(0, 0, 10));
+		player->applyCentralForce(btVector3(x, y, z)*(10));
 		break;
 	}
+	std::cerr << "x: " << x << "\ty: " << y << "\tz:" << z << std::endl;
 }
 
 void Game::handleJumpLogic(protos::Event& event) {

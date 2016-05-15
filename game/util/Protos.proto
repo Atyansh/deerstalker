@@ -19,8 +19,9 @@ message Event {
 
 	optional int32 id = 1;
 	optional Type type = 2;
-	optional int32 clientID = 6;
-	optional Direction direction = 7;
+	optional int32 clientID = 3;
+	optional Direction direction = 4;
+	repeated double cameraVector = 5;
 }
 
 message Message {
