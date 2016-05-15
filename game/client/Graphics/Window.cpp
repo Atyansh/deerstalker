@@ -46,6 +46,7 @@ const char* cratePath = "Graphics/Assets/OBJ/Crate/Crate1.obj";
 const char* playerPath = "Graphics/Assets/OBJ/Player/Player.obj";
 
 
+
 SMatrixTransform *root;
 
 void Window::initialize_objects()

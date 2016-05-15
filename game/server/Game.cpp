@@ -72,7 +72,6 @@ void Game::initialize() {
 
 	btBulletWorldImporter* worldLoader = new btBulletWorldImporter(world_);
 	worldLoader->loadFile("bullet_assets\\Construction_Stage_Bullet_Scaled.bullet");
-
 }
 
 void Game::startGameLoop() {
