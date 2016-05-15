@@ -5,6 +5,8 @@
 #include "SNode.h"
 #include "SMatrixTransform.h"
 #include "World.h"
+#include "Player.h"
+#include "Hat.h"
 #include <glm/ext.hpp>
 
 #include "client\Globals.h"
@@ -19,18 +21,6 @@ using namespace Gamepad;
 
 const char* window_title = "Deerstalker";
 string skyboxDirectory = "Graphics/Assets/Cubemap";
-
-enum Models {
-	_Player, 
-	_Mango,
-	_Crate,
-	_PokeBall
-};
-
-enum Shaders {
-	_BShader,
-	_LtShader
-};
 
 int Window::width;
 int Window::height;
@@ -154,7 +144,7 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 
 			if ((*map).find(id) == (*map).end()) {
-				(*map)[id] = Window::createGameObj(modelMap[model]);
+				(*map)[id] = Window::createGameObj(model, modelMap[model]);
 			}
 
 			auto& player = *(*map)[id];
@@ -164,10 +154,22 @@ void Window::idle_callback(GLFWwindow* window) {
 			player.setMatrix(mat2);*/
 
 			player.setMatrix(mat);
-			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER &&
-				gameObject.id() == Globals::ID) {
-				glm::mat4 toWorld = Globals::drawData.matrix * mat;
-				Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
+			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
+
+				if (gameObject.id() == Globals::ID) { // follow camera based player
+					glm::mat4 toWorld = Globals::drawData.matrix * mat;
+					Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
+				}
+
+				switch (id) // attach hats
+				{
+					case 1:
+						dynamic_cast<Player*>(&player)->attachHat(_wizard);
+						break;
+					default:
+						dynamic_cast<Player*>(&player)->attachHat(_mango);
+						break;
+				}
 			}
 
 		}
@@ -331,9 +333,19 @@ void Window::addMoveEvent(protos::Message& message, protos::Event_Direction dire
 	event->add_cameravector(camDir.z);
 }
 
-SMatrixTransform* Window::createGameObj(Model* model) {
+SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	SMatrixTransform* transform = new SMatrixTransform();
-	transform->addNode(model);
+	std::unordered_map<std::uint32_t, Hat*> playerHatMap;
+	switch (modelType)
+	{
+		case _Mango: // WILL CHANGE
+			playerHatMap[_wizard] = new Hat(_wizard, modelMap[_Crate]);
+			playerHatMap[_mango] = new Hat(_mango, modelMap[_Mango]);
+			return new Player(model, playerHatMap);
+		default:
+			transform->addNode(model);
+			break;
+	}
 	return transform;
 }
 

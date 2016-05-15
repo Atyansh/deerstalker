@@ -81,6 +81,12 @@
     <ClCompile Include="Graphics\BoneInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Hat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -147,6 +153,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\BoneInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Hat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
