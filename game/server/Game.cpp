@@ -82,8 +82,7 @@ void Game::startGameLoop() {
 		world_->stepSimulation(1.f / 30.f, 10);
 
 		while (!messageQueue_.empty()) {
-			protos::Message message = messageQueue_.front();
-			messageQueue_.pop_front();
+			protos::Message& message = messageQueue_.front();
 
 			for (int i = 0; i < message.event_size(); i++) {
 				auto event = message.event(i);
@@ -97,6 +96,8 @@ void Game::startGameLoop() {
 					handleJumpLogic(event);
 				}
 			}
+
+			messageQueue_.pop_front();
 		}
 		sendStateToClients();
 
@@ -132,12 +133,12 @@ void Game::handleMoveLogic(protos::Event& event) {
 	switch (event.direction()) {
 	case (protos::Event_Direction_RIGHT) :
 		std::cerr << "MOVE RIGHT" << std::endl;
-		player->getController()->playerStep(world_, 0.5, 0, 0, 0, 1, 0);
+		player->getController()->playerStep(world_, 0.1, 0, 0, 0, 1, 0);
 		//player->applyCentralForce(btVector3(10, 0, 0));
 		break;
 	case (protos::Event_Direction_LEFT) :
 		std::cerr << "MOVE LEFT" << std::endl;
-		player->getController()->playerStep(world_, 0.5, 0, 0, 1, 0, 0);
+		player->getController()->playerStep(world_, 0.1, 0, 0, 1, 0, 0);
 		//player->applyCentralForce(btVector3(-10, 0, 0));
 		break;
 	case (protos::Event_Direction_UP) :
@@ -150,12 +151,12 @@ void Game::handleMoveLogic(protos::Event& event) {
 		break;
 	case (protos::Event_Direction_FORWARD) :
 		std::cerr << "MOVE FORWARD" << std::endl;
-		player->getController()->playerStep(world_, 10.0, 1, 0, 0, 0, 0);
+		player->getController()->playerStep(world_, 30.0, 1, 0, 0, 0, 0);
 		//player->applyCentralForce(btVector3(0, 0, -10));
 		break;
 	case (protos::Event_Direction_BACKWARD) :
 		std::cerr << "MOVE BACKWARD" << std::endl;
-		player->getController()->playerStep(world_, 10.0, 0, 1, 0, 0, 0);
+		player->getController()->playerStep(world_, 30.0, 0, 1, 0, 0, 0);
 		//player->applyCentralForce(btVector3(0, 0, 10));
 		break;
 	}

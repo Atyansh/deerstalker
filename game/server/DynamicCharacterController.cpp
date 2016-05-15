@@ -112,7 +112,6 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld)
 		collisionWorld->rayTest(m_raySource[i], m_rayTarget[i], rayCallback);
 		if (rayCallback.hasHit())
 		{
-			std::cerr << "hasHit" << std::endl;
 			m_rayLambda[i] = rayCallback.m_closestHitFraction;
 		}
 		else {
@@ -120,7 +119,11 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld)
 		}
 	}
 
-	std::cerr << "BLEH: " << m_rayLambda[0] << std::endl;
+	if (onGround()) {
+		btVector3 linearVelocity = m_rigidBody->getLinearVelocity();
+		linearVelocity *= btVector3(0.2, 1, 0.2);
+		m_rigidBody->setLinearVelocity(linearVelocity);
+	}
 }
 
 void DynamicCharacterController::playerStep(const btCollisionWorld* dynaWorld, btScalar dt,
@@ -149,33 +152,29 @@ void DynamicCharacterController::playerStep(const btCollisionWorld* dynaWorld, b
 	btVector3 walkDirection = btVector3(0.0, 0.0, 0.0);
 	btScalar walkSpeed = dt;
 
-	if (forward)
+	if (forward) {
 		walkDirection += forwardDir;
-	if (backward)
-		walkDirection -= forwardDir;
-
-	std::cerr << "onGround: " << onGround() << std::endl;
-
-	if (!forward && !backward && onGround() && !jump)
-	{
-		/* Dampen when on the ground and not being moved by the player */
-		linearVelocity *= btScalar(0.2);
-		m_rigidBody->setLinearVelocity(linearVelocity);
 	}
-	else if (!jump) {
-		if (speed < m_maxLinearVelocity)
-		{
-			btVector3 velocity = walkDirection * walkSpeed;
-			m_rigidBody->setLinearVelocity(velocity);
-		}
+	if (backward) {
+		walkDirection -= forwardDir;
+	}
+
+	if (forward || backward) {
+		btVector3 velocity = walkDirection * walkSpeed;
+		velocity.setY(m_rigidBody->getLinearVelocity().getY());
+		m_rigidBody->setLinearVelocity(velocity);
+	}
+
+	m_rigidBody->getMotionState()->setWorldTransform(xform);
+
+	if (right || left) {
+		m_rigidBody->setCenterOfMassTransform(xform);
 	}
 
 	if (jump) {
 		this->jump();
 	}
 
-	m_rigidBody->getMotionState()->setWorldTransform(xform);
-	m_rigidBody->setCenterOfMassTransform(xform);
 }
 
 bool DynamicCharacterController::canJump() const
@@ -192,7 +191,7 @@ void DynamicCharacterController::jump()
 	m_rigidBody->getMotionState()->getWorldTransform(xform);
 	btVector3 up = xform.getBasis()[1];
 	up.normalize();
-	btScalar magnitude = 5;
+	btScalar magnitude = 2;
 	m_rigidBody->applyCentralImpulse(up * magnitude);
 }
 
