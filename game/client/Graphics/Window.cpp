@@ -338,7 +338,7 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	std::unordered_map<std::uint32_t, Hat*> playerHatMap;
 	switch (modelType)
 	{
-		case _Mango: // WILL CHANGE
+		case _Player: // WILL CHANGE
 			playerHatMap[_wizard] = new Hat(_wizard, modelMap[_Crate]);
 			playerHatMap[_mango] = new Hat(_mango, modelMap[_Mango]);
 			return new Player(model, playerHatMap);
