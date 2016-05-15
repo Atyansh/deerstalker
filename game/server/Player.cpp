@@ -3,9 +3,17 @@
 Player::Player(btRigidBodyConstructionInfo& info) : Player(info,0) {
 	
 }
-Player::Player(btRigidBodyConstructionInfo& info, int id) : btRigidBody(info), id_{ id } {
+
+
+//TODO SETUP LIVES TO BE IN CONFIG
+Player::Player(btRigidBodConstructionInfo& info, int id) : Player(info,id,3) {
+
+}
+
+Player::Player(btRigidBodConstructionInfo& info, int id, unsigned int lives) : btRigidBody(info), id_{ id }, lives_{ lives }, currHat_{ 0 } {
 	setActivationState(DISABLE_DEACTIVATION);
 }
+
 
 Player::~Player() {
 	btCollisionShape* collisionShape = this->getCollisionShape();
@@ -32,4 +40,42 @@ Player* Player::createNewPlayer(ClientId clientId, btCollisionShape* collisionSh
 	btRigidBodyConstructionInfo info(mass, motionState, collisionShape, localInertia);
 
 	return new Player(info,clientId);
+}
+
+void Player::setLives(unsigned int lives) {
+	lives_ = lives;
+}
+
+unsigned int Player::getLives() {
+	return lives_;
+}
+void Player::setSpawn(int x, int y, int z) {
+	btTransform trans;
+	trans.setIdentity();
+	trans.setOrigin(btVector3(x, y, z));
+
+	this->setCenterOfMassTransform(trans);
+	this->setLinearVelocity(btVector3(0, 0, 0));
+
+}
+
+Hat * Player::setHat(Hat * hat) {
+	Hat * oHat = currHat_;
+	currHat_ = hat;
+	return oHat;
+}
+int Player::getHatType() {
+	return currHat_ == 0 ? -1 : currHat_->getHatType();
+}
+
+void Player::setProjectile(btRigidBody * proj,unsigned int baseVelocity) {
+
+	btVector3 forward = this->getCenterOfMassTransform()[2];
+	forward.normalize();
+	btTransform trans;
+	trans.setIdentity();
+	trans.setOrigin(this->getCenterOfMassPosition()+forward*10);
+	proj->setCenterOfMassTransform(trans);
+	proj->setLinearVelocity(this->getLinearVelocity() + forward*baseVelocity);
+
 }

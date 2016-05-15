@@ -65,10 +65,7 @@ bool World::isDead(Player * player) {
 
 void World::spawnPlayer(Player * player) {
 	//TODO Deal with more complex cases
-	btTransform trans;
-	trans.setIdentity();
-	trans.setOrigin(btVector3(player->getId(), 10, 0));
+	//Most likley set spawn zones
+	player->setSpawn(player->getId(), 10, 0);
 
-	player->setCenterOfMassTransform(trans);
-	player->setLinearVelocity(btVector3(0, 0, 0));
 }

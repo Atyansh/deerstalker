@@ -273,13 +273,21 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	}
 
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
-
+	auto * event = message.add_event();
+	event->set_clientid(Globals::ID);
 	if (buttons[BUTTON_A] == GLFW_PRESS) {
-		auto* event = message.add_event();
-		event->set_clientid(Globals::ID);
 		event->set_type(protos::Event_Type_JUMP);
 	}
+	if (buttons[BUTTON_B] == GLFW_PRESS) {
+		event->set_type(protos::Event_Type_EQUIP);
+	}
+	if (buttons[BUTTON_RB] == GLFW_PRESS) {
+		event->set_type(protos::Event_Type_DQUIP);
+	}
+	if (buttons[BUTTON_LB] == GLFW_PRESS) {
+		event->set_type(protos::Event_Type_SHOOT);
 
+	}
 	if (message.event_size()) {
 		sendMessage(Globals::socket, std::move(message));
 	}

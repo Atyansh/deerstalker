@@ -14,6 +14,8 @@ Game::~Game() {
 
 void Game::join(client_ptr client) {
 	clients_.insert(client);
+	//TODO CLIENTID IS AN EMPTY IDEA
+	idGen_ = idGen_>client->getClientId() ? idGen_ : client->getClientId();
 }
 
 void Game::remove(client_ptr client) {
@@ -25,7 +27,9 @@ void Game::remove(client_ptr client) {
 		playerMap_.erase(iter);
 	}
 }
-
+unsigned int Game::generateId() {
+	return ++idGen_;
+}
 void Game::deliver(protos::Message msg) {
 	messageQueue_.push_back(msg);
 }
@@ -63,6 +67,11 @@ void Game::startGameLoop() {
 
 			for (int i = 0; i < message.event_size(); i++) {
 				auto event = message.event(i);
+				if (playerMap_.count(event.clientid()) == 0) {
+					//TODO WHAT CAN THE DEAD DO
+					std::cout << "WHAT CAN THE DEAD DO\n";
+					continue;
+				}
 				if (event.type() == protos::Event_Type_SPAWN) {
 					handleSpawnLogic(event);
 				}
@@ -72,18 +81,23 @@ void Game::startGameLoop() {
 				else if (event.type() == protos::Event_Type_JUMP) {
 					handleJumpLogic(event);
 				}
+				else if (event.type() == protos::Event_Type_EQUIP) {
+					handleEquipLogic(event);
+				}
+				else if (event.type() == protos::Event_Type_DQUIP) {
+
+				}
+				else if (event.type() == protos::Event_Type_SHOOT) {
+
+				}
+			
 			}
 		
 			
 		}	
 		
-		std::vector<Player *> deadPlayers;
-		for (auto it = playerMap_.begin(); it != playerMap_.end(); it++) {
-			if (world_->isDead(it->second)) {
-				deadPlayers.push_back(it->second);
-			}
-		}
-		handleReSpawnLogic(deadPlayers);
+		
+		handleReSpawnLogic();
 		sendStateToClients();
 
 		milliseconds stamp2 = duration_cast<milliseconds>(
@@ -101,6 +115,27 @@ void Game::startGameLoop() {
 	}
 }
 
+void Game::handleShootLogic(protos::Event& event) {
+	Player* player = playerMap_[event.clientid()];
+	Bullet * bull = Bullet::createNewBullet(generateId(), body_->getCollisionShape(), player->getId());
+	player->setProjectile(bull,bull->getVelocity());
+	shots_[bull->getId()] = bull;
+	world_->addRigidBody(bull);
+}
+
+void Game::handleDquipLogic(protos::Event& event) {
+	Player* player = playerMap_[event.clientid()];
+	Hat * oHat = player->setHat(0);
+	if (oHat == 0) {
+		return;
+	}
+
+	//TODO BETTER
+	//MAYBE SET AS CONFIG
+	player->setProjectile(oHat, 10);
+
+	world_->addRigidBody(oHat);
+}
 void Game::handleSpawnLogic(protos::Event& event) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	std::cerr << "SPAWN HAPPENED" << std::endl;
@@ -196,9 +231,50 @@ void Game::spawnNewHat() {
 	world_->addRigidBody(hat);
 }
 
-void Game::handleReSpawnLogic(std::vector<Player*>& players){
-	for (auto player = players.begin(); player != players.end(); player++) {
-		world_->spawnPlayer(*player);
-		std::cout << "Player " << (*player)->getId() << std::endl;
+void Game::handleReSpawnLogic() {
+	for (auto it = playerMap_.begin(); it != playerMap_.end(); it++) {
+		if (world_->isDead(it->second)) {
+			Player * currP = it->second;
+			unsigned int pLives = currP->getLives() - 1;
+			if (pLives > 0) {
+				world_->spawnPlayer(currP);
+				currP->setLives(pLives);
+				std::cout << "Player " << currP->getId() << " died\n";
+			}
+			else {
+				//TODO MAYBE DEAL WITH SOME EVENT SHIT
+				std::cout << "Player " << currP->getId() << "is dead forever "<< std::endl;
+				playerMap_.erase(currP->getId());
+				world_->removeRigidBody(currP);
+			}
+			
+		}
+	}
+}
+ 
+bool Game::canEquip(Player * playa, Hat * hata) {
+	//TODO MAYBE SOME BETTER SHIT
+	float equipDistance = 3.0;
+	return equipDistance>=playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition());
+}
+
+
+void Game::handleEquipLogic(protos::Event & event) {
+	Player * subP = playerMap_[event.clientid()];
+	std::cout << event.clientid() << "Attempting to equip hat\n";
+	for (auto hats = hatSet_.begin(); hats != hatSet_.end(); hats++) {
+		if (canEquip(subP, *hats)) {
+			Hat * oldHat  = subP->setHat(*hats);
+			world_->removeRigidBody(*hats);
+			if (oldHat != 0) {
+				btTransform trans;
+				trans.setIdentity();
+				trans.setOrigin((*hats)->getCenterOfMassPosition());
+				oldHat->setLinearVelocity(btVector3(0,0,0));
+				world_->addRigidBody(oldHat);
+			
+			}
+			break;
+		}
 	}
 }

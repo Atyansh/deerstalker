@@ -42,7 +42,10 @@ enum Event_Type {
   Event_Type_SPAWN = 1,
   Event_Type_MOVE = 2,
   Event_Type_JUMP = 3,
-  Event_Type_ASSIGN = 4
+  Event_Type_ASSIGN = 4,
+  Event_Type_EQUIP = 5,
+  Event_Type_DQUIP = 6,
+  Event_Type_SHOOT = 7
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;

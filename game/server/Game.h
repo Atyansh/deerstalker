@@ -5,6 +5,7 @@
 #include <thread>
 #include <deque>
 
+#include "Bullet.h"
 #include "Client.h"
 #include "World.h"
 #include "Player.h"
@@ -28,17 +29,27 @@ public:
 	void handleSpawnLogic(protos::Event& event);
 	void handleMoveLogic(protos::Event& event);
 	void handleJumpLogic(protos::Event& event);
-
+	void handleEquipLogic(protos::Event& event);
+	void handleShootLogic(protos::Event& event);
+	void handleDquipLogic(protos::Event& event);
 	void sendStateToClients();
 	void spawnNewHat();
+
 
 private:
 	std::set<client_ptr> clients_;
 	World* world_;
-	void handleReSpawnLogic(std::vector<Player *>& players);
+
+	void handleReSpawnLogic();
+	bool canEquip(Player * playa, Hat * hata);
+
+	unsigned int generateId();
+	unsigned int idGen_;
 	btCollisionObject* body_;
+	std::unordered_map<unsigned int, Bullet*> shots_;
 	std::deque<protos::Message> messageQueue_;
 	std::unordered_map<ClientId, Player*> playerMap_;
 	std::mutex playerMapLock_;
 	std::unordered_set<Hat*> hatSet_;
+
 };
