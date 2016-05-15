@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DynamicCharacterController.cpp" />
     <ClCompile Include="Hat.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Session.cpp" />
@@ -48,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
+    <ClInclude Include="DynamicCharacterController.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Hat.h" />
     <ClInclude Include="Player.h" />

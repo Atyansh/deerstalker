@@ -310,7 +310,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	}
 
 	if (message.event_size()) {
-		sendMessage(Globals::socket, std::move(message));
+		sendMessage(Globals::socket, message);
 	}
 
 }

@@ -26,9 +26,9 @@ public:
 	void initialize();
 	void startGameLoop();
 
-	void handleSpawnLogic(protos::Event& event);
-	void handleMoveLogic(protos::Event& event);
-	void handleJumpLogic(protos::Event& event);
+	void handleSpawnLogic(const protos::Event* event);
+	void handleMoveLogic(const protos::Event* event);
+	void handleJumpLogic(const protos::Event* event);
 
 	void sendStateToClients();
 	void spawnNewHat();
@@ -37,9 +37,11 @@ private:
 	std::set<client_ptr> clients_;
 	World* world_;
 
-	btCollisionObject* body_;
+	btCollisionObject* playerBody_;
+	btCollisionObject* mangoBody_;
 
 	std::deque<protos::Message> messageQueue_;
+	std::mutex queueLock_;
 	std::unordered_map<ClientId, Player*> playerMap_;
 	std::mutex playerMapLock_;
 	std::unordered_set<Hat*> hatSet_;
