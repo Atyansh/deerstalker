@@ -6,11 +6,11 @@ Player::Player(btRigidBodyConstructionInfo& info) : Player(info,0) {
 
 
 //TODO SETUP LIVES TO BE IN CONFIG
-Player::Player(btRigidBodConstructionInfo& info, int id) : Player(info,id,3) {
+Player::Player(btRigidBodyConstructionInfo& info, unsigned int id) : Player(info,id,3) {
 
 }
 
-Player::Player(btRigidBodConstructionInfo& info, int id, unsigned int lives) : btRigidBody(info), id_{ id }, lives_{ lives }, currHat_{ 0 } {
+Player::Player(btRigidBodyConstructionInfo& info, unsigned int id, unsigned int lives) : btRigidBody(info), id_{ id }, lives_{ lives }, currHat_{ 0 } {
 	setActivationState(DISABLE_DEACTIVATION);
 }
 
@@ -38,7 +38,7 @@ Player* Player::createNewPlayer(ClientId clientId, btCollisionShape* collisionSh
 	btMotionState* motionState = new btDefaultMotionState(startTransform);
 
 	btRigidBodyConstructionInfo info(mass, motionState, collisionShape, localInertia);
-
+	
 	return new Player(info,clientId);
 }
 
@@ -70,7 +70,7 @@ int Player::getHatType() {
 
 void Player::setProjectile(btRigidBody * proj,unsigned int baseVelocity) {
 
-	btVector3 forward = this->getCenterOfMassTransform()[2];
+	btVector3 forward = this->getCenterOfMassTransform().getBasis()[2];
 	forward.normalize();
 	btTransform trans;
 	trans.setIdentity();

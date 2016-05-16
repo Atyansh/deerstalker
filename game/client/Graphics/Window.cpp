@@ -122,7 +122,7 @@ void Window::idle_callback(GLFWwindow* window) {
 	while (!Globals::messageQueue.empty()) {
 		protos::Message message = Globals::messageQueue.front();
 		Globals::messageQueue.pop_front();
-
+		
 		for (int i = 0; i < message.gameobject_size(); i++){
 			auto& gameObject = message.gameobject(i);
 			int id = gameObject.id();
@@ -273,18 +273,25 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	}
 
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
-	auto * event = message.add_event();
-	event->set_clientid(Globals::ID);
+
 	if (buttons[BUTTON_A] == GLFW_PRESS) {
+		auto * event = message.add_event();
+		event->set_clientid(Globals::ID);
 		event->set_type(protos::Event_Type_JUMP);
 	}
 	if (buttons[BUTTON_B] == GLFW_PRESS) {
+		auto * event = message.add_event();
+		event->set_clientid(Globals::ID);
 		event->set_type(protos::Event_Type_EQUIP);
 	}
 	if (buttons[BUTTON_RB] == GLFW_PRESS) {
+		auto * event = message.add_event();
+		event->set_clientid(Globals::ID);
 		event->set_type(protos::Event_Type_DQUIP);
 	}
 	if (buttons[BUTTON_LB] == GLFW_PRESS) {
+		auto * event = message.add_event();
+		event->set_clientid(Globals::ID);
 		event->set_type(protos::Event_Type_SHOOT);
 
 	}

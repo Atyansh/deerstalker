@@ -59,7 +59,7 @@ World* World::generateDefaultWorld() {
 }
 
 bool World::isDead(Player * player) {
-	std::cout << player->getCenterOfMassPosition().getY() << std::endl;
+	
 	return player->getCenterOfMassPosition().getY() <= lowestPoint_;
 }
 

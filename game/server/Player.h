@@ -7,8 +7,8 @@
 class Player : public btRigidBody {
 public:
 	Player(btRigidBodyConstructionInfo& info);
-	Player(btRigidBodyConstructionInfo& info,int id);
-	Player(btRigidBodConstructionInfo& info, int id, unsigned int lives);
+	Player(btRigidBodyConstructionInfo& info, unsigned int id);
+	Player(btRigidBodyConstructionInfo& info, unsigned int id, unsigned int lives);
 	~Player();
 	static Player* createNewPlayer(ClientId clientId, btCollisionShape* collisionShape);
 	int getId();

@@ -54,7 +54,8 @@ void Game::startGameLoop() {
 	// TODO(Atyansh): Make this part of config settings 
 	milliseconds interval = milliseconds(33);
 	int frameCounter = 0;
-
+	int maxHat = 1;
+	int hatP = 0;
 	while (true) {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
@@ -64,16 +65,16 @@ void Game::startGameLoop() {
 		while (!messageQueue_.empty()) {
 			protos::Message message = messageQueue_.front();
 			messageQueue_.pop_front();
-
 			for (int i = 0; i < message.event_size(); i++) {
 				auto event = message.event(i);
-				if (playerMap_.count(event.clientid()) == 0) {
+				if (event.type() == protos::Event_Type_SPAWN) {
+					handleSpawnLogic(event);
+				}
+				
+				else if (playerMap_.count(event.clientid()) == 0) {
 					//TODO WHAT CAN THE DEAD DO
 					std::cout << "WHAT CAN THE DEAD DO\n";
 					continue;
-				}
-				if (event.type() == protos::Event_Type_SPAWN) {
-					handleSpawnLogic(event);
 				}
 				else if (event.type() == protos::Event_Type_MOVE) {
 					handleMoveLogic(event);
@@ -85,14 +86,13 @@ void Game::startGameLoop() {
 					handleEquipLogic(event);
 				}
 				else if (event.type() == protos::Event_Type_DQUIP) {
-
+					handleDquipLogic(event);
 				}
 				else if (event.type() == protos::Event_Type_SHOOT) {
-
+					handleShootLogic(event);
 				}
 			
 			}
-		
 			
 		}	
 		
@@ -105,8 +105,9 @@ void Game::startGameLoop() {
 
 		sleep_for(interval - (stamp2-stamp1));
 
-		if (frameCounter > 300) {
-			//spawnNewHat();
+		if (frameCounter > 300 && maxHat>hatP) {
+			spawnNewHat();
+			hatP++;
 			frameCounter = 0;
 		}
 		else {
@@ -142,6 +143,7 @@ void Game::handleSpawnLogic(protos::Event& event) {
 	Player* player = Player::createNewPlayer(event.clientid(), body_->getCollisionShape());
 	playerMap_[event.clientid()] = player;
 	world_->addRigidBody(player);
+	
 }
 
 void Game::handleMoveLogic(protos::Event& event) {
@@ -183,7 +185,7 @@ void Game::handleJumpLogic(protos::Event& event) {
 
 void Game::sendStateToClients() {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
-
+	
 	protos::Message message;
 
 	for (auto& pair : playerMap_) {
@@ -232,6 +234,7 @@ void Game::spawnNewHat() {
 }
 
 void Game::handleReSpawnLogic() {
+	std::list<unsigned int> theDead;
 	for (auto it = playerMap_.begin(); it != playerMap_.end(); it++) {
 		if (world_->isDead(it->second)) {
 			Player * currP = it->second;
@@ -239,33 +242,41 @@ void Game::handleReSpawnLogic() {
 			if (pLives > 0) {
 				world_->spawnPlayer(currP);
 				currP->setLives(pLives);
-				std::cout << "Player " << currP->getId() << " died\n";
+				std::cerr << "Player " << currP->getId() << " died\n";
 			}
 			else {
 				//TODO MAYBE DEAL WITH SOME EVENT SHIT
-				std::cout << "Player " << currP->getId() << "is dead forever "<< std::endl;
-				playerMap_.erase(currP->getId());
+				std::cerr << "Player " << currP->getId() << "is dead forever "<< std::endl;
+				theDead.push_back(currP->getId());
 				world_->removeRigidBody(currP);
 			}
 			
+		}
+
+		for (auto it = theDead.begin(); it != theDead.end(); it++) {
+			playerMap_.erase(*it);
 		}
 	}
 }
  
 bool Game::canEquip(Player * playa, Hat * hata) {
 	//TODO MAYBE SOME BETTER SHIT
-	float equipDistance = 3.0;
+	float equipDistance = 5;
+	//std::cerr << "DISTANCE " << playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition()) << std::endl;
+	//std::cerr << "WHY " << (equipDistance >= playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition())) << std::endl;
 	return equipDistance>=playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition());
 }
 
 
 void Game::handleEquipLogic(protos::Event & event) {
 	Player * subP = playerMap_[event.clientid()];
-	std::cout << event.clientid() << "Attempting to equip hat\n";
+	std::cout << event.clientid() << " Attempting to equip hat\n";
 	for (auto hats = hatSet_.begin(); hats != hatSet_.end(); hats++) {
 		if (canEquip(subP, *hats)) {
+			std::cerr << "Equip success\n";
 			Hat * oldHat  = subP->setHat(*hats);
 			world_->removeRigidBody(*hats);
+			hatSet_.erase(*hats);
 			if (oldHat != 0) {
 				btTransform trans;
 				trans.setIdentity();

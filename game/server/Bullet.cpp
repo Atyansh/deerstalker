@@ -32,6 +32,6 @@ Bullet* Bullet::createNewBullet(int id, btCollisionShape* collisionShape,int pId
 	return newBullet;
 }
 
-int Bullet::getId() {
+unsigned int Bullet::getId() {
 	return id_;
 }
