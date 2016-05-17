@@ -7,10 +7,11 @@ Player::Player(Model *playerModel, unordered_map<std::uint32_t, Hat*> hatModels)
 	hat = new SMatrixTransform();
 	player = new SMatrixTransform();
 	this->hatModels = hatModels;
+	this->playerModel = playerModel;
 	currHat = _none;
 
 	//add models to coresponding transform matrix
-	player->addNode(playerModel);
+	player->addNode(this->playerModel);
 	for (auto& pair : this->hatModels) {
 		hat->addNode(pair.second);
 	}
@@ -26,7 +27,7 @@ Player::~Player()
 
 void Player::createPlayer() {
 	// add hat
-	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 3.f, 0.f));
+	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(0.f,this->playerModel->getHeight()-0.5f, 0.f));
 	hat->setMatrix(translate);
 	this->addNode(hat);
 

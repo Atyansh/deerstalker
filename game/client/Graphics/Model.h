@@ -30,6 +30,8 @@ private:
 	float prevTime = 0;
 	float currAnimTime = 0;
 
+	float height = 0;
+
 	void loadModel(string path);
 	void processNode(aiNode* node, const aiScene* scene);
 	void processVerts(aiMesh* mesh, vector<Vertex> &vertices);
@@ -49,5 +51,6 @@ public:
 
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
+	float getHeight();
 
 };

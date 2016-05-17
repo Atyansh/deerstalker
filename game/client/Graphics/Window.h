@@ -13,7 +13,7 @@ enum Models {
 	_Player,
 	_Mango,
 	_Crate,
-	_PokeBall
+	_Wizard
 };
 
 enum Shaders {

@@ -34,6 +34,7 @@ const char* mangoPath = "Graphics/Assets/OBJ/Mango/mango.obj";
 const char* chickenPath = "Graphics/Assets/FBX/chicken_dance.fbx";
 const char* cratePath = "Graphics/Assets/OBJ/Crate/Crate1.obj";
 const char* playerPath = "Graphics/Assets/OBJ/Player/Player.obj";
+const char* wizardPath = "Graphics/Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 
 
 
@@ -61,6 +62,7 @@ void Window::initialize_objects()
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
 	modelMap[_Player] = new Model(playerPath, shaderMap[_LtShader]);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
+	modelMap[_Wizard] = new Model(wizardPath, shaderMap[_LtShader]);
 
 	Window::generateWorld(skyboxDirectory);
 
@@ -135,7 +137,7 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 			else if (gameObject.type() == protos::Message_GameObject_Type_HAT) {
 				map = &hatMap;
-				model = _Crate;
+				model = _Crate; // change
 			}
 
 			float matrix[16];
@@ -167,7 +169,7 @@ void Window::idle_callback(GLFWwindow* window) {
 						dynamic_cast<Player*>(&player)->attachHat(_wizard);
 						break;
 					default:
-						dynamic_cast<Player*>(&player)->attachHat(_mango);
+						dynamic_cast<Player*>(&player)->attachHat(_crate);
 						break;
 				}
 			}
@@ -338,9 +340,9 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	std::unordered_map<std::uint32_t, Hat*> playerHatMap;
 	switch (modelType)
 	{
-		case _Player: // WILL CHANGE
-			playerHatMap[_wizard] = new Hat(_wizard, modelMap[_Crate]);
-			playerHatMap[_mango] = new Hat(_mango, modelMap[_Mango]);
+		case _Player:
+			playerHatMap[_wizard] = new Hat(_wizard, modelMap[_Wizard]);
+			playerHatMap[_crate] = new Hat(_crate, modelMap[_Crate]);
 			return new Player(model, playerHatMap);
 		default:
 			transform->addNode(model);
