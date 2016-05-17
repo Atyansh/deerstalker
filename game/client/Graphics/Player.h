@@ -11,6 +11,7 @@ class Player : public SMatrixTransform {
 		SMatrixTransform *hat;
 		SMatrixTransform *player;
 		unordered_map<std::uint32_t, Hat*> hatModels;
+		Model *playerModel; // WILL change for animation
 		HatType currHat;
 
 		void createPlayer();

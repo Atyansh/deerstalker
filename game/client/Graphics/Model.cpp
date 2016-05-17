@@ -46,6 +46,10 @@ void Model::update(UpdateData &updateData){
 
 }
 
+float Model::getHeight() {
+	return height;
+}
+
 /*  Functions   */
 // Loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
 void Model::loadModel(string path)
@@ -121,6 +125,9 @@ void Model::processVerts(aiMesh* mesh, vector<Vertex> &vertices){
 
 		vector.x = mesh->mVertices[i].x;
 		vector.y = mesh->mVertices[i].y;
+		if (mesh->mVertices[i].y > height) {
+			height = mesh->mVertices[i].y;
+		}
 		vector.z = mesh->mVertices[i].z;
 		vertex.Position = vector;
 

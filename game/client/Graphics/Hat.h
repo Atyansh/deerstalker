@@ -5,7 +5,7 @@
 enum HatType{
 	_none,
 	_wizard,
-	_mango
+	_crate
 };
 
 class Hat : public SGeode {
