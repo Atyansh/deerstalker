@@ -69,8 +69,9 @@ int Player::getHatType() {
 }
 
 void Player::setProjectile(btRigidBody * proj,unsigned int baseVelocity) {
-
-	btVector3 forward = this->getCenterOfMassTransform().getBasis()[2];
+	btTransform xform;
+	this->getMotionState()->getWorldTransform(xform);
+	btVector3 forward = xform.getBasis()[2];
 	forward.normalize();
 	btTransform trans;
 	trans.setIdentity();

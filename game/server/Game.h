@@ -51,5 +51,5 @@ private:
 	std::unordered_map<ClientId, Player*> playerMap_;
 	std::mutex playerMapLock_;
 	std::unordered_set<Hat*> hatSet_;
-
+	std::unordered_set<Hat*> hatRemovedSet_;
 };

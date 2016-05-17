@@ -43,10 +43,12 @@ void protobuf_AssignDesc_Protos_2eproto() {
       "Protos.proto");
   GOOGLE_CHECK(file != NULL);
   Event_descriptor_ = file->message_type(0);
-  static const int Event_offsets_[4] = {
+  static const int Event_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, clientid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, hatid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, bulletid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, direction_),
   };
   Event_reflection_ =
@@ -135,19 +137,21 @@ void protobuf_AddDesc_Protos_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\014Protos.proto\022\006protos\"\365\001\n\005Event\022\n\n\002id\030\001"
+    "\n\014Protos.proto\022\006protos\"\267\002\n\005Event\022\n\n\002id\030\001"
     " \001(\005\022 \n\004type\030\002 \001(\0162\022.protos.Event.Type\022\020"
-    "\n\010clientID\030\006 \001(\005\022*\n\tdirection\030\007 \001(\0162\027.pr"
-    "otos.Event.Direction\"1\n\004Type\022\t\n\005SPAWN\020\001\022"
-    "\010\n\004MOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006ASSIGN\020\004\"M\n\tDirec"
-    "tion\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGH"
-    "T\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\"\346\001\n\007Messa"
-    "ge\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132\r.protos.E"
-    "vent\022.\n\ngameObject\030\003 \003(\0132\032.protos.Messag"
-    "e.GameObject\032\200\001\n\nGameObject\022\n\n\002id\030\001 \001(\005\022"
-    "\016\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162\037.protos.M"
-    "essage.GameObject.Type\"\'\n\004Type\022\n\n\006PLAYER"
-    "\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003", 503);
+    "\n\010clientID\030\006 \001(\005\022\r\n\005hatID\030\007 \001(\005\022\020\n\010bulle"
+    "tID\030\010 \001(\005\022*\n\tdirection\030\t \001(\0162\027.protos.Ev"
+    "ent.Direction\"R\n\004Type\022\t\n\005SPAWN\020\001\022\010\n\004MOVE"
+    "\020\002\022\010\n\004JUMP\020\003\022\n\n\006ASSIGN\020\004\022\t\n\005EQUIP\020\005\022\t\n\005D"
+    "QUIP\020\006\022\t\n\005SHOOT\020\007\"M\n\tDirection\022\006\n\002UP\020\001\022\010"
+    "\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD"
+    "\020\005\022\014\n\010BACKWARD\020\006\"\346\001\n\007Message\022\n\n\002id\030\001 \001(\005"
+    "\022\034\n\005event\030\002 \003(\0132\r.protos.Event\022.\n\ngameOb"
+    "ject\030\003 \003(\0132\032.protos.Message.GameObject\032\200"
+    "\001\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003("
+    "\001\022-\n\004type\030\003 \001(\0162\037.protos.Message.GameObj"
+    "ect.Type\"\'\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002"
+    "\022\007\n\003HAT\020\003", 569);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -178,9 +182,9 @@ bool Event_Type_IsValid(int value) {
     case 2:
     case 3:
     case 4:
-	case 5:
-	case 6:
-	case 7:
+    case 5:
+    case 6:
+    case 7:
       return true;
     default:
       return false;
@@ -192,6 +196,9 @@ const Event_Type Event::SPAWN;
 const Event_Type Event::MOVE;
 const Event_Type Event::JUMP;
 const Event_Type Event::ASSIGN;
+const Event_Type Event::EQUIP;
+const Event_Type Event::DQUIP;
+const Event_Type Event::SHOOT;
 const Event_Type Event::Type_MIN;
 const Event_Type Event::Type_MAX;
 const int Event::Type_ARRAYSIZE;
@@ -229,6 +236,8 @@ const int Event::Direction_ARRAYSIZE;
 const int Event::kIdFieldNumber;
 const int Event::kTypeFieldNumber;
 const int Event::kClientIDFieldNumber;
+const int Event::kHatIDFieldNumber;
+const int Event::kBulletIDFieldNumber;
 const int Event::kDirectionFieldNumber;
 #endif  // !_MSC_VER
 
@@ -253,6 +262,8 @@ void Event::SharedCtor() {
   id_ = 0;
   type_ = 1;
   clientid_ = 0;
+  hatid_ = 0;
+  bulletid_ = 0;
   direction_ = 1;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -289,12 +300,26 @@ Event* Event::New() const {
 }
 
 void Event::Clear() {
-  if (_has_bits_[0 / 32] & 15) {
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<Event*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  if (_has_bits_[0 / 32] & 63) {
+    ZR_(clientid_, bulletid_);
     id_ = 0;
     type_ = 1;
-    clientid_ = 0;
     direction_ = 1;
   }
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -354,13 +379,43 @@ bool Event::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(56)) goto parse_direction;
+        if (input->ExpectTag(56)) goto parse_hatID;
         break;
       }
 
-      // optional .protos.Event.Direction direction = 7;
+      // optional int32 hatID = 7;
       case 7: {
         if (tag == 56) {
+         parse_hatID:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &hatid_)));
+          set_has_hatid();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(64)) goto parse_bulletID;
+        break;
+      }
+
+      // optional int32 bulletID = 8;
+      case 8: {
+        if (tag == 64) {
+         parse_bulletID:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &bulletid_)));
+          set_has_bulletid();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(72)) goto parse_direction;
+        break;
+      }
+
+      // optional .protos.Event.Direction direction = 9;
+      case 9: {
+        if (tag == 72) {
          parse_direction:
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -369,7 +424,7 @@ bool Event::MergePartialFromCodedStream(
           if (::protos::Event_Direction_IsValid(value)) {
             set_direction(static_cast< ::protos::Event_Direction >(value));
           } else {
-            mutable_unknown_fields()->AddVarint(7, value);
+            mutable_unknown_fields()->AddVarint(9, value);
           }
         } else {
           goto handle_unusual;
@@ -419,10 +474,20 @@ void Event::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->clientid(), output);
   }
 
-  // optional .protos.Event.Direction direction = 7;
+  // optional int32 hatID = 7;
+  if (has_hatid()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(7, this->hatid(), output);
+  }
+
+  // optional int32 bulletID = 8;
+  if (has_bulletid()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(8, this->bulletid(), output);
+  }
+
+  // optional .protos.Event.Direction direction = 9;
   if (has_direction()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      7, this->direction(), output);
+      9, this->direction(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -451,10 +516,20 @@ void Event::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->clientid(), target);
   }
 
-  // optional .protos.Event.Direction direction = 7;
+  // optional int32 hatID = 7;
+  if (has_hatid()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(7, this->hatid(), target);
+  }
+
+  // optional int32 bulletID = 8;
+  if (has_bulletid()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(8, this->bulletid(), target);
+  }
+
+  // optional .protos.Event.Direction direction = 9;
   if (has_direction()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      7, this->direction(), target);
+      9, this->direction(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -489,7 +564,21 @@ int Event::ByteSize() const {
           this->clientid());
     }
 
-    // optional .protos.Event.Direction direction = 7;
+    // optional int32 hatID = 7;
+    if (has_hatid()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->hatid());
+    }
+
+    // optional int32 bulletID = 8;
+    if (has_bulletid()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->bulletid());
+    }
+
+    // optional .protos.Event.Direction direction = 9;
     if (has_direction()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->direction());
@@ -531,6 +620,12 @@ void Event::MergeFrom(const Event& from) {
     if (from.has_clientid()) {
       set_clientid(from.clientid());
     }
+    if (from.has_hatid()) {
+      set_hatid(from.hatid());
+    }
+    if (from.has_bulletid()) {
+      set_bulletid(from.bulletid());
+    }
     if (from.has_direction()) {
       set_direction(from.direction());
     }
@@ -560,6 +655,8 @@ void Event::Swap(Event* other) {
     std::swap(id_, other->id_);
     std::swap(type_, other->type_);
     std::swap(clientid_, other->clientid_);
+    std::swap(hatid_, other->hatid_);
+    std::swap(bulletid_, other->bulletid_);
     std::swap(direction_, other->direction_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);

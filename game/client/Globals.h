@@ -27,5 +27,6 @@ public:
 	static std::deque<protos::Message> messageQueue;
 	static char currentHeader[util::HEADER_SIZE];
 	static std::uint32_t ID;
+	static bool shoot;
 };
 

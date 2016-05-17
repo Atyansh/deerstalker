@@ -54,7 +54,7 @@ void Game::startGameLoop() {
 	// TODO(Atyansh): Make this part of config settings 
 	milliseconds interval = milliseconds(33);
 	int frameCounter = 0;
-	int maxHat = 1;
+	int maxHat = 10;
 	int hatP = 0;
 	while (true) {
 		milliseconds stamp1 = duration_cast<milliseconds>(
@@ -96,7 +96,6 @@ void Game::startGameLoop() {
 			
 		}	
 		
-		
 		handleReSpawnLogic();
 		sendStateToClients();
 
@@ -117,6 +116,7 @@ void Game::startGameLoop() {
 }
 
 void Game::handleShootLogic(protos::Event& event) {
+	std::cerr << "SHOOT HAPPENED" << std::endl;
 	Player* player = playerMap_[event.clientid()];
 	Bullet * bull = Bullet::createNewBullet(generateId(), body_->getCollisionShape(), player->getId());
 	player->setProjectile(bull,bull->getVelocity());
@@ -131,10 +131,13 @@ void Game::handleDquipLogic(protos::Event& event) {
 		return;
 	}
 
+	oHat->playerId_ = 0;
+
 	//TODO BETTER
 	//MAYBE SET AS CONFIG
 	player->setProjectile(oHat, 10);
 
+	hatSet_.emplace(oHat);
 	world_->addRigidBody(oHat);
 }
 void Game::handleSpawnLogic(protos::Event& event) {
@@ -143,7 +146,6 @@ void Game::handleSpawnLogic(protos::Event& event) {
 	Player* player = Player::createNewPlayer(event.clientid(), body_->getCollisionShape());
 	playerMap_[event.clientid()] = player;
 	world_->addRigidBody(player);
-	
 }
 
 void Game::handleMoveLogic(protos::Event& event) {
@@ -204,6 +206,13 @@ void Game::sendStateToClients() {
 		}
 	}
 
+	for (auto* hat : hatRemovedSet_) {
+		auto* event = message.add_event();
+		event->set_clientid(hat->playerId_);
+		event->set_type(protos::Event_Type_EQUIP);
+		event->set_hatid(hat->getHatId());
+	}
+
 	for (auto* hat : hatSet_) {
 		btTransform transform;
 		hat->getMotionState()->getWorldTransform(transform);
@@ -220,6 +229,21 @@ void Game::sendStateToClients() {
 		}
 	}
 
+	for (auto& pair : shots_) {
+		btTransform transform;
+		pair.second->getMotionState()->getWorldTransform(transform);
+
+		btScalar glm[16] = {};
+
+		transform.getOpenGLMatrix(glm);
+
+		auto* gameObject = message.add_gameobject();
+		gameObject->set_type(protos::Message_GameObject_Type_BULLET);
+		gameObject->set_id(pair.first);
+		for (auto v : glm) {
+			gameObject->add_matrix(v);
+		}
+	}
 
 
 	for (auto client : clients_) {
@@ -271,21 +295,34 @@ bool Game::canEquip(Player * playa, Hat * hata) {
 void Game::handleEquipLogic(protos::Event & event) {
 	Player * subP = playerMap_[event.clientid()];
 	std::cout << event.clientid() << " Attempting to equip hat\n";
+	Hat* hatToRemove = nullptr;
+	Hat* hatToAdd = nullptr;
 	for (auto hats = hatSet_.begin(); hats != hatSet_.end(); hats++) {
 		if (canEquip(subP, *hats)) {
 			std::cerr << "Equip success\n";
 			Hat * oldHat  = subP->setHat(*hats);
 			world_->removeRigidBody(*hats);
-			hatSet_.erase(*hats);
-			if (oldHat != 0) {
+			hatToRemove = *hats;
+			if (oldHat != nullptr) {
 				btTransform trans;
 				trans.setIdentity();
 				trans.setOrigin((*hats)->getCenterOfMassPosition());
 				oldHat->setLinearVelocity(btVector3(0,0,0));
+				oldHat->getMotionState()->setWorldTransform(trans);
 				world_->addRigidBody(oldHat);
-			
+				hatToAdd = oldHat;
 			}
 			break;
 		}
+	}
+
+	if (hatToAdd) {
+		hatToAdd->playerId_ = 0;
+		hatSet_.emplace(hatToAdd);
+	}
+	if (hatToRemove) {
+		hatRemovedSet_.emplace(hatToRemove);
+		hatToRemove->playerId_ = event.clientid();
+		hatSet_.erase(hatToRemove);
 	}
 }

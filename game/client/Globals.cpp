@@ -17,3 +17,5 @@ std::deque<protos::Message> Globals::messageQueue = std::deque<protos::Message>(
 char Globals::currentHeader[util::HEADER_SIZE] = "";
 
 uint32_t Globals::ID = 0;
+
+bool Globals::shoot = false;

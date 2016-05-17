@@ -26,6 +26,7 @@ int Window::width;
 int Window::height;
 std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
 std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
+std::unordered_map<std::uint32_t, SMatrixTransform*> bulletMap;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 
 SMatrixTransform *root;
@@ -49,7 +50,6 @@ void Window::initialize_objects()
 
 	World *world = new World();
 	Globals::skybox.setupVAO();
-	cerr << "A" << endl;;
 	root = new SMatrixTransform();
 	root->addNode(world);
 
@@ -123,6 +123,14 @@ void Window::idle_callback(GLFWwindow* window) {
 		protos::Message message = Globals::messageQueue.front();
 		Globals::messageQueue.pop_front();
 		
+		for (int i = 0; i < message.event_size(); i++) {
+			auto& event = message.event(i);
+			
+			if (event.type() == protos::Event_Type_EQUIP) {
+				hatMap.erase(event.hatid());
+			}
+		}
+
 		for (int i = 0; i < message.gameobject_size(); i++){
 			auto& gameObject = message.gameobject(i);
 			int id = gameObject.id();
@@ -134,6 +142,9 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 			else if (gameObject.type() == protos::Message_GameObject_Type_HAT) {
 				map = &hatMap;
+			}
+			else if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
+				map = &bulletMap;
 			}
 
 			float matrix[16];
@@ -186,8 +197,10 @@ void Window::display_callback(GLFWwindow* window) {
 		for (auto& pair : playerMap) {
 			pair.second->draw(Globals::drawData);
 		}
-		// hat
 		for (auto& pair : hatMap) {
+			pair.second->draw(Globals::drawData);
+		}
+		for (auto& pair : bulletMap) {
 			pair.second->draw(Globals::drawData);
 		}
 	}
@@ -284,17 +297,23 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		event->set_clientid(Globals::ID);
 		event->set_type(protos::Event_Type_EQUIP);
 	}
-	if (buttons[BUTTON_RB] == GLFW_PRESS) {
+	if (buttons[BUTTON_Y] == GLFW_PRESS) {
 		auto * event = message.add_event();
 		event->set_clientid(Globals::ID);
 		event->set_type(protos::Event_Type_DQUIP);
 	}
-	if (buttons[BUTTON_LB] == GLFW_PRESS) {
+
+	if (buttons[BUTTON_RB] == GLFW_PRESS && !Globals::shoot) {
 		auto * event = message.add_event();
 		event->set_clientid(Globals::ID);
 		event->set_type(protos::Event_Type_SHOOT);
-
+		Globals::shoot = true;
 	}
+
+	if (buttons[BUTTON_RB] == GLFW_RELEASE) {
+		Globals::shoot = false;
+	}
+
 	if (message.event_size()) {
 		sendMessage(Globals::socket, std::move(message));
 	}

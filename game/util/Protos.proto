@@ -6,6 +6,9 @@ message Event {
 		MOVE = 2;
 		JUMP = 3;
 		ASSIGN = 4;
+		EQUIP = 5;
+		DQUIP = 6;
+		SHOOT = 7;
 	}
 
 	enum Direction {
@@ -20,7 +23,9 @@ message Event {
 	optional int32 id = 1;
 	optional Type type = 2;
 	optional int32 clientID = 6;
-	optional Direction direction = 7;
+	optional int32 hatID = 7;
+	optional int32 bulletID = 8;
+	optional Direction direction = 9;
 }
 
 message Message {
