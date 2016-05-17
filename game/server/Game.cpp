@@ -14,6 +14,8 @@ Game::~Game() {
 
 void Game::join(client_ptr client) {
 	clients_.insert(client);
+	//TODO CLIENTID IS AN EMPTY IDEA
+	idGen_ = idGen_>client->getClientId() ? idGen_ : client->getClientId();
 }
 
 void Game::remove(client_ptr client) {
@@ -25,7 +27,9 @@ void Game::remove(client_ptr client) {
 		playerMap_.erase(iter);
 	}
 }
-
+unsigned int Game::generateId() {
+	return ++idGen_;
+}
 void Game::deliver(protos::Message msg) {
 	std::lock_guard<std::mutex> lock(queueLock_);
 	messageQueue_.push_back(msg);
@@ -78,7 +82,8 @@ void Game::startGameLoop() {
 	// TODO(Atyansh): Make this part of config settings 
 	milliseconds interval = milliseconds(33);
 	int frameCounter = 0;
-
+	int maxHat = 10;
+	int hatP = 0;
 	while (true) {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
@@ -94,18 +99,33 @@ void Game::startGameLoop() {
 				if (event->type() == protos::Event_Type_SPAWN) {
 					handleSpawnLogic(event);
 				}
-				else if (event->type() == protos::Event_Type_MOVE) {
+				
+				else if (playerMap_.count(event.clientid()) == 0) {
+					//TODO WHAT CAN THE DEAD DO
+					std::cout << "WHAT CAN THE DEAD DO\n";
+					continue;
+				}
+				else if (event.type() == protos::Event_Type_MOVE) {
 					handleMoveLogic(event);
 				}
 				else if (event->type() == protos::Event_Type_JUMP) {
 					handleJumpLogic(event);
 				}
+				else if (event.type() == protos::Event_Type_EQUIP) {
+					handleEquipLogic(event);
+				}
+				else if (event.type() == protos::Event_Type_DQUIP) {
+					handleDquipLogic(event);
+				}
+				else if (event.type() == protos::Event_Type_SHOOT) {
+					handleShootLogic(event);
+				}
+			
 			}
-
-			messageQueue_.pop_front();
-		}
-		queueLock_.unlock();
-
+			
+		}	
+		
+		handleReSpawnLogic();
 		sendStateToClients();
 
 		milliseconds stamp2 = duration_cast<milliseconds>(
@@ -113,8 +133,9 @@ void Game::startGameLoop() {
 
 		sleep_for(interval - (stamp2-stamp1));
 
-		if (frameCounter > 300) {
-			//spawnNewHat();
+		if (frameCounter > 300 && maxHat>hatP) {
+			spawnNewHat();
+			hatP++;
 			frameCounter = 0;
 		}
 		else {
@@ -123,7 +144,32 @@ void Game::startGameLoop() {
 	}
 }
 
-void Game::handleSpawnLogic(const protos::Event* event) {
+void Game::handleShootLogic(protos::Event& event) {
+	std::cerr << "SHOOT HAPPENED" << std::endl;
+	Player* player = playerMap_[event.clientid()];
+	Bullet * bull = Bullet::createNewBullet(generateId(), body_->getCollisionShape(), player->getId());
+	player->setProjectile(bull,bull->getVelocity());
+	shots_[bull->getId()] = bull;
+	world_->addRigidBody(bull);
+}
+
+void Game::handleDquipLogic(protos::Event& event) {
+	Player* player = playerMap_[event.clientid()];
+	Hat * oHat = player->setHat(0);
+	if (oHat == 0) {
+		return;
+	}
+
+	oHat->playerId_ = 0;
+
+	//TODO BETTER
+	//MAYBE SET AS CONFIG
+	player->setProjectile(oHat, 10);
+
+	hatSet_.emplace(oHat);
+	world_->addRigidBody(oHat);
+}
+void Game::handleSpawnLogic(protos::Event& event) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	std::cerr << "SPAWN HAPPENED" << std::endl;
 	Player* player = new Player(playerBody_);
@@ -199,6 +245,13 @@ void Game::sendStateToClients() {
 		}
 	}
 
+	for (auto* hat : hatRemovedSet_) {
+		auto* event = message.add_event();
+		event->set_clientid(hat->playerId_);
+		event->set_type(protos::Event_Type_EQUIP);
+		event->set_hatid(hat->getHatId());
+	}
+
 	for (auto* hat : hatSet_) {
 		btTransform transform;
 		hat->getMotionState()->getWorldTransform(transform);
@@ -215,6 +268,22 @@ void Game::sendStateToClients() {
 		}
 	}
 
+	for (auto& pair : shots_) {
+		btTransform transform;
+		pair.second->getMotionState()->getWorldTransform(transform);
+
+		btScalar glm[16] = {};
+
+		transform.getOpenGLMatrix(glm);
+
+		auto* gameObject = message.add_gameobject();
+		gameObject->set_type(protos::Message_GameObject_Type_BULLET);
+		gameObject->set_id(pair.first);
+		for (auto v : glm) {
+			gameObject->add_matrix(v);
+		}
+	}
+
 	for (auto client : clients_) {
 		client->deliver(message);
 	}
@@ -224,4 +293,74 @@ void Game::spawnNewHat() {
 	Hat* hat = Hat::createNewHat(Hat::WIZARD_HAT);
 	hatSet_.insert(hat);
 	world_->addRigidBody(hat);
+}
+
+void Game::handleReSpawnLogic() {
+	std::list<unsigned int> theDead;
+	for (auto it = playerMap_.begin(); it != playerMap_.end(); it++) {
+		if (world_->isDead(it->second)) {
+			Player * currP = it->second;
+			unsigned int pLives = currP->getLives() - 1;
+			if (pLives > 0) {
+				world_->spawnPlayer(currP);
+				currP->setLives(pLives);
+				std::cerr << "Player " << currP->getId() << " died\n";
+			}
+			else {
+				//TODO MAYBE DEAL WITH SOME EVENT SHIT
+				std::cerr << "Player " << currP->getId() << "is dead forever "<< std::endl;
+				theDead.push_back(currP->getId());
+				world_->removeRigidBody(currP);
+			}
+			
+		}
+
+		for (auto it = theDead.begin(); it != theDead.end(); it++) {
+			playerMap_.erase(*it);
+		}
+	}
+}
+ 
+bool Game::canEquip(Player * playa, Hat * hata) {
+	//TODO MAYBE SOME BETTER SHIT
+	float equipDistance = 5;
+	//std::cerr << "DISTANCE " << playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition()) << std::endl;
+	//std::cerr << "WHY " << (equipDistance >= playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition())) << std::endl;
+	return equipDistance>=playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition());
+}
+
+
+void Game::handleEquipLogic(protos::Event & event) {
+	Player * subP = playerMap_[event.clientid()];
+	std::cout << event.clientid() << " Attempting to equip hat\n";
+	Hat* hatToRemove = nullptr;
+	Hat* hatToAdd = nullptr;
+	for (auto hats = hatSet_.begin(); hats != hatSet_.end(); hats++) {
+		if (canEquip(subP, *hats)) {
+			std::cerr << "Equip success\n";
+			Hat * oldHat  = subP->setHat(*hats);
+			world_->removeRigidBody(*hats);
+			hatToRemove = *hats;
+			if (oldHat != nullptr) {
+				btTransform trans;
+				trans.setIdentity();
+				trans.setOrigin((*hats)->getCenterOfMassPosition());
+				oldHat->setLinearVelocity(btVector3(0,0,0));
+				oldHat->getMotionState()->setWorldTransform(trans);
+				world_->addRigidBody(oldHat);
+				hatToAdd = oldHat;
+			}
+			break;
+		}
+	}
+
+	if (hatToAdd) {
+		hatToAdd->playerId_ = 0;
+		hatSet_.emplace(hatToAdd);
+	}
+	if (hatToRemove) {
+		hatRemovedSet_.emplace(hatToRemove);
+		hatToRemove->playerId_ = event.clientid();
+		hatSet_.erase(hatToRemove);
+	}
 }

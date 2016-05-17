@@ -17,6 +17,8 @@ public:
 
 	static int idCounter;
 
+	int playerId_;
+
 private:
 	btScalar mass_;
 	btMotionState* motionState_;

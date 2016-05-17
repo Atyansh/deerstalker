@@ -26,6 +26,7 @@ int Window::width;
 int Window::height;
 std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
 std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
+std::unordered_map<std::uint32_t, SMatrixTransform*> bulletMap;
 std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 std::unordered_map<std::uint32_t, Model*> modelMap;
 std::unordered_map<std::uint32_t, Shader*> shaderMap;
@@ -123,8 +124,16 @@ void Window::idle_callback(GLFWwindow* window) {
 	Globals::queueLock.lock();
 	while (!Globals::messageQueue.empty()) {
 		protos::Message& message = Globals::messageQueue.front();
+		
+		for (int i = 0; i < message.event_size(); i++) {
+			auto& event = message.event(i);
+			
+			if (event.type() == protos::Event_Type_EQUIP) {
+				hatMap.erase(event.hatid());
+			}
+		}
 
-		for (int i = 0; i < message.gameobject_size(); i++) {
+		for (int i = 0; i < message.gameobject_size(); i++){
 			Models model;
 			auto& gameObject = message.gameobject(i);
 			int id = gameObject.id();
@@ -138,6 +147,10 @@ void Window::idle_callback(GLFWwindow* window) {
 			else if (gameObject.type() == protos::Message_GameObject_Type_HAT) {
 				map = &hatMap;
 				model = _Crate; // change
+			}
+			else if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
+				map = &bulletMap;
+				model = _Mango;
 			}
 
 			float matrix[16];
@@ -315,6 +328,27 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		auto* event = message.add_event();
 		event->set_clientid(Globals::ID);
 		event->set_type(protos::Event_Type_JUMP);
+	}
+	if (buttons[BUTTON_B] == GLFW_PRESS) {
+		auto* event = message.add_event();
+		event->set_clientid(Globals::ID);
+		event->set_type(protos::Event_Type_EQUIP);
+	}
+	if (buttons[BUTTON_Y] == GLFW_PRESS) {
+		auto* event = message.add_event();
+		event->set_clientid(Globals::ID);
+		event->set_type(protos::Event_Type_DQUIP);
+	}
+
+	if (buttons[BUTTON_RB] == GLFW_PRESS && !Globals::shoot) {
+		auto* event = message.add_event();
+		event->set_clientid(Globals::ID);
+		event->set_type(protos::Event_Type_SHOOT);
+		Globals::shoot = true;
+	}
+
+	if (buttons[BUTTON_RB] == GLFW_RELEASE) {
+		Globals::shoot = false;
 	}
 
 	if (message.event_size()) {
