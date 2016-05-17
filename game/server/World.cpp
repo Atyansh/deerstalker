@@ -60,7 +60,7 @@ World* World::generateDefaultWorld() {
 
 bool World::isDead(Player * player) {
 	
-	return player->getCenterOfMassPosition().getY() <= lowestPoint_;
+	return player->getController()->getRigidBody()->getCenterOfMassPosition().getY() <= lowestPoint_;
 }
 
 void World::spawnPlayer(Player * player) {

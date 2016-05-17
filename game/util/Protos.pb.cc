@@ -43,13 +43,14 @@ void protobuf_AssignDesc_Protos_2eproto() {
       "Protos.proto");
   GOOGLE_CHECK(file != NULL);
   Event_descriptor_ = file->message_type(0);
-  static const int Event_offsets_[6] = {
+  static const int Event_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, clientid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, hatid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, bulletid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, direction_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, cameravector_),
   };
   Event_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -82,10 +83,11 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Message));
   Message_GameObject_descriptor_ = Message_descriptor_->nested_type(0);
-  static const int Message_GameObject_offsets_[3] = {
+  static const int Message_GameObject_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, matrix_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, type_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, hattype_),
   };
   Message_GameObject_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -137,21 +139,22 @@ void protobuf_AddDesc_Protos_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\014Protos.proto\022\006protos\"\267\002\n\005Event\022\n\n\002id\030\001"
+    "\n\014Protos.proto\022\006protos\"\315\002\n\005Event\022\n\n\002id\030\001"
     " \001(\005\022 \n\004type\030\002 \001(\0162\022.protos.Event.Type\022\020"
-    "\n\010clientID\030\006 \001(\005\022\r\n\005hatID\030\007 \001(\005\022\020\n\010bulle"
-    "tID\030\010 \001(\005\022*\n\tdirection\030\t \001(\0162\027.protos.Ev"
-    "ent.Direction\"R\n\004Type\022\t\n\005SPAWN\020\001\022\010\n\004MOVE"
-    "\020\002\022\010\n\004JUMP\020\003\022\n\n\006ASSIGN\020\004\022\t\n\005EQUIP\020\005\022\t\n\005D"
-    "QUIP\020\006\022\t\n\005SHOOT\020\007\"M\n\tDirection\022\006\n\002UP\020\001\022\010"
-    "\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD"
-    "\020\005\022\014\n\010BACKWARD\020\006\"\346\001\n\007Message\022\n\n\002id\030\001 \001(\005"
-    "\022\034\n\005event\030\002 \003(\0132\r.protos.Event\022.\n\ngameOb"
-    "ject\030\003 \003(\0132\032.protos.Message.GameObject\032\200"
-    "\001\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003("
-    "\001\022-\n\004type\030\003 \001(\0162\037.protos.Message.GameObj"
-    "ect.Type\"\'\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002"
-    "\022\007\n\003HAT\020\003", 569);
+    "\n\010clientID\030\003 \001(\005\022\r\n\005hatID\030\004 \001(\005\022\020\n\010bulle"
+    "tID\030\005 \001(\005\022*\n\tdirection\030\006 \001(\0162\027.protos.Ev"
+    "ent.Direction\022\024\n\014cameraVector\030\007 \003(\001\"R\n\004T"
+    "ype\022\t\n\005SPAWN\020\001\022\010\n\004MOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006AS"
+    "SIGN\020\004\022\t\n\005EQUIP\020\005\022\t\n\005DQUIP\020\006\022\t\n\005SHOOT\020\007\""
+    "M\n\tDirection\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003"
+    "\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\"\367"
+    "\001\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132\r."
+    "protos.Event\022.\n\ngameObject\030\003 \003(\0132\032.proto"
+    "s.Message.GameObject\032\221\001\n\nGameObject\022\n\n\002i"
+    "d\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162\037."
+    "protos.Message.GameObject.Type\022\017\n\007hatTyp"
+    "e\030\004 \001(\005\"\'\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022"
+    "\007\n\003HAT\020\003", 608);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -239,6 +242,7 @@ const int Event::kClientIDFieldNumber;
 const int Event::kHatIDFieldNumber;
 const int Event::kBulletIDFieldNumber;
 const int Event::kDirectionFieldNumber;
+const int Event::kCameraVectorFieldNumber;
 #endif  // !_MSC_VER
 
 Event::Event()
@@ -320,6 +324,7 @@ void Event::Clear() {
 #undef OFFSET_OF_FIELD_
 #undef ZR_
 
+  cameravector_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -364,13 +369,13 @@ bool Event::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(48)) goto parse_clientID;
+        if (input->ExpectTag(24)) goto parse_clientID;
         break;
       }
 
-      // optional int32 clientID = 6;
-      case 6: {
-        if (tag == 48) {
+      // optional int32 clientID = 3;
+      case 3: {
+        if (tag == 24) {
          parse_clientID:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
@@ -379,13 +384,13 @@ bool Event::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(56)) goto parse_hatID;
+        if (input->ExpectTag(32)) goto parse_hatID;
         break;
       }
 
-      // optional int32 hatID = 7;
-      case 7: {
-        if (tag == 56) {
+      // optional int32 hatID = 4;
+      case 4: {
+        if (tag == 32) {
          parse_hatID:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
@@ -394,13 +399,13 @@ bool Event::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(64)) goto parse_bulletID;
+        if (input->ExpectTag(40)) goto parse_bulletID;
         break;
       }
 
-      // optional int32 bulletID = 8;
-      case 8: {
-        if (tag == 64) {
+      // optional int32 bulletID = 5;
+      case 5: {
+        if (tag == 40) {
          parse_bulletID:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
@@ -409,13 +414,13 @@ bool Event::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(72)) goto parse_direction;
+        if (input->ExpectTag(48)) goto parse_direction;
         break;
       }
 
-      // optional .protos.Event.Direction direction = 9;
-      case 9: {
-        if (tag == 72) {
+      // optional .protos.Event.Direction direction = 6;
+      case 6: {
+        if (tag == 48) {
          parse_direction:
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -424,11 +429,30 @@ bool Event::MergePartialFromCodedStream(
           if (::protos::Event_Direction_IsValid(value)) {
             set_direction(static_cast< ::protos::Event_Direction >(value));
           } else {
-            mutable_unknown_fields()->AddVarint(9, value);
+            mutable_unknown_fields()->AddVarint(6, value);
           }
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(57)) goto parse_cameraVector;
+        break;
+      }
+
+      // repeated double cameraVector = 7;
+      case 7: {
+        if (tag == 57) {
+         parse_cameraVector:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 1, 57, input, this->mutable_cameravector())));
+        } else if (tag == 58) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, this->mutable_cameravector())));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(57)) goto parse_cameraVector;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -469,25 +493,31 @@ void Event::SerializeWithCachedSizes(
       2, this->type(), output);
   }
 
-  // optional int32 clientID = 6;
+  // optional int32 clientID = 3;
   if (has_clientid()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->clientid(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->clientid(), output);
   }
 
-  // optional int32 hatID = 7;
+  // optional int32 hatID = 4;
   if (has_hatid()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(7, this->hatid(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->hatid(), output);
   }
 
-  // optional int32 bulletID = 8;
+  // optional int32 bulletID = 5;
   if (has_bulletid()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(8, this->bulletid(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->bulletid(), output);
   }
 
-  // optional .protos.Event.Direction direction = 9;
+  // optional .protos.Event.Direction direction = 6;
   if (has_direction()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      9, this->direction(), output);
+      6, this->direction(), output);
+  }
+
+  // repeated double cameraVector = 7;
+  for (int i = 0; i < this->cameravector_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(
+      7, this->cameravector(i), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -511,25 +541,31 @@ void Event::SerializeWithCachedSizes(
       2, this->type(), target);
   }
 
-  // optional int32 clientID = 6;
+  // optional int32 clientID = 3;
   if (has_clientid()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->clientid(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->clientid(), target);
   }
 
-  // optional int32 hatID = 7;
+  // optional int32 hatID = 4;
   if (has_hatid()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(7, this->hatid(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->hatid(), target);
   }
 
-  // optional int32 bulletID = 8;
+  // optional int32 bulletID = 5;
   if (has_bulletid()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(8, this->bulletid(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->bulletid(), target);
   }
 
-  // optional .protos.Event.Direction direction = 9;
+  // optional .protos.Event.Direction direction = 6;
   if (has_direction()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      9, this->direction(), target);
+      6, this->direction(), target);
+  }
+
+  // repeated double cameraVector = 7;
+  for (int i = 0; i < this->cameravector_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteDoubleToArray(7, this->cameravector(i), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -557,34 +593,41 @@ int Event::ByteSize() const {
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
     }
 
-    // optional int32 clientID = 6;
+    // optional int32 clientID = 3;
     if (has_clientid()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->clientid());
     }
 
-    // optional int32 hatID = 7;
+    // optional int32 hatID = 4;
     if (has_hatid()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->hatid());
     }
 
-    // optional int32 bulletID = 8;
+    // optional int32 bulletID = 5;
     if (has_bulletid()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->bulletid());
     }
 
-    // optional .protos.Event.Direction direction = 9;
+    // optional .protos.Event.Direction direction = 6;
     if (has_direction()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->direction());
     }
 
   }
+  // repeated double cameraVector = 7;
+  {
+    int data_size = 0;
+    data_size = 8 * this->cameravector_size();
+    total_size += 1 * this->cameravector_size() + data_size;
+  }
+
   if (!unknown_fields().empty()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -610,6 +653,7 @@ void Event::MergeFrom(const ::google::protobuf::Message& from) {
 
 void Event::MergeFrom(const Event& from) {
   GOOGLE_CHECK_NE(&from, this);
+  cameravector_.MergeFrom(from.cameravector_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_id()) {
       set_id(from.id());
@@ -658,6 +702,7 @@ void Event::Swap(Event* other) {
     std::swap(hatid_, other->hatid_);
     std::swap(bulletid_, other->bulletid_);
     std::swap(direction_, other->direction_);
+    cameravector_.Swap(&other->cameravector_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -702,6 +747,7 @@ const int Message_GameObject::Type_ARRAYSIZE;
 const int Message_GameObject::kIdFieldNumber;
 const int Message_GameObject::kMatrixFieldNumber;
 const int Message_GameObject::kTypeFieldNumber;
+const int Message_GameObject::kHatTypeFieldNumber;
 #endif  // !_MSC_VER
 
 Message_GameObject::Message_GameObject()
@@ -724,6 +770,7 @@ void Message_GameObject::SharedCtor() {
   _cached_size_ = 0;
   id_ = 0;
   type_ = 1;
+  hattype_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -759,9 +806,10 @@ Message_GameObject* Message_GameObject::New() const {
 }
 
 void Message_GameObject::Clear() {
-  if (_has_bits_[0 / 32] & 5) {
+  if (_has_bits_[0 / 32] & 13) {
     id_ = 0;
     type_ = 1;
+    hattype_ = 0;
   }
   matrix_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -827,6 +875,21 @@ bool Message_GameObject::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(32)) goto parse_hatType;
+        break;
+      }
+
+      // optional int32 hatType = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_hatType:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &hattype_)));
+          set_has_hattype();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -873,6 +936,11 @@ void Message_GameObject::SerializeWithCachedSizes(
       3, this->type(), output);
   }
 
+  // optional int32 hatType = 4;
+  if (has_hattype()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->hattype(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -900,6 +968,11 @@ void Message_GameObject::SerializeWithCachedSizes(
       3, this->type(), target);
   }
 
+  // optional int32 hatType = 4;
+  if (has_hattype()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->hattype(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -923,6 +996,13 @@ int Message_GameObject::ByteSize() const {
     if (has_type()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
+    }
+
+    // optional int32 hatType = 4;
+    if (has_hattype()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->hattype());
     }
 
   }
@@ -966,6 +1046,9 @@ void Message_GameObject::MergeFrom(const Message_GameObject& from) {
     if (from.has_type()) {
       set_type(from.type());
     }
+    if (from.has_hattype()) {
+      set_hattype(from.hattype());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -992,6 +1075,7 @@ void Message_GameObject::Swap(Message_GameObject* other) {
     std::swap(id_, other->id_);
     matrix_.Swap(&other->matrix_);
     std::swap(type_, other->type_);
+    std::swap(hattype_, other->hattype_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

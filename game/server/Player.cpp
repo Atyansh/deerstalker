@@ -1,26 +1,13 @@
 #include "Player.h"
 
-Player::Player(btRigidBodyConstructionInfo& info) : Player(info,0) {
-	
+Player::Player(btCollisionObject* body, uint32_t id, uint32_t lives) : controller_(new DynamicCharacterController(body)), id_(id), lives_(lives), currHat_(nullptr) {
 }
 
-
-//TODO SETUP LIVES TO BE IN CONFIG
-Player::Player(btRigidBodyConstructionInfo& info, unsigned int id) : Player(info,id,3) {
-
-}
-
-Player::Player(btRigidBodyConstructionInfo& info, unsigned int id, unsigned int lives) : btRigidBody(info), id_{ id }, lives_{ lives }, currHat_{ 0 } {
-	setActivationState(DISABLE_DEACTIVATION);
-Player::Player(btCollisionObject* body) : controller_(new DynamicCharacterController(body)) {
-}
-
-
-Player::~Player() {
-}
 int Player::getId() {
 	return id_;
 }
+
+/*
 Player* Player::createNewPlayer(ClientId clientId, btCollisionShape* collisionShape) {
 	btScalar mass = 1.0;
 	btVector3 localInertia(0, 0, 0);
@@ -37,6 +24,7 @@ Player* Player::createNewPlayer(ClientId clientId, btCollisionShape* collisionSh
 	
 	return new Player(info,clientId);
 }
+*/
 
 void Player::setLives(unsigned int lives) {
 	lives_ = lives;
@@ -50,9 +38,8 @@ void Player::setSpawn(int x, int y, int z) {
 	trans.setIdentity();
 	trans.setOrigin(btVector3(x, y, z));
 
-	this->setCenterOfMassTransform(trans);
-	this->setLinearVelocity(btVector3(0, 0, 0));
-
+	this->getController()->getRigidBody()->setCenterOfMassTransform(trans);
+	this->getController()->getRigidBody()->setLinearVelocity(btVector3(0, 0, 0));
 }
 
 Hat * Player::setHat(Hat * hat) {
@@ -66,15 +53,14 @@ int Player::getHatType() {
 
 void Player::setProjectile(btRigidBody * proj,unsigned int baseVelocity) {
 	btTransform xform;
-	this->getMotionState()->getWorldTransform(xform);
+	this->getController()->getRigidBody()->getMotionState()->getWorldTransform(xform);
 	btVector3 forward = xform.getBasis()[2];
 	forward.normalize();
 	btTransform trans;
 	trans.setIdentity();
-	trans.setOrigin(this->getCenterOfMassPosition()+forward*10);
+	trans.setOrigin(this->getController()->getRigidBody()->getCenterOfMassPosition() + forward*10 + btVector3(0, 2, 0));
 	proj->setCenterOfMassTransform(trans);
-	proj->setLinearVelocity(this->getLinearVelocity() + forward*baseVelocity);
-
+	proj->setLinearVelocity(this->getController()->getRigidBody()->getLinearVelocity() + forward*baseVelocity);
 }
 
 DynamicCharacterController* Player::getController() {

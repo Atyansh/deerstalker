@@ -26,12 +26,12 @@ public:
 	void initialize();
 	void startGameLoop();
 
-	void handleSpawnLogic(protos::Event& event);
-	void handleMoveLogic(protos::Event& event);
-	void handleJumpLogic(protos::Event& event);
-	void handleEquipLogic(protos::Event& event);
-	void handleShootLogic(protos::Event& event);
-	void handleDquipLogic(protos::Event& event);
+	void handleSpawnLogic(const protos::Event* event);
+	void handleMoveLogic(const protos::Event* event);
+	void handleJumpLogic(const protos::Event* event);
+	void handleEquipLogic(const protos::Event* event);
+	void handleShootLogic(const protos::Event* event);
+	void handleDquipLogic(const protos::Event* event);
 	void sendStateToClients();
 	void spawnNewHat();
 

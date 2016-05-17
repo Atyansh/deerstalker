@@ -31,8 +31,9 @@ unsigned int Game::generateId() {
 	return ++idGen_;
 }
 void Game::deliver(protos::Message msg) {
-	std::lock_guard<std::mutex> lock(queueLock_);
+	queueLock_.lock();
 	messageQueue_.push_back(msg);
+	queueLock_.unlock();
 }
 
 int Game::size() {
@@ -76,13 +77,14 @@ void Game::initialize() {
 
 	btBulletWorldImporter* worldLoader = new btBulletWorldImporter(world_);
 	worldLoader->loadFile("bullet_assets\\Construction_Stage_Bullet_Scaled.bullet");
+	std::cerr << "AJ 1" << std::endl;
 }
 
 void Game::startGameLoop() {
 	// TODO(Atyansh): Make this part of config settings 
 	milliseconds interval = milliseconds(33);
 	int frameCounter = 0;
-	int maxHat = 10;
+	int maxHat = 2;
 	int hatP = 0;
 	while (true) {
 		milliseconds stamp1 = duration_cast<milliseconds>(
@@ -92,12 +94,12 @@ void Game::startGameLoop() {
 
 		queueLock_.lock();
 		while (!messageQueue_.empty()) {
-			protos::Message& message = messageQueue_.front();
+			protos::Message message = messageQueue_.front();
 
 			for (int i = 0; i < message.event_size(); i++) {
-				auto event = &message.event(i);
-				if (event->type() == protos::Event_Type_SPAWN) {
-					handleSpawnLogic(event);
+				auto event = message.event(i);
+				if (event.type() == protos::Event_Type_SPAWN) {
+					handleSpawnLogic(&event);
 				}
 				
 				else if (playerMap_.count(event.clientid()) == 0) {
@@ -106,25 +108,24 @@ void Game::startGameLoop() {
 					continue;
 				}
 				else if (event.type() == protos::Event_Type_MOVE) {
-					handleMoveLogic(event);
+					handleMoveLogic(&event);
 				}
-				else if (event->type() == protos::Event_Type_JUMP) {
-					handleJumpLogic(event);
+				else if (event.type() == protos::Event_Type_JUMP) {
+					handleJumpLogic(&event);
 				}
 				else if (event.type() == protos::Event_Type_EQUIP) {
-					handleEquipLogic(event);
+					handleEquipLogic(&event);
 				}
 				else if (event.type() == protos::Event_Type_DQUIP) {
-					handleDquipLogic(event);
+					handleDquipLogic(&event);
 				}
 				else if (event.type() == protos::Event_Type_SHOOT) {
-					handleShootLogic(event);
+					handleShootLogic(&event);
 				}
-			
 			}
-			
-		}	
-		
+			messageQueue_.pop_front();
+		}
+		queueLock_.unlock();
 		handleReSpawnLogic();
 		sendStateToClients();
 
@@ -133,7 +134,7 @@ void Game::startGameLoop() {
 
 		sleep_for(interval - (stamp2-stamp1));
 
-		if (frameCounter > 300 && maxHat>hatP) {
+		if (frameCounter > 300 && maxHat > hatP) {
 			spawnNewHat();
 			hatP++;
 			frameCounter = 0;
@@ -144,17 +145,17 @@ void Game::startGameLoop() {
 	}
 }
 
-void Game::handleShootLogic(protos::Event& event) {
+void Game::handleShootLogic(const protos::Event* event) {
 	std::cerr << "SHOOT HAPPENED" << std::endl;
-	Player* player = playerMap_[event.clientid()];
-	Bullet * bull = Bullet::createNewBullet(generateId(), body_->getCollisionShape(), player->getId());
+	Player* player = playerMap_[event->clientid()];
+	Bullet * bull = Bullet::createNewBullet(generateId(), mangoBody_->getCollisionShape(), player->getId());
 	player->setProjectile(bull,bull->getVelocity());
 	shots_[bull->getId()] = bull;
 	world_->addRigidBody(bull);
 }
 
-void Game::handleDquipLogic(protos::Event& event) {
-	Player* player = playerMap_[event.clientid()];
+void Game::handleDquipLogic(const protos::Event* event) {
+	Player* player = playerMap_[event->clientid()];
 	Hat * oHat = player->setHat(0);
 	if (oHat == 0) {
 		return;
@@ -169,10 +170,10 @@ void Game::handleDquipLogic(protos::Event& event) {
 	hatSet_.emplace(oHat);
 	world_->addRigidBody(oHat);
 }
-void Game::handleSpawnLogic(protos::Event& event) {
+void Game::handleSpawnLogic(const protos::Event* event) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	std::cerr << "SPAWN HAPPENED" << std::endl;
-	Player* player = new Player(playerBody_);
+	Player* player = new Player(playerBody_, event->clientid(), 3);
 	playerMap_[event->clientid()] = player;
 	world_->addRigidBody(player->getController()->getRigidBody());
 	world_->addAction(player->getController());
@@ -238,6 +239,7 @@ void Game::sendStateToClients() {
 		transform.getOpenGLMatrix(glm);
 
 		auto* gameObject = message.add_gameobject();
+		gameObject->set_hattype(pair.second->getHat() != nullptr);
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
 		gameObject->set_id(pair.first);
 		for (auto v : glm) {
@@ -310,7 +312,7 @@ void Game::handleReSpawnLogic() {
 				//TODO MAYBE DEAL WITH SOME EVENT SHIT
 				std::cerr << "Player " << currP->getId() << "is dead forever "<< std::endl;
 				theDead.push_back(currP->getId());
-				world_->removeRigidBody(currP);
+				world_->removeRigidBody(currP->getController()->getRigidBody());
 			}
 			
 		}
@@ -326,13 +328,13 @@ bool Game::canEquip(Player * playa, Hat * hata) {
 	float equipDistance = 5;
 	//std::cerr << "DISTANCE " << playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition()) << std::endl;
 	//std::cerr << "WHY " << (equipDistance >= playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition())) << std::endl;
-	return equipDistance>=playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition());
+	return equipDistance>=playa->getController()->getRigidBody()->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition());
 }
 
 
-void Game::handleEquipLogic(protos::Event & event) {
-	Player * subP = playerMap_[event.clientid()];
-	std::cout << event.clientid() << " Attempting to equip hat\n";
+void Game::handleEquipLogic(const protos::Event* event) {
+	Player * subP = playerMap_[event->clientid()];
+	std::cout << event->clientid() << " Attempting to equip hat\n";
 	Hat* hatToRemove = nullptr;
 	Hat* hatToAdd = nullptr;
 	for (auto hats = hatSet_.begin(); hats != hatSet_.end(); hats++) {
@@ -360,7 +362,7 @@ void Game::handleEquipLogic(protos::Event & event) {
 	}
 	if (hatToRemove) {
 		hatRemovedSet_.emplace(hatToRemove);
-		hatToRemove->playerId_ = event.clientid();
+		hatToRemove->playerId_ = event->clientid();
 		hatSet_.erase(hatToRemove);
 	}
 }

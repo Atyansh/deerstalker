@@ -231,33 +231,45 @@ class Event : public ::google::protobuf::Message {
   inline ::protos::Event_Type type() const;
   inline void set_type(::protos::Event_Type value);
 
-  // optional int32 clientID = 6;
+  // optional int32 clientID = 3;
   inline bool has_clientid() const;
   inline void clear_clientid();
-  static const int kClientIDFieldNumber = 6;
+  static const int kClientIDFieldNumber = 3;
   inline ::google::protobuf::int32 clientid() const;
   inline void set_clientid(::google::protobuf::int32 value);
 
-  // optional int32 hatID = 7;
+  // optional int32 hatID = 4;
   inline bool has_hatid() const;
   inline void clear_hatid();
-  static const int kHatIDFieldNumber = 7;
+  static const int kHatIDFieldNumber = 4;
   inline ::google::protobuf::int32 hatid() const;
   inline void set_hatid(::google::protobuf::int32 value);
 
-  // optional int32 bulletID = 8;
+  // optional int32 bulletID = 5;
   inline bool has_bulletid() const;
   inline void clear_bulletid();
-  static const int kBulletIDFieldNumber = 8;
+  static const int kBulletIDFieldNumber = 5;
   inline ::google::protobuf::int32 bulletid() const;
   inline void set_bulletid(::google::protobuf::int32 value);
 
-  // optional .protos.Event.Direction direction = 9;
+  // optional .protos.Event.Direction direction = 6;
   inline bool has_direction() const;
   inline void clear_direction();
-  static const int kDirectionFieldNumber = 9;
+  static const int kDirectionFieldNumber = 6;
   inline ::protos::Event_Direction direction() const;
   inline void set_direction(::protos::Event_Direction value);
+
+  // repeated double cameraVector = 7;
+  inline int cameravector_size() const;
+  inline void clear_cameravector();
+  static const int kCameraVectorFieldNumber = 7;
+  inline double cameravector(int index) const;
+  inline void set_cameravector(int index, double value);
+  inline void add_cameravector(double value);
+  inline const ::google::protobuf::RepeatedField< double >&
+      cameravector() const;
+  inline ::google::protobuf::RepeatedField< double >*
+      mutable_cameravector();
 
   // @@protoc_insertion_point(class_scope:protos.Event)
  private:
@@ -284,6 +296,7 @@ class Event : public ::google::protobuf::Message {
   ::google::protobuf::int32 hatid_;
   ::google::protobuf::int32 bulletid_;
   int direction_;
+  ::google::protobuf::RepeatedField< double > cameravector_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -397,12 +410,21 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline ::protos::Message_GameObject_Type type() const;
   inline void set_type(::protos::Message_GameObject_Type value);
 
+  // optional int32 hatType = 4;
+  inline bool has_hattype() const;
+  inline void clear_hattype();
+  static const int kHatTypeFieldNumber = 4;
+  inline ::google::protobuf::int32 hattype() const;
+  inline void set_hattype(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
   inline void clear_has_id();
   inline void set_has_type();
   inline void clear_has_type();
+  inline void set_has_hattype();
+  inline void clear_has_hattype();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -411,6 +433,7 @@ class Message_GameObject : public ::google::protobuf::Message {
   ::google::protobuf::RepeatedField< double > matrix_;
   ::google::protobuf::int32 id_;
   int type_;
+  ::google::protobuf::int32 hattype_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -581,7 +604,7 @@ inline void Event::set_type(::protos::Event_Type value) {
   // @@protoc_insertion_point(field_set:protos.Event.type)
 }
 
-// optional int32 clientID = 6;
+// optional int32 clientID = 3;
 inline bool Event::has_clientid() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
@@ -605,7 +628,7 @@ inline void Event::set_clientid(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:protos.Event.clientID)
 }
 
-// optional int32 hatID = 7;
+// optional int32 hatID = 4;
 inline bool Event::has_hatid() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
@@ -629,7 +652,7 @@ inline void Event::set_hatid(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:protos.Event.hatID)
 }
 
-// optional int32 bulletID = 8;
+// optional int32 bulletID = 5;
 inline bool Event::has_bulletid() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
@@ -653,7 +676,7 @@ inline void Event::set_bulletid(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:protos.Event.bulletID)
 }
 
-// optional .protos.Event.Direction direction = 9;
+// optional .protos.Event.Direction direction = 6;
 inline bool Event::has_direction() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
@@ -676,6 +699,36 @@ inline void Event::set_direction(::protos::Event_Direction value) {
   set_has_direction();
   direction_ = value;
   // @@protoc_insertion_point(field_set:protos.Event.direction)
+}
+
+// repeated double cameraVector = 7;
+inline int Event::cameravector_size() const {
+  return cameravector_.size();
+}
+inline void Event::clear_cameravector() {
+  cameravector_.Clear();
+}
+inline double Event::cameravector(int index) const {
+  // @@protoc_insertion_point(field_get:protos.Event.cameraVector)
+  return cameravector_.Get(index);
+}
+inline void Event::set_cameravector(int index, double value) {
+  cameravector_.Set(index, value);
+  // @@protoc_insertion_point(field_set:protos.Event.cameraVector)
+}
+inline void Event::add_cameravector(double value) {
+  cameravector_.Add(value);
+  // @@protoc_insertion_point(field_add:protos.Event.cameraVector)
+}
+inline const ::google::protobuf::RepeatedField< double >&
+Event::cameravector() const {
+  // @@protoc_insertion_point(field_list:protos.Event.cameraVector)
+  return cameravector_;
+}
+inline ::google::protobuf::RepeatedField< double >*
+Event::mutable_cameravector() {
+  // @@protoc_insertion_point(field_mutable_list:protos.Event.cameraVector)
+  return &cameravector_;
 }
 
 // -------------------------------------------------------------------
@@ -759,6 +812,30 @@ inline void Message_GameObject::set_type(::protos::Message_GameObject_Type value
   set_has_type();
   type_ = value;
   // @@protoc_insertion_point(field_set:protos.Message.GameObject.type)
+}
+
+// optional int32 hatType = 4;
+inline bool Message_GameObject::has_hattype() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Message_GameObject::set_has_hattype() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Message_GameObject::clear_has_hattype() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Message_GameObject::clear_hattype() {
+  hattype_ = 0;
+  clear_has_hattype();
+}
+inline ::google::protobuf::int32 Message_GameObject::hattype() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.hatType)
+  return hattype_;
+}
+inline void Message_GameObject::set_hattype(::google::protobuf::int32 value) {
+  set_has_hattype();
+  hattype_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.hatType)
 }
 
 // -------------------------------------------------------------------

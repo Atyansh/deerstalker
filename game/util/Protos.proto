@@ -39,6 +39,7 @@ message Message {
 		optional int32 id = 1;
 		repeated double matrix = 2;
 		optional Type type = 3;
+		optional int32 hatType = 4;
 	}
 
 	optional int32 id = 1;

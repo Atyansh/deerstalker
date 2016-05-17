@@ -163,6 +163,7 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 
 			auto& player = *(*map)[id];
+
 			glm::mat4 mat = glm::make_mat4(matrix);
 
 			/*glm::mat4 mat2 = glm::scale(mat, glm::vec3(.01f));
@@ -176,14 +177,19 @@ void Window::idle_callback(GLFWwindow* window) {
 					Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
 				}
 
-				switch (id) // attach hats
-				{
+				if (gameObject.hattype() != 0) {
+					switch (id) // attach hats
+					{
 					case 1:
 						dynamic_cast<Player*>(&player)->attachHat(_wizard);
 						break;
 					default:
 						dynamic_cast<Player*>(&player)->attachHat(_crate);
 						break;
+					}
+				}
+				else {
+					dynamic_cast<Player*>(&player)->detachHat();
 				}
 			}
 
@@ -214,6 +220,13 @@ void Window::display_callback(GLFWwindow* window) {
 	// hat
 	for (auto& pair : hatMap) {
 		pair.second->draw(Globals::drawData);
+	}
+	
+	for (auto& pair : bulletMap) {
+		//pair.second->draw(Globals::drawData);
+		glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
+		pair.second->draw(Globals::drawData);
+
 	}
 
 	// Gets events, including input such as keyboard and mouse or window resizing

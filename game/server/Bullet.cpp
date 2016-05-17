@@ -28,7 +28,6 @@ Bullet* Bullet::createNewBullet(int id, btCollisionShape* collisionShape,int pId
 
 	Bullet* newBullet = new Bullet(info, id, pId);
 
-
 	return newBullet;
 }
 
