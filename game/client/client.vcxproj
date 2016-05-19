@@ -109,9 +109,9 @@
     <ClCompile Include="Graphics\SMatrixTransform.cpp" />
     <ClCompile Include="Graphics\SNode.cpp" />
     <ClCompile Include="Graphics\UpdateData.cpp" />
-    <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="Graphics\World.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -146,8 +146,8 @@
     <ClInclude Include="Graphics\SMatrixTransform.h" />
     <ClInclude Include="Graphics\SNode.h" />
     <ClInclude Include="Graphics\UpdateData.h" />
-    <ClInclude Include="Graphics\Window.h" />
     <ClInclude Include="Graphics\World.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

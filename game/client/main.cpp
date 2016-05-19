@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <thread>
-#include "Graphics/Window.h"
+#include "Window.h"
 #include "Globals.h"
 
 #include <boost/asio.hpp>

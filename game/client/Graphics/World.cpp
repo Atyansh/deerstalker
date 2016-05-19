@@ -3,8 +3,8 @@
 #include "client\Globals.h"
 #include <glm/gtx/transform.hpp>
 
-const char* floorPath = "Graphics/Assets/OBJ/Floor/Floor.obj";
-const char* constructionStagePath = "Graphics/Assets/OBJ/Construction_Stage_OBJ_Scaled/Construction_Stage_Scaled.obj";
+const char* floorPath = "Assets/OBJ/Floor/Floor.obj";
+const char* constructionStagePath = "Assets/OBJ/Construction_Stage_OBJ_Scaled/Construction_Stage_Scaled.obj";
 
 World::World() {
 	//this->drawData.matrix = glm::mat4();

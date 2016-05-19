@@ -1,12 +1,12 @@
 #include "Window.h"
 #include "client\Globals.h"
-#include "LightShader.h"
-#include "Model.h"
-#include "SNode.h"
-#include "SMatrixTransform.h"
-#include "World.h"
-#include "Player.h"
-#include "Hat.h"
+#include "Graphics\LightShader.h"
+#include "Graphics\Model.h"
+#include "Graphics\SNode.h"
+#include "Graphics\SMatrixTransform.h"
+#include "Graphics\World.h"
+#include "Graphics\Player.h"
+#include "Graphics\Hat.h"
 #include <glm/ext.hpp>
 
 #include "client\Globals.h"
@@ -20,39 +20,32 @@ using namespace util;
 using namespace Gamepad;
 
 const char* window_title = "Deerstalker";
-string skyboxDirectory = "Graphics/Assets/Cubemap";
+string skyboxDirectory = "Assets/Cubemap";
 
 int Window::width;
 int Window::height;
 std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
 std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
 std::unordered_map<std::uint32_t, SMatrixTransform*> bulletMap;
-std::unordered_map<std::uint32_t, std::unique_ptr<Cube>> cubeMap;
 std::unordered_map<std::uint32_t, Model*> modelMap;
 std::unordered_map<std::uint32_t, Shader*> shaderMap;
 
-const char* mangoPath = "Graphics/Assets/OBJ/Mango/mango.obj";
-const char* chickenPath = "Graphics/Assets/FBX/chicken_dance.fbx";
-const char* cratePath = "Graphics/Assets/OBJ/Crate/Crate1.obj";
-const char* playerPath = "Graphics/Assets/OBJ/Player/Player.obj";
-const char* wizardPath = "Graphics/Assets/OBJ/Wizard_Hat/wizard_hat.obj";
-
-
+const char* mangoPath = "Assets/OBJ/Mango/mango.obj";
+const char* chickenPath = "Assets/FBX/chicken_dance.fbx";
+const char* cratePath = "Assets/OBJ/Crate/Crate1.obj";
+const char* playerPath = "Assets/OBJ/Player/Player.obj";
+const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 
 SMatrixTransform *root;
 
 void Window::initialize_objects()
 {
-	glm::mat4 loc = glm::translate(glm::mat4(), glm::vec3(0.0f, -0.5f, -20.0f));
-	loc = glm::scale(loc, glm::vec3(0.8f));
-	Globals::drawData.matrix = loc;
-
 	glm::vec3 pointLightPositions[] = {
 		glm::vec3(2.3f, -1.6f, -3.0f),
 		glm::vec3(-1.7f, 0.9f, 1.0f)
 	};
 
-	LightShader* lightShader = new LightShader(Globals::cam.getPosition(), "Graphics/Shaders/shader_lighting.vert", "Graphics/Shaders/shader_lighting.frag");
+	LightShader* lightShader = new LightShader(Globals::cam.getPosition(), "Shaders/shader_lighting.vert", "Shaders/shader_lighting.frag");
 	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
 	//lightShader->addDirectionalLight(glm::vec3(0.2f, 10.0f, 0.f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
 	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
