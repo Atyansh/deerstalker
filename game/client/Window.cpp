@@ -4,9 +4,9 @@
 #include "Graphics\Model.h"
 #include "Graphics\SNode.h"
 #include "Graphics\SMatrixTransform.h"
-#include "Graphics\World.h"
-#include "Graphics\Player.h"
-#include "Graphics\Hat.h"
+#include "Game\World.h"
+#include "Game\Player.h"
+#include "Game\Hat.h"
 #include <glm/ext.hpp>
 
 #include "client\Globals.h"
@@ -54,7 +54,7 @@ void Window::initialize_objects()
 	shaderMap[_LtShader] = lightShader;
 
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
-	modelMap[_Player] = new Model(playerPath, shaderMap[_LtShader]);
+	modelMap[_Player] = new PlayerModel(playerPath, shaderMap[_LtShader]);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
 	modelMap[_Wizard] = new Model(wizardPath, shaderMap[_LtShader]);
 
@@ -199,7 +199,6 @@ void Window::display_callback(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Globals::drawData.view = Globals::cam.getView();
-	Globals::skybox.draw();	
 
 	root->draw(Globals::drawData);
 
@@ -383,7 +382,7 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 		case _Player:
 			playerHatMap[_wizard] = new Hat(_wizard, modelMap[_Wizard]);
 			playerHatMap[_crate] = new Hat(_crate, modelMap[_Crate]);
-			return new Player(model, playerHatMap);
+			return new Player(dynamic_cast<PlayerModel*>(model), playerHatMap);
 		default:
 			transform->addNode(model);
 			break;
@@ -393,8 +392,7 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 
 void Window::generateWorld(string directory) {
 	World *world = new World();
-	world->createWorld(shaderMap[_LtShader]);
-	Globals::skybox.setupVAO(directory);
+	world->createWorld(shaderMap[_LtShader], directory);
 	cerr << "A" << endl;;
 	root = new SMatrixTransform();
 	root->addNode(world);

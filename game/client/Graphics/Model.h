@@ -7,12 +7,10 @@
 
 #include "SGeode.h"
 #include "Mesh.h"
-#include "BoneInfo.h"
-#include "AnimationTree.h"
 
 class Model : public SGeode
 {
-private:
+protected:
 	/*  Model Data  */
 	vector<Mesh> meshes;
 	string directory;
@@ -21,27 +19,27 @@ private:
 	aiMatrix4x4 modelInverseMat;
 	unsigned int numBones;
 	unordered_map<string, unsigned int> boneMapping;
-	vector<BoneInfo> boneInfos; // transformation for bones
+	//vector<BoneInfo> boneInfos; // transformation for bones
 
 	/* Animation */
 	Assimp::Importer importer;
 	const aiScene *scene;
-	AnimationTree *mAnimTree;
-	float prevTime = 0;
-	float currAnimTime = 0;
+	//AnimationTree *mAnimTree;
+	//float prevTime = 0;
+	//float currAnimTime = 0;
 
-	float height = 0;
+	//float height = 0;
 
 	void loadModel(string path);
 	void processNode(aiNode* node, const aiScene* scene);
-	void processVerts(aiMesh* mesh, vector<Vertex> &vertices);
+	virtual void processVerts(aiMesh* mesh, vector<Vertex> &vertices);
 	void processFaces(aiMesh* mesh, vector<GLuint> &indices);
 	void processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> &textures, MaterialNoTex &materialNoTex);
-	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+	virtual Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 	GLint TextureFromFile(const char* path, string directory);
 	unsigned char* loadPPM(const char*, int&, int&);
-	void loadBones(const aiMesh* mesh, vector<Vertex>& bones);
+	//void loadBones(const aiMesh* mesh, vector<Vertex>& bones);
 	// bool hasPPMTextureFiles();
 
 
@@ -51,6 +49,7 @@ public:
 
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
-	float getHeight();
+	//float getHeight();
+
 
 };

@@ -3,9 +3,8 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "Graphics\Cube.h"
-#include "Graphics\SMatrixTransform.h"
-#include "Graphics\Model.h"
+#include "client\Graphics\SMatrixTransform.h"
+#include "client\Graphics\Model.h"
 
 #include "util\Protos.pb.h"
 

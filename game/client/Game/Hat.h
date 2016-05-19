@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Model.h"
+#include "client\Graphics\Model.h"
 
 enum HatType{
 	_none,

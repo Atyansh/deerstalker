@@ -1,5 +1,5 @@
 #include "World.h"
-#include "Model.h"
+#include "client\Graphics\Model.h"
 #include "client\Globals.h"
 #include <glm/gtx/transform.hpp>
 
@@ -15,7 +15,7 @@ World::~World() {
 
 }
 
-void World::createWorld(Shader* shader) {
+void World::createWorld(Shader* shader, string directory) {
 	floor = new SMatrixTransform();
 	
 	glm::vec3 pointLightPositions[] = {
@@ -35,4 +35,11 @@ void World::createWorld(Shader* shader) {
 	floor->addNode(model);
 
 	this->addNode(floor);
+
+	skybox.setupVAO(directory);
+}
+
+void World::draw(DrawData &data) {
+	SMatrixTransform::draw(data);
+	skybox.draw();
 }

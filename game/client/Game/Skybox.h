@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Cubemap.h"
-#include "Shader.h"
+#include "client\Graphics\Shader.h"
 
 class Skybox {
 

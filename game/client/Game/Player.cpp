@@ -2,7 +2,7 @@
 #include <glm/ext.hpp>
 
 
-Player::Player(Model *playerModel, unordered_map<std::uint32_t, Hat*> hatModels) : SMatrixTransform()
+Player::Player(PlayerModel *playerModel, unordered_map<std::uint32_t, Hat*> hatModels) : SMatrixTransform()
 {
 	hat = new SMatrixTransform();
 	player = new SMatrixTransform();
