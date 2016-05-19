@@ -54,7 +54,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions); _WIN32_WINNT=0x0501</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\workarea\protobuf-2.6.1\src;$(SolutionDir);$(SolutionDir)client\Dependencies\include;$(SolutionDir)client\Dependencies\include\SOIL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\workarea\protobuf-2.6.1\src;$(SolutionDir);$(SolutionDir)client\Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -62,8 +62,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)client\Dependencies\lib;$(SolutionDir)packages\boost_date_time-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_filesystem-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_regex-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_system-vc140.1.59.0.0\lib\native\address-model-32\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;assimp-vc130-mt.lib;soil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)client\Dependencies\lib;$(SolutionDir)packages\boost_date_time-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_filesystem-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_regex-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_system-vc140.1.59.0.0\lib\native\address-model-32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;SOIL.lib;assimp-vc130-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Command>XCOPY "$(SolutionDir)"client\Dependencies\lib\*.DLL "$(TargetDir)" /D /K /Y</Command>

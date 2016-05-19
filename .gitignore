@@ -42,6 +42,6 @@ packages/
 Debug/
 
 # Don't Ignore
-!game/client/Graphics/Assets/**/*.obj
+!game/client/Assets/**/*.obj
 !game/client/Dependencies/**/*.lib
 !game/client/Dependencies/**/*.dll

@@ -38,7 +38,7 @@ protected:
 	virtual Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 	GLint TextureFromFile(const char* path, string directory);
-	unsigned char* loadPPM(const char*, int&, int&);
+	// unsigned char* loadPPM(const char*, int&, int&);
 	//void loadBones(const aiMesh* mesh, vector<Vertex>& bones);
 	// bool hasPPMTextureFiles();
 
