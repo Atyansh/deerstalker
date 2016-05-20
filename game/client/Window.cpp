@@ -21,54 +21,17 @@ using namespace util;
 using namespace Gamepad;
 
 const char* window_title = "Deerstalker";
-//string skyboxDirectory = "Assets/Cubemap";
 
 
 int Window::width;
 int Window::height;
-//std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
-//std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
-//std::unordered_map<std::uint32_t, Model*> modelMap;
-//std::unordered_map<std::uint32_t, Shader*> shaderMap;
-//
-//const char* mangoPath = "Assets/OBJ/Mango/mango.obj";
-//const char* chickenPath = "Assets/FBX/chicken_dance.fbx";
-//const char* cratePath = "Assets/OBJ/Crate/Crate1.obj";
-//const char* playerPath = "Assets/OBJ/Player/Player.obj";
-//const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
-
-
-//GameObjects _gameObjects;
-
 SMatrixTransform *root;
 
 int STATE;
 
 void Window::initialize_objects()
 {
-	/*glm::vec3 pointLightPositions[] = {
-		glm::vec3(2.3f, -1.6f, -3.0f),
-		glm::vec3(-1.7f, 0.9f, 1.0f)
-	};
-
-	LightShader* lightShader = new LightShader(Globals::cam.getPosition(), "Shaders/shader_lighting.vert", "Shaders/shader_lighting.frag");
-	lightShader->addDirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f), glm::vec3(0.4f), glm::vec3(0.5f));
-	//lightShader->addDirectionalLight(glm::vec3(0.2f, 10.0f, 0.f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
-	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
-	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
-
-	shaderMap[_LtShader] = lightShader;
-
-	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
-	modelMap[_Player] = new PlayerModel(playerPath, shaderMap[_LtShader]);
-	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
-	modelMap[_Wizard] = new Model(wizardPath, shaderMap[_LtShader]);
-	*/
-
 	Globals::gameObjects.loadGameObjects();
-
-	//Window::generateWorld(skyboxDirectory);
-
 
 	STATE = State::_Start;
 	cout << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
@@ -118,9 +81,7 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 	float aspect = height == 0 ? 0 : float(width) / (float)height;
 	Globals::drawData.projection = glm::perspective(45.0f, aspect, 0.1f, 1000.0f);
-	//Globals::drawData.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	Globals::drawData.view = Globals::cam.getView();
-
 	cout << "projection in winodw \n";
 	cout << glm::to_string(Globals::drawData.projection) << endl;
 }
@@ -172,9 +133,6 @@ void Window::idle_callback(GLFWwindow* window) {
 
 			glm::mat4 mat = glm::make_mat4(matrix);
 
-			/*glm::mat4 mat2 = glm::scale(mat, glm::vec3(.01f));
-			player.setMatrix(mat2);*/
-
 			player.setMatrix(mat);
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 
@@ -184,8 +142,7 @@ void Window::idle_callback(GLFWwindow* window) {
 				}
 
 				if (gameObject.hattype() != 0) {
-					switch (id) // attach hats
-					{
+					switch (id) { // attach hats
 					case 1:
 						dynamic_cast<Player*>(&player)->attachHat(_wizard);
 						break;
@@ -218,8 +175,6 @@ void Window::display_callback(GLFWwindow* window) {
 
 	// Render objects
 	for (auto& pair : Globals::gameObjects.playerMap) {
-		//pair.second->draw(Globals::drawData);
-		//glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
 		pair.second->draw(Globals::drawData);
 	}
 	// hat
@@ -228,8 +183,6 @@ void Window::display_callback(GLFWwindow* window) {
 	}
 	
 	for (auto& pair : Globals::gameObjects.bulletMap) {
-		//pair.second->draw(Globals::drawData);
-		//glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
 		pair.second->draw(Globals::drawData);
 
 	}
@@ -425,8 +378,7 @@ void Window::addMoveEvent(protos::Message& message, protos::Event_Direction dire
 SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	SMatrixTransform* transform = new SMatrixTransform();
 	std::unordered_map<std::uint32_t, Hat*> playerHatMap;
-	switch (modelType)
-	{
+	switch (modelType) {
 		case _Player:
 			playerHatMap[_wizard] = new Hat(_wizard, Globals::gameObjects.modelMap[_Wizard]);
 			playerHatMap[_crate] = new Hat(_crate, Globals::gameObjects.modelMap[_Crate]);
@@ -437,11 +389,3 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	}
 	return transform;
 }
-
-//void Window::generateWorld(string directory) {
-//	World *world = new World();
-//	world->createWorld(Globals::gameObjects.shaderMap[_LtShader], directory);
-//	cerr << "A" << endl;;
-//	root = new SMatrixTransform();
-//	root->addNode(world);
-//}

@@ -21,5 +21,4 @@ public:
 	
 private:
 	float lowestPoint_;
-	static World* generateDefaultWorld();
 };

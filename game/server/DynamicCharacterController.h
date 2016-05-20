@@ -15,20 +15,14 @@ class btCollisionWorld;
 class DynamicCharacterController : public btCharacterControllerInterface
 {
 protected:
-	btScalar m_halfHeight;
 	btCollisionShape* m_shape;
 	btRigidBody* m_rigidBody;
 
-	btVector3 m_raySource[2];
-	btVector3 m_rayTarget[2];
-	btScalar m_rayLambda[2];
-	btVector3 m_rayNormal[2];
+	btVector3 m_raySource;
+	btVector3 m_rayTarget;
+	btScalar m_rayLambda;
+	btVector3 m_rayNormal;
 
-	btScalar m_turnAngle;
-
-	btScalar m_maxLinearVelocity;
-	btScalar m_walkVelocity;
-	btScalar m_turnVelocity;
 public:
 	DynamicCharacterController(btCollisionObject* body);
 	~DynamicCharacterController();

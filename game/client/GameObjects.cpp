@@ -1,8 +1,6 @@
 #include "GameObjects.h"
 #include "Globals.h"
 
-
-
 const char* mangoPath = "Assets/OBJ/Mango/mango.obj";
 const char* chickenPath = "Assets/FBX/chicken_dance.fbx";
 const char* cratePath = "Assets/OBJ/Crate/Crate1.obj";
@@ -11,14 +9,11 @@ const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 
 string skyboxDirectory = "Assets/Cubemap";
 
-
-GameObjects::GameObjects()
-{
+GameObjects::GameObjects() {
 }
 
 
-GameObjects::~GameObjects()
-{
+GameObjects::~GameObjects() {
 }
 
 

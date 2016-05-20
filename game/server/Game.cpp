@@ -44,29 +44,6 @@ void Game::initialize() {
 	world_ = World::createNewWorld();
 	world_->setGravity(btVector3(0, -10, 0));
 
-	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
-	
-	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 5);
-	btTransform groundTransform;
-	groundTransform.setIdentity();
-	groundTransform.setOrigin(btVector3(0, -56, 0));
-
-	{
-		btScalar mass(0.);
-
-		bool isDynamic = (mass != 0.f);
-
-		btVector3 localInertia(0, 0, 0);
-		if (isDynamic)
-			groundShape->calculateLocalInertia(mass, localInertia);
-
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
-		btRigidBody* body = new btRigidBody(rbInfo);
-
-		//world_->addRigidBody(body);
-	}
-
 	btBulletWorldImporter* playerLoader = new btBulletWorldImporter();
 	playerLoader->loadFile("bullet_assets\\Player.bullet");
 	playerBody_ = playerLoader->getRigidBodyByIndex(0);

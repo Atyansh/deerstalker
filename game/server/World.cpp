@@ -23,43 +23,12 @@ World* World::createNewWorld() {
 
 World* World::loadNewWorld(std::string filepath) {
 	if (filepath == "") {
-		return generateDefaultWorld();
+		return createNewWorld();
 	}
 	else {
 		//TODO implement levelLoader I'm not going to do it.
-		return generateDefaultWorld();
+		return createNewWorld();
 	}
-}
-
-World* World::generateDefaultWorld() {
-	World * world = createNewWorld();
-
-	/*
-	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
-
-	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 5);
-	btTransform groundTransform;
-	groundTransform.setIdentity();
-	groundTransform.setOrigin(btVector3(0, -56, 0));
-
-	{
-		btScalar mass(0.);
-
-		bool isDynamic = (mass != 0.f);
-
-		btVector3 localInertia(0, 0, 0);
-		if (isDynamic)
-			groundShape->calculateLocalInertia(mass, localInertia);
-
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
-		btRigidBody* body = new btRigidBody(rbInfo);
-
-		world->addRigidBody(body);
-	}
-	*/
-	
-	return world;
 }
 
 bool World::isDead(Player * player) {
@@ -71,5 +40,4 @@ void World::spawnPlayer(Player * player) {
 	//TODO Deal with more complex cases
 	//Most likley set spawn zones
 	player->setSpawn(player->getId(), 10, 0);
-
 }

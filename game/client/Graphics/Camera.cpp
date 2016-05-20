@@ -7,9 +7,11 @@
 
 
 Camera::Camera() {
-	_camVec = glm::vec3(0.0f, 0.0f, 20.0f);
+	_camVec = glm::vec3(0.0f, 0.0f, 30.0f);
 }
-Camera::~Camera() {}
+
+Camera::~Camera() {
+}
 
 void Camera::pitch(int up) {
 	glm::mat4 rotMat;
@@ -20,14 +22,13 @@ void Camera::pitch(int up) {
 	glm::vec3 r = glm::cross(a, b);
 
 	if (up == 0) {
-		rotMat = glm::rotate(rotMat, -0.020f, r);
-	}
-	else {
 		rotMat = glm::rotate(rotMat, 0.020f, r);
 	}
+	else {
+		rotMat = glm::rotate(rotMat, -0.020f, r);
+	}
 
-	update(rotMat);
-
+	update(rotMat, 0.99f, 0.3f);
 }
 
 void Camera::yaw(int up) {
@@ -40,7 +41,7 @@ void Camera::yaw(int up) {
 		rotMat = glm::rotate(rotMat, 0.020f, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
-	update(rotMat);
+	update(rotMat, 0, 0);
 }
 
 
@@ -54,19 +55,21 @@ void Camera::roll(int up) {
 		rotMat = glm::rotate(rotMat, -0.020f, glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 
-	update(rotMat);
+	update(rotMat, 0, 0);
 }
 
-void Camera::update(glm::mat4 rotMat) {
+void Camera::update(glm::mat4 rotMat, float lookUpMin, float lookDownMin) {
 	glm::vec4 pos = rotMat * glm::vec4(_camVec, 0);
 
 	glm::vec3 dir = glm::normalize(glm::vec3(pos));
-	std::cout << "Vec: " << glm::to_string(dir) << std::endl;
-	std::cout << "Object Vec: " << glm::to_string(_objectVec) << std::endl;
+	std::cerr << "Vec: " << glm::to_string(dir) << std::endl;
+	std::cerr << "Object Vec: " << glm::to_string(_objectVec) << std::endl;
 
-	if (fabs(dir.x) > 0.2f || fabs(dir.z) > 0.2f) {
+	if ((fabs(dir.x) > lookDownMin || fabs(dir.z) > lookDownMin) && dir.y >= 0) {
 		_camVec = glm::vec3(pos);
-
+	}
+	else if ((fabs(dir.x) > lookUpMin || fabs(dir.z) > lookUpMin) && dir.y < 0) {
+		_camVec = glm::vec3(pos);
 	}
 }
 
