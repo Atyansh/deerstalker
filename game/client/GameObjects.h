@@ -28,6 +28,7 @@ public:
 
 	std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
 	std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
+	std::unordered_map<std::uint32_t, SMatrixTransform*> bulletMap;
 	std::unordered_map<std::uint32_t, Model*> modelMap;
 	std::unordered_map<std::uint32_t, Shader*> shaderMap;
 	SMatrixTransform *root;

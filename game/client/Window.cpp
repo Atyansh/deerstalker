@@ -37,7 +37,6 @@ int Window::height;
 //const char* playerPath = "Assets/OBJ/Player/Player.obj";
 //const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 
-std::unordered_map<std::uint32_t, SMatrixTransform*> bulletMap;
 
 //GameObjects _gameObjects;
 
@@ -156,7 +155,7 @@ void Window::idle_callback(GLFWwindow* window) {
 				model = _Crate; // change
 			}
 			else if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
-				map = &bulletMap;
+				map = &Globals::gameObjects.bulletMap;
 				model = _Mango;
 			}
 
@@ -228,7 +227,7 @@ void Window::display_callback(GLFWwindow* window) {
 		pair.second->draw(Globals::drawData);
 	}
 	
-	for (auto& pair : bulletMap) {
+	for (auto& pair : Globals::gameObjects.bulletMap) {
 		//pair.second->draw(Globals::drawData);
 		//glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
 		pair.second->draw(Globals::drawData);
