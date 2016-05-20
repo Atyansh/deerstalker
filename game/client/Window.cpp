@@ -181,7 +181,7 @@ void Window::idle_callback(GLFWwindow* window) {
 
 				if (gameObject.id() == Globals::ID) { // follow camera based player
 					glm::mat4 toWorld = Globals::drawData.matrix * mat;
-					Globals::cam.updateCamObjectMat(glm::vec3(toWorld[3]));
+					Globals::cam.updateCamObjectMat(glm::vec3(mat[3]));
 				}
 
 				if (gameObject.hattype() != 0) {
@@ -296,9 +296,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 	int count = 0;
 	auto* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
-
-	for (int i = 0; i < count; i++) {
-	}
+	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
 	if (STATE == State::_Game) {
 		if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
@@ -343,11 +341,8 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			Globals::cam.yaw(1);
 			//Globals::drawData.view = Globals::cam.getView();
 		}
-	}
 
-	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
-	if (STATE == State::_Game) {
 
 		if (buttons[BUTTON_A] == GLFW_PRESS) {
 			auto* event = message.add_event();
