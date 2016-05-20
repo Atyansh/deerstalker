@@ -10,8 +10,6 @@ boost::asio::io_service Globals::io_service;
 
 tcp::socket Globals::socket = tcp::socket(Globals::io_service);
 
-std::deque<protos::Message> Globals::messageQueue = std::deque<protos::Message>();
-std::mutex Globals::queueLock;
 char Globals::currentHeader[util::HEADER_SIZE] = "";
 
 uint32_t Globals::ID = 0;

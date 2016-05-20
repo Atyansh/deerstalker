@@ -12,6 +12,8 @@
 #include "util\Protos.pb.h"
 #include "util\Util.h"
 
+#include "MessageHandler.h"
+
 using boost::asio::ip::tcp;
 using namespace util;
 
@@ -126,9 +128,9 @@ void do_read_body(size_t length) {
 				}
 			}
 
-			Globals::queueLock.lock();
-			Globals::messageQueue.push_back(message);
-			Globals::queueLock.unlock();
+			MessageHandler::gameLock.lock();
+			MessageHandler::gameQueue.push_back(message);
+			MessageHandler::gameLock.unlock();
 
 			do_read_header();
 		}

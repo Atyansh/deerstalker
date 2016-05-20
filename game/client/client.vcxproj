@@ -126,6 +126,7 @@
     <ClCompile Include="Graphics\SNode.cpp" />
     <ClCompile Include="Graphics\UpdateData.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MessageHandler.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +154,7 @@
     <ClInclude Include="Graphics\SMatrixTransform.h" />
     <ClInclude Include="Graphics\SNode.h" />
     <ClInclude Include="Graphics\UpdateData.h" />
+    <ClInclude Include="MessageHandler.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

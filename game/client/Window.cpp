@@ -9,6 +9,7 @@
 #include "Game\Hat.h"
 #include <glm/ext.hpp>
 #include "State.h"
+#include "MessageHandler.h"
 
 #include "client\Globals.h"
 
@@ -86,83 +87,22 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	cout << glm::to_string(Globals::drawData.projection) << endl;
 }
 
-// This method handles client side event logic and Controller input parsing
+
 void Window::idle_callback(GLFWwindow* window) {
-	Globals::queueLock.lock();
-	while (!Globals::messageQueue.empty()) {
-		protos::Message& message = Globals::messageQueue.front();
-		
-		for (int i = 0; i < message.event_size(); i++) {
-			auto& event = message.event(i);
-			
-			if (event.type() == protos::Event_Type_EQUIP) {
-				Globals::gameObjects.hatMap.erase(event.hatid());
-			}
-		}
-
-		for (int i = 0; i < message.gameobject_size(); i++){
-			Models model;
-			auto& gameObject = message.gameobject(i);
-			int id = gameObject.id();
-
-			auto* map = &Globals::gameObjects.playerMap;
-
-			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
-				map = &Globals::gameObjects.playerMap;
-				model = _Player;
-			}
-			else if (gameObject.type() == protos::Message_GameObject_Type_HAT) {
-				map = &Globals::gameObjects.hatMap;
-				model = _Crate; // change
-			}
-			else if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
-				map = &Globals::gameObjects.bulletMap;
-				model = _Mango;
-			}
-
-			float matrix[16];
-			for (int j = 0; j < gameObject.matrix_size(); j++) {
-				matrix[j] = gameObject.matrix(j);
-			}
-
-			if ((*map).find(id) == (*map).end()) {
-				(*map)[id] = Window::createGameObj(model, Globals::gameObjects.modelMap[model]);
-			}
-
-			auto& player = *(*map)[id];
-
-			glm::mat4 mat = glm::make_mat4(matrix);
-
-			player.setMatrix(mat);
-			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
-
-				if (gameObject.id() == Globals::ID) { // follow camera based player
-					glm::mat4 toWorld = Globals::drawData.matrix * mat;
-					Globals::cam.updateCamObjectMat(glm::vec3(mat[3]));
-				}
-
-				if (gameObject.hattype() != 0) {
-					switch (id) { // attach hats
-					case 1:
-						dynamic_cast<Player*>(&player)->attachHat(_wizard);
-						break;
-					default:
-						dynamic_cast<Player*>(&player)->attachHat(_crate);
-						break;
-					}
-				}
-				else {
-					dynamic_cast<Player*>(&player)->detachHat();
-				}
-			}
-
-		}
-
-		Globals::messageQueue.pop_front();
+	if (STATE == State::_Lobby) {
+		MessageHandler::handleLobbyMessages();
 	}
-
-	Globals::queueLock.unlock();
+	if (STATE == State::_Start) {
+		MessageHandler::handleStartMessages();
+	}
+	if (STATE == State::_Game) {
+		MessageHandler::handleGameMessages();
+	}
+	if (STATE == State::_EndGame) {
+		MessageHandler::handleEndGameMessages();
+	}
 }
+
 
 void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
@@ -292,7 +232,6 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			Globals::cam.yaw(1);
 			//Globals::drawData.view = Globals::cam.getView();
 		}
-
 
 
 		if (buttons[BUTTON_A] == GLFW_PRESS && !buttonState[BUTTON_A]) {
