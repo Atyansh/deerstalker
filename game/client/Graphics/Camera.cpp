@@ -34,10 +34,10 @@ void Camera::yaw(int up) {
 	glm::mat4 rotMat;
 
 	if (up == 0) {
-		rotMat = glm::rotate(rotMat, 0.020f, glm::vec3(0.0f, 1.0f, 0.0f));
+		rotMat = glm::rotate(rotMat, -0.020f, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 	else {
-		rotMat = glm::rotate(rotMat, -0.020f, glm::vec3(0.0f, 1.0f, 0.0f));
+		rotMat = glm::rotate(rotMat, 0.020f, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	update(rotMat);

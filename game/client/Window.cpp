@@ -220,9 +220,8 @@ void Window::display_callback(GLFWwindow* window) {
 	// Render objects
 	for (auto& pair : Globals::gameObjects.playerMap) {
 		//pair.second->draw(Globals::drawData);
-		glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
+		//glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
 		pair.second->draw(Globals::drawData);
-
 	}
 	// hat
 	for (auto& pair : Globals::gameObjects.hatMap) {
@@ -231,7 +230,7 @@ void Window::display_callback(GLFWwindow* window) {
 	
 	for (auto& pair : bulletMap) {
 		//pair.second->draw(Globals::drawData);
-		glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
+		//glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
 		pair.second->draw(Globals::drawData);
 
 	}
@@ -344,31 +343,41 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 
 
-		if (buttons[BUTTON_A] == GLFW_PRESS) {
+		if (buttons[BUTTON_A] == GLFW_PRESS && !buttonState[BUTTON_A]) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_JUMP);
+			buttonState[BUTTON_A] = true;
 		}
-		if (buttons[BUTTON_B] == GLFW_PRESS) {
+		if (buttons[BUTTON_B] == GLFW_PRESS && !buttonState[BUTTON_B]) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_EQUIP);
+			buttonState[BUTTON_B] = true;
 		}
 		if (buttons[BUTTON_Y] == GLFW_PRESS) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_DQUIP);
 		}
-
-		if (buttons[BUTTON_RB] == GLFW_PRESS && !Globals::shoot) {
+		if (buttons[BUTTON_RB] == GLFW_PRESS && !buttonState[BUTTON_RB]) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_SHOOT);
-			Globals::shoot = true;
+			buttonState[BUTTON_RB] = true;
 		}
 
+		if (buttons[BUTTON_A] == GLFW_RELEASE) {
+			buttonState[BUTTON_A] = false;
+		}
+		if (buttons[BUTTON_B] == GLFW_RELEASE) {
+			buttonState[BUTTON_B] = false;
+		}
+		if (buttons[BUTTON_Y] == GLFW_RELEASE) {
+			buttonState[BUTTON_Y] = false;
+		}
 		if (buttons[BUTTON_RB] == GLFW_RELEASE) {
-			Globals::shoot = false;
+			buttonState[BUTTON_RB] = false;
 		}
 	}
 

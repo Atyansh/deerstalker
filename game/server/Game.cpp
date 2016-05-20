@@ -256,6 +256,8 @@ void Game::sendStateToClients() {
 		event->set_hatid(hat->getHatId());
 	}
 
+	hatRemovedSet_.clear();
+
 	for (auto* hat : hatSet_) {
 		btTransform transform;
 		hat->getMotionState()->getWorldTransform(transform);
@@ -335,31 +337,28 @@ bool Game::canEquip(Player * playa, Hat * hata) {
 
 
 void Game::handleEquipLogic(const protos::Event* event) {
-	Player * subP = playerMap_[event->clientid()];
+	Player * player = playerMap_[event->clientid()];
 	std::cout << event->clientid() << " Attempting to equip hat\n";
 	Hat* hatToRemove = nullptr;
 	Hat* hatToAdd = nullptr;
-	for (auto hats = hatSet_.begin(); hats != hatSet_.end(); hats++) {
-		if (canEquip(subP, *hats)) {
+	for (auto hat : hatSet_) {
+		if (canEquip(player, hat)) {
 			std::cerr << "Equip success\n";
-			Hat * oldHat  = subP->setHat(*hats);
-			world_->removeRigidBody(*hats);
-			hatToRemove = *hats;
+			Hat* oldHat  = player->setHat(hat);
+			hatToRemove = hat;
 			if (oldHat != nullptr) {
 				btTransform trans;
-				trans.setIdentity();
-				trans.setOrigin((*hats)->getCenterOfMassPosition());
-				oldHat->setLinearVelocity(btVector3(0,0,0));
-				oldHat->getMotionState()->setWorldTransform(trans);
-				world_->addRigidBody(oldHat);
 				hatToAdd = oldHat;
 			}
+			world_->removeRigidBody(hat);
 			break;
 		}
 	}
 
 	if (hatToAdd) {
 		hatToAdd->playerId_ = 0;
+		world_->addRigidBody(hatToAdd);
+		player->setProjectile(hatToAdd, 10);
 		hatSet_.emplace(hatToAdd);
 	}
 	if (hatToRemove) {
