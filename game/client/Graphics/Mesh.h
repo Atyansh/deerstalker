@@ -2,8 +2,8 @@
 
 #include <assimp/Importer.hpp>
 
-#include "SGeode.h"
-#include "Shader.h"
+#include "client\Graphics\SGeode.h"
+#include "client\Graphics\Shader.h"
 #include <vector>
 
 using namespace std;

@@ -1,5 +1,4 @@
 #include "Drawable.h"
-#include "Window.h"
 
 Drawable::Drawable()
 {

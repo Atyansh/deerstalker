@@ -4,8 +4,7 @@ DrawData Globals::drawData = DrawData();
 UpdateData Globals::updateData = UpdateData();
 Camera_Original Globals::camera = Camera_Original();
 Camera Globals::cam = Camera();
-
-Skybox Globals::skybox = Skybox();
+GameObjects Globals::gameObjects = GameObjects();
 
 boost::asio::io_service Globals::io_service;
 

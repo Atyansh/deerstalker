@@ -62,8 +62,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)client\Dependencies\lib;$(SolutionDir)packages\boost_date_time-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_filesystem-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_regex-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_system-vc140.1.59.0.0\lib\native\address-model-32\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;assimp-vc130-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)client\Dependencies\lib;$(SolutionDir)packages\boost_date_time-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_filesystem-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_regex-vc140.1.59.0.0\lib\native\address-model-32\lib;$(SolutionDir)packages\boost_system-vc140.1.59.0.0\lib\native\address-model-32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;SOIL.lib;assimp-vc130-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Command>XCOPY "$(SolutionDir)"client\Dependencies\lib\*.DLL "$(TargetDir)" /D /K /Y</Command>
@@ -88,32 +90,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Globals.cpp" />
-    <ClCompile Include="Graphics\AnimationTree.cpp" />
-    <ClCompile Include="Graphics\BoneInfo.cpp" />
-    <ClCompile Include="Graphics\Camera.cpp" />
-    <ClCompile Include="Graphics\Camera_Original.cpp" />
-    <ClCompile Include="Graphics\Cube.cpp" />
-    <ClCompile Include="Graphics\Cubemap.cpp" />
-    <ClCompile Include="Graphics\Drawable.cpp" />
-    <ClCompile Include="Graphics\DrawData.cpp" />
-    <ClCompile Include="Graphics\Hat.cpp" />
-    <ClCompile Include="Graphics\LightShader.cpp" />
-    <ClCompile Include="Graphics\Mesh.cpp" />
-    <ClCompile Include="Graphics\Model.cpp" />
-    <ClCompile Include="Graphics\Player.cpp" />
-    <ClCompile Include="Graphics\SGeode.cpp" />
-    <ClCompile Include="Graphics\SGroup.cpp" />
-    <ClCompile Include="Graphics\Shader.cpp" />
-    <ClCompile Include="Graphics\Skybox.cpp" />
-    <ClCompile Include="Graphics\SMatrixTransform.cpp" />
-    <ClCompile Include="Graphics\SNode.cpp" />
-    <ClCompile Include="Graphics\UpdateData.cpp" />
-    <ClCompile Include="Graphics\Window.cpp" />
-    <ClCompile Include="Graphics\World.cpp" />
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -125,29 +101,60 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameObjects.cpp" />
+    <ClCompile Include="Game\AnimationTree.cpp" />
+    <ClCompile Include="Game\BoneInfo.cpp" />
+    <ClCompile Include="Game\Cube.cpp" />
+    <ClCompile Include="Game\Cubemap.cpp" />
+    <ClCompile Include="Game\Hat.cpp" />
+    <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Game\PlayerModel.cpp" />
+    <ClCompile Include="Game\Skybox.cpp" />
+    <ClCompile Include="Game\World.cpp" />
+    <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="Graphics\Camera.cpp" />
+    <ClCompile Include="Graphics\Camera_Original.cpp" />
+    <ClCompile Include="Graphics\Drawable.cpp" />
+    <ClCompile Include="Graphics\DrawData.cpp" />
+    <ClCompile Include="Graphics\LightShader.cpp" />
+    <ClCompile Include="Graphics\Mesh.cpp" />
+    <ClCompile Include="Graphics\Model.cpp" />
+    <ClCompile Include="Graphics\SGeode.cpp" />
+    <ClCompile Include="Graphics\SGroup.cpp" />
+    <ClCompile Include="Graphics\Shader.cpp" />
+    <ClCompile Include="Graphics\SMatrixTransform.cpp" />
+    <ClCompile Include="Graphics\SNode.cpp" />
+    <ClCompile Include="Graphics\UpdateData.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameObjects.h" />
+    <ClInclude Include="Game\AnimationTree.h" />
+    <ClInclude Include="Game\BoneInfo.h" />
+    <ClInclude Include="Game\Cube.h" />
+    <ClInclude Include="Game\Cubemap.h" />
+    <ClInclude Include="Game\Hat.h" />
+    <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Game\PlayerModel.h" />
+    <ClInclude Include="Game\Skybox.h" />
+    <ClInclude Include="Game\World.h" />
     <ClInclude Include="Globals.h" />
-    <ClInclude Include="Graphics\AnimationTree.h" />
-    <ClInclude Include="Graphics\BoneInfo.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Camera_Original.h" />
-    <ClInclude Include="Graphics\Cube.h" />
-    <ClInclude Include="Graphics\Cubemap.h" />
     <ClInclude Include="Graphics\Drawable.h" />
     <ClInclude Include="Graphics\DrawData.h" />
-    <ClInclude Include="Graphics\Hat.h" />
     <ClInclude Include="Graphics\LightShader.h" />
+    <ClInclude Include="Graphics\Mesh.h" />
     <ClInclude Include="Graphics\Model.h" />
-    <ClInclude Include="Graphics\Player.h" />
     <ClInclude Include="Graphics\SGeode.h" />
     <ClInclude Include="Graphics\SGroup.h" />
     <ClInclude Include="Graphics\Shader.h" />
-    <ClInclude Include="Graphics\Mesh.h" />
-    <ClInclude Include="Graphics\Skybox.h" />
     <ClInclude Include="Graphics\SMatrixTransform.h" />
     <ClInclude Include="Graphics\SNode.h" />
     <ClInclude Include="Graphics\UpdateData.h" />
-    <ClInclude Include="Graphics\Window.h" />
-    <ClInclude Include="Graphics\World.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

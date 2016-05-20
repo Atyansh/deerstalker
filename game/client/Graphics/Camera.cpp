@@ -3,24 +3,31 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include <iostream>
+#include <cmath>
+
 
 Camera::Camera() {
 	_camVec = glm::vec3(0.0f, 0.0f, 20.0f);
 }
-
 Camera::~Camera() {}
 
 void Camera::pitch(int up) {
 	glm::mat4 rotMat;
 
+	glm::vec3 a = glm::normalize(_camVec);
+	glm::vec3 b(0.0f, 1.0f, 0.0f);
+
+	glm::vec3 r = glm::cross(a, b);
+
 	if (up == 0) {
-		rotMat = glm::rotate(rotMat, 0.020f, glm::vec3(1.0f, 0.0f, 0.0f));
+		rotMat = glm::rotate(rotMat, -0.020f, r);
 	}
 	else {
-		rotMat = glm::rotate(rotMat, -0.020f, glm::vec3(1.0f, 0.0f, 0.0f));
+		rotMat = glm::rotate(rotMat, 0.020f, r);
 	}
-	
+
 	update(rotMat);
+
 }
 
 void Camera::yaw(int up) {
@@ -32,9 +39,10 @@ void Camera::yaw(int up) {
 	else {
 		rotMat = glm::rotate(rotMat, -0.020f, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
-	
+
 	update(rotMat);
 }
+
 
 void Camera::roll(int up) {
 	glm::mat4 rotMat;
@@ -51,7 +59,15 @@ void Camera::roll(int up) {
 
 void Camera::update(glm::mat4 rotMat) {
 	glm::vec4 pos = rotMat * glm::vec4(_camVec, 0);
-	_camVec = glm::vec3(pos);
+
+	glm::vec3 dir = glm::normalize(glm::vec3(pos));
+	std::cout << "Vec: " << glm::to_string(dir) << std::endl;
+	std::cout << "Object Vec: " << glm::to_string(_objectVec) << std::endl;
+
+	if (fabs(dir.x) > 0.2f || fabs(dir.z) > 0.2f) {
+		_camVec = glm::vec3(pos);
+
+	}
 }
 
 glm::mat4 Camera::getView() {
