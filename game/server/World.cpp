@@ -5,7 +5,8 @@ World::World(btCollisionDispatcher* collisionDispatcher,
 	btBroadphaseInterface* overlappingPairCache,
 	btConstraintSolver* solver,
 	btCollisionConfiguration* collisionConfiguration) : 
-btDiscreteDynamicsWorld(collisionDispatcher, overlappingPairCache, solver, collisionConfiguration) {
+btDiscreteDynamicsWorld(collisionDispatcher, overlappingPairCache, solver, collisionConfiguration),
+lowestPoint_(-50) {
 }
 
 World::~World() {
@@ -32,6 +33,8 @@ World* World::loadNewWorld(std::string filepath) {
 
 World* World::generateDefaultWorld() {
 	World * world = createNewWorld();
+
+	/*
 	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
 
 	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 5);
@@ -54,7 +57,8 @@ World* World::generateDefaultWorld() {
 
 		world->addRigidBody(body);
 	}
-	world->lowestPoint_ = -56;
+	*/
+	
 	return world;
 }
 

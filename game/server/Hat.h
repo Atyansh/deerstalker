@@ -12,8 +12,8 @@ public:
 	int getHatType();
 	int getHatId();
 
-	const static int WIZARD_HAT = 0;
-	const static int BASEBALL_HAT = 1;
+	const static int WIZARD_HAT = 1;
+	const static int BASEBALL_HAT = 2;
 
 	static int idCounter;
 

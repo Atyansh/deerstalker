@@ -126,7 +126,9 @@ void Game::startGameLoop() {
 			messageQueue_.pop_front();
 		}
 		queueLock_.unlock();
+
 		handleReSpawnLogic();
+
 		sendStateToClients();
 
 		milliseconds stamp2 = duration_cast<milliseconds>(
@@ -316,10 +318,10 @@ void Game::handleReSpawnLogic() {
 			}
 			
 		}
-
-		for (auto it = theDead.begin(); it != theDead.end(); it++) {
-			playerMap_.erase(*it);
-		}
+	}
+	
+	for (auto id : theDead) {
+		playerMap_.erase(id);
 	}
 }
  
