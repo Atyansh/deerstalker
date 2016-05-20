@@ -8,6 +8,7 @@
 #include "Game\Player.h"
 #include "Game\Hat.h"
 #include <glm/ext.hpp>
+#include "State.h"
 
 #include "client\Globals.h"
 
@@ -20,27 +21,33 @@ using namespace util;
 using namespace Gamepad;
 
 const char* window_title = "Deerstalker";
-string skyboxDirectory = "Assets/Cubemap";
+//string skyboxDirectory = "Assets/Cubemap";
+
 
 int Window::width;
 int Window::height;
-std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
-std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
-std::unordered_map<std::uint32_t, SMatrixTransform*> bulletMap;
-std::unordered_map<std::uint32_t, Model*> modelMap;
-std::unordered_map<std::uint32_t, Shader*> shaderMap;
+//std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
+//std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
+//std::unordered_map<std::uint32_t, Model*> modelMap;
+//std::unordered_map<std::uint32_t, Shader*> shaderMap;
+//
+//const char* mangoPath = "Assets/OBJ/Mango/mango.obj";
+//const char* chickenPath = "Assets/FBX/chicken_dance.fbx";
+//const char* cratePath = "Assets/OBJ/Crate/Crate1.obj";
+//const char* playerPath = "Assets/OBJ/Player/Player.obj";
+//const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 
-const char* mangoPath = "Assets/OBJ/Mango/mango.obj";
-const char* chickenPath = "Assets/FBX/chicken_dance.fbx";
-const char* cratePath = "Assets/OBJ/Crate/Crate1.obj";
-const char* playerPath = "Assets/OBJ/Player/Player.obj";
-const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
+std::unordered_map<std::uint32_t, SMatrixTransform*> bulletMap;
+
+//GameObjects _gameObjects;
 
 SMatrixTransform *root;
 
+int STATE;
+
 void Window::initialize_objects()
 {
-	glm::vec3 pointLightPositions[] = {
+	/*glm::vec3 pointLightPositions[] = {
 		glm::vec3(2.3f, -1.6f, -3.0f),
 		glm::vec3(-1.7f, 0.9f, 1.0f)
 	};
@@ -57,8 +64,15 @@ void Window::initialize_objects()
 	modelMap[_Player] = new PlayerModel(playerPath, shaderMap[_LtShader]);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
 	modelMap[_Wizard] = new Model(wizardPath, shaderMap[_LtShader]);
+	*/
 
-	Window::generateWorld(skyboxDirectory);
+	Globals::gameObjects.loadGameObjects();
+
+	//Window::generateWorld(skyboxDirectory);
+
+
+	STATE = State::_Start;
+	cout << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
 
 }
 
@@ -122,7 +136,7 @@ void Window::idle_callback(GLFWwindow* window) {
 			auto& event = message.event(i);
 			
 			if (event.type() == protos::Event_Type_EQUIP) {
-				hatMap.erase(event.hatid());
+				Globals::gameObjects.hatMap.erase(event.hatid());
 			}
 		}
 
@@ -131,14 +145,14 @@ void Window::idle_callback(GLFWwindow* window) {
 			auto& gameObject = message.gameobject(i);
 			int id = gameObject.id();
 
-			auto* map = &playerMap;
+			auto* map = &Globals::gameObjects.playerMap;
 
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
-				map = &playerMap;
+				map = &Globals::gameObjects.playerMap;
 				model = _Player;
 			}
 			else if (gameObject.type() == protos::Message_GameObject_Type_HAT) {
-				map = &hatMap;
+				map = &Globals::gameObjects.hatMap;
 				model = _Crate; // change
 			}
 			else if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
@@ -152,7 +166,7 @@ void Window::idle_callback(GLFWwindow* window) {
 			}
 
 			if ((*map).find(id) == (*map).end()) {
-				(*map)[id] = Window::createGameObj(model, modelMap[model]);
+				(*map)[id] = Window::createGameObj(model, Globals::gameObjects.modelMap[model]);
 			}
 
 			auto& player = *(*map)[id];
@@ -200,17 +214,18 @@ void Window::display_callback(GLFWwindow* window) {
 
 	Globals::drawData.view = Globals::cam.getView();
 
-	root->draw(Globals::drawData);
+	Globals::gameObjects.root->draw(Globals::drawData);
+
 
 	// Render objects
-	for (auto& pair : playerMap) {
+	for (auto& pair : Globals::gameObjects.playerMap) {
 		//pair.second->draw(Globals::drawData);
 		glm::mat4 toWorld = Globals::drawData.matrix * pair.second->getDrawData().matrix;
 		pair.second->draw(Globals::drawData);
 
 	}
 	// hat
-	for (auto& pair : hatMap) {
+	for (auto& pair : Globals::gameObjects.hatMap) {
 		pair.second->draw(Globals::drawData);
 	}
 	
@@ -276,6 +291,7 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 }
 
 void Window::handle_gamepad(GLFWwindow* window) {
+
 	protos::Message message;
 
 	int count = 0;
@@ -284,77 +300,106 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	for (int i = 0; i < count; i++) {
 	}
 
-	if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
-		addMoveEvent(message, protos::Event_Direction_RIGHT);
-	}
-	else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT) { // Left
-		addMoveEvent(message, protos::Event_Direction_LEFT);
-	}
+	if (STATE == State::_Game) {
+		if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
+			addMoveEvent(message, protos::Event_Direction_RIGHT);
+		}
+		else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT) { // Left
+			addMoveEvent(message, protos::Event_Direction_LEFT);
+		}
 
-	if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) { // Down
-		addMoveEvent(message, protos::Event_Direction_BACKWARD);
-	}
-	else if (axes[LEFT_STICK_Y] < NEG_AXIS_TILT) { // Up
-		addMoveEvent(message, protos::Event_Direction_FORWARD);
-	}
+		if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) { // Down
+			addMoveEvent(message, protos::Event_Direction_BACKWARD);
+		}
+		else if (axes[LEFT_STICK_Y] < NEG_AXIS_TILT) { // Up
+			addMoveEvent(message, protos::Event_Direction_FORWARD);
+		}
 
-	if (axes[TRIGGER_AXIS] > POS_AXIS_TILT) {
-		addMoveEvent(message, protos::Event_Direction_DOWN);
-	}
-	else if (axes[TRIGGER_AXIS] < NEG_AXIS_TILT) {
-		addMoveEvent(message, protos::Event_Direction_UP);
-	}
+		if (axes[TRIGGER_AXIS] > POS_AXIS_TILT) {
+			addMoveEvent(message, protos::Event_Direction_DOWN);
+		}
+		else if (axes[TRIGGER_AXIS] < NEG_AXIS_TILT) {
+			addMoveEvent(message, protos::Event_Direction_UP);
+		}
 
-	if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
-		fprintf(stderr, "Going Down\n");
-		Globals::cam.pitch(0);
-	}
-	else if (axes[RIGHT_STICK_X] < NEG_AXIS_TILT) {
-		fprintf(stderr, "Going Up\n");
-		Globals::cam.pitch(1);
-		//Globals::drawData.view = Globals::cam.getView();
-	}
+		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
+			fprintf(stderr, "Going Down\n");
+			Globals::cam.pitch(0);
+		}
+		else if (axes[RIGHT_STICK_X] < NEG_AXIS_TILT) {
+			fprintf(stderr, "Going Up\n");
+			Globals::cam.pitch(1);
+			//Globals::drawData.view = Globals::cam.getView();
+		}
 
-	if (axes[RIGHT_STICK_Y] > POS_AXIS_TILT) {
-		fprintf(stderr, "Going Right\n");
-		Globals::cam.yaw(0);
-		//Globals::drawData.view = Globals::cam.getView();
-	}
+		if (axes[RIGHT_STICK_Y] > POS_AXIS_TILT) {
+			fprintf(stderr, "Going Right\n");
+			Globals::cam.yaw(0);
+			//Globals::drawData.view = Globals::cam.getView();
+		}
 
-	else if (axes[RIGHT_STICK_Y] < NEG_AXIS_TILT) {
-		fprintf(stderr, "Going Left\n");
-		Globals::cam.yaw(1);
-		//Globals::drawData.view = Globals::cam.getView();
+		else if (axes[RIGHT_STICK_Y] < NEG_AXIS_TILT) {
+			fprintf(stderr, "Going Left\n");
+			Globals::cam.yaw(1);
+			//Globals::drawData.view = Globals::cam.getView();
+		}
 	}
 
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
-	if (buttons[BUTTON_A] == GLFW_PRESS) {
-		auto* event = message.add_event();
-		event->set_clientid(Globals::ID);
-		event->set_type(protos::Event_Type_JUMP);
-	}
-	if (buttons[BUTTON_B] == GLFW_PRESS) {
-		auto* event = message.add_event();
-		event->set_clientid(Globals::ID);
-		event->set_type(protos::Event_Type_EQUIP);
-	}
-	if (buttons[BUTTON_Y] == GLFW_PRESS) {
-		auto* event = message.add_event();
-		event->set_clientid(Globals::ID);
-		event->set_type(protos::Event_Type_DQUIP);
+	if (STATE == State::_Game) {
+
+		if (buttons[BUTTON_A] == GLFW_PRESS) {
+			auto* event = message.add_event();
+			event->set_clientid(Globals::ID);
+			event->set_type(protos::Event_Type_JUMP);
+		}
+		if (buttons[BUTTON_B] == GLFW_PRESS) {
+			auto* event = message.add_event();
+			event->set_clientid(Globals::ID);
+			event->set_type(protos::Event_Type_EQUIP);
+		}
+		if (buttons[BUTTON_Y] == GLFW_PRESS) {
+			auto* event = message.add_event();
+			event->set_clientid(Globals::ID);
+			event->set_type(protos::Event_Type_DQUIP);
+		}
+
+		if (buttons[BUTTON_RB] == GLFW_PRESS && !Globals::shoot) {
+			auto* event = message.add_event();
+			event->set_clientid(Globals::ID);
+			event->set_type(protos::Event_Type_SHOOT);
+			Globals::shoot = true;
+		}
+
+		if (buttons[BUTTON_RB] == GLFW_RELEASE) {
+			Globals::shoot = false;
+		}
 	}
 
-	if (buttons[BUTTON_RB] == GLFW_PRESS && !Globals::shoot) {
-		auto* event = message.add_event();
-		event->set_clientid(Globals::ID);
-		event->set_type(protos::Event_Type_SHOOT);
-		Globals::shoot = true;
+	if (STATE == State::_Start) {
+		if (buttons[BUTTON_START] == GLFW_PRESS) {
+
+			// Switch state to lobby
+			STATE = State::_Lobby;
+		}
 	}
 
-	if (buttons[BUTTON_RB] == GLFW_RELEASE) {
-		Globals::shoot = false;
+	if (STATE == State::_Lobby) {
+		if (buttons[BUTTON_A] == GLFW_PRESS) {
+			STATE = State::_Game;
+		}
 	}
+
+	if (STATE == State::_EndGame) {
+		if (buttons[BUTTON_Y] == GLFW_PRESS) {
+			STATE = State::_Game;
+		}
+		else if (buttons[BUTTON_X] == GLFW_PRESS) {
+			STATE = State::_Start;
+		}
+	}
+
 
 	if (message.event_size()) {
 		sendMessage(Globals::socket, message);
@@ -380,8 +425,8 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	switch (modelType)
 	{
 		case _Player:
-			playerHatMap[_wizard] = new Hat(_wizard, modelMap[_Wizard]);
-			playerHatMap[_crate] = new Hat(_crate, modelMap[_Crate]);
+			playerHatMap[_wizard] = new Hat(_wizard, Globals::gameObjects.modelMap[_Wizard]);
+			playerHatMap[_crate] = new Hat(_crate, Globals::gameObjects.modelMap[_Crate]);
 			return new Player(dynamic_cast<PlayerModel*>(model), playerHatMap);
 		default:
 			transform->addNode(model);
@@ -390,10 +435,10 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	return transform;
 }
 
-void Window::generateWorld(string directory) {
-	World *world = new World();
-	world->createWorld(shaderMap[_LtShader], directory);
-	cerr << "A" << endl;;
-	root = new SMatrixTransform();
-	root->addNode(world);
-}
+//void Window::generateWorld(string directory) {
+//	World *world = new World();
+//	world->createWorld(Globals::gameObjects.shaderMap[_LtShader], directory);
+//	cerr << "A" << endl;;
+//	root = new SMatrixTransform();
+//	root->addNode(world);
+//}

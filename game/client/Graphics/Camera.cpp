@@ -7,7 +7,6 @@
 Camera::Camera() {
 	_camVec = glm::vec3(0.0f, 0.0f, 20.0f);
 }
-
 Camera::~Camera() {}
 
 void Camera::pitch(int up) {
@@ -19,8 +18,9 @@ void Camera::pitch(int up) {
 	else {
 		rotMat = glm::rotate(rotMat, -0.020f, glm::vec3(1.0f, 0.0f, 0.0f));
 	}
-	
+
 	update(rotMat);
+
 }
 
 void Camera::yaw(int up) {
@@ -32,9 +32,10 @@ void Camera::yaw(int up) {
 	else {
 		rotMat = glm::rotate(rotMat, -0.020f, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
-	
+
 	update(rotMat);
 }
+
 
 void Camera::roll(int up) {
 	glm::mat4 rotMat;
@@ -51,7 +52,15 @@ void Camera::roll(int up) {
 
 void Camera::update(glm::mat4 rotMat) {
 	glm::vec4 pos = rotMat * glm::vec4(_camVec, 0);
-	_camVec = glm::vec3(pos);
+
+	glm::vec3 dir = glm::normalize(glm::vec3(pos) - _objectVec);
+	std::cout << "Vec: " << glm::to_string(dir) << std::endl;
+	std::cout << "Object Vec: " << glm::to_string(_objectVec) << std::endl;
+
+	if (dir.z >= 0.0f && dir.z < 1.0f) {
+		_camVec = glm::vec3(pos);
+
+	}
 }
 
 glm::mat4 Camera::getView() {

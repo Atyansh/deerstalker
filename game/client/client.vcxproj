@@ -101,6 +101,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="Game\AnimationTree.cpp" />
     <ClCompile Include="Game\BoneInfo.cpp" />
     <ClCompile Include="Game\Cube.cpp" />
@@ -128,6 +129,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameObjects.h" />
     <ClInclude Include="Game\AnimationTree.h" />
     <ClInclude Include="Game\BoneInfo.h" />
     <ClInclude Include="Game\Cube.h" />
@@ -151,6 +153,7 @@
     <ClInclude Include="Graphics\SMatrixTransform.h" />
     <ClInclude Include="Graphics\SNode.h" />
     <ClInclude Include="Graphics\UpdateData.h" />
+    <ClInclude Include="State.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

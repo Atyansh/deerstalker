@@ -7,6 +7,7 @@
 #include "Graphics\Camera.h"
 #include "Graphics\Camera_Original.h"
 #include "Graphics\Model.h"
+#include "GameObjects.h"
 
 #include "util\Protos.pb.h"
 #include "util\Util.h"
@@ -21,6 +22,7 @@ public:
 	static UpdateData updateData;
 	static Camera_Original camera;
 	static Camera cam;
+	static GameObjects gameObjects;
 
 	static boost::asio::io_service io_service;
 	static tcp::socket socket;

@@ -5,20 +5,22 @@
 #include <GLFW/glfw3.h>
 #include "client\Graphics\SMatrixTransform.h"
 #include "client\Graphics\Model.h"
+#include "GameObjects.h"
+
 
 #include "util\Protos.pb.h"
 
-enum Models {
-	_Player,
-	_Mango,
-	_Crate,
-	_Wizard
-};
-
-enum Shaders {
-	_BShader,
-	_LtShader
-};
+//enum Models {
+//	_Player,
+//	_Mango,
+//	_Crate,
+//	_Wizard
+//};
+//
+//enum Shaders {
+//	_BShader,
+//	_LtShader
+//};
 
 class Window {
 public:
@@ -33,7 +35,7 @@ public:
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void handle_gamepad(GLFWwindow* window);
 	static SMatrixTransform* createGameObj(Models modelType, Model* model);
-	static void generateWorld(string directory);
+	//static void generateWorld(string directory);
 
 private:
 	static void addMoveEvent(protos::Message& message, protos::Event_Direction direction);
