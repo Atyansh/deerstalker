@@ -164,6 +164,8 @@ void DynamicCharacterController::playerStep(const btCollisionWorld*, btVector3& 
 	}
 	*/
 
+	setLookDirection(m_rigidBody, dir);
+
 	btVector3 velocity = dir * walkSpeed;
 	velocity.setY(m_rigidBody->getLinearVelocity().getY());
 	m_rigidBody->setLinearVelocity(velocity);
@@ -191,7 +193,7 @@ void DynamicCharacterController::jump()
 	m_rigidBody->getMotionState()->getWorldTransform(xform);
 	btVector3 up = xform.getBasis()[1];
 	up.normalize();
-	btScalar magnitude = 1;
+	btScalar magnitude = 15;
 	m_rigidBody->applyCentralImpulse(up * magnitude);
 }
 
@@ -208,3 +210,23 @@ void DynamicCharacterController::registerPairCacheAndDispatcher(btOverlappingPai
 
 }
 
+void DynamicCharacterController::setLookDirection(btRigidBody* body, const btVector3& newLook) {
+	// assume that "forward" for the player in local-frame is +zAxis
+	// and that the player is constrained to rotate about yAxis (+yAxis is "up")
+	btVector3 localLook(0.0f, 0.0f, 1.0f); // zAxis
+	btVector3 rotationAxis(0.0f, 1.0f, 0.0f); // yAxis
+
+	// compute currentLook and angle
+	btTransform transform = body->getCenterOfMassTransform();
+	btQuaternion rotation = transform.getRotation();
+	btVector3 currentLook = quatRotate(rotation, localLook); //rotation * localLook;
+	btScalar angle = currentLook.angle(newLook);
+
+	// compute new rotation
+	btQuaternion deltaRotation(rotationAxis, angle);
+	btQuaternion newRotation = deltaRotation * rotation;
+
+	// apply new rotation
+	transform.setRotation(newRotation);
+	body->setCenterOfMassTransform(transform);
+}

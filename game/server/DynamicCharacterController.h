@@ -55,13 +55,14 @@ public:
 	void setUpInterpolate(bool value) {}
 	void updateAction(btCollisionWorld *collisionWorld, btScalar deltaTimeStep) {
 		preStep(collisionWorld);
-		//playerStep(collisionWorld, 0, 0, 0, 0, 0, 0);
 	}
 	void debugDraw(btIDebugDraw *debugDrawer) {}
 
 	btRigidBody* getRigidBody() {
 		return m_rigidBody;
 	}
+
+	void setLookDirection(btRigidBody* body, const btVector3& newLook);
 };
 
 #endif
