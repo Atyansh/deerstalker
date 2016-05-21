@@ -9,7 +9,7 @@
 
 class PlayerModel : public Model
 {
-private:
+protected:
 	/*  PlayerModel Data  */
 	unsigned int numBones;
 	unordered_map<string, unsigned int> boneMapping;
@@ -22,9 +22,11 @@ private:
 
 	float height = 0;
 
-	virtual void processVerts(aiMesh* mesh, vector<Vertex> &vertices);
-	virtual Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	void loadBones(const aiMesh* mesh, vector<Vertex>& bones);
+
+	virtual void addLoadMethod();
+	virtual void addProcessMeshMethod(const aiMesh* mesh, vector<Vertex>& vertices);
+	virtual void addProcessVertMethod(float y);
 
 
 public:

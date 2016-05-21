@@ -108,23 +108,36 @@ void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	Globals::drawData.view = Globals::cam.getView();
+	switch (STATE) {
+	case State::_Start:
+		Globals::gameObjects.guiMap[_Background]->draw(Globals::drawData);
+		
+		break;
+	case State::_Lobby:
+		break;
+	case State::_Game:
 
-	Globals::gameObjects.root->draw(Globals::drawData);
+		Globals::drawData.view = Globals::cam.getView();
+
+		Globals::gameObjects.root->draw(Globals::drawData);
 
 
-	// Render objects
-	for (auto& pair : Globals::gameObjects.playerMap) {
-		pair.second->draw(Globals::drawData);
-	}
-	// hat
-	for (auto& pair : Globals::gameObjects.hatMap) {
-		pair.second->draw(Globals::drawData);
-	}
-	
-	for (auto& pair : Globals::gameObjects.bulletMap) {
-		pair.second->draw(Globals::drawData);
+		// Render objects
+		for (auto& pair : Globals::gameObjects.playerMap) {
+			pair.second->draw(Globals::drawData);
+		}
+		// hat
+		for (auto& pair : Globals::gameObjects.hatMap) {
+			pair.second->draw(Globals::drawData);
+		}
 
+		for (auto& pair : Globals::gameObjects.bulletMap) {
+			pair.second->draw(Globals::drawData);
+
+		}
+		break;
+	case State::_EndGame:
+		break;
 	}
 
 	// Gets events, including input such as keyboard and mouse or window resizing

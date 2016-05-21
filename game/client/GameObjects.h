@@ -7,6 +7,7 @@
 #include "Graphics\SMatrixTransform.h"
 #include "Game\Player.h"
 #include "Game\World.h"
+#include "Graphics\GuiItem.h"
 
 enum Models {
 	_Player,
@@ -20,6 +21,9 @@ enum Shaders {
 	_LtShader
 };
 
+enum GUI {
+	_Background,
+};
 class GameObjects
 {
 private:
@@ -31,6 +35,7 @@ public:
 	std::unordered_map<std::uint32_t, SMatrixTransform*> bulletMap;
 	std::unordered_map<std::uint32_t, Model*> modelMap;
 	std::unordered_map<std::uint32_t, Shader*> shaderMap;
+	std::unordered_map<std::uint32_t, GuiItem*> guiMap;
 	SMatrixTransform *root;
 
 	GameObjects();

@@ -26,12 +26,15 @@ Player::~Player()
 }
 
 void Player::createPlayer() {
+	float scaleFactor = 0.075f;
 	// add hat
-	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(0.f,this->playerModel->getHeight()-0.5f, 0.f));
+	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(0.f,(this->playerModel->getHeight()*scaleFactor)-0.5f, 0.f));
 	hat->setMatrix(translate);
 	this->addNode(hat);
 
 	// add player
+	glm::mat4 scale = glm::scale(glm::mat4(1.f), glm::vec3(scaleFactor));
+	player->setMatrix(scale);
 	this->addNode(player);
 }
 

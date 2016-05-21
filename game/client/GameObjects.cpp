@@ -4,10 +4,11 @@
 const char* mangoPath = "Assets/OBJ/Mango/mango.obj";
 const char* chickenPath = "Assets/FBX/chicken_dance.fbx";
 const char* cratePath = "Assets/OBJ/Crate/Crate1.obj";
-const char* playerPath = "Assets/OBJ/Player/Player.obj";
+const char* playerPath = "Assets/FBX/rig3.fbx"; // "Assets/FBX/rigtest.fbx";
 const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 
 string skyboxDirectory = "Assets/Cubemap";
+string backgroundPath = "Assets/UI/bckTmp.png";
 
 GameObjects::GameObjects() {
 }
@@ -36,6 +37,9 @@ void GameObjects::loadGameObjects() {
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
 	modelMap[_Wizard] = new Model(wizardPath, shaderMap[_LtShader]);
 
+	Shader *shader = new Shader("Shaders/guiItem.vert", "Shaders/guiItem.frag");
+	guiMap[_Background] = new GuiItem(backgroundPath, shader, 60, 40, 0, 0);
+
 	generateWorld(skyboxDirectory);
 }
 
@@ -45,4 +49,5 @@ void GameObjects::generateWorld(string directory) {
 	cerr << "A" << endl;
 	root = new SMatrixTransform();
 	root->addNode(world);
+	int width, height;
 }

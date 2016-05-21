@@ -4,6 +4,7 @@
 
 #include "client\Graphics\SMatrixTransform.h"
 #include "PlayerModel.h"
+//#include "client\Graphics\Model.h"
 #include "Hat.h"
 
 class Player : public SMatrixTransform {

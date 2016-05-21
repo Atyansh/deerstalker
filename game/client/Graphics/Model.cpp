@@ -8,11 +8,15 @@
 #include <boost\filesystem.hpp>
 #include <SOIL/SOIL.h>
 
+Model::Model() : SGeode()
+{
+	
+}
 
 Model::Model(const char* path, Shader *shader) : SGeode()
 {
 	this->shader = shader;
-	numBones = 0;
+	// numBones = 0;
 	// this->mAnimTree = NULL;
 	this->loadModel(path);
 }
@@ -51,6 +55,13 @@ void Model::update(UpdateData &updateData){
 //float Model::getHeight() {
 //	return height;
 //}
+/*Virtual helpers*/
+void Model::addLoadMethod() {}
+
+void Model::addProcessMeshMethod(const aiMesh* mesh, vector<Vertex>& vertices) {}
+
+void Model::addProcessVertMethod(float y) {}
+
 
 /*  Functions   */
 // Loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
@@ -68,6 +79,7 @@ void Model::loadModel(string path)
 	modelInverseMat.Inverse();
 
 	this->processNode(scene->mRootNode, scene);
+	addLoadMethod();
 	/*if (boneMapping.size() > 0 && boneInfos.size() > 0) {
 		this->mAnimTree = new AnimationTree(scene, modelInverseMat);
 	}
@@ -109,6 +121,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	//if (mesh->mNumBones > 0) {
 	//	loadBones(mesh, vertices);
 	//}
+	addProcessMeshMethod(mesh, vertices);
 
 	//process faces
 	processFaces(mesh, indices);
@@ -127,6 +140,7 @@ void Model::processVerts(aiMesh* mesh, vector<Vertex> &vertices){
 
 		vector.x = mesh->mVertices[i].x;
 		vector.y = mesh->mVertices[i].y;
+		addProcessVertMethod(vector.y);
 		vector.z = mesh->mVertices[i].z;
 		vertex.Position = vector;
 

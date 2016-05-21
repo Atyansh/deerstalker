@@ -7,10 +7,11 @@
 #include <glm/ext.hpp>
 #include <boost\filesystem.hpp>
 
-PlayerModel::PlayerModel(const char* path, Shader *shader) : Model(path, shader)
+PlayerModel::PlayerModel(const char* path, Shader *shader) : Model()
 {
 	this->shader = shader;
 	numBones = 0;
+	height = 0.f;
 	this->mAnimTree = NULL;
 	this->loadModel(path);
 }
@@ -29,7 +30,7 @@ void PlayerModel::draw(DrawData &data) {
 		float delta = time - prevTime;
 		prevTime = time;
 
-		currAnimTime += min(delta, 0.07f);
+		currAnimTime += min(delta, 0.05f);
 
 		this->mAnimTree->boneTransfrom(currAnimTime, boneInfos, boneMapping);
 	}
@@ -50,68 +51,29 @@ float PlayerModel::getHeight() {
 	return height;
 }
 
-/*  Functions   */
-Mesh PlayerModel::processMesh(aiMesh* mesh, const aiScene* scene)
-{
-	// Data to fill
-	vector<Vertex> vertices;
-	vector<GLuint> indices;
-	vector<Texture> textures;
-	MaterialNoTex materialNoTex;
 
-	// bool hasTexture = hasPPMTextureFiles();
-	// fprintf(stderr, "Has textures? : %s", hasTexture ? "yes" : "no");
+/*Functions*/
 
-	//process vertices
-	processVerts(mesh, vertices);
+void PlayerModel::addLoadMethod() {
+	if (boneMapping.size() > 0 && boneInfos.size() > 0) {
+	this->mAnimTree = new AnimationTree(scene, modelInverseMat);
+	}
+	cout << endl;
+}
 
-	//process bones
+void PlayerModel::addProcessVertMethod(float y) {
+	if (y > height) {
+		height = y;
+	}
+}
+
+void PlayerModel::addProcessMeshMethod(const aiMesh* mesh, vector<Vertex>& vertices) {
 	cout << "Bones: " << mesh->mNumBones << endl;
 	if (mesh->mNumBones > 0) {
 		loadBones(mesh, vertices);
 	}
-
-	//process faces
-	processFaces(mesh, indices);
-
-	//process material w/ textures
-	processMaterial(mesh, scene, textures, materialNoTex);
-
-	return Mesh(vertices, indices, textures, materialNoTex, this->shader, mesh->mNumBones > 0);
 }
 
-void PlayerModel::processVerts(aiMesh* mesh, vector<Vertex> &vertices) {
-	for (GLuint i = 0; i < mesh->mNumVertices; i++)
-	{
-		Vertex vertex;
-		glm::vec3 vector;
-
-		vector.x = mesh->mVertices[i].x;
-		vector.y = mesh->mVertices[i].y;
-		if (mesh->mVertices[i].y > height) {
-			height = mesh->mVertices[i].y;
-		}
-		vector.z = mesh->mVertices[i].z;
-		vertex.Position = vector;
-
-		vector.x = mesh->mNormals[i].x;
-		vector.y = mesh->mNormals[i].y;
-		vector.z = mesh->mNormals[i].z;
-		vertex.Normal = vector;
-
-		if (mesh->HasTextureCoords(0)) // Does the mesh contain texture coordinates?
-		{
-			glm::vec2 vec;
-			vec.x = mesh->mTextureCoords[0][i].x;
-			vec.y = mesh->mTextureCoords[0][i].y;
-			vertex.TexCoords = vec;
-		}
-		else
-			vertex.TexCoords = glm::vec2(0.0f, 0.0f);
-
-		vertices.push_back(vertex);
-	}
-}
 
 void PlayerModel::loadBones(const aiMesh* mesh, vector<Vertex>& vertices)
 {
