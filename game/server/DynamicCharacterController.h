@@ -47,6 +47,7 @@ public:
 	void setWalkDirection(const btVector3 &walkDirection) {}
 	void setVelocityForTimeInterval(const btVector3 &velocity, btScalar timeInterval) {}
 	void setUpInterpolate(bool value) {}
+	
 	void updateAction(btCollisionWorld *collisionWorld, btScalar deltaTimeStep) {
 		preStep(collisionWorld);
 	}

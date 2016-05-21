@@ -251,10 +251,16 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_DQUIP);
 		}
+		if (buttons[BUTTON_LB] == GLFW_PRESS && !buttonState[BUTTON_LB]) {
+			auto* event = message.add_event();
+			event->set_clientid(Globals::ID);
+			event->set_type(protos::Event_Type_HATL);
+			//buttonState[BUTTON_LB] = true;
+		}
 		if (buttons[BUTTON_RB] == GLFW_PRESS && !buttonState[BUTTON_RB]) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
-			event->set_type(protos::Event_Type_SHOOT);
+			event->set_type(protos::Event_Type_HATR);
 			buttonState[BUTTON_RB] = true;
 		}
 
@@ -266,6 +272,9 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		}
 		if (buttons[BUTTON_Y] == GLFW_RELEASE) {
 			buttonState[BUTTON_Y] = false;
+		}
+		if (buttons[BUTTON_LB] == GLFW_RELEASE) {
+			buttonState[BUTTON_LB] = false;
 		}
 		if (buttons[BUTTON_RB] == GLFW_RELEASE) {
 			buttonState[BUTTON_RB] = false;

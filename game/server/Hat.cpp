@@ -2,7 +2,7 @@
 
 int Hat::idCounter = 0;
 
-Hat::Hat(btRigidBodyConstructionInfo& info) : btRigidBody(info), id_(idCounter++) {
+Hat::Hat(btRigidBodyConstructionInfo& info, HatType hatType) : btRigidBody(info), id_(idCounter++), hatType_(hatType) {
 }
 
 Hat::~Hat() {
@@ -13,7 +13,7 @@ Hat::~Hat() {
 	delete motionState;
 }
 
-Hat* Hat::createNewHat(int hatType) {
+Hat* Hat::createNewHat(HatType hatType) {
 	btScalar mass = 1.0;
 	btVector3 localInertia(0, 0, 0);
 	btCollisionShape* collisionShape = new btBoxShape(btVector3(1, 1, 1));
@@ -32,10 +32,10 @@ Hat* Hat::createNewHat(int hatType) {
 
 	btRigidBodyConstructionInfo info(mass, motionState, collisionShape, localInertia);
 
-	return new Hat(info);
+	return new Hat(info, hatType);
 }
 
-int Hat::getHatType() {
+HatType Hat::getHatType() {
 	return hatType_;
 }
 

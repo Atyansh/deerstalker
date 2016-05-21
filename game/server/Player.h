@@ -18,10 +18,11 @@ public:
 	void setLives(unsigned int lives);
 	unsigned int getLives();
 
-	void setSpawn(int x, int y, int z);
+
 	Hat*  setHat(Hat * hat);
 	Hat * getHat() { return currHat_; };
-	int getHatType();
+
+	void setSpawn(int x, int y, int z);
 	void setProjectile(btRigidBody * body, unsigned int baseVelocity);
 
 	DynamicCharacterController* getController();
