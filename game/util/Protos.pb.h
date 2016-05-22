@@ -45,11 +45,13 @@ enum Event_Type {
   Event_Type_ASSIGN = 4,
   Event_Type_EQUIP = 5,
   Event_Type_DQUIP = 6,
-  Event_Type_SHOOT = 7
+  Event_Type_SHOOT = 7,
+  Event_Type_HATR = 8,
+  Event_Type_HATL = 9
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
-const Event_Type Event_Type_Type_MAX = Event_Type_SHOOT;
+const Event_Type Event_Type_Type_MAX = Event_Type_HATL;
 const int Event_Type_Type_ARRAYSIZE = Event_Type_Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Event_Type_descriptor();
@@ -166,6 +168,8 @@ class Event : public ::google::protobuf::Message {
   static const Type EQUIP = Event_Type_EQUIP;
   static const Type DQUIP = Event_Type_DQUIP;
   static const Type SHOOT = Event_Type_SHOOT;
+  static const Type HATR = Event_Type_HATR;
+  static const Type HATL = Event_Type_HATL;
   static inline bool Type_IsValid(int value) {
     return Event_Type_IsValid(value);
   }

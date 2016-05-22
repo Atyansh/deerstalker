@@ -26,17 +26,26 @@ public:
 	void initialize();
 	void startGameLoop();
 
+
+
+private:
 	void handleSpawnLogic(const protos::Event* event);
 	void handleMoveLogic(const protos::Event* event);
 	void handleJumpLogic(const protos::Event* event);
 	void handleEquipLogic(const protos::Event* event);
 	void handleShootLogic(const protos::Event* event);
 	void handleDquipLogic(const protos::Event* event);
+	void handlePrimaryHatLogic(const protos::Event* event);
+	void handleSecondaryHatLogic(const protos::Event* event);
+
+
 	void sendStateToClients();
+
 	void spawnNewHat();
 
+	void propellerUp(Player* player);
+	void propellerDown(Player* player);
 
-private:
 	std::set<client_ptr> clients_;
 	World* world_;
 

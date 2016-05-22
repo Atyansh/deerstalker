@@ -99,6 +99,12 @@ void Game::startGameLoop() {
 				else if (event.type() == protos::Event_Type_SHOOT) {
 					handleShootLogic(&event);
 				}
+				else if (event.type() == protos::Event_Type_HATR) {
+					handlePrimaryHatLogic(&event);
+				}
+				else if (event.type() == protos::Event_Type_HATL) {
+					handleSecondaryHatLogic(&event);
+				}
 			}
 			messageQueue_.pop_front();
 		}
@@ -245,6 +251,7 @@ void Game::sendStateToClients() {
 
 		auto* gameObject = message.add_gameobject();
 		gameObject->set_type(protos::Message_GameObject_Type_HAT);
+		gameObject->set_hattype(hat->getHatType());
 		gameObject->set_id(hat->getHatId());
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
@@ -273,7 +280,7 @@ void Game::sendStateToClients() {
 }
 
 void Game::spawnNewHat() {
-	Hat* hat = Hat::createNewHat(Hat::WIZARD_HAT);
+	Hat* hat = Hat::createNewHat(WIZARD_HAT);
 	hatSet_.insert(hat);
 	world_->addRigidBody(hat);
 }
@@ -307,8 +314,6 @@ void Game::handleReSpawnLogic() {
 bool Game::canEquip(Player * playa, Hat * hata) {
 	//TODO MAYBE SOME BETTER SHIT
 	float equipDistance = 5;
-	//std::cerr << "DISTANCE " << playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition()) << std::endl;
-	//std::cerr << "WHY " << (equipDistance >= playa->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition())) << std::endl;
 	return equipDistance>=playa->getController()->getRigidBody()->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition());
 }
 
@@ -343,4 +348,60 @@ void Game::handleEquipLogic(const protos::Event* event) {
 		hatToRemove->playerId_ = event->clientid();
 		hatSet_.erase(hatToRemove);
 	}
+}
+
+
+void Game::handlePrimaryHatLogic(const protos::Event* event) {
+	Player* player = playerMap_[event->clientid()];
+	Hat* hat = player->getHat();
+
+	if (!hat) {
+		return;
+	}
+
+	HatType type = hat->getHatType();
+
+	switch (type) {
+	case PROPELLER_HAT:
+		propellerUp(player);
+		break;
+	case WIZARD_HAT:
+		handleShootLogic(event);
+		break;
+	case HARD_HAT:
+		break;
+	case BEAR_HAT:
+		break;
+	}
+}
+
+void Game::handleSecondaryHatLogic(const protos::Event* event) {
+	Player* player = playerMap_[event->clientid()];
+	Hat* hat = player->getHat();
+
+	if (!hat) {
+		return;
+	}
+
+	HatType type = hat->getHatType();
+
+	switch (type) {
+	case PROPELLER_HAT:
+		propellerDown(player);
+		break;
+	case WIZARD_HAT:
+		break;
+	case HARD_HAT:
+		break;
+	case BEAR_HAT:
+		break;
+	}
+}
+
+void Game::propellerUp(Player* player) {
+	player->getController()->getRigidBody()->applyCentralForce(btVector3(0, 10, 0));
+}
+
+void Game::propellerDown(Player* player) {
+	player->getController()->getRigidBody()->applyCentralForce(btVector3(0, -10, 0));
 }

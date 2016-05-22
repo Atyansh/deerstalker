@@ -47,20 +47,18 @@ Hat * Player::setHat(Hat * hat) {
 	currHat_ = hat;
 	return oHat;
 }
-int Player::getHatType() {
-	return currHat_ == 0 ? -1 : currHat_->getHatType();
-}
 
-void Player::setProjectile(btRigidBody * proj,unsigned int baseVelocity) {
-	btTransform xform;
-	this->getController()->getRigidBody()->getMotionState()->getWorldTransform(xform);
-	btVector3 forward = xform.getBasis()[2];
-	forward.normalize();
+void Player::setProjectile(btRigidBody * proj, unsigned int baseVelocity) {
+	btTransform transform = this->getController()->getRigidBody()->getCenterOfMassTransform();
+	btVector3 localLook(0.0f, 0.0f, 1.0f);
+	btQuaternion rotation = transform.getRotation();
+	btVector3 currentLook = quatRotate(rotation, localLook);
+
 	btTransform trans;
 	trans.setIdentity();
-	trans.setOrigin(this->getController()->getRigidBody()->getCenterOfMassPosition() + forward*10 + btVector3(0, 2, 0));
+	trans.setOrigin(this->getController()->getRigidBody()->getCenterOfMassPosition() + currentLook*10 + btVector3(0, 5, 0));
 	proj->setCenterOfMassTransform(trans);
-	proj->setLinearVelocity(this->getController()->getRigidBody()->getLinearVelocity() + forward*baseVelocity);
+	proj->setLinearVelocity(this->getController()->getRigidBody()->getLinearVelocity() + currentLook*baseVelocity);
 }
 
 DynamicCharacterController* Player::getController() {

@@ -83,13 +83,15 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
 	else {
 		m_rayLambda = 1.0;
 	}
-
+	/*
 	btVector3 linearVelocity = m_rigidBody->getLinearVelocity();
 	linearVelocity *= btVector3(0.2, 1, 0.2);
 	m_rigidBody->setLinearVelocity(linearVelocity);
+	*/
 }
 
 void DynamicCharacterController::playerStep(const btCollisionWorld*, btVector3& dir) {
+	/*
 	btTransform xform;
 	m_rigidBody->getMotionState()->getWorldTransform(xform);
 
@@ -103,6 +105,11 @@ void DynamicCharacterController::playerStep(const btCollisionWorld*, btVector3& 
 	m_rigidBody->setLinearVelocity(velocity);
 
 	m_rigidBody->getMotionState()->setWorldTransform(xform);
+	*/
+
+	setLookDirection(m_rigidBody, dir);
+	dir.setY(0);
+	m_rigidBody->applyCentralForce(dir * 10);
 }
 
 bool DynamicCharacterController::canJump() const {

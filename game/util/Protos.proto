@@ -9,6 +9,8 @@ message Event {
 		EQUIP = 5;
 		DQUIP = 6;
 		SHOOT = 7;
+		HATR = 8;
+		HATL = 9;
 	}
 
 	enum Direction {
