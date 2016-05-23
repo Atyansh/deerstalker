@@ -4,9 +4,6 @@
 #include <glm/ext.hpp>
 #include "../Globals.h"
 
-const char* vert = "Graphics/Assets/Cubemap/Skybox.vert";
-const char* frag = "Graphics/Assets/Cubemap/Skybox.frag";
-
 Skybox::Skybox()
 {
 }
@@ -17,8 +14,8 @@ Skybox::~Skybox()
 }
 
 void Skybox::setupVAO(string directory) {
-	string vert = (directory + "/" + "Skybox.vert");
-	string frag = (directory + "/" + "Skybox.frag");
+	string vert = "Shaders/Skybox.vert";
+	string frag = "Shaders/Skybox.frag";
 
 	shader = new Shader(vert.c_str(), frag.c_str());
 

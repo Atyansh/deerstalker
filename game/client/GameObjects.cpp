@@ -4,10 +4,12 @@
 const char* mangoPath = "Assets/OBJ/Mango/mango.obj";
 const char* chickenPath = "Assets/FBX/chicken_dance.fbx";
 const char* cratePath = "Assets/OBJ/Crate/Crate1.obj";
-const char* playerPath = "Assets/OBJ/Player/Player.obj";
+const char* playerStandPath = "Assets/FBX/rig3.fbx"; // "Assets/FBX/rigtest.fbx";
+const char* playerRunPath = "Assets/FBX/rigtest.fbx";
 const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 
 string skyboxDirectory = "Assets/Cubemap";
+string backgroundPath = "Assets/UI/bckTmp.png";
 
 GameObjects::GameObjects() {
 }
@@ -29,12 +31,19 @@ void GameObjects::loadGameObjects() {
 	lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 	lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 
+	Shader *guiShader = new Shader("Shaders/guiItem.vert", "Shaders/guiItem.frag");
+
 	shaderMap[_LtShader] = lightShader;
+	shaderMap[_GShader] = guiShader;
 
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
-	modelMap[_Player] = new PlayerModel(playerPath, shaderMap[_LtShader]);
+	modelMap[_Player_Standing] = new PlayerModel(playerStandPath, shaderMap[_LtShader], PlayerState::_standing);
+	modelMap[_Player_Running] = new PlayerModel(playerRunPath, shaderMap[_LtShader], PlayerState::_running);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
 	modelMap[_Wizard] = new Model(wizardPath, shaderMap[_LtShader]);
+
+	
+	guiMap[_Background] = new GuiItem(backgroundPath, shaderMap[_GShader], 60, 40, 0, 0);
 
 	generateWorld(skyboxDirectory);
 }
@@ -45,4 +54,5 @@ void GameObjects::generateWorld(string directory) {
 	cerr << "A" << endl;
 	root = new SMatrixTransform();
 	root->addNode(world);
+	int width, height;
 }

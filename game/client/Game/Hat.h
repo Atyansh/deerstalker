@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client\Graphics\Model.h"
+#include "Model.h"
 
 enum HatType{
 	_none,
@@ -11,15 +11,14 @@ enum HatType{
 class Hat : public SGeode {
 private:
 	bool isVisible;
-	HatType hatType;
 	Model *model;
 
 public:
-	Hat(HatType hatType, Model *model);
+	Hat(Model *model);
 	~Hat();
 
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
-	void setVisible(bool visisible);
+	void setVisible(bool visible);
 
 };

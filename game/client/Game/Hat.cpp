@@ -1,9 +1,8 @@
 #include "Hat.h"
 
-Hat::Hat(HatType hatType, Model *model) : SGeode()
+Hat::Hat(Model *model) : SGeode()
 {
 	isVisible = false;
-	this->hatType = hatType;
 	this->model = model;
 }
 	

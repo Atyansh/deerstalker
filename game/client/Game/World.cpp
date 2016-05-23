@@ -1,5 +1,5 @@
 #include "World.h"
-#include "client\Graphics\Model.h"
+#include "Model.h"
 #include "client\Globals.h"
 #include <glm/gtx/transform.hpp>
 

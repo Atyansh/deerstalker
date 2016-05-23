@@ -6,7 +6,7 @@
 #include "Graphics\UpdateData.h"
 #include "Graphics\Camera.h"
 #include "Graphics\Camera_Original.h"
-#include "Graphics\Model.h"
+#include "Game\Model.h"
 #include "GameObjects.h"
 
 #include "util\Protos.pb.h"

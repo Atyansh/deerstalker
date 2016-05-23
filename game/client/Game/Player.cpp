@@ -2,21 +2,28 @@
 #include <glm/ext.hpp>
 
 
-Player::Player(PlayerModel *playerModel, unordered_map<std::uint32_t, Hat*> hatModels) : SMatrixTransform()
+Player::Player(unordered_map<std::uint32_t, PlayerAnim*> playerModels, unordered_map<std::uint32_t, Hat*> hatModels) : SMatrixTransform()
 {
 	hat = new SMatrixTransform();
 	player = new SMatrixTransform();
 	this->hatModels = hatModels;
-	this->playerModel = playerModel;
+	this->playerModels = playerModels;
 	currHat = _none;
+	currState = _standing;
 
 	//add models to coresponding transform matrix
-	player->addNode(this->playerModel);
+	// player->addNode(this->playerModel);
+	for (auto& pair : this->playerModels) {
+		player->addNode(pair.second);
+	}
+
 	for (auto& pair : this->hatModels) {
 		hat->addNode(pair.second);
 	}
 
 	createPlayer();
+
+	this->playerModels[_standing]->setVisible(true);
 }
 
 Player::~Player()
@@ -26,12 +33,18 @@ Player::~Player()
 }
 
 void Player::createPlayer() {
+	float scaleFactor = 0.075f;
 	// add hat
-	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(0.f,this->playerModel->getHeight()-0.5f, 0.f));
-	hat->setMatrix(translate);
-	this->addNode(hat);
+	for (auto& pair : this->playerModels) {
+		glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(0.f, (pair.second->getPlayerModel()->getHeight()*scaleFactor) - 0.5f, 0.f));
+		hat->setMatrix(translate);
+		this->addNode(hat);
+	}
+	
 
 	// add player
+	glm::mat4 scale = glm::scale(glm::mat4(1.f), glm::vec3(scaleFactor));
+	player->setMatrix(scale);
 	this->addNode(player);
 }
 
@@ -56,5 +69,23 @@ void Player::attachHat(HatType newHat) {
 	if (value != this->hatModels.end()) {
 		value->second->setVisible(true);
 		currHat = newHat;
+	}
+}
+
+void Player::changeState(PlayerState newState){
+	if(newState == currState){
+		return;
+	}
+
+	auto valueOldState = this->playerModels.find(currState);
+	auto valueNewState = this->playerModels.find(newState);
+
+	if(valueOldState != this->playerModels.end()){
+		valueOldState->second->setVisible(false);
+	}
+
+	if (valueNewState != this->playerModels.end()) {
+		valueNewState->second->setVisible(true);
+		currState = newState;
 	}
 }

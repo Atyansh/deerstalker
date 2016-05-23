@@ -1,9 +1,9 @@
 #include "Window.h"
 #include "client\Globals.h"
 #include "Graphics\LightShader.h"
-#include "Graphics\Model.h"
-#include "Graphics\SNode.h"
-#include "Graphics\SMatrixTransform.h"
+#include "Game\Model.h"
+#include "Game\SNode.h"
+#include "Game\SMatrixTransform.h"
 #include "Game\World.h"
 #include "Game\Player.h"
 #include "Game\Hat.h"
@@ -108,23 +108,36 @@ void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	Globals::drawData.view = Globals::cam.getView();
+	switch (STATE) {
+	case State::_Start:
+		Globals::gameObjects.guiMap[_Background]->draw(Globals::drawData);
+		
+		break;
+	case State::_Lobby:
+		break;
+	case State::_Game:
 
-	Globals::gameObjects.root->draw(Globals::drawData);
+		Globals::drawData.view = Globals::cam.getView();
+
+		Globals::gameObjects.root->draw(Globals::drawData);
 
 
-	// Render objects
-	for (auto& pair : Globals::gameObjects.playerMap) {
-		pair.second->draw(Globals::drawData);
-	}
-	// hat
-	for (auto& pair : Globals::gameObjects.hatMap) {
-		pair.second->draw(Globals::drawData);
-	}
-	
-	for (auto& pair : Globals::gameObjects.bulletMap) {
-		pair.second->draw(Globals::drawData);
+		// Render objects
+		for (auto& pair : Globals::gameObjects.playerMap) {
+			pair.second->draw(Globals::drawData);
+		}
+		// hat
+		for (auto& pair : Globals::gameObjects.hatMap) {
+			pair.second->draw(Globals::drawData);
+		}
 
+		for (auto& pair : Globals::gameObjects.bulletMap) {
+			pair.second->draw(Globals::drawData);
+
+		}
+		break;
+	case State::_EndGame:
+		break;
 	}
 
 	// Gets events, including input such as keyboard and mouse or window resizing
@@ -190,18 +203,25 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
 	if (STATE == State::_Game) {
+		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second);
+		player->changeState(PlayerState::_standing);  //REFACTOR TO USE SERVER
+
 		if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
 			addMoveEvent(message, protos::Event_Direction_RIGHT);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 		else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT) { // Left
 			addMoveEvent(message, protos::Event_Direction_LEFT);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 
 		if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) { // Down
 			addMoveEvent(message, protos::Event_Direction_BACKWARD);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 		else if (axes[LEFT_STICK_Y] < NEG_AXIS_TILT) { // Up
 			addMoveEvent(message, protos::Event_Direction_FORWARD);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 
 		if (axes[TRIGGER_AXIS] > POS_AXIS_TILT) {
@@ -251,16 +271,10 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_DQUIP);
 		}
-		if (buttons[BUTTON_LB] == GLFW_PRESS && !buttonState[BUTTON_LB]) {
-			auto* event = message.add_event();
-			event->set_clientid(Globals::ID);
-			event->set_type(protos::Event_Type_HATL);
-			//buttonState[BUTTON_LB] = true;
-		}
 		if (buttons[BUTTON_RB] == GLFW_PRESS && !buttonState[BUTTON_RB]) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
-			event->set_type(protos::Event_Type_HATR);
+			event->set_type(protos::Event_Type_SHOOT);
 			buttonState[BUTTON_RB] = true;
 		}
 
@@ -272,9 +286,6 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		}
 		if (buttons[BUTTON_Y] == GLFW_RELEASE) {
 			buttonState[BUTTON_Y] = false;
-		}
-		if (buttons[BUTTON_LB] == GLFW_RELEASE) {
-			buttonState[BUTTON_LB] = false;
 		}
 		if (buttons[BUTTON_RB] == GLFW_RELEASE) {
 			buttonState[BUTTON_RB] = false;
@@ -326,11 +337,14 @@ void Window::addMoveEvent(protos::Message& message, protos::Event_Direction dire
 SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	SMatrixTransform* transform = new SMatrixTransform();
 	std::unordered_map<std::uint32_t, Hat*> playerHatMap;
+	std::unordered_map<std::uint32_t, PlayerAnim*> playerStateMap;
 	switch (modelType) {
 		case _Player:
-			playerHatMap[_wizard] = new Hat(_wizard, Globals::gameObjects.modelMap[_Wizard]);
-			playerHatMap[_crate] = new Hat(_crate, Globals::gameObjects.modelMap[_Crate]);
-			return new Player(dynamic_cast<PlayerModel*>(model), playerHatMap);
+			playerHatMap[HatType::_wizard] = new Hat(Globals::gameObjects.modelMap[_Wizard]);
+			playerHatMap[HatType::_crate] = new Hat(Globals::gameObjects.modelMap[_Crate]);
+			playerStateMap[PlayerState::_standing] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Standing]));
+			playerStateMap[PlayerState::_running] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Running]));
+			return new Player(playerStateMap, playerHatMap);
 		default:
 			transform->addNode(model);
 			break;

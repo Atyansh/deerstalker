@@ -17,8 +17,8 @@ protected:
 	vector<Texture> textures_loaded;
 	Shader *shader;
 	aiMatrix4x4 modelInverseMat;
-	unsigned int numBones;
-	unordered_map<string, unsigned int> boneMapping;
+	// unsigned int numBones;
+	// unordered_map<string, unsigned int> boneMapping;
 	//vector<BoneInfo> boneInfos; // transformation for bones
 
 	/* Animation */
@@ -32,18 +32,24 @@ protected:
 
 	void loadModel(string path);
 	void processNode(aiNode* node, const aiScene* scene);
-	virtual void processVerts(aiMesh* mesh, vector<Vertex> &vertices);
+	void processVerts(aiMesh* mesh, vector<Vertex> &vertices);
 	void processFaces(aiMesh* mesh, vector<GLuint> &indices);
 	void processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> &textures, MaterialNoTex &materialNoTex);
-	virtual Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 	GLint TextureFromFile(const char* path, string directory);
+
+	//helper for extended classes
+	virtual void addLoadMethod();
+	virtual void addProcessMeshMethod(const aiMesh* mesh, vector<Vertex>& vertices);
+	virtual void addProcessVertMethod(float y);
 	// unsigned char* loadPPM(const char*, int&, int&);
 	//void loadBones(const aiMesh* mesh, vector<Vertex>& bones);
 	// bool hasPPMTextureFiles();
 
 
 public:
+	Model();
 	Model(const char* path, Shader *shader);
 	virtual ~Model(void);
 
