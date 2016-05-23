@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SNode.h"
-#include "UpdateData.h"
+#include "client/Graphics/UpdateData.h"
 
 class SGeode : public SNode {
 

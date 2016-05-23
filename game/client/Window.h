@@ -3,8 +3,8 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "client\Graphics\SMatrixTransform.h"
-#include "client\Graphics\Model.h"
+#include "Game\SMatrixTransform.h"
+#include "Game\Model.h"
 #include "GameObjects.h"
 
 

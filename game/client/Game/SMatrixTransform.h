@@ -3,8 +3,8 @@
 #include <glm/glm.hpp>
 
 #include "SGroup.h"
-#include "DrawData.h"
-#include "UpdateData.h"
+#include "client/Graphics/DrawData.h"
+#include "client/Graphics/UpdateData.h"
 
 class SMatrixTransform : public SGroup {
 protected:

@@ -3,7 +3,7 @@
 #include <list>
 #include <string>
 #include <glm/glm.hpp>
-#include "client\Graphics\SMatrixTransform.h"
+#include "SMatrixTransform.h"
 #include "client\Graphics\Shader.h"
 #include "Skybox.h"
 using namespace std;
