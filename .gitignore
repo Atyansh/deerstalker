@@ -41,6 +41,9 @@ packages/
 # Debug stuff
 Debug/
 
+# Release stuff
+Release/
+
 # Don't Ignore
 !game/client/Assets/**/*.obj
 !game/client/Dependencies/**/*.lib
