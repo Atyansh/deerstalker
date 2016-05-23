@@ -2,7 +2,7 @@
 
 #include <assimp/Importer.hpp>
 
-#include "client\Graphics\SGeode.h"
+#include "SGeode.h"
 #include "client\Graphics\Shader.h"
 #include <vector>
 

@@ -2,9 +2,9 @@
 
 #include <unordered_map>
 #include "Graphics\LightShader.h"
-#include "Graphics\Model.h"
-#include "Graphics\SNode.h"
-#include "Graphics\SMatrixTransform.h"
+#include "Game\Model.h"
+#include "Game\SNode.h"
+#include "Game\SMatrixTransform.h"
 #include "Game\Player.h"
 #include "Game\World.h"
 #include "Graphics\GuiItem.h"

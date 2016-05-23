@@ -2,7 +2,7 @@
 
 #include <list>
 #include "SNode.h"
-#include "UpdateData.h"
+#include "client/Graphics/UpdateData.h"
 
 using namespace std;
 

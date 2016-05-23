@@ -1,7 +1,7 @@
 #pragma once
 
-#include "DrawData.h"
-#include "UpdateData.h"
+#include "client/Graphics/DrawData.h"
+#include "client/Graphics/UpdateData.h"
 
 class SNode {
 

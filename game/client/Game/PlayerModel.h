@@ -2,8 +2,8 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "client\Graphics\Mesh.h"
-#include "client\Graphics\Model.h"
+#include "Mesh.h"
+#include "Model.h"
 #include "BoneInfo.h"
 #include "AnimationTree.h"
 
