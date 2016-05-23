@@ -7,6 +7,11 @@
 #include "BoneInfo.h"
 #include "AnimationTree.h"
 
+enum PlayerState{
+	_standing,
+	_running
+};
+
 class PlayerModel : public Model
 {
 protected:
@@ -17,10 +22,10 @@ protected:
 
 	/* Animation */
 	AnimationTree *mAnimTree;
-	float prevTime = 0;
-	float currAnimTime = 0;
 
 	float height = 0;
+
+	PlayerState state;
 
 	void loadBones(const aiMesh* mesh, vector<Vertex>& bones);
 
@@ -30,11 +35,10 @@ protected:
 
 
 public:
-	PlayerModel(const char* path, Shader *shader);
+	PlayerModel(const char* path, Shader *shader, PlayerState state);
 	virtual ~PlayerModel(void);
 
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
 	float getHeight();
-
 };

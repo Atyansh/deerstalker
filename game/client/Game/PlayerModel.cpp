@@ -7,13 +7,17 @@
 #include <glm/ext.hpp>
 #include <boost\filesystem.hpp>
 
-PlayerModel::PlayerModel(const char* path, Shader *shader) : Model()
+PlayerModel::PlayerModel(const char* path, Shader *shader, PlayerState state) : Model()
 {
 	this->shader = shader;
 	numBones = 0;
 	height = 0.f;
 	this->mAnimTree = NULL;
+	this->state = state;
 	this->loadModel(path);
+	if(state == _standing){
+		this->mAnimTree->boneTransfrom(0.f, boneInfos, boneMapping);
+	}
 }
 
 PlayerModel::~PlayerModel()
@@ -24,17 +28,12 @@ PlayerModel::~PlayerModel()
 void PlayerModel::draw(DrawData &data) {
 	shader->bind();
 
-	if (this->mAnimTree != NULL) {
-
-		float time = clock() / float(CLOCKS_PER_SEC);
-		float delta = time - prevTime;
-		prevTime = time;
-
-		currAnimTime += min(delta, 0.05f);
-
-		this->mAnimTree->boneTransfrom(currAnimTime, boneInfos, boneMapping);
+	if(state != _standing){
+		if (this->mAnimTree != NULL) {
+			this->mAnimTree->boneTransfrom(data.animTime, boneInfos, boneMapping);
+		}
 	}
-
+	
 	for (GLuint i = 0; i < this->meshes.size(); i++) {
 		for (int j = 0; j < boneInfos.size(); j++) {
 			this->meshes[i].setBoneMatrix(j, boneInfos[j].FinalTransformation); //set the transforms
@@ -51,12 +50,11 @@ float PlayerModel::getHeight() {
 	return height;
 }
 
-
 /*Functions*/
 
 void PlayerModel::addLoadMethod() {
 	if (boneMapping.size() > 0 && boneInfos.size() > 0) {
-	this->mAnimTree = new AnimationTree(scene, modelInverseMat);
+		this->mAnimTree = new AnimationTree(scene, modelInverseMat);
 	}
 	cout << endl;
 }

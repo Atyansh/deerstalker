@@ -108,6 +108,7 @@
     <ClCompile Include="Game\Cubemap.cpp" />
     <ClCompile Include="Game\Hat.cpp" />
     <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Game\PlayerAnim.cpp" />
     <ClCompile Include="Game\PlayerModel.cpp" />
     <ClCompile Include="Game\Skybox.cpp" />
     <ClCompile Include="Game\World.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="Game\Cubemap.h" />
     <ClInclude Include="Game\Hat.h" />
     <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Game\PlayerAnim.h" />
     <ClInclude Include="Game\PlayerModel.h" />
     <ClInclude Include="Game\Skybox.h" />
     <ClInclude Include="Game\World.h" />

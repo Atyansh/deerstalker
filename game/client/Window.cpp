@@ -203,18 +203,25 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
 	if (STATE == State::_Game) {
+		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second);
+		player->changeState(PlayerState::_standing);
+
 		if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
 			addMoveEvent(message, protos::Event_Direction_RIGHT);
+			player->changeState(PlayerState::_running);
 		}
 		else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT) { // Left
 			addMoveEvent(message, protos::Event_Direction_LEFT);
+			player->changeState(PlayerState::_running);
 		}
 
 		if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) { // Down
 			addMoveEvent(message, protos::Event_Direction_BACKWARD);
+			player->changeState(PlayerState::_running);
 		}
 		else if (axes[LEFT_STICK_Y] < NEG_AXIS_TILT) { // Up
 			addMoveEvent(message, protos::Event_Direction_FORWARD);
+			player->changeState(PlayerState::_running);
 		}
 
 		if (axes[TRIGGER_AXIS] > POS_AXIS_TILT) {
@@ -264,16 +271,10 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_DQUIP);
 		}
-		if (buttons[BUTTON_LB] == GLFW_PRESS && !buttonState[BUTTON_LB]) {
-			auto* event = message.add_event();
-			event->set_clientid(Globals::ID);
-			event->set_type(protos::Event_Type_HATL);
-			//buttonState[BUTTON_LB] = true;
-		}
 		if (buttons[BUTTON_RB] == GLFW_PRESS && !buttonState[BUTTON_RB]) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
-			event->set_type(protos::Event_Type_HATR);
+			event->set_type(protos::Event_Type_SHOOT);
 			buttonState[BUTTON_RB] = true;
 		}
 
@@ -285,9 +286,6 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		}
 		if (buttons[BUTTON_Y] == GLFW_RELEASE) {
 			buttonState[BUTTON_Y] = false;
-		}
-		if (buttons[BUTTON_LB] == GLFW_RELEASE) {
-			buttonState[BUTTON_LB] = false;
 		}
 		if (buttons[BUTTON_RB] == GLFW_RELEASE) {
 			buttonState[BUTTON_RB] = false;
@@ -339,11 +337,14 @@ void Window::addMoveEvent(protos::Message& message, protos::Event_Direction dire
 SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	SMatrixTransform* transform = new SMatrixTransform();
 	std::unordered_map<std::uint32_t, Hat*> playerHatMap;
+	std::unordered_map<std::uint32_t, PlayerAnim*> playerStateMap;
 	switch (modelType) {
 		case _Player:
-			playerHatMap[_wizard] = new Hat(_wizard, Globals::gameObjects.modelMap[_Wizard]);
-			playerHatMap[_crate] = new Hat(_crate, Globals::gameObjects.modelMap[_Crate]);
-			return new Player(dynamic_cast<PlayerModel*>(model), playerHatMap);
+			playerHatMap[HatType::_wizard] = new Hat(Globals::gameObjects.modelMap[_Wizard]);
+			playerHatMap[HatType::_crate] = new Hat(Globals::gameObjects.modelMap[_Crate]);
+			playerStateMap[PlayerState::_standing] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Standing]));
+			playerStateMap[PlayerState::_running] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Running]));
+			return new Player(playerStateMap, playerHatMap);
 		default:
 			transform->addNode(model);
 			break;

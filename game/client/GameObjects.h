@@ -10,14 +10,16 @@
 #include "Graphics\GuiItem.h"
 
 enum Models {
-	_Player,
+	_Player, //used for type of object
+	_Player_Standing,
+	_Player_Running,
 	_Mango,
 	_Crate,
 	_Wizard
 };
 
 enum Shaders {
-	_BShader,
+	_GShader,
 	_LtShader
 };
 
