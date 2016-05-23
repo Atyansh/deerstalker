@@ -9,7 +9,7 @@ const char* playerRunPath = "Assets/FBX/rigtest.fbx";
 const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 
 string skyboxDirectory = "Assets/Cubemap";
-string backgroundPath = "Assets/UI/bckTmp.png";
+string backgroundPath = "Assets/UI/DeerMenu.jpg";
 
 GameObjects::GameObjects() {
 }
