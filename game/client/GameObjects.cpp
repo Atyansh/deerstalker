@@ -10,6 +10,8 @@ const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 
 string skyboxDirectory = "Assets/Cubemap";
 string backgroundPath = "Assets/UI/DeerMenu.jpg";
+string lobbyPath = "Assets/UI/Lobby.jpg";
+string endPath = "Assets/UI/EndGame.jpg";
 
 GameObjects::GameObjects() {
 }
@@ -44,6 +46,8 @@ void GameObjects::loadGameObjects() {
 
 	
 	guiMap[_Background] = new GuiItem(backgroundPath, shaderMap[_GShader], 60, 40, 0, 0);
+	guiMap[_LobbyBG] = new GuiItem(lobbyPath, shaderMap[_GShader], 60, 40, 0, 0);
+	guiMap[_EndGameBG] = new GuiItem(endPath, shaderMap[_GShader], 60, 40, 0, 0);
 
 	generateWorld(skyboxDirectory);
 }

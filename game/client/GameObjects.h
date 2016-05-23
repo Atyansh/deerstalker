@@ -25,6 +25,8 @@ enum Shaders {
 
 enum GUI {
 	_Background,
+	_LobbyBG,
+	_EndGameBG
 };
 class GameObjects
 {

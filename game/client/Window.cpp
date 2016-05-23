@@ -114,6 +114,7 @@ void Window::display_callback(GLFWwindow* window) {
 		
 		break;
 	case State::_Lobby:
+		Globals::gameObjects.guiMap[_LobbyBG]->draw(Globals::drawData);
 		break;
 	case State::_Game:
 
@@ -137,6 +138,7 @@ void Window::display_callback(GLFWwindow* window) {
 		}
 		break;
 	case State::_EndGame:
+		Globals::gameObjects.guiMap[_EndGameBG]->draw(Globals::drawData);
 		break;
 	}
 
