@@ -204,24 +204,24 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 	if (STATE == State::_Game) {
 		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second);
-		player->changeState(PlayerState::_standing);
+		player->changeState(PlayerState::_standing);  //REFACTOR TO USE SERVER
 
 		if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
 			addMoveEvent(message, protos::Event_Direction_RIGHT);
-			player->changeState(PlayerState::_running);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 		else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT) { // Left
 			addMoveEvent(message, protos::Event_Direction_LEFT);
-			player->changeState(PlayerState::_running);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 
 		if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) { // Down
 			addMoveEvent(message, protos::Event_Direction_BACKWARD);
-			player->changeState(PlayerState::_running);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 		else if (axes[LEFT_STICK_Y] < NEG_AXIS_TILT) { // Up
 			addMoveEvent(message, protos::Event_Direction_FORWARD);
-			player->changeState(PlayerState::_running);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 
 		if (axes[TRIGGER_AXIS] > POS_AXIS_TILT) {
