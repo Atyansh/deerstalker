@@ -56,8 +56,14 @@ private:
 
 	unsigned int generateId();
 	unsigned int idGen_;
+
 	btCollisionObject* playerBody_;
 	btCollisionObject* mangoBody_;
+	btCollisionObject* wizardHatBody_;
+	btCollisionObject* bearHatBody_;
+	btCollisionObject* hardHatBody_;
+	btCollisionObject* deerstalkerHatBody_;
+	btCollisionObject* propellerHatBody_;
 
 	std::unordered_map<unsigned int, Bullet*> shots_;
 	std::deque<protos::Message> messageQueue_;

@@ -50,7 +50,6 @@ void GameObjects::loadGameObjects() {
 	loadModelMap();
 	loadHatModelsMap();
 	generateWorld(skyboxDirectory);
-
 }
 
 void GameObjects::loadModelMap() {

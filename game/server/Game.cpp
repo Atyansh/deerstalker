@@ -64,6 +64,26 @@ void Game::initialize() {
 	mangoLoader->loadFile("bullet_assets\\mango.bullet");
 	mangoBody_ = playerLoader->getRigidBodyByIndex(0);
 
+	btBulletWorldImporter* wizardHatLoader = new btBulletWorldImporter();
+	wizardHatLoader->loadFile("bullet_assets\\WizardHat.bullet");
+	wizardHatBody_ = playerLoader->getRigidBodyByIndex(0);
+
+	btBulletWorldImporter* bearHatLoader = new btBulletWorldImporter();
+	bearHatLoader->loadFile("bullet_assets\\BearHat.bullet");
+	bearHatBody_ = playerLoader->getRigidBodyByIndex(0);
+
+	btBulletWorldImporter* hardHatLoader = new btBulletWorldImporter();
+	hardHatLoader->loadFile("bullet_assets\\HardHat.bullet");
+	hardHatBody_ = playerLoader->getRigidBodyByIndex(0);
+
+	btBulletWorldImporter* deerstalkerHatLoader = new btBulletWorldImporter();
+	deerstalkerHatLoader->loadFile("bullet_assets\\DeerstalkerHat.bullet");
+	deerstalkerHatBody_ = playerLoader->getRigidBodyByIndex(0);
+
+	btBulletWorldImporter* propellerHatLoader = new btBulletWorldImporter();
+	propellerHatLoader->loadFile("bullet_assets\\PropelletHat.bullet");
+	propellerHatBody_ = playerLoader->getRigidBodyByIndex(0);
+
 	btBulletWorldImporter* worldLoader = new btBulletWorldImporter(world_);
 	worldLoader->loadFile("bullet_assets\\Construction_Stage_Bullet_Scaled_Separated.bullet");
 
@@ -75,9 +95,6 @@ void Game::initialize() {
 
 	btBulletWorldImporter* wreckingBallLoader = new btBulletWorldImporter(world_);
 	wreckingBallLoader->loadFile("bullet_assets\\WreckingBall.bullet");
-
-	
-	std::cerr << "AJ 1" << std::endl;
 }
 
 void Game::startGameLoop() {
