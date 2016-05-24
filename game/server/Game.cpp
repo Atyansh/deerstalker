@@ -61,7 +61,7 @@ void Game::initialize() {
 
 void Game::startGameLoop() {
 	// TODO(Atyansh): Make this part of config settings 
-	milliseconds interval = milliseconds(33);
+	milliseconds interval = milliseconds(1000/30);
 	int frameCounter = 0;
 	int maxHat = 2;
 	int hatP = 0;
@@ -69,7 +69,6 @@ void Game::startGameLoop() {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
-		world_->stepSimulation(1.f / 30.f, 10);
 
 		queueLock_.lock();
 		while (!messageQueue_.empty()) {
@@ -111,8 +110,10 @@ void Game::startGameLoop() {
 					handlePunchLogic(&event);
 				}
 			}
+
 			messageQueue_.pop_front();
 		}
+		world_->stepSimulation(1.f / 15.f, 10);
 		queueLock_.unlock();
 
 		handleReSpawnLogic();
@@ -179,35 +180,68 @@ void Game::handleMoveLogic(const protos::Event* event) {
 	double y = event->cameravector(1);
 	double z = event->cameravector(2);
 
+	int zSig = z >= 0 ? 1 : -1;
+	int xSig = x >= 0 ? 1 : -1;
+
+	btVector3 dir(x, 0, z);
+	btScalar length = dir.length();
+
+	float theta = 0.707f;
+
+	btVector3 f(-x, -y, -z);
+	btVector3 b(x, y, z);
+	btVector3 l(-z, y, x);
+	btVector3 r(z, y, -x);
+
 	switch (event->direction()) {
-	case (protos::Event_Direction_RIGHT) :
+	case (protos::Event_Direction_RIGHT):
 		std::cerr << "MOVE RIGHT" << std::endl;
-		player->getController()->playerStep(world_, btVector3(z, -y, -x));
+		player->getController()->playerStep(world_, r);
 		//player->applyCentralForce(btVector3(10, 0, 0));
 		break;
-	case (protos::Event_Direction_LEFT) :
+	case (protos::Event_Direction_LEFT):
 		std::cerr << "MOVE LEFT" << std::endl;
-		player->getController()->playerStep(world_, btVector3(-z, y, x));
+		player->getController()->playerStep(world_, l);
 		//player->applyCentralForce(btVector3(-10, 0, 0));
 		break;
-	case (protos::Event_Direction_UP) :
+	case (protos::Event_Direction_UP):
 		std::cerr << "MOVE UP" << std::endl;
 		//player->applyCentralForce(btVector3(0, 10, 0));
 		player->getController()->getRigidBody()->applyCentralForce(btVector3(0, 10, 0));
 		break;
-	case (protos::Event_Direction_DOWN) :
+	case (protos::Event_Direction_DOWN):
 		std::cerr << "MOVE DOWN" << std::endl;
 		//player->applyCentralForce(btVector3(0, -10, 0));
 		player->getController()->getRigidBody()->applyCentralForce(btVector3(0, -10, 0));
 		break;
-	case (protos::Event_Direction_FORWARD) :
+	case (protos::Event_Direction_FORWARD):
 		std::cerr << "MOVE FORWARD" << std::endl;
-		player->getController()->playerStep(world_, btVector3(-x, -y, -z));
+		player->getController()->playerStep(world_, f);
 		//player->applyCentralForce(btVector3(0, 0, -10));
 		break;
-	case (protos::Event_Direction_BACKWARD) :
+	case (protos::Event_Direction_BACKWARD):
 		std::cerr << "MOVE BACKWARD" << std::endl;
-		player->getController()->playerStep(world_, btVector3(x, y, z));
+		player->getController()->playerStep(world_, b);
+		//player->applyCentralForce(btVector3(0, 0, 10));
+		break;
+	case (protos::Event_Direction_FL):
+		std::cerr << "MOVE FL" << std::endl;
+		player->getController()->playerStep(world_, (f+l).normalized());
+		//player->applyCentralForce(btVector3(0, 0, 10));
+		break;
+	case (protos::Event_Direction_BR):
+		std::cerr << "MOVE FL" << std::endl;
+		player->getController()->playerStep(world_, (b+r).normalized());
+		//player->applyCentralForce(btVector3(0, 0, 10));
+		break;
+	case (protos::Event_Direction_BL):
+		std::cerr << "MOVE FL" << std::endl;
+		player->getController()->playerStep(world_, (b+l).normalized());
+		//player->applyCentralForce(btVector3(0, 0, 10));
+		break;
+	case (protos::Event_Direction_FR):
+		std::cerr << "MOVE FL" << std::endl;
+		player->getController()->playerStep(world_, (f+r).normalized());
 		//player->applyCentralForce(btVector3(0, 0, 10));
 		break;
 	}
@@ -369,6 +403,12 @@ void Game::handlePunchLogic(const protos::Event* event) {
 		auto search = playerSet_.find(target);
 		if (search != playerSet_.end()) {
 			std::cerr << "PUNCH DETECTED" << std::endl;
+			btVector3 localLook(0.0f, 0.0f, 1.0f);
+			btTransform transform = player->getController()->getRigidBody()->getCenterOfMassTransform();
+			btQuaternion rotation = transform.getRotation();
+			btVector3 currentLook = quatRotate(rotation, localLook);
+			((btRigidBody*)target)->applyCentralImpulse(currentLook.normalized() * 2);
+			// Throw Punch event to clients
 		}
 	}
 }

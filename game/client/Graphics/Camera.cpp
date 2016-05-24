@@ -22,10 +22,10 @@ void Camera::pitch(int up) {
 	glm::vec3 r = glm::cross(a, b);
 
 	if (up == 0) {
-		rotMat = glm::rotate(rotMat, 0.020f, r);
+		rotMat = glm::rotate(rotMat, 0.040f, r);
 	}
 	else {
-		rotMat = glm::rotate(rotMat, -0.020f, r);
+		rotMat = glm::rotate(rotMat, -0.040f, r);
 	}
 
 	update(rotMat, 0.99f, 0.3f);
@@ -35,10 +35,10 @@ void Camera::yaw(int up) {
 	glm::mat4 rotMat;
 
 	if (up == 0) {
-		rotMat = glm::rotate(rotMat, -0.020f, glm::vec3(0.0f, 1.0f, 0.0f));
+		rotMat = glm::rotate(rotMat, -0.040f, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 	else {
-		rotMat = glm::rotate(rotMat, 0.020f, glm::vec3(0.0f, 1.0f, 0.0f));
+		rotMat = glm::rotate(rotMat, 0.040f, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	update(rotMat, 0, 0);
@@ -49,10 +49,10 @@ void Camera::roll(int up) {
 	glm::mat4 rotMat;
 
 	if (up == 0) {
-		rotMat = glm::rotate(rotMat, 0.020f, glm::vec3(0.0f, 0.0f, 1.0f));
+		rotMat = glm::rotate(rotMat, 0.040f, glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 	else {
-		rotMat = glm::rotate(rotMat, -0.020f, glm::vec3(0.0f, 0.0f, 1.0f));
+		rotMat = glm::rotate(rotMat, -0.040f, glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 
 	update(rotMat, 0, 0);

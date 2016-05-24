@@ -71,11 +71,15 @@ enum Event_Direction {
   Event_Direction_LEFT = 3,
   Event_Direction_RIGHT = 4,
   Event_Direction_FORWARD = 5,
-  Event_Direction_BACKWARD = 6
+  Event_Direction_BACKWARD = 6,
+  Event_Direction_FL = 7,
+  Event_Direction_BL = 8,
+  Event_Direction_FR = 9,
+  Event_Direction_BR = 10
 };
 bool Event_Direction_IsValid(int value);
 const Event_Direction Event_Direction_Direction_MIN = Event_Direction_UP;
-const Event_Direction Event_Direction_Direction_MAX = Event_Direction_BACKWARD;
+const Event_Direction Event_Direction_Direction_MAX = Event_Direction_BR;
 const int Event_Direction_Direction_ARRAYSIZE = Event_Direction_Direction_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Event_Direction_descriptor();
@@ -200,6 +204,10 @@ class Event : public ::google::protobuf::Message {
   static const Direction RIGHT = Event_Direction_RIGHT;
   static const Direction FORWARD = Event_Direction_FORWARD;
   static const Direction BACKWARD = Event_Direction_BACKWARD;
+  static const Direction FL = Event_Direction_FL;
+  static const Direction BL = Event_Direction_BL;
+  static const Direction FR = Event_Direction_FR;
+  static const Direction BR = Event_Direction_BR;
   static inline bool Direction_IsValid(int value) {
     return Event_Direction_IsValid(value);
   }

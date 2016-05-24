@@ -76,7 +76,7 @@ public:
 		return range;
 	}
 
-	void setLookDirection(btRigidBody* body, const btVector3& newLook);
+	void setLookDirection(const btVector3& newLook);
 };
 
 #endif

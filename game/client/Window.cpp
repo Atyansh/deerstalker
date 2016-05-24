@@ -206,7 +206,27 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second);
 		player->changeState(PlayerState::_standing);  //REFACTOR TO USE SERVER
 
-		if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
+		if (axes[LEFT_STICK_X] > POS_AXIS_TILT &&
+			axes[LEFT_STICK_Y] < NEG_AXIS_TILT) {
+			addMoveEvent(message, protos::Event_Direction_FR);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
+		}
+		else if (axes[LEFT_STICK_X] > POS_AXIS_TILT &&
+			axes[LEFT_STICK_Y] > POS_AXIS_TILT) {
+			addMoveEvent(message, protos::Event_Direction_BR);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
+		}
+		else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT &&
+			axes[LEFT_STICK_Y] > POS_AXIS_TILT) {
+			addMoveEvent(message, protos::Event_Direction_BL);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
+		}
+		else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT &&
+			axes[LEFT_STICK_Y] < NEG_AXIS_TILT) {
+			addMoveEvent(message, protos::Event_Direction_FL);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
+		}
+		else if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
 			addMoveEvent(message, protos::Event_Direction_RIGHT);
 			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
@@ -214,8 +234,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			addMoveEvent(message, protos::Event_Direction_LEFT);
 			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
-
-		if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) { // Down
+		else if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) { // Down
 			addMoveEvent(message, protos::Event_Direction_BACKWARD);
 			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
@@ -238,19 +257,16 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		else if (axes[RIGHT_STICK_X] < NEG_AXIS_TILT) {
 			fprintf(stderr, "Going Up\n");
 			Globals::cam.pitch(1);
-			//Globals::drawData.view = Globals::cam.getView();
 		}
 
 		if (axes[RIGHT_STICK_Y] > POS_AXIS_TILT) {
 			fprintf(stderr, "Going Right\n");
 			Globals::cam.yaw(0);
-			//Globals::drawData.view = Globals::cam.getView();
 		}
 
 		else if (axes[RIGHT_STICK_Y] < NEG_AXIS_TILT) {
 			fprintf(stderr, "Going Left\n");
 			Globals::cam.yaw(1);
-			//Globals::drawData.view = Globals::cam.getView();
 		}
 
 
