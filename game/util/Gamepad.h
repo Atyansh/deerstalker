@@ -28,4 +28,5 @@ namespace Gamepad {
 	const int BUTTON_LEFT = 13;
 
 	std::unordered_map<int, bool> buttonState;
+	std::unordered_map<int, bool> buttonHoldState;
 }

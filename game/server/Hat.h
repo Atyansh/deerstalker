@@ -7,10 +7,10 @@
 
 class Hat : public btRigidBody {
 public:
-	Hat(btRigidBodyConstructionInfo& info, HatType hatType);
+	Hat(btRigidBodyConstructionInfo& info, HatType hatTypee);
 	~Hat();
 
-	static Hat* createNewHat(HatType hatType);
+	static Hat* createNewHat(HatType hatType, btCollisionShape* shape);
 	HatType getHatType();
 	int getHatId();
 

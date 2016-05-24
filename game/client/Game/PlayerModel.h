@@ -6,12 +6,7 @@
 #include "Model.h"
 #include "BoneInfo.h"
 #include "AnimationTree.h"
-
-enum PlayerState{
-	_standing,
-	_running,
-	_punching
-};
+#include "util\PlayerState.h"
 
 class PlayerModel : public Model
 {

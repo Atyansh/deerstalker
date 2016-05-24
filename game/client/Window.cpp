@@ -291,7 +291,8 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_PUNCH);
-			buttonState[BUTTON_X] = true;
+			player->changeState(PlayerState::_punching);
+			//buttonState[BUTTON_X] = true;
 		}
 		if (buttons[BUTTON_Y] == GLFW_PRESS) {
 			auto* event = message.add_event();

@@ -42,6 +42,9 @@
     <ClInclude Include="HatType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigSettings.cpp">

@@ -30,6 +30,8 @@ public:
 	static std::deque<uint32_t> availableIds;
 
 private:
+	void loadHatBodyMap();
+
 	void handleSpawnLogic(const protos::Event* event);
 	void handleMoveLogic(const protos::Event* event);
 	void handleJumpLogic(const protos::Event* event);
@@ -39,7 +41,6 @@ private:
 	void handlePrimaryHatLogic(const protos::Event* event);
 	void handleSecondaryHatLogic(const protos::Event* event);
 	void handlePunchLogic(const protos::Event* event);
-
 
 	void sendStateToClients();
 
@@ -73,4 +74,5 @@ private:
 	std::mutex playerMapLock_;
 	std::unordered_set<Hat*> hatSet_;
 	std::unordered_set<Hat*> hatRemovedSet_;
+	std::unordered_map<HatType, btCollisionObject*> hatBodyMap_;
 };

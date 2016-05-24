@@ -52,6 +52,14 @@ int Game::size() {
 	return clients_.size();
 }
 
+void Game::loadHatBodyMap() {
+	hatBodyMap_[WIZARD_HAT] = wizardHatBody_;
+	hatBodyMap_[HARD_HAT] = hardHatBody_;
+	hatBodyMap_[BEAR_HAT] = bearHatBody_;
+	hatBodyMap_[DEERSTALKER_HAT] = deerstalkerHatBody_;
+	hatBodyMap_[PROPELLER_HAT] = propellerHatBody_;
+}
+
 void Game::initialize() {
 	world_ = World::createNewWorld();
 	world_->setGravity(btVector3(0, -10, 0));
@@ -84,6 +92,8 @@ void Game::initialize() {
 	propellerHatLoader->loadFile("bullet_assets\\PropelletHat.bullet");
 	propellerHatBody_ = playerLoader->getRigidBodyByIndex(0);
 
+	loadHatBodyMap();
+
 	btBulletWorldImporter* worldLoader = new btBulletWorldImporter(world_);
 	worldLoader->loadFile("bullet_assets\\Construction_Stage_Bullet_Scaled_Separated.bullet");
 
@@ -101,7 +111,7 @@ void Game::startGameLoop() {
 	// TODO(Atyansh): Make this part of config settings 
 	milliseconds interval = milliseconds(1000/30);
 	int frameCounter = 0;
-	int maxHat = 2;
+	int maxHat = 10;
 	int hatP = 0;
 	while (true) {
 		milliseconds stamp1 = duration_cast<milliseconds>(
@@ -334,7 +344,8 @@ void Game::sendStateToClients() {
 }
 
 void Game::spawnNewHat() {
-	Hat* hat = Hat::createNewHat(WIZARD_HAT);
+	HatType hatType = (HatType)((rand() % 5) + 1);
+	Hat* hat = Hat::createNewHat(hatType, hatBodyMap_[hatType]->getCollisionShape());
 	hatSet_.insert(hat);
 	world_->addRigidBody(hat);
 }
@@ -407,7 +418,6 @@ void Game::handlePunchLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
 
 	auto position = player->getController()->getRigidBody()->getCenterOfMassPosition();
-	std::cerr << position.getX() << " " << position.getY() << " " << position.getZ();
 
 	btCollisionObject* target = player->getController()->getPunchTarget();
 
