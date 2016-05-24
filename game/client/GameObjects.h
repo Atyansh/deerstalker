@@ -13,9 +13,11 @@ enum Models {
 	_Player, //used for type of object
 	_Player_Standing,
 	_Player_Running,
+	_Player_Punching,
 	_Mango,
 	_Crate,
-	_Wizard
+	_Wizard,
+	_HardHat
 };
 
 enum Shaders {

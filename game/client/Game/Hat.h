@@ -5,6 +5,7 @@
 enum HatType{
 	_none,
 	_wizard,
+	_hardHat,
 	_crate
 };
 

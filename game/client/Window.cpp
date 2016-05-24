@@ -54,7 +54,7 @@ GLFWwindow* Window::create_window(int width, int height) {
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	// Create the GLFW window
-	GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, window_title, glfwGetPrimaryMonitor(), NULL);
 
 	// Check if the window could not be created
 	if (!window) {
@@ -185,6 +185,9 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		case GLFW_KEY_DOWN:
 			event->set_direction(protos::Event_Direction_DOWN);
 			break;
+		case GLFW_KEY_ESCAPE:
+			Window::clean_up();
+			glfwDestroyWindow(window);
 		default:
 			validEvent = false;
 		}
@@ -346,6 +349,7 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 			playerHatMap[HatType::_crate] = new Hat(Globals::gameObjects.modelMap[_Crate]);
 			playerStateMap[PlayerState::_standing] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Standing]));
 			playerStateMap[PlayerState::_running] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Running]));
+			playerStateMap[PlayerState::_punching] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Punching]));
 			return new Player(playerStateMap, playerHatMap);
 		default:
 			transform->addNode(model);

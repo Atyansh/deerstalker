@@ -4,7 +4,10 @@
 #include <glm/gtx/transform.hpp>
 
 const char* floorPath = "Assets/OBJ/Floor/Floor.obj";
-const char* constructionStagePath = "Assets/OBJ/Construction_Stage_OBJ_Scaled/Construction_Stage_Scaled.obj";
+const char* constructionStagePath = "Assets/OBJ/Construction_Stage_OBJ_Updated/Construction_Stage_OBJ_Scaled_Separated.obj";
+const char* wreckingBallBasePath = "Assets/OBJ/Construction_Stage_OBJ_Updated/WreckingBallBase.obj";
+const char* wreckingBallPath = "Assets/OBJ/Construction_Stage_OBJ_Updated/WreckingBall.obj";
+const char* billboardBallPath = "Assets/OBJ/Construction_Stage_OBJ_Updated/BillboardPlatform.obj";
 
 World::World() {
 	//this->drawData.matrix = glm::mat4();
@@ -24,6 +27,9 @@ void World::createWorld(Shader* shader, string directory) {
 	};
 	
 	Model* model = new Model(constructionStagePath, shader);
+	Model* wreckingBallBase = new Model(wreckingBallBasePath, shader);
+	Model* wreckingBall = new Model(wreckingBallPath, shader);
+	Model* billboard = new Model(billboardBallPath, shader);
 
 	glm::mat4 mat = glm::mat4();
 	
@@ -33,6 +39,9 @@ void World::createWorld(Shader* shader, string directory) {
 	floor->setMatrix(mat);
 
 	floor->addNode(model);
+	floor->addNode(wreckingBall);
+	floor->addNode(wreckingBallBase);
+	floor->addNode(billboard);
 
 	this->addNode(floor);
 

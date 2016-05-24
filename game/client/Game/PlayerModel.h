@@ -9,7 +9,8 @@
 
 enum PlayerState{
 	_standing,
-	_running
+	_running,
+	_punching
 };
 
 class PlayerModel : public Model

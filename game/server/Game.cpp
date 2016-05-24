@@ -53,7 +53,18 @@ void Game::initialize() {
 	mangoBody_ = playerLoader->getRigidBodyByIndex(0);
 
 	btBulletWorldImporter* worldLoader = new btBulletWorldImporter(world_);
-	worldLoader->loadFile("bullet_assets\\Construction_Stage_Bullet_Scaled.bullet");
+	worldLoader->loadFile("bullet_assets\\Construction_Stage_Bullet_Scaled_Separated.bullet");
+
+	btBulletWorldImporter* billboardLoader = new btBulletWorldImporter(world_);
+	billboardLoader->loadFile("bullet_assets\\BillboardPlatform.bullet");
+
+	btBulletWorldImporter* wreckingBallBaseLoader = new btBulletWorldImporter(world_);
+	wreckingBallBaseLoader->loadFile("bullet_assets\\WreckingBallBase.bullet");
+
+	btBulletWorldImporter* wreckingBallLoader = new btBulletWorldImporter(world_);
+	wreckingBallLoader->loadFile("bullet_assets\\WreckingBall.bullet");
+
+	
 	std::cerr << "AJ 1" << std::endl;
 }
 
