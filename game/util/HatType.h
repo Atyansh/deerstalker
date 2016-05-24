@@ -5,6 +5,7 @@ enum HatType {
 	PROPELLER_HAT = 2,
 	HARD_HAT = 3,
 	BEAR_HAT = 4,
-	CRATE = 5,
-	NO_HAT = 6
+	DEERSTALKER_HAT = 5,
+	CRATE = 6,
+	NO_HAT = 7
 };

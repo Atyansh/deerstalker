@@ -45,7 +45,7 @@ void MessageHandler::handleGameMessages() {
 			}
 			else if (gameObject.type() == protos::Message_GameObject_Type_HAT) {
 				map = &Globals::gameObjects.hatMap;
-				model = _Crate; // change
+				model = Globals::hatModelsMap[(HatType)gameObject.hattype()]; // change
 			}
 			else if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
 				map = &Globals::gameObjects.bulletMap;
@@ -74,7 +74,7 @@ void MessageHandler::handleGameMessages() {
 				}
 
 				if (gameObject.hattype() != NO_HAT) {
-					dynamic_cast<Player*>(&player)->attachHat(WIZARD_HAT);
+					dynamic_cast<Player*>(&player)->attachHat((HatType)gameObject.hattype());
 				}
 				else {
 					dynamic_cast<Player*>(&player)->detachHat();

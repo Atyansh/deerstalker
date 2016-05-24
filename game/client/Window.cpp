@@ -378,6 +378,10 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	switch (modelType) {
 		case _Player:
 			playerHatMap[WIZARD_HAT] = new Hat(Globals::gameObjects.modelMap[_WizardHat]);
+			playerHatMap[PROPELLER_HAT] = new Hat(Globals::gameObjects.modelMap[_PropellerHat]);
+			playerHatMap[BEAR_HAT] = new Hat(Globals::gameObjects.modelMap[_BearHat]);
+			playerHatMap[HARD_HAT] = new Hat(Globals::gameObjects.modelMap[_HardHat]);
+			playerHatMap[DEERSTALKER_HAT] = new Hat(Globals::gameObjects.modelMap[_DeerstalkerHat]);
 			playerHatMap[CRATE] = new Hat(Globals::gameObjects.modelMap[_Crate]);
 			playerStateMap[PlayerState::_standing] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Standing]));
 			playerStateMap[PlayerState::_running] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Running]));

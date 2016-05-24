@@ -30,5 +30,7 @@ public:
 	static std::uint32_t ID;
 
 	static bool socketError;
+
+	static unordered_map<HatType, Models> hatModelsMap;
 };
 

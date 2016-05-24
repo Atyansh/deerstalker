@@ -43,6 +43,17 @@ void GameObjects::loadGameObjects() {
 	shaderMap[_LtShader] = lightShader;
 	shaderMap[_GShader] = guiShader;
 
+	guiMap[_Background] = new GuiItem(backgroundPath, shaderMap[_GShader], 60, 34, 0, 0);
+	guiMap[_LobbyBG] = new GuiItem(lobbyPath, shaderMap[_GShader], 60, 34, 0, 0);
+	guiMap[_EndGameBG] = new GuiItem(endPath, shaderMap[_GShader], 60, 34, 0, 0);
+
+	loadModelMap();
+	loadHatModelsMap();
+	generateWorld(skyboxDirectory);
+
+}
+
+void GameObjects::loadModelMap() {
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
 	modelMap[_Player_Standing] = new PlayerModel(playerStandPath, shaderMap[_LtShader], PlayerState::_standing);
 	modelMap[_Player_Running] = new PlayerModel(playerRunPath, shaderMap[_LtShader], PlayerState::_running);
@@ -52,14 +63,16 @@ void GameObjects::loadGameObjects() {
 	modelMap[_HardHat] = new Model(hardHatPath, shaderMap[_LtShader]);
 	modelMap[_PropellerHat] = new Model(propellerHatPath, shaderMap[_LtShader]);
 	modelMap[_BearHat] = new Model(bearHatPath, shaderMap[_LtShader]);
-	modelMap[_deerstalkerHat] = new Model(deerstalkerHatPath, shaderMap[_LtShader]);
+	modelMap[_DeerstalkerHat] = new Model(deerstalkerHatPath, shaderMap[_LtShader]);
+}
 
-	
-	guiMap[_Background] = new GuiItem(backgroundPath, shaderMap[_GShader], 60, 34, 0, 0);
-	guiMap[_LobbyBG] = new GuiItem(lobbyPath, shaderMap[_GShader], 60, 34, 0, 0);
-	guiMap[_EndGameBG] = new GuiItem(endPath, shaderMap[_GShader], 60, 34, 0, 0);
-
-	generateWorld(skyboxDirectory);
+void GameObjects::loadHatModelsMap() {
+	Globals::hatModelsMap[WIZARD_HAT] = _WizardHat;
+	Globals::hatModelsMap[HARD_HAT] = _HardHat;
+	Globals::hatModelsMap[PROPELLER_HAT] = _PropellerHat;
+	Globals::hatModelsMap[BEAR_HAT] = _BearHat;
+	Globals::hatModelsMap[DEERSTALKER_HAT] = _DeerstalkerHat;
+	Globals::hatModelsMap[CRATE] = _Crate;
 }
 
 void GameObjects::generateWorld(string directory) {

@@ -20,7 +20,7 @@ enum Models {
 	_HardHat,
 	_BearHat,
 	_PropellerHat,
-	_deerstalkerHat
+	_DeerstalkerHat
 };
 
 enum Shaders {
@@ -51,5 +51,7 @@ public:
 	~GameObjects();
 
 	void loadGameObjects();
+	void loadModelMap();
+	void loadHatModelsMap();
 };
 
