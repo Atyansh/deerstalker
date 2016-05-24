@@ -54,9 +54,9 @@ void GameObjects::loadGameObjects() {
 
 void GameObjects::loadModelMap() {
 	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
-	modelMap[_Player_Standing] = new PlayerModel(playerStandPath, shaderMap[_LtShader], PlayerState::_standing);
-	modelMap[_Player_Running] = new PlayerModel(playerRunPath, shaderMap[_LtShader], PlayerState::_running);
-	modelMap[_Player_Punching] = new PlayerModel(playerPunchingPath, shaderMap[_LtShader], PlayerState::_punching);
+	modelMap[_Player_Standing] = new PlayerModel(playerStandPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_STANDING);
+	modelMap[_Player_Running] = new PlayerModel(playerRunPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_RUNNING);
+	modelMap[_Player_Punching] = new PlayerModel(playerPunchingPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_PUNCHING);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
 	modelMap[_WizardHat] = new Model(wizardPath, shaderMap[_LtShader]);
 	modelMap[_HardHat] = new Model(hardHatPath, shaderMap[_LtShader]);

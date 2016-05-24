@@ -7,6 +7,7 @@
 //#include "client\Graphics\Model.h"
 #include "Hat.h"
 #include "util\HatType.h"
+#include "util\Protos.pb.h"
 
 class Player : public SMatrixTransform {
 	private:
@@ -15,7 +16,7 @@ class Player : public SMatrixTransform {
 		unordered_map<std::uint32_t, Hat*> hatModels;
 		unordered_map<std::uint32_t, PlayerAnim*> playerModels;
 		HatType currHat;
-		PlayerState currState;
+		protos::Message_GameObject_AnimationState currState;
 
 		void createPlayer();
 
@@ -25,6 +26,6 @@ class Player : public SMatrixTransform {
 
 		void detachHat();
 		void attachHat(HatType newHat);
-		void changeState(PlayerState newState);
+		void changeState(protos::Message_GameObject_AnimationState newState);
 
 };

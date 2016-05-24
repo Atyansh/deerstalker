@@ -32,6 +32,8 @@ public:
 private:
 	void loadHatBodyMap();
 
+	void clearAnimations();
+
 	void handleSpawnLogic(const protos::Event* event);
 	void handleMoveLogic(const protos::Event* event);
 	void handleJumpLogic(const protos::Event* event);
@@ -75,4 +77,5 @@ private:
 	std::unordered_set<Hat*> hatSet_;
 	std::unordered_set<Hat*> hatRemovedSet_;
 	std::unordered_map<HatType, btCollisionObject*> hatBodyMap_;
+	std::unordered_map<ClientId, protos::Message_GameObject_AnimationState> animationStateMap_;
 };

@@ -32,6 +32,7 @@ const ::google::protobuf::Descriptor* Message_GameObject_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Message_GameObject_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* Message_GameObject_Type_descriptor_ = NULL;
+const ::google::protobuf::EnumDescriptor* Message_GameObject_AnimationState_descriptor_ = NULL;
 
 }  // namespace
 
@@ -83,11 +84,12 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Message));
   Message_GameObject_descriptor_ = Message_descriptor_->nested_type(0);
-  static const int Message_GameObject_offsets_[4] = {
+  static const int Message_GameObject_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, matrix_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, hattype_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, animationstate_),
   };
   Message_GameObject_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -101,6 +103,7 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Message_GameObject));
   Message_GameObject_Type_descriptor_ = Message_GameObject_descriptor_->enum_type(0);
+  Message_GameObject_AnimationState_descriptor_ = Message_GameObject_descriptor_->enum_type(1);
 }
 
 namespace {
@@ -149,13 +152,16 @@ void protobuf_AddDesc_Protos_2eproto() {
     "\010\n\004HATR\020\010\022\010\n\004HATL\020\t\022\t\n\005PUNCH\020\n\"m\n\tDirect"
     "ion\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT"
     "\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\022\006\n\002FL\020\007\022\006\n"
-    "\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020\n\"\367\001\n\007Message\022\n\n\002id\030"
+    "\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020\n\"\365\002\n\007Message\022\n\n\002id\030"
     "\001 \001(\005\022\034\n\005event\030\002 \003(\0132\r.protos.Event\022.\n\ng"
     "ameObject\030\003 \003(\0132\032.protos.Message.GameObj"
-    "ect\032\221\001\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016\n\006matrix"
+    "ect\032\217\002\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016\n\006matrix"
     "\030\002 \003(\001\022-\n\004type\030\003 \001(\0162\037.protos.Message.Ga"
-    "meObject.Type\022\017\n\007hatType\030\004 \001(\005\"\'\n\004Type\022\n"
-    "\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003", 671);
+    "meObject.Type\022\017\n\007hatType\030\004 \001(\005\022A\n\016animat"
+    "ionState\030\005 \001(\0162).protos.Message.GameObje"
+    "ct.AnimationState\"\'\n\004Type\022\n\n\006PLAYER\020\001\022\n\n"
+    "\006BULLET\020\002\022\007\n\003HAT\020\003\"9\n\016AnimationState\022\014\n\010"
+    "STANDING\020\001\022\013\n\007RUNNING\020\002\022\014\n\010PUNCHING\020\003", 797);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -758,11 +764,35 @@ const Message_GameObject_Type Message_GameObject::Type_MIN;
 const Message_GameObject_Type Message_GameObject::Type_MAX;
 const int Message_GameObject::Type_ARRAYSIZE;
 #endif  // _MSC_VER
+const ::google::protobuf::EnumDescriptor* Message_GameObject_AnimationState_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Message_GameObject_AnimationState_descriptor_;
+}
+bool Message_GameObject_AnimationState_IsValid(int value) {
+  switch(value) {
+    case 1:
+    case 2:
+    case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#ifndef _MSC_VER
+const Message_GameObject_AnimationState Message_GameObject::STANDING;
+const Message_GameObject_AnimationState Message_GameObject::RUNNING;
+const Message_GameObject_AnimationState Message_GameObject::PUNCHING;
+const Message_GameObject_AnimationState Message_GameObject::AnimationState_MIN;
+const Message_GameObject_AnimationState Message_GameObject::AnimationState_MAX;
+const int Message_GameObject::AnimationState_ARRAYSIZE;
+#endif  // _MSC_VER
 #ifndef _MSC_VER
 const int Message_GameObject::kIdFieldNumber;
 const int Message_GameObject::kMatrixFieldNumber;
 const int Message_GameObject::kTypeFieldNumber;
 const int Message_GameObject::kHatTypeFieldNumber;
+const int Message_GameObject::kAnimationStateFieldNumber;
 #endif  // !_MSC_VER
 
 Message_GameObject::Message_GameObject()
@@ -786,6 +816,7 @@ void Message_GameObject::SharedCtor() {
   id_ = 0;
   type_ = 1;
   hattype_ = 0;
+  animationstate_ = 1;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -821,10 +852,11 @@ Message_GameObject* Message_GameObject::New() const {
 }
 
 void Message_GameObject::Clear() {
-  if (_has_bits_[0 / 32] & 13) {
+  if (_has_bits_[0 / 32] & 29) {
     id_ = 0;
     type_ = 1;
     hattype_ = 0;
+    animationstate_ = 1;
   }
   matrix_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -905,6 +937,26 @@ bool Message_GameObject::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(40)) goto parse_animationState;
+        break;
+      }
+
+      // optional .protos.Message.GameObject.AnimationState animationState = 5;
+      case 5: {
+        if (tag == 40) {
+         parse_animationState:
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::protos::Message_GameObject_AnimationState_IsValid(value)) {
+            set_animationstate(static_cast< ::protos::Message_GameObject_AnimationState >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(5, value);
+          }
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -956,6 +1008,12 @@ void Message_GameObject::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->hattype(), output);
   }
 
+  // optional .protos.Message.GameObject.AnimationState animationState = 5;
+  if (has_animationstate()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      5, this->animationstate(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -988,6 +1046,12 @@ void Message_GameObject::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->hattype(), target);
   }
 
+  // optional .protos.Message.GameObject.AnimationState animationState = 5;
+  if (has_animationstate()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      5, this->animationstate(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1018,6 +1082,12 @@ int Message_GameObject::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->hattype());
+    }
+
+    // optional .protos.Message.GameObject.AnimationState animationState = 5;
+    if (has_animationstate()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->animationstate());
     }
 
   }
@@ -1064,6 +1134,9 @@ void Message_GameObject::MergeFrom(const Message_GameObject& from) {
     if (from.has_hattype()) {
       set_hattype(from.hattype());
     }
+    if (from.has_animationstate()) {
+      set_animationstate(from.animationstate());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1091,6 +1164,7 @@ void Message_GameObject::Swap(Message_GameObject* other) {
     matrix_.Swap(&other->matrix_);
     std::swap(type_, other->type_);
     std::swap(hattype_, other->hattype_);
+    std::swap(animationstate_, other->animationstate_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

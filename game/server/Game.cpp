@@ -60,6 +60,12 @@ void Game::loadHatBodyMap() {
 	hatBodyMap_[PROPELLER_HAT] = propellerHatBody_;
 }
 
+void Game::clearAnimations() {
+	for (auto client : clients_) {
+		animationStateMap_[client->getClientId()] = protos::Message_GameObject_AnimationState_STANDING;
+	}
+}
+
 void Game::initialize() {
 	world_ = World::createNewWorld();
 	world_->setGravity(btVector3(0, -10, 0));
@@ -117,6 +123,7 @@ void Game::startGameLoop() {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
+		clearAnimations();
 
 		queueLock_.lock();
 		while (!messageQueue_.empty()) {
@@ -224,6 +231,12 @@ void Game::handleSpawnLogic(const protos::Event* event) {
 void Game::handleMoveLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
 
+	if (animationStateMap_[event->clientid()] == protos::Message_GameObject_AnimationState_STANDING) {
+		animationStateMap_[event->clientid()] = protos::Message_GameObject_AnimationState_RUNNING;
+	}
+
+	// TODO(Atyansh): Maybe have animation for flying?
+
 	double x = event->cameravector(0);
 	double y = event->cameravector(1);
 	double z = event->cameravector(2);
@@ -270,77 +283,6 @@ void Game::handleMoveLogic(const protos::Event* event) {
 void Game::handleJumpLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
 	player->getController()->jump();
-}
-
-void Game::sendStateToClients() {
-	std::lock_guard<std::mutex> lock(playerMapLock_);
-
-	protos::Message message;
-
-	for (auto& pair : playerMap_) {
-		btTransform transform;
-		pair.second->getController()->getRigidBody()->getMotionState()->getWorldTransform(transform);
-		btScalar glm[16] = {};
-
-		transform.getOpenGLMatrix(glm);
-
-		auto* gameObject = message.add_gameobject();
-
-		Hat* hat = pair.second->getHat();
-
-		gameObject->set_hattype(pair.second->getHatType());
-		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
-		gameObject->set_id(pair.first);
-		for (auto v : glm) {
-			gameObject->add_matrix(v);
-		}
-	}
-
-	for (auto* hat : hatRemovedSet_) {
-		auto* event = message.add_event();
-		event->set_clientid(hat->playerId_);
-		event->set_type(protos::Event_Type_EQUIP);
-		event->set_hatid(hat->getHatId());
-	}
-
-	hatRemovedSet_.clear();
-
-	for (auto* hat : hatSet_) {
-		btTransform transform;
-		hat->getMotionState()->getWorldTransform(transform);
-
-		btScalar glm[16] = {};
-
-		transform.getOpenGLMatrix(glm);
-
-		auto* gameObject = message.add_gameobject();
-		gameObject->set_type(protos::Message_GameObject_Type_HAT);
-		gameObject->set_hattype(hat->getHatType());
-		gameObject->set_id(hat->getHatId());
-		for (auto v : glm) {
-			gameObject->add_matrix(v);
-		}
-	}
-
-	for (auto& pair : shots_) {
-		btTransform transform;
-		pair.second->getMotionState()->getWorldTransform(transform);
-
-		btScalar glm[16] = {};
-
-		transform.getOpenGLMatrix(glm);
-
-		auto* gameObject = message.add_gameobject();
-		gameObject->set_type(protos::Message_GameObject_Type_BULLET);
-		gameObject->set_id(pair.first);
-		for (auto v : glm) {
-			gameObject->add_matrix(v);
-		}
-	}
-
-	for (auto client : clients_) {
-		client->deliver(message);
-	}
 }
 
 void Game::spawnNewHat() {
@@ -417,6 +359,8 @@ void Game::handleEquipLogic(const protos::Event* event) {
 void Game::handlePunchLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
 
+	animationStateMap_[event->clientid()] = protos::Message_GameObject_AnimationState_PUNCHING;
+
 	auto position = player->getController()->getRigidBody()->getCenterOfMassPosition();
 
 	btCollisionObject* target = player->getController()->getPunchTarget();
@@ -489,4 +433,77 @@ void Game::propellerUp(Player* player) {
 
 void Game::propellerDown(Player* player) {
 	player->getController()->getRigidBody()->applyCentralForce(btVector3(0, -10, 0));
+}
+
+void Game::sendStateToClients() {
+	std::lock_guard<std::mutex> lock(playerMapLock_);
+
+	protos::Message message;
+
+	for (auto& pair : playerMap_) {
+		btTransform transform;
+		pair.second->getController()->getRigidBody()->getMotionState()->getWorldTransform(transform);
+		btScalar glm[16] = {};
+
+		transform.getOpenGLMatrix(glm);
+
+		auto* gameObject = message.add_gameobject();
+
+		Hat* hat = pair.second->getHat();
+
+		gameObject->set_hattype(pair.second->getHatType());
+		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
+		gameObject->set_animationstate(animationStateMap_[pair.first]);
+		std::cerr << animationStateMap_[pair.first];
+		gameObject->set_id(pair.first);
+		for (auto v : glm) {
+			gameObject->add_matrix(v);
+		}
+	}
+
+	for (auto* hat : hatRemovedSet_) {
+		auto* event = message.add_event();
+		event->set_clientid(hat->playerId_);
+		event->set_type(protos::Event_Type_EQUIP);
+		event->set_hatid(hat->getHatId());
+	}
+
+	hatRemovedSet_.clear();
+
+	for (auto* hat : hatSet_) {
+		btTransform transform;
+		hat->getMotionState()->getWorldTransform(transform);
+
+		btScalar glm[16] = {};
+
+		transform.getOpenGLMatrix(glm);
+
+		auto* gameObject = message.add_gameobject();
+		gameObject->set_type(protos::Message_GameObject_Type_HAT);
+		gameObject->set_hattype(hat->getHatType());
+		gameObject->set_id(hat->getHatId());
+		for (auto v : glm) {
+			gameObject->add_matrix(v);
+		}
+	}
+
+	for (auto& pair : shots_) {
+		btTransform transform;
+		pair.second->getMotionState()->getWorldTransform(transform);
+
+		btScalar glm[16] = {};
+
+		transform.getOpenGLMatrix(glm);
+
+		auto* gameObject = message.add_gameobject();
+		gameObject->set_type(protos::Message_GameObject_Type_BULLET);
+		gameObject->set_id(pair.first);
+		for (auto v : glm) {
+			gameObject->add_matrix(v);
+		}
+	}
+
+	for (auto client : clients_) {
+		client->deliver(message);
+	}
 }

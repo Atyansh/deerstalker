@@ -73,6 +73,8 @@ void MessageHandler::handleGameMessages() {
 					Globals::cam.updateCamObjectMat(glm::vec3(mat[3]));
 				}
 
+				dynamic_cast<Player*>(&player)->changeState(gameObject.animationstate());
+
 				if (gameObject.hattype() != NO_HAT) {
 					dynamic_cast<Player*>(&player)->attachHat((HatType)gameObject.hattype());
 				}

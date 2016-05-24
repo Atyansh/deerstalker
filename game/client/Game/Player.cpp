@@ -9,7 +9,7 @@ Player::Player(unordered_map<std::uint32_t, PlayerAnim*> playerModels, unordered
 	this->hatModels = hatModels;
 	this->playerModels = playerModels;
 	currHat = NO_HAT;
-	currState = _standing;
+	currState = protos::Message_GameObject_AnimationState_STANDING;
 
 	//add models to coresponding transform matrix
 	// player->addNode(this->playerModel);
@@ -23,7 +23,7 @@ Player::Player(unordered_map<std::uint32_t, PlayerAnim*> playerModels, unordered
 
 	createPlayer();
 
-	this->playerModels[_standing]->setVisible(true);
+	this->playerModels[protos::Message_GameObject_AnimationState_STANDING]->setVisible(true);
 }
 
 Player::~Player()
@@ -73,7 +73,7 @@ void Player::attachHat(HatType newHat) {
 	}
 }
 
-void Player::changeState(PlayerState newState){
+void Player::changeState(protos::Message_GameObject_AnimationState newState){
 	if(newState == currState){
 		return;
 	}

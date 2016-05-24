@@ -6,7 +6,7 @@
 #include "Model.h"
 #include "BoneInfo.h"
 #include "AnimationTree.h"
-#include "util\PlayerState.h"
+#include "util\Protos.pb.h"
 
 class PlayerModel : public Model
 {
@@ -21,7 +21,7 @@ protected:
 
 	float height = 0;
 
-	PlayerState state;
+	protos::Message_GameObject_AnimationState state;
 
 	void loadBones(const aiMesh* mesh, vector<Vertex>& bones);
 
@@ -31,7 +31,7 @@ protected:
 
 
 public:
-	PlayerModel(const char* path, Shader *shader, PlayerState state);
+	PlayerModel(const char* path, Shader *shader, protos::Message_GameObject_AnimationState state);
 	virtual ~PlayerModel(void);
 
 	virtual void update(UpdateData&);

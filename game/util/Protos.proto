@@ -43,10 +43,16 @@ message Message {
 			BULLET = 2;
 			HAT = 3;
 		}
+		enum AnimationState {
+			STANDING = 1;
+			RUNNING = 2;
+			PUNCHING = 3;
+		}
 		optional int32 id = 1;
 		repeated double matrix = 2;
 		optional Type type = 3;
 		optional int32 hatType = 4;
+		optional AnimationState animationState = 5;
 	}
 
 	optional int32 id = 1;

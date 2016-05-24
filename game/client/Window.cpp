@@ -209,43 +209,34 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 	if (STATE == State::_Game) {
 		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second);
-		player->changeState(PlayerState::_standing);  //REFACTOR TO USE SERVER
 
 		if (axes[LEFT_STICK_X] > POS_AXIS_TILT &&
 			axes[LEFT_STICK_Y] < NEG_AXIS_TILT) {
 			addMoveEvent(message, protos::Event_Direction_FR);
-			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 		else if (axes[LEFT_STICK_X] > POS_AXIS_TILT &&
 			axes[LEFT_STICK_Y] > POS_AXIS_TILT) {
 			addMoveEvent(message, protos::Event_Direction_BR);
-			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 		else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT &&
 			axes[LEFT_STICK_Y] > POS_AXIS_TILT) {
 			addMoveEvent(message, protos::Event_Direction_BL);
-			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 		else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT &&
 			axes[LEFT_STICK_Y] < NEG_AXIS_TILT) {
 			addMoveEvent(message, protos::Event_Direction_FL);
-			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 		else if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
 			addMoveEvent(message, protos::Event_Direction_RIGHT);
-			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 		else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT) { // Left
 			addMoveEvent(message, protos::Event_Direction_LEFT);
-			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 		else if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) { // Down
 			addMoveEvent(message, protos::Event_Direction_BACKWARD);
-			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 		else if (axes[LEFT_STICK_Y] < NEG_AXIS_TILT) { // Up
 			addMoveEvent(message, protos::Event_Direction_FORWARD);
-			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
 
 		if (axes[TRIGGER_AXIS] > POS_AXIS_TILT) {
@@ -291,7 +282,6 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_PUNCH);
-			player->changeState(PlayerState::_punching);
 			//buttonState[BUTTON_X] = true;
 		}
 		if (buttons[BUTTON_Y] == GLFW_PRESS) {
@@ -384,9 +374,9 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 			playerHatMap[HARD_HAT] = new Hat(Globals::gameObjects.modelMap[_HardHat]);
 			playerHatMap[DEERSTALKER_HAT] = new Hat(Globals::gameObjects.modelMap[_DeerstalkerHat]);
 			playerHatMap[CRATE] = new Hat(Globals::gameObjects.modelMap[_Crate]);
-			playerStateMap[PlayerState::_standing] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Standing]));
-			playerStateMap[PlayerState::_running] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Running]));
-			playerStateMap[PlayerState::_punching] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Punching]));
+			playerStateMap[protos::Message_GameObject_AnimationState_STANDING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Standing]));
+			playerStateMap[protos::Message_GameObject_AnimationState_RUNNING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Running]));
+			playerStateMap[protos::Message_GameObject_AnimationState_PUNCHING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Punching]));
 			return new Player(playerStateMap, playerHatMap);
 		default:
 			transform->addNode(model);

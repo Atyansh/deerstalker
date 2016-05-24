@@ -112,6 +112,26 @@ inline bool Message_GameObject_Type_Parse(
   return ::google::protobuf::internal::ParseNamedEnum<Message_GameObject_Type>(
     Message_GameObject_Type_descriptor(), name, value);
 }
+enum Message_GameObject_AnimationState {
+  Message_GameObject_AnimationState_STANDING = 1,
+  Message_GameObject_AnimationState_RUNNING = 2,
+  Message_GameObject_AnimationState_PUNCHING = 3
+};
+bool Message_GameObject_AnimationState_IsValid(int value);
+const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MIN = Message_GameObject_AnimationState_STANDING;
+const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MAX = Message_GameObject_AnimationState_PUNCHING;
+const int Message_GameObject_AnimationState_AnimationState_ARRAYSIZE = Message_GameObject_AnimationState_AnimationState_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* Message_GameObject_AnimationState_descriptor();
+inline const ::std::string& Message_GameObject_AnimationState_Name(Message_GameObject_AnimationState value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    Message_GameObject_AnimationState_descriptor(), value);
+}
+inline bool Message_GameObject_AnimationState_Parse(
+    const ::std::string& name, Message_GameObject_AnimationState* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Message_GameObject_AnimationState>(
+    Message_GameObject_AnimationState_descriptor(), name, value);
+}
 // ===================================================================
 
 class Event : public ::google::protobuf::Message {
@@ -396,6 +416,31 @@ class Message_GameObject : public ::google::protobuf::Message {
     return Message_GameObject_Type_Parse(name, value);
   }
 
+  typedef Message_GameObject_AnimationState AnimationState;
+  static const AnimationState STANDING = Message_GameObject_AnimationState_STANDING;
+  static const AnimationState RUNNING = Message_GameObject_AnimationState_RUNNING;
+  static const AnimationState PUNCHING = Message_GameObject_AnimationState_PUNCHING;
+  static inline bool AnimationState_IsValid(int value) {
+    return Message_GameObject_AnimationState_IsValid(value);
+  }
+  static const AnimationState AnimationState_MIN =
+    Message_GameObject_AnimationState_AnimationState_MIN;
+  static const AnimationState AnimationState_MAX =
+    Message_GameObject_AnimationState_AnimationState_MAX;
+  static const int AnimationState_ARRAYSIZE =
+    Message_GameObject_AnimationState_AnimationState_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  AnimationState_descriptor() {
+    return Message_GameObject_AnimationState_descriptor();
+  }
+  static inline const ::std::string& AnimationState_Name(AnimationState value) {
+    return Message_GameObject_AnimationState_Name(value);
+  }
+  static inline bool AnimationState_Parse(const ::std::string& name,
+      AnimationState* value) {
+    return Message_GameObject_AnimationState_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
   // optional int32 id = 1;
@@ -431,6 +476,13 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 hattype() const;
   inline void set_hattype(::google::protobuf::int32 value);
 
+  // optional .protos.Message.GameObject.AnimationState animationState = 5;
+  inline bool has_animationstate() const;
+  inline void clear_animationstate();
+  static const int kAnimationStateFieldNumber = 5;
+  inline ::protos::Message_GameObject_AnimationState animationstate() const;
+  inline void set_animationstate(::protos::Message_GameObject_AnimationState value);
+
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
@@ -439,6 +491,8 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline void clear_has_type();
   inline void set_has_hattype();
   inline void clear_has_hattype();
+  inline void set_has_animationstate();
+  inline void clear_has_animationstate();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -448,6 +502,7 @@ class Message_GameObject : public ::google::protobuf::Message {
   ::google::protobuf::int32 id_;
   int type_;
   ::google::protobuf::int32 hattype_;
+  int animationstate_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -852,6 +907,31 @@ inline void Message_GameObject::set_hattype(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:protos.Message.GameObject.hatType)
 }
 
+// optional .protos.Message.GameObject.AnimationState animationState = 5;
+inline bool Message_GameObject::has_animationstate() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Message_GameObject::set_has_animationstate() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Message_GameObject::clear_has_animationstate() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Message_GameObject::clear_animationstate() {
+  animationstate_ = 1;
+  clear_has_animationstate();
+}
+inline ::protos::Message_GameObject_AnimationState Message_GameObject::animationstate() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.animationState)
+  return static_cast< ::protos::Message_GameObject_AnimationState >(animationstate_);
+}
+inline void Message_GameObject::set_animationstate(::protos::Message_GameObject_AnimationState value) {
+  assert(::protos::Message_GameObject_AnimationState_IsValid(value));
+  set_has_animationstate();
+  animationstate_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.animationState)
+}
+
 // -------------------------------------------------------------------
 
 // Message
@@ -963,6 +1043,11 @@ template <> struct is_proto_enum< ::protos::Message_GameObject_Type> : ::google:
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::protos::Message_GameObject_Type>() {
   return ::protos::Message_GameObject_Type_descriptor();
+}
+template <> struct is_proto_enum< ::protos::Message_GameObject_AnimationState> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::protos::Message_GameObject_AnimationState>() {
+  return ::protos::Message_GameObject_AnimationState_descriptor();
 }
 
 }  // namespace google
