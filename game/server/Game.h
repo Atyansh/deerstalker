@@ -34,6 +34,8 @@ private:
 
 	void clearAnimations();
 
+	void deleteBullets();
+
 	void handleSpawnLogic(const protos::Event* event);
 	void handleMoveLogic(const protos::Event* event);
 	void handleJumpLogic(const protos::Event* event);
@@ -68,14 +70,19 @@ private:
 	btCollisionObject* deerstalkerHatBody_;
 	btCollisionObject* propellerHatBody_;
 
-	std::unordered_map<unsigned int, Bullet*> shots_;
+
 	std::deque<protos::Message> messageQueue_;
 	std::mutex queueLock_;
+
+	std::unordered_set<Bullet*> bulletSet_;
+	std::unordered_set<Bullet*> bulletRemovedSet_;
+
 	std::unordered_map<ClientId, Player*> playerMap_;
 	std::unordered_set<btCollisionObject*> playerSet_;
-	std::mutex playerMapLock_;
+
 	std::unordered_set<Hat*> hatSet_;
 	std::unordered_set<Hat*> hatRemovedSet_;
+
 	std::unordered_map<HatType, btCollisionObject*> hatBodyMap_;
 	std::unordered_map<ClientId, protos::Message_GameObject_AnimationState> animationStateMap_;
 };

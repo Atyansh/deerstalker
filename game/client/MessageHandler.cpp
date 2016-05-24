@@ -28,7 +28,14 @@ void MessageHandler::handleGameMessages() {
 			auto& event = message.event(i);
 
 			if (event.type() == protos::Event_Type_EQUIP) {
+				auto* hat = Globals::gameObjects.hatMap[event.hatid()];
 				Globals::gameObjects.hatMap.erase(event.hatid());
+				//delete hat;
+			}
+			else if (event.type() == protos::Event_Type_DELETE_BULLET) {
+				auto* bullet = Globals::gameObjects.bulletMap[event.bulletid()];
+				Globals::gameObjects.bulletMap.erase(event.bulletid());
+				//delete bullet;
 			}
 		}
 

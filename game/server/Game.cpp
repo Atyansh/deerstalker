@@ -23,7 +23,6 @@ void Game::join(client_ptr client) {
 }
 
 void Game::remove(client_ptr client) {
-	std::lock_guard<std::mutex> lock(playerMapLock_);
 	ClientId clientId = client->getClientId();
 	clients_.erase(client);
 	availableIds.emplace_back(clientId);
@@ -63,6 +62,19 @@ void Game::loadHatBodyMap() {
 void Game::clearAnimations() {
 	for (auto client : clients_) {
 		animationStateMap_[client->getClientId()] = protos::Message_GameObject_AnimationState_STANDING;
+	}
+}
+
+void Game::deleteBullets() {
+	milliseconds currTime = duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch());
+
+	milliseconds bulletLifespan = milliseconds(2000);
+
+	for (auto bullet : bulletSet_) {
+		if (currTime - bullet->getTimestamp() > bulletLifespan) {
+			bulletRemovedSet_.emplace(bullet);
+		}
 	}
 }
 
@@ -173,6 +185,8 @@ void Game::startGameLoop() {
 
 		handleReSpawnLogic();
 
+		deleteBullets();
+
 		sendStateToClients();
 
 		milliseconds stamp2 = duration_cast<milliseconds>(
@@ -196,7 +210,7 @@ void Game::handleShootLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
 	Bullet * bull = Bullet::createNewBullet(generateId(), mangoBody_->getCollisionShape(), player->getId());
 	player->setProjectile(bull,bull->getVelocity());
-	shots_[bull->getId()] = bull;
+	bulletSet_.emplace(bull);
 	world_->addRigidBody(bull);
 }
 
@@ -218,7 +232,6 @@ void Game::handleDquipLogic(const protos::Event* event) {
 }
 
 void Game::handleSpawnLogic(const protos::Event* event) {
-	std::lock_guard<std::mutex> lock(playerMapLock_);
 	std::cerr << "SPAWN HAPPENED" << std::endl;
 	Player* player = new Player(playerBody_, event->clientid(), 3);
 	playerMap_[event->clientid()] = player;
@@ -436,8 +449,6 @@ void Game::propellerDown(Player* player) {
 }
 
 void Game::sendStateToClients() {
-	std::lock_guard<std::mutex> lock(playerMapLock_);
-
 	protos::Message message;
 
 	for (auto& pair : playerMap_) {
@@ -487,9 +498,20 @@ void Game::sendStateToClients() {
 		}
 	}
 
-	for (auto& pair : shots_) {
+	for (auto* bullet : bulletRemovedSet_) {
+		bulletSet_.erase(bullet);
+		auto* event = message.add_event();
+		event->set_bulletid(bullet->getId());
+		event->set_type(protos::Event_Type_DELETE_BULLET);
+		world_->removeRigidBody(bullet);
+		delete bullet;
+	}
+
+	bulletRemovedSet_.clear();
+
+	for (auto* bullet : bulletSet_) {
 		btTransform transform;
-		pair.second->getMotionState()->getWorldTransform(transform);
+		bullet->getMotionState()->getWorldTransform(transform);
 
 		btScalar glm[16] = {};
 
@@ -497,7 +519,7 @@ void Game::sendStateToClients() {
 
 		auto* gameObject = message.add_gameobject();
 		gameObject->set_type(protos::Message_GameObject_Type_BULLET);
-		gameObject->set_id(pair.first);
+		gameObject->set_id(bullet->getId());
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
 		}

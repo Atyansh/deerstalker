@@ -1,7 +1,8 @@
 #include "Bullet.h"
 
 Bullet::Bullet(btRigidBodyConstructionInfo& info, int id, int ownerId)
-	: btRigidBody(info), id_(id), ownerId_(ownerId) {
+	: btRigidBody(info), id_(id), ownerId_(ownerId), timestamp_(duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch())) {
 	setActivationState(DISABLE_DEACTIVATION);
 }
 
@@ -9,7 +10,6 @@ Bullet::~Bullet() {
 	btCollisionShape* collisionShape = this->getCollisionShape();
 	btMotionState* motionState = this->getMotionState();
 
-	delete collisionShape;
 	delete motionState;
 }
 
