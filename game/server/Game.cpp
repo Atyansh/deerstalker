@@ -1,11 +1,17 @@
 #include "Game.h"
-
 #include "Serialize\BulletWorldImporter\btBulletWorldImporter.h"
 
 using namespace std::chrono;
 using namespace std::this_thread;
 
+std::deque<uint32_t> Game::availableIds;
+
 Game::Game() {
+	idGen_ = 1;
+	availableIds.emplace_back(Player::P1_ID);
+	availableIds.emplace_back(Player::P2_ID);
+	availableIds.emplace_back(Player::P3_ID);
+	availableIds.emplace_back(Player::P4_ID);
 }
 
 Game::~Game() {
@@ -14,17 +20,21 @@ Game::~Game() {
 
 void Game::join(client_ptr client) {
 	clients_.insert(client);
-	//TODO CLIENTID IS AN EMPTY IDEA
-	idGen_ = idGen_>client->getClientId() ? idGen_ : client->getClientId();
 }
 
 void Game::remove(client_ptr client) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	ClientId clientId = client->getClientId();
 	clients_.erase(client);
+	availableIds.emplace_back(clientId);
 	auto iter = playerMap_.find(clientId);
 	if (iter != playerMap_.end()) {
+		auto* action = iter->second->getController();
+		auto* body = action->getRigidBody();
+		world_->removeAction(action);
+		world_->removeRigidBody(body);
 		playerMap_.erase(iter);
+		delete iter->second;
 	}
 }
 
@@ -180,14 +190,6 @@ void Game::handleMoveLogic(const protos::Event* event) {
 	double y = event->cameravector(1);
 	double z = event->cameravector(2);
 
-	int zSig = z >= 0 ? 1 : -1;
-	int xSig = x >= 0 ? 1 : -1;
-
-	btVector3 dir(x, 0, z);
-	btScalar length = dir.length();
-
-	float theta = 0.707f;
-
 	btVector3 f(-x, -y, -z);
 	btVector3 b(x, y, z);
 	btVector3 l(-z, y, x);
@@ -195,57 +197,36 @@ void Game::handleMoveLogic(const protos::Event* event) {
 
 	switch (event->direction()) {
 	case (protos::Event_Direction_RIGHT):
-		std::cerr << "MOVE RIGHT" << std::endl;
 		player->getController()->playerStep(world_, r);
-		//player->applyCentralForce(btVector3(10, 0, 0));
 		break;
 	case (protos::Event_Direction_LEFT):
-		std::cerr << "MOVE LEFT" << std::endl;
 		player->getController()->playerStep(world_, l);
-		//player->applyCentralForce(btVector3(-10, 0, 0));
 		break;
 	case (protos::Event_Direction_UP):
-		std::cerr << "MOVE UP" << std::endl;
-		//player->applyCentralForce(btVector3(0, 10, 0));
 		player->getController()->getRigidBody()->applyCentralForce(btVector3(0, 10, 0));
 		break;
 	case (protos::Event_Direction_DOWN):
-		std::cerr << "MOVE DOWN" << std::endl;
-		//player->applyCentralForce(btVector3(0, -10, 0));
 		player->getController()->getRigidBody()->applyCentralForce(btVector3(0, -10, 0));
 		break;
 	case (protos::Event_Direction_FORWARD):
-		std::cerr << "MOVE FORWARD" << std::endl;
 		player->getController()->playerStep(world_, f);
-		//player->applyCentralForce(btVector3(0, 0, -10));
 		break;
 	case (protos::Event_Direction_BACKWARD):
-		std::cerr << "MOVE BACKWARD" << std::endl;
 		player->getController()->playerStep(world_, b);
-		//player->applyCentralForce(btVector3(0, 0, 10));
 		break;
 	case (protos::Event_Direction_FL):
-		std::cerr << "MOVE FL" << std::endl;
 		player->getController()->playerStep(world_, (f+l).normalized());
-		//player->applyCentralForce(btVector3(0, 0, 10));
 		break;
 	case (protos::Event_Direction_BR):
-		std::cerr << "MOVE FL" << std::endl;
 		player->getController()->playerStep(world_, (b+r).normalized());
-		//player->applyCentralForce(btVector3(0, 0, 10));
 		break;
 	case (protos::Event_Direction_BL):
-		std::cerr << "MOVE FL" << std::endl;
 		player->getController()->playerStep(world_, (b+l).normalized());
-		//player->applyCentralForce(btVector3(0, 0, 10));
 		break;
 	case (protos::Event_Direction_FR):
-		std::cerr << "MOVE FL" << std::endl;
 		player->getController()->playerStep(world_, (f+r).normalized());
-		//player->applyCentralForce(btVector3(0, 0, 10));
 		break;
 	}
-	std::cerr << "x: " << x << "\ty: " << y << "\tz:" << z << std::endl;
 }
 
 void Game::handleJumpLogic(const protos::Event* event) {
@@ -396,6 +377,10 @@ void Game::handleEquipLogic(const protos::Event* event) {
 
 void Game::handlePunchLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
+
+	auto position = player->getController()->getRigidBody()->getCenterOfMassPosition();
+	std::cerr << position.getX() << " " << position.getY() << " " << position.getZ();
+
 	btCollisionObject* target = player->getController()->getPunchTarget();
 
 	if (target) {

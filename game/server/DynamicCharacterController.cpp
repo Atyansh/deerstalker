@@ -13,19 +13,20 @@ DynamicCharacterController::DynamicCharacterController(btCollisionObject* body) 
 }
 
 DynamicCharacterController::~DynamicCharacterController() {
+	delete m_rigidBody->getMotionState();
+	delete m_rigidBody;
 }
 
 void DynamicCharacterController::setup(btScalar height, btScalar width, btScalar stepHeight) {
 	btTransform startTransform;
 	startTransform.setIdentity();
-	startTransform.setOrigin(btVector3(0.0, 10.0, 0.0));
+	startTransform.setOrigin(btVector3(0.0, 50.0, 0.0));
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 	btRigidBody::btRigidBodyConstructionInfo cInfo(1.0, myMotionState, m_shape);
 	m_rigidBody = new btRigidBody(cInfo);
 	
 	m_rigidBody->setSleepingThresholds(0.0, 0.0);
 	m_rigidBody->setAngularFactor(0.0);
-
 }
 
 void DynamicCharacterController::destroy() {

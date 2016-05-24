@@ -26,7 +26,8 @@ public:
 	void initialize();
 	void startGameLoop();
 
-
+	const static uint32_t MAX_PLAYERS = 4;
+	static std::deque<uint32_t> availableIds;
 
 private:
 	void handleSpawnLogic(const protos::Event* event);

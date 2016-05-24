@@ -15,6 +15,10 @@ public:
 		return clientId_;
 	}
 
+	void setClientId(ClientId clientId) {
+		clientId_ = clientId;
+	}
+
 private:
 	ClientId clientId_;
 };
