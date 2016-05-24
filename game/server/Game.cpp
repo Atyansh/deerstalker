@@ -365,6 +365,7 @@ void Game::handlePunchLogic(const protos::Event* event) {
 	btCollisionObject* target = player->getController()->getPunchTarget();
 
 	if (target) {
+		std::cerr << "SOME TARGET" << std::endl;
 		auto search = playerSet_.find(target);
 		if (search != playerSet_.end()) {
 			std::cerr << "PUNCH DETECTED" << std::endl;

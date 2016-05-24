@@ -26,7 +26,7 @@ protected:
 	btVector3 forwardRayTarget;
 	btScalar forwardRayLambda;
 
-	float range = 1;
+	float range = 5;
 
 	const btCollisionObject* punchTarget;
 

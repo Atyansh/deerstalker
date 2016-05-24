@@ -47,9 +47,7 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
 	btTransform xform;
 	m_rigidBody->getMotionState()->getWorldTransform(xform);
 	btVector3 down = -xform.getBasis()[1];
-	btVector3 forward = xform.getBasis()[2];
 	down.normalize();
-	forward.normalize();
 
 	class ClosestNotMe : public btCollisionWorld::ClosestRayResultCallback {
 	public:
@@ -83,13 +81,20 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
 		downRayLambda = 1.0;
 	}
 
-	forwardRaySource = xform.getOrigin();
-	forwardRayTarget = downRaySource + forward * range * btScalar(1.1);
+	ClosestNotMe rayCallback2(m_rigidBody);
 
-	rayCallback.m_closestHitFraction = 1.0;
-	collisionWorld->rayTest(forwardRaySource, forwardRayTarget, rayCallback);
+	btVector3 localLook(0.0f, 0.0f, 1.0f);
+	btTransform transform = m_rigidBody->getCenterOfMassTransform();
+	btQuaternion rotation = transform.getRotation();
+	btVector3 currentLook = quatRotate(rotation, localLook);
+	//std::cerr << currentLook.getX() << " " << forwardRaySource.getY() << " " << currentLook.getZ() << std::endl;
+	forwardRaySource = xform.getOrigin() + btVector3(0, 0, 0);
+	forwardRayTarget = forwardRaySource + currentLook * range;
 
-	if (rayCallback.hasHit()) {
+	rayCallback2.m_closestHitFraction = 1.0;
+	collisionWorld->rayTest(forwardRaySource, forwardRayTarget, rayCallback2);
+
+	if (rayCallback2.hasHit()) {
 		forwardRayLambda = rayCallback.m_closestHitFraction;
 		punchTarget = rayCallback.m_collisionObject;
 	}
