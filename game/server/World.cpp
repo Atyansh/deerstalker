@@ -39,5 +39,5 @@ bool World::isDead(Player * player) {
 void World::spawnPlayer(Player * player) {
 	//TODO Deal with more complex cases
 	//Most likley set spawn zones
-	player->setSpawn(player->getId(), 10, 0);
+	player->setSpawn();
 }

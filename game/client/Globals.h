@@ -28,5 +28,7 @@ public:
 	static tcp::socket socket;
 	static char currentHeader[util::HEADER_SIZE];
 	static std::uint32_t ID;
+
+	static bool socketError;
 };
 

@@ -13,3 +13,5 @@ tcp::socket Globals::socket = tcp::socket(Globals::io_service);
 char Globals::currentHeader[util::HEADER_SIZE] = "";
 
 uint32_t Globals::ID = 0;
+
+bool Globals::socketError = false;

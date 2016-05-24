@@ -10,7 +10,7 @@
 class Player {
 public:
 	Player(btCollisionObject* body, uint32_t id, uint32_t lives);
-	~Player() {}
+	~Player();
 
 	//static Player* createNewPlayer(ClientId clientId, btCollisionShape* collisionShape);
 
@@ -20,17 +20,33 @@ public:
 
 
 	Hat*  setHat(Hat * hat);
-	Hat * getHat() { return currHat_; };
+	Hat* getHat() {
+		return currHat_;
+	}
 
-	void setSpawn(int x, int y, int z);
+	HatType getHatType() {
+		return getHat() == nullptr ? NO_HAT : getHat()->getHatType();
+	}
+
+	void setSpawn();
 	void setProjectile(btRigidBody * body, unsigned int baseVelocity);
 
 	DynamicCharacterController* getController();
 
+	static const uint32_t P1_ID = 1;
+	static const uint32_t P2_ID = 2;
+	static const uint32_t P3_ID = 3;
+	static const uint32_t P4_ID = 4;
+
 private:
-	Hat * currHat_;
 	const unsigned int id_;
 	unsigned int lives_;
-private:
+
+	Hat * currHat_;
 	DynamicCharacterController* controller_;
+
+	static const btVector3 P1_SPAWN_POINT;
+	static const btVector3 P2_SPAWN_POINT;
+	static const btVector3 P3_SPAWN_POINT;
+	static const btVector3 P4_SPAWN_POINT;
 };

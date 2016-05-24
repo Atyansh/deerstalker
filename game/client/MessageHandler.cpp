@@ -1,5 +1,6 @@
 #include "MessageHandler.h"
 
+
 std::deque<protos::Message> MessageHandler::lobbyQueue = std::deque<protos::Message>();
 std::mutex MessageHandler::lobbyLock;
 
@@ -72,15 +73,8 @@ void MessageHandler::handleGameMessages() {
 					Globals::cam.updateCamObjectMat(glm::vec3(mat[3]));
 				}
 
-				if (gameObject.hattype() != 0) {
-					switch (id) { // attach hats
-					case 1:
-						dynamic_cast<Player*>(&player)->attachHat(_wizard);
-						break;
-					default:
-						dynamic_cast<Player*>(&player)->attachHat(_crate);
-						break;
-					}
+				if (gameObject.hattype() != NO_HAT) {
+					dynamic_cast<Player*>(&player)->attachHat(WIZARD_HAT);
 				}
 				else {
 					dynamic_cast<Player*>(&player)->detachHat();
@@ -88,10 +82,8 @@ void MessageHandler::handleGameMessages() {
 			}
 
 		}
-
 		gameQueue.pop_front();
 	}
-
 	gameLock.unlock();
 }
 

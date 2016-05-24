@@ -18,10 +18,17 @@ protected:
 	btCollisionShape* m_shape;
 	btRigidBody* m_rigidBody;
 
-	btVector3 m_raySource;
-	btVector3 m_rayTarget;
-	btScalar m_rayLambda;
-	btVector3 m_rayNormal;
+	btVector3 downRaySource;
+	btVector3 downRayTarget;
+	btScalar downRayLambda;
+
+	btVector3 forwardRaySource;
+	btVector3 forwardRayTarget;
+	btScalar forwardRayLambda;
+
+	float range = 5;
+
+	const btCollisionObject* punchTarget;
 
 public:
 	DynamicCharacterController(btCollisionObject* body);
@@ -57,7 +64,19 @@ public:
 		return m_rigidBody;
 	}
 
-	void setLookDirection(btRigidBody* body, const btVector3& newLook);
+	btCollisionObject* getPunchTarget() {
+		return (btCollisionObject*)punchTarget;
+	}
+
+	void setRange(float range) {
+		this->range = range;
+	}
+
+	float getRange() {
+		return range;
+	}
+
+	void setLookDirection(const btVector3& newLook);
 };
 
 #endif

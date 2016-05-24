@@ -11,6 +11,7 @@ message Event {
 		SHOOT = 7;
 		HATR = 8;
 		HATL = 9;
+		PUNCH = 10;
 	}
 
 	enum Direction {
@@ -20,6 +21,10 @@ message Event {
 		RIGHT = 4;
 		FORWARD = 5;
 		BACKWARD = 6;
+		FL = 7;
+		BL = 8;
+		FR = 9;
+		BR = 10;
 	}
 
 	optional int32 id = 1;

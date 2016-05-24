@@ -105,6 +105,7 @@ void do_read_header() {
 			do_read_body(length);
 		}
 		else {
+			Globals::socketError = true;
 			Globals::socket.close();
 		}
 	});
@@ -135,6 +136,7 @@ void do_read_body(size_t length) {
 			do_read_header();
 		}
 		else {
+			Globals::socketError = true;
 			Globals::socket.close();
 		}
 	});
@@ -191,6 +193,14 @@ int main(int argc, char *argv[])
 	std::thread t([]() {  Globals::io_service.run();  });
 
 	while (Globals::ID == 0) {
+		if (Globals::socketError) {
+			Window::clean_up();
+			glfwDestroyWindow(window);
+			glfwTerminate();
+			t.join();
+			exit(EXIT_SUCCESS);
+			return -1;
+		}
 		Sleep(1);
 	}
 

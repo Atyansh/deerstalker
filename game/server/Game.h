@@ -26,7 +26,8 @@ public:
 	void initialize();
 	void startGameLoop();
 
-
+	const static uint32_t MAX_PLAYERS = 4;
+	static std::deque<uint32_t> availableIds;
 
 private:
 	void handleSpawnLogic(const protos::Event* event);
@@ -37,6 +38,7 @@ private:
 	void handleDquipLogic(const protos::Event* event);
 	void handlePrimaryHatLogic(const protos::Event* event);
 	void handleSecondaryHatLogic(const protos::Event* event);
+	void handlePunchLogic(const protos::Event* event);
 
 
 	void sendStateToClients();
@@ -61,6 +63,7 @@ private:
 	std::deque<protos::Message> messageQueue_;
 	std::mutex queueLock_;
 	std::unordered_map<ClientId, Player*> playerMap_;
+	std::unordered_set<btCollisionObject*> playerSet_;
 	std::mutex playerMapLock_;
 	std::unordered_set<Hat*> hatSet_;
 	std::unordered_set<Hat*> hatRemovedSet_;

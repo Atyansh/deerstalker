@@ -5,27 +5,28 @@
 #include "DynamicCharacterController.h"
 
 DynamicCharacterController::DynamicCharacterController(btCollisionObject* body) {
-	m_rayLambda = 1.0;
-	m_rayLambda = 1.0;
+	downRayLambda = 1.0;
+	forwardRayLambda = 1.0;
 	m_shape = body->getCollisionShape();
 	m_rigidBody = NULL;
 	setup(100.0, 1.0, 20.0);
 }
 
 DynamicCharacterController::~DynamicCharacterController() {
+	delete m_rigidBody->getMotionState();
+	delete m_rigidBody;
 }
 
 void DynamicCharacterController::setup(btScalar height, btScalar width, btScalar stepHeight) {
 	btTransform startTransform;
 	startTransform.setIdentity();
-	startTransform.setOrigin(btVector3(0.0, 10.0, 0.0));
+	startTransform.setOrigin(btVector3(0.0, 50.0, 0.0));
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 	btRigidBody::btRigidBodyConstructionInfo cInfo(1.0, myMotionState, m_shape);
 	m_rigidBody = new btRigidBody(cInfo);
 	
 	m_rigidBody->setSleepingThresholds(0.0, 0.0);
 	m_rigidBody->setAngularFactor(0.0);
-
 }
 
 void DynamicCharacterController::destroy() {
@@ -47,13 +48,7 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
 	btTransform xform;
 	m_rigidBody->getMotionState()->getWorldTransform(xform);
 	btVector3 down = -xform.getBasis()[1];
-	btVector3 forward = xform.getBasis()[2];
 	down.normalize();
-	forward.normalize();
-
-	m_raySource = xform.getOrigin() + btVector3(0.0, 0.1, 0.0);
-
-	m_rayTarget = m_raySource + down * btScalar(1.1);
 
 	class ClosestNotMe : public btCollisionWorld::ClosestRayResultCallback {
 	public:
@@ -74,42 +69,45 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
 
 	ClosestNotMe rayCallback(m_rigidBody);
 
+	downRaySource = xform.getOrigin() + btVector3(0.0, 0.1, 0.0);
+	downRayTarget = downRaySource + down * btScalar(1.1);
+
 	rayCallback.m_closestHitFraction = 1.0;
-	collisionWorld->rayTest(m_raySource, m_rayTarget, rayCallback);
+	collisionWorld->rayTest(downRaySource, downRayTarget, rayCallback);
 
 	if (rayCallback.hasHit()) {
-		m_rayLambda = rayCallback.m_closestHitFraction;
+		downRayLambda = rayCallback.m_closestHitFraction;
 	}
 	else {
-		m_rayLambda = 1.0;
+		downRayLambda = 1.0;
 	}
-	/*
-	btVector3 linearVelocity = m_rigidBody->getLinearVelocity();
-	linearVelocity *= btVector3(0.2, 1, 0.2);
-	m_rigidBody->setLinearVelocity(linearVelocity);
-	*/
+
+	ClosestNotMe rayCallback2(m_rigidBody);
+
+	btVector3 localLook(0.0f, 0.0f, 1.0f);
+	btTransform transform = m_rigidBody->getCenterOfMassTransform();
+	btQuaternion rotation = transform.getRotation();
+	btVector3 currentLook = quatRotate(rotation, localLook);
+	
+	forwardRaySource = xform.getOrigin() + btVector3(0, 5, 0);
+	forwardRayTarget = forwardRaySource + currentLook * range;
+
+	rayCallback2.m_closestHitFraction = 1.0;
+	collisionWorld->rayTest(forwardRaySource, forwardRayTarget, rayCallback2);
+
+	if (rayCallback2.hasHit()) {
+		punchTarget = rayCallback2.m_collisionObject;
+	}
+	else {
+		forwardRayLambda = 1.0;
+		punchTarget = nullptr;
+	}
 }
 
 void DynamicCharacterController::playerStep(const btCollisionWorld*, btVector3& dir) {
-	/*
-	btTransform xform;
-	m_rigidBody->getMotionState()->getWorldTransform(xform);
-
-	btVector3 linearVelocity = m_rigidBody->getLinearVelocity();
-	btScalar walkSpeed = 30;
-
-	setLookDirection(m_rigidBody, dir);
-
-	btVector3 velocity = dir * walkSpeed;
-	velocity.setY(m_rigidBody->getLinearVelocity().getY());
-	m_rigidBody->setLinearVelocity(velocity);
-
-	m_rigidBody->getMotionState()->setWorldTransform(xform);
-	*/
-
-	setLookDirection(m_rigidBody, dir);
+	setLookDirection(dir);
 	dir.setY(0);
-	m_rigidBody->applyCentralForce(dir * 10);
+	m_rigidBody->applyCentralForce(dir * 5);
 }
 
 bool DynamicCharacterController::canJump() const {
@@ -130,7 +128,7 @@ void DynamicCharacterController::jump() {
 }
 
 bool DynamicCharacterController::onGround() const {
-	return m_rayLambda < btScalar(1.0);
+	return downRayLambda < btScalar(1.0);
 }
 
 void DynamicCharacterController::warp(const btVector3& origin) {
@@ -140,15 +138,15 @@ void DynamicCharacterController::registerPairCacheAndDispatcher(btOverlappingPai
 
 }
 
-void DynamicCharacterController::setLookDirection(btRigidBody* body, const btVector3& newLook) {
+void DynamicCharacterController::setLookDirection(const btVector3& newLook) {
 	btVector3 localLook(0.0f, 0.0f, 1.0f);
 	btVector3 rotationAxis(0.0f, 1.0f, 0.0f);
-
+	
 	// compute currentLook and angle
-	btTransform transform = body->getCenterOfMassTransform();
+	btTransform transform = m_rigidBody->getCenterOfMassTransform();
 	btQuaternion rotation = transform.getRotation();
 	btVector3 currentLook = quatRotate(rotation, localLook);
-	btScalar angle = currentLook.angle(newLook);
+	btScalar angle = currentLook.angle(newLook.normalized());
 
 	// compute new rotation
 	btQuaternion deltaRotation(rotationAxis, angle);
@@ -156,5 +154,5 @@ void DynamicCharacterController::setLookDirection(btRigidBody* body, const btVec
 
 	// apply new rotation
 	transform.setRotation(newRotation);
-	body->setCenterOfMassTransform(transform);
+	m_rigidBody->setCenterOfMassTransform(transform);
 }

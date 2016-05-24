@@ -1,30 +1,21 @@
 #include "Player.h"
 
+const btVector3 Player::P1_SPAWN_POINT = btVector3(-60, 130, -60);
+const btVector3 Player::P2_SPAWN_POINT = btVector3(-55, 120, 70);
+const btVector3 Player::P3_SPAWN_POINT = btVector3(55, 110, 25);
+const btVector3 Player::P4_SPAWN_POINT = btVector3(80, 100, -40);
+
 Player::Player(btCollisionObject* body, uint32_t id, uint32_t lives) : controller_(new DynamicCharacterController(body)), id_(id), lives_(lives), currHat_(nullptr) {
+	setSpawn();
+}
+
+Player::~Player() {
+	delete controller_;
 }
 
 int Player::getId() {
 	return id_;
 }
-
-/*
-Player* Player::createNewPlayer(ClientId clientId, btCollisionShape* collisionShape) {
-	btScalar mass = 1.0;
-	btVector3 localInertia(0, 0, 0);
-	//btCollisionShape* collisionShape = new btBoxShape(btVector3(1, 1, 1));
-	collisionShape->calculateLocalInertia(mass, localInertia);
-
-	btTransform startTransform;
-	startTransform.setIdentity();
-	startTransform.setOrigin(btVector3(clientId, 10, 0));
-
-	btMotionState* motionState = new btDefaultMotionState(startTransform);
-
-	btRigidBodyConstructionInfo info(mass, motionState, collisionShape, localInertia);
-	
-	return new Player(info,clientId);
-}
-*/
 
 void Player::setLives(unsigned int lives) {
 	lives_ = lives;
@@ -33,13 +24,29 @@ void Player::setLives(unsigned int lives) {
 unsigned int Player::getLives() {
 	return lives_;
 }
-void Player::setSpawn(int x, int y, int z) {
+void Player::setSpawn() {
 	btTransform trans;
 	trans.setIdentity();
-	trans.setOrigin(btVector3(x, y, z));
 
+	switch (id_) {
+	case 1:
+		trans.setOrigin(P1_SPAWN_POINT);
+		break;
+	case 2:
+		trans.setOrigin(P2_SPAWN_POINT);
+		break;
+	case 3:
+		trans.setOrigin(P3_SPAWN_POINT);
+		break;
+	case 4:
+		trans.setOrigin(P4_SPAWN_POINT);
+		break;
+	default:
+		std::cerr << "ERROR: Invalid Player Id: " << id_ << std::endl;
+	}
 	this->getController()->getRigidBody()->setCenterOfMassTransform(trans);
 	this->getController()->getRigidBody()->setLinearVelocity(btVector3(0, 0, 0));
+
 }
 
 Hat * Player::setHat(Hat * hat) {

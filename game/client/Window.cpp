@@ -211,7 +211,27 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second);
 		player->changeState(PlayerState::_standing);  //REFACTOR TO USE SERVER
 
-		if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
+		if (axes[LEFT_STICK_X] > POS_AXIS_TILT &&
+			axes[LEFT_STICK_Y] < NEG_AXIS_TILT) {
+			addMoveEvent(message, protos::Event_Direction_FR);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
+		}
+		else if (axes[LEFT_STICK_X] > POS_AXIS_TILT &&
+			axes[LEFT_STICK_Y] > POS_AXIS_TILT) {
+			addMoveEvent(message, protos::Event_Direction_BR);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
+		}
+		else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT &&
+			axes[LEFT_STICK_Y] > POS_AXIS_TILT) {
+			addMoveEvent(message, protos::Event_Direction_BL);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
+		}
+		else if (axes[LEFT_STICK_X] < NEG_AXIS_TILT &&
+			axes[LEFT_STICK_Y] < NEG_AXIS_TILT) {
+			addMoveEvent(message, protos::Event_Direction_FL);
+			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
+		}
+		else if (axes[LEFT_STICK_X] > POS_AXIS_TILT) { // Right
 			addMoveEvent(message, protos::Event_Direction_RIGHT);
 			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
@@ -219,8 +239,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			addMoveEvent(message, protos::Event_Direction_LEFT);
 			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
-
-		if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) { // Down
+		else if (axes[LEFT_STICK_Y] > POS_AXIS_TILT) { // Down
 			addMoveEvent(message, protos::Event_Direction_BACKWARD);
 			player->changeState(PlayerState::_running);  //REFACTOR TO USE SERVER
 		}
@@ -243,19 +262,16 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		else if (axes[RIGHT_STICK_X] < NEG_AXIS_TILT) {
 			fprintf(stderr, "Going Up\n");
 			Globals::cam.pitch(1);
-			//Globals::drawData.view = Globals::cam.getView();
 		}
 
 		if (axes[RIGHT_STICK_Y] > POS_AXIS_TILT) {
 			fprintf(stderr, "Going Right\n");
 			Globals::cam.yaw(0);
-			//Globals::drawData.view = Globals::cam.getView();
 		}
 
 		else if (axes[RIGHT_STICK_Y] < NEG_AXIS_TILT) {
 			fprintf(stderr, "Going Left\n");
 			Globals::cam.yaw(1);
-			//Globals::drawData.view = Globals::cam.getView();
 		}
 
 
@@ -271,15 +287,27 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			event->set_type(protos::Event_Type_EQUIP);
 			buttonState[BUTTON_B] = true;
 		}
+		if (buttons[BUTTON_X] == GLFW_PRESS && !buttonState[BUTTON_X]) {
+			auto* event = message.add_event();
+			event->set_clientid(Globals::ID);
+			event->set_type(protos::Event_Type_PUNCH);
+			buttonState[BUTTON_X] = true;
+		}
 		if (buttons[BUTTON_Y] == GLFW_PRESS) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_DQUIP);
 		}
+		if (buttons[BUTTON_LB] == GLFW_PRESS && !buttonState[BUTTON_LB]) {
+			auto* event = message.add_event();
+			event->set_clientid(Globals::ID);
+			event->set_type(protos::Event_Type_HATL);
+			buttonState[BUTTON_LB] = true;
+		}
 		if (buttons[BUTTON_RB] == GLFW_PRESS && !buttonState[BUTTON_RB]) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
-			event->set_type(protos::Event_Type_SHOOT);
+			event->set_type(protos::Event_Type_HATR);
 			buttonState[BUTTON_RB] = true;
 		}
 
@@ -289,8 +317,14 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		if (buttons[BUTTON_B] == GLFW_RELEASE) {
 			buttonState[BUTTON_B] = false;
 		}
+		if (buttons[BUTTON_X] == GLFW_RELEASE) {
+			buttonState[BUTTON_X] = false;
+		}
 		if (buttons[BUTTON_Y] == GLFW_RELEASE) {
 			buttonState[BUTTON_Y] = false;
+		}
+		if (buttons[BUTTON_LB] == GLFW_RELEASE) {
+			buttonState[BUTTON_LB] = false;
 		}
 		if (buttons[BUTTON_RB] == GLFW_RELEASE) {
 			buttonState[BUTTON_RB] = false;
@@ -320,11 +354,9 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		}
 	}
 
-
 	if (message.event_size()) {
 		sendMessage(Globals::socket, message);
 	}
-
 }
 
 void Window::addMoveEvent(protos::Message& message, protos::Event_Direction direction) {
@@ -345,8 +377,8 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	std::unordered_map<std::uint32_t, PlayerAnim*> playerStateMap;
 	switch (modelType) {
 		case _Player:
-			playerHatMap[HatType::_wizard] = new Hat(Globals::gameObjects.modelMap[_Wizard]);
-			playerHatMap[HatType::_crate] = new Hat(Globals::gameObjects.modelMap[_Crate]);
+			playerHatMap[WIZARD_HAT] = new Hat(Globals::gameObjects.modelMap[_Wizard]);
+			playerHatMap[CRATE] = new Hat(Globals::gameObjects.modelMap[_Crate]);
 			playerStateMap[PlayerState::_standing] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Standing]));
 			playerStateMap[PlayerState::_running] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Running]));
 			playerStateMap[PlayerState::_punching] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Punching]));

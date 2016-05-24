@@ -1,11 +1,17 @@
 #include "Game.h"
-
 #include "Serialize\BulletWorldImporter\btBulletWorldImporter.h"
 
 using namespace std::chrono;
 using namespace std::this_thread;
 
+std::deque<uint32_t> Game::availableIds;
+
 Game::Game() {
+	idGen_ = 1;
+	availableIds.emplace_back(Player::P1_ID);
+	availableIds.emplace_back(Player::P2_ID);
+	availableIds.emplace_back(Player::P3_ID);
+	availableIds.emplace_back(Player::P4_ID);
 }
 
 Game::~Game() {
@@ -14,22 +20,28 @@ Game::~Game() {
 
 void Game::join(client_ptr client) {
 	clients_.insert(client);
-	//TODO CLIENTID IS AN EMPTY IDEA
-	idGen_ = idGen_>client->getClientId() ? idGen_ : client->getClientId();
 }
 
 void Game::remove(client_ptr client) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	ClientId clientId = client->getClientId();
 	clients_.erase(client);
+	availableIds.emplace_back(clientId);
 	auto iter = playerMap_.find(clientId);
 	if (iter != playerMap_.end()) {
+		auto* action = iter->second->getController();
+		auto* body = action->getRigidBody();
+		world_->removeAction(action);
+		world_->removeRigidBody(body);
 		playerMap_.erase(iter);
+		delete iter->second;
 	}
 }
+
 unsigned int Game::generateId() {
 	return ++idGen_;
 }
+
 void Game::deliver(protos::Message msg) {
 	queueLock_.lock();
 	messageQueue_.push_back(msg);
@@ -70,7 +82,7 @@ void Game::initialize() {
 
 void Game::startGameLoop() {
 	// TODO(Atyansh): Make this part of config settings 
-	milliseconds interval = milliseconds(33);
+	milliseconds interval = milliseconds(1000/30);
 	int frameCounter = 0;
 	int maxHat = 2;
 	int hatP = 0;
@@ -78,7 +90,6 @@ void Game::startGameLoop() {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
-		world_->stepSimulation(1.f / 30.f, 10);
 
 		queueLock_.lock();
 		while (!messageQueue_.empty()) {
@@ -116,9 +127,14 @@ void Game::startGameLoop() {
 				else if (event.type() == protos::Event_Type_HATL) {
 					handleSecondaryHatLogic(&event);
 				}
+				else if (event.type() == protos::Event_Type_PUNCH) {
+					handlePunchLogic(&event);
+				}
 			}
+
 			messageQueue_.pop_front();
 		}
+		world_->stepSimulation(1.f / 15.f, 10);
 		queueLock_.unlock();
 
 		handleReSpawnLogic();
@@ -166,12 +182,15 @@ void Game::handleDquipLogic(const protos::Event* event) {
 	hatSet_.emplace(oHat);
 	world_->addRigidBody(oHat);
 }
+
 void Game::handleSpawnLogic(const protos::Event* event) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	std::cerr << "SPAWN HAPPENED" << std::endl;
 	Player* player = new Player(playerBody_, event->clientid(), 3);
 	playerMap_[event->clientid()] = player;
-	world_->addRigidBody(player->getController()->getRigidBody());
+	btRigidBody* body = player->getController()->getRigidBody();
+	playerSet_.emplace(body);
+	world_->addRigidBody(body);
 	world_->addAction(player->getController());
 }
 
@@ -182,39 +201,43 @@ void Game::handleMoveLogic(const protos::Event* event) {
 	double y = event->cameravector(1);
 	double z = event->cameravector(2);
 
+	btVector3 f(-x, -y, -z);
+	btVector3 b(x, y, z);
+	btVector3 l(-z, y, x);
+	btVector3 r(z, y, -x);
+
 	switch (event->direction()) {
-	case (protos::Event_Direction_RIGHT) :
-		std::cerr << "MOVE RIGHT" << std::endl;
-		player->getController()->playerStep(world_, btVector3(z, -y, -x));
-		//player->applyCentralForce(btVector3(10, 0, 0));
+	case (protos::Event_Direction_RIGHT):
+		player->getController()->playerStep(world_, r);
 		break;
-	case (protos::Event_Direction_LEFT) :
-		std::cerr << "MOVE LEFT" << std::endl;
-		player->getController()->playerStep(world_, btVector3(-z, y, x));
-		//player->applyCentralForce(btVector3(-10, 0, 0));
+	case (protos::Event_Direction_LEFT):
+		player->getController()->playerStep(world_, l);
 		break;
-	case (protos::Event_Direction_UP) :
-		std::cerr << "MOVE UP" << std::endl;
-		//player->applyCentralForce(btVector3(0, 10, 0));
+	case (protos::Event_Direction_UP):
 		player->getController()->getRigidBody()->applyCentralForce(btVector3(0, 10, 0));
 		break;
-	case (protos::Event_Direction_DOWN) :
-		std::cerr << "MOVE DOWN" << std::endl;
-		//player->applyCentralForce(btVector3(0, -10, 0));
+	case (protos::Event_Direction_DOWN):
 		player->getController()->getRigidBody()->applyCentralForce(btVector3(0, -10, 0));
 		break;
-	case (protos::Event_Direction_FORWARD) :
-		std::cerr << "MOVE FORWARD" << std::endl;
-		player->getController()->playerStep(world_, btVector3(-x, -y, -z));
-		//player->applyCentralForce(btVector3(0, 0, -10));
+	case (protos::Event_Direction_FORWARD):
+		player->getController()->playerStep(world_, f);
 		break;
-	case (protos::Event_Direction_BACKWARD) :
-		std::cerr << "MOVE BACKWARD" << std::endl;
-		player->getController()->playerStep(world_, btVector3(x, y, z));
-		//player->applyCentralForce(btVector3(0, 0, 10));
+	case (protos::Event_Direction_BACKWARD):
+		player->getController()->playerStep(world_, b);
+		break;
+	case (protos::Event_Direction_FL):
+		player->getController()->playerStep(world_, (f+l).normalized());
+		break;
+	case (protos::Event_Direction_BR):
+		player->getController()->playerStep(world_, (b+r).normalized());
+		break;
+	case (protos::Event_Direction_BL):
+		player->getController()->playerStep(world_, (b+l).normalized());
+		break;
+	case (protos::Event_Direction_FR):
+		player->getController()->playerStep(world_, (f+r).normalized());
 		break;
 	}
-	std::cerr << "x: " << x << "\ty: " << y << "\tz:" << z << std::endl;
 }
 
 void Game::handleJumpLogic(const protos::Event* event) {
@@ -235,7 +258,10 @@ void Game::sendStateToClients() {
 		transform.getOpenGLMatrix(glm);
 
 		auto* gameObject = message.add_gameobject();
-		gameObject->set_hattype(pair.second->getHat() != nullptr);
+
+		Hat* hat = pair.second->getHat();
+
+		gameObject->set_hattype(pair.second->getHatType());
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
 		gameObject->set_id(pair.first);
 		for (auto v : glm) {
@@ -328,7 +354,6 @@ bool Game::canEquip(Player * playa, Hat * hata) {
 	return equipDistance>=playa->getController()->getRigidBody()->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition());
 }
 
-
 void Game::handleEquipLogic(const protos::Event* event) {
 	Player * player = playerMap_[event->clientid()];
 	std::cout << event->clientid() << " Attempting to equip hat\n";
@@ -361,6 +386,28 @@ void Game::handleEquipLogic(const protos::Event* event) {
 	}
 }
 
+void Game::handlePunchLogic(const protos::Event* event) {
+	Player* player = playerMap_[event->clientid()];
+
+	auto position = player->getController()->getRigidBody()->getCenterOfMassPosition();
+	std::cerr << position.getX() << " " << position.getY() << " " << position.getZ();
+
+	btCollisionObject* target = player->getController()->getPunchTarget();
+
+	if (target) {
+		std::cerr << "SOME TARGET" << std::endl;
+		auto search = playerSet_.find(target);
+		if (search != playerSet_.end()) {
+			std::cerr << "PUNCH DETECTED" << std::endl;
+			btVector3 localLook(0.0f, 0.0f, 1.0f);
+			btTransform transform = player->getController()->getRigidBody()->getCenterOfMassTransform();
+			btQuaternion rotation = transform.getRotation();
+			btVector3 currentLook = quatRotate(rotation, localLook);
+			((btRigidBody*)target)->applyCentralImpulse(currentLook.normalized() * 2);
+			// Throw Punch event to clients
+		}
+	}
+}
 
 void Game::handlePrimaryHatLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];

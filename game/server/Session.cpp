@@ -11,7 +11,9 @@ Session::Session(tcp::socket socket, Game& game)
 void Session::start() {
 	game_.join(shared_from_this());
 
-	int clientId = game_.size();
+	int clientId = game_.availableIds.front();
+	setClientId(clientId);
+	game_.availableIds.pop_front();
 	protos::Message message;
 	auto* event = message.add_event();
 
@@ -44,6 +46,7 @@ void Session::do_read_header() {
 			do_read_body(length);
 		}
 		else {
+			std::cerr << "REMOVING CLIENT" << std::endl;
 			game_.remove(shared_from_this());
 		}
 	});
@@ -63,6 +66,7 @@ void Session::do_read_body(size_t length) {
 			do_read_header();
 		}
 		else {
+			std::cerr << "REMOVING CLIENT" << std::endl;
 			game_.remove(shared_from_this());
 		}
 	});

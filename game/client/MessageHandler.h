@@ -3,10 +3,9 @@
 #include <deque>
 #include <mutex>
 
-#include "util\Protos.pb.h"
+#include "util\HatType.h"
 #include "Globals.h"
 #include "Window.h"
-
 
 class MessageHandler {
 public:
