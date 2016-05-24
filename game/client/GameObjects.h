@@ -16,8 +16,11 @@ enum Models {
 	_Player_Punching,
 	_Mango,
 	_Crate,
-	_Wizard,
-	_HardHat
+	_WizardHat,
+	_HardHat,
+	_BearHat,
+	_PropellerHat,
+	_deerstalkerHat
 };
 
 enum Shaders {

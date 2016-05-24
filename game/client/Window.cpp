@@ -377,7 +377,7 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 	std::unordered_map<std::uint32_t, PlayerAnim*> playerStateMap;
 	switch (modelType) {
 		case _Player:
-			playerHatMap[WIZARD_HAT] = new Hat(Globals::gameObjects.modelMap[_Wizard]);
+			playerHatMap[WIZARD_HAT] = new Hat(Globals::gameObjects.modelMap[_WizardHat]);
 			playerHatMap[CRATE] = new Hat(Globals::gameObjects.modelMap[_Crate]);
 			playerStateMap[PlayerState::_standing] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Standing]));
 			playerStateMap[PlayerState::_running] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Running]));

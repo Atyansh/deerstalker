@@ -48,8 +48,11 @@ void GameObjects::loadGameObjects() {
 	modelMap[_Player_Running] = new PlayerModel(playerRunPath, shaderMap[_LtShader], PlayerState::_running);
 	modelMap[_Player_Punching] = new PlayerModel(playerPunchingPath, shaderMap[_LtShader], PlayerState::_punching);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
-	modelMap[_Wizard] = new Model(wizardPath, shaderMap[_LtShader]);
+	modelMap[_WizardHat] = new Model(wizardPath, shaderMap[_LtShader]);
 	modelMap[_HardHat] = new Model(hardHatPath, shaderMap[_LtShader]);
+	modelMap[_PropellerHat] = new Model(propellerHatPath, shaderMap[_LtShader]);
+	modelMap[_BearHat] = new Model(bearHatPath, shaderMap[_LtShader]);
+	modelMap[_deerstalkerHat] = new Model(deerstalkerHatPath, shaderMap[_LtShader]);
 
 	
 	guiMap[_Background] = new GuiItem(backgroundPath, shaderMap[_GShader], 60, 34, 0, 0);
