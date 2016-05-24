@@ -5,8 +5,8 @@
 #include "DynamicCharacterController.h"
 
 DynamicCharacterController::DynamicCharacterController(btCollisionObject* body) {
-	m_rayLambda = 1.0;
-	m_rayLambda = 1.0;
+	downRayLambda = 1.0;
+	forwardRayLambda = 1.0;
 	m_shape = body->getCollisionShape();
 	m_rigidBody = NULL;
 	setup(100.0, 1.0, 20.0);
@@ -51,10 +51,6 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
 	down.normalize();
 	forward.normalize();
 
-	m_raySource = xform.getOrigin() + btVector3(0.0, 0.1, 0.0);
-
-	m_rayTarget = m_raySource + down * btScalar(1.1);
-
 	class ClosestNotMe : public btCollisionWorld::ClosestRayResultCallback {
 	public:
 		ClosestNotMe(btRigidBody* me) : btCollisionWorld::ClosestRayResultCallback(btVector3(0.0, 0.0, 0.0), btVector3(0.0, 0.0, 0.0)) {
@@ -74,15 +70,34 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
 
 	ClosestNotMe rayCallback(m_rigidBody);
 
+	downRaySource = xform.getOrigin() + btVector3(0.0, 0.1, 0.0);
+	downRayTarget = downRaySource + down * btScalar(1.1);
+
 	rayCallback.m_closestHitFraction = 1.0;
-	collisionWorld->rayTest(m_raySource, m_rayTarget, rayCallback);
+	collisionWorld->rayTest(downRaySource, downRayTarget, rayCallback);
 
 	if (rayCallback.hasHit()) {
-		m_rayLambda = rayCallback.m_closestHitFraction;
+		downRayLambda = rayCallback.m_closestHitFraction;
 	}
 	else {
-		m_rayLambda = 1.0;
+		downRayLambda = 1.0;
 	}
+
+	forwardRaySource = xform.getOrigin();
+	forwardRayTarget = downRaySource + forward * range * btScalar(1.1);
+
+	rayCallback.m_closestHitFraction = 1.0;
+	collisionWorld->rayTest(forwardRaySource, forwardRayTarget, rayCallback);
+
+	if (rayCallback.hasHit()) {
+		forwardRayLambda = rayCallback.m_closestHitFraction;
+		punchTarget = rayCallback.m_collisionObject;
+	}
+	else {
+		forwardRayLambda = 1.0;
+		punchTarget = nullptr;
+	}
+
 	/*
 	btVector3 linearVelocity = m_rigidBody->getLinearVelocity();
 	linearVelocity *= btVector3(0.2, 1, 0.2);
@@ -130,7 +145,7 @@ void DynamicCharacterController::jump() {
 }
 
 bool DynamicCharacterController::onGround() const {
-	return m_rayLambda < btScalar(1.0);
+	return downRayLambda < btScalar(1.0);
 }
 
 void DynamicCharacterController::warp(const btVector3& origin) {

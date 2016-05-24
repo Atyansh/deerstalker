@@ -139,22 +139,22 @@ void protobuf_AddDesc_Protos_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\014Protos.proto\022\006protos\"\341\002\n\005Event\022\n\n\002id\030\001"
+    "\n\014Protos.proto\022\006protos\"\354\002\n\005Event\022\n\n\002id\030\001"
     " \001(\005\022 \n\004type\030\002 \001(\0162\022.protos.Event.Type\022\020"
     "\n\010clientID\030\003 \001(\005\022\r\n\005hatID\030\004 \001(\005\022\020\n\010bulle"
     "tID\030\005 \001(\005\022*\n\tdirection\030\006 \001(\0162\027.protos.Ev"
-    "ent.Direction\022\024\n\014cameraVector\030\007 \003(\001\"f\n\004T"
+    "ent.Direction\022\024\n\014cameraVector\030\007 \003(\001\"q\n\004T"
     "ype\022\t\n\005SPAWN\020\001\022\010\n\004MOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006AS"
     "SIGN\020\004\022\t\n\005EQUIP\020\005\022\t\n\005DQUIP\020\006\022\t\n\005SHOOT\020\007\022"
-    "\010\n\004HATR\020\010\022\010\n\004HATL\020\t\"M\n\tDirection\022\006\n\002UP\020\001"
-    "\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWA"
-    "RD\020\005\022\014\n\010BACKWARD\020\006\"\367\001\n\007Message\022\n\n\002id\030\001 \001"
-    "(\005\022\034\n\005event\030\002 \003(\0132\r.protos.Event\022.\n\ngame"
-    "Object\030\003 \003(\0132\032.protos.Message.GameObject"
-    "\032\221\001\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 "
-    "\003(\001\022-\n\004type\030\003 \001(\0162\037.protos.Message.GameO"
-    "bject.Type\022\017\n\007hatType\030\004 \001(\005\"\'\n\004Type\022\n\n\006P"
-    "LAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003", 628);
+    "\010\n\004HATR\020\010\022\010\n\004HATL\020\t\022\t\n\005PUNCH\020\n\"M\n\tDirect"
+    "ion\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT"
+    "\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\"\367\001\n\007Messag"
+    "e\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132\r.protos.Ev"
+    "ent\022.\n\ngameObject\030\003 \003(\0132\032.protos.Message"
+    ".GameObject\032\221\001\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016"
+    "\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162\037.protos.Me"
+    "ssage.GameObject.Type\022\017\n\007hatType\030\004 \001(\005\"\'"
+    "\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003", 639);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -190,6 +190,7 @@ bool Event_Type_IsValid(int value) {
     case 7:
     case 8:
     case 9:
+    case 10:
       return true;
     default:
       return false;
@@ -206,6 +207,7 @@ const Event_Type Event::DQUIP;
 const Event_Type Event::SHOOT;
 const Event_Type Event::HATR;
 const Event_Type Event::HATL;
+const Event_Type Event::PUNCH;
 const Event_Type Event::Type_MIN;
 const Event_Type Event::Type_MAX;
 const int Event::Type_ARRAYSIZE;

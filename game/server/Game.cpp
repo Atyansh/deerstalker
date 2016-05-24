@@ -27,9 +27,11 @@ void Game::remove(client_ptr client) {
 		playerMap_.erase(iter);
 	}
 }
+
 unsigned int Game::generateId() {
 	return ++idGen_;
 }
+
 void Game::deliver(protos::Message msg) {
 	queueLock_.lock();
 	messageQueue_.push_back(msg);
@@ -105,6 +107,9 @@ void Game::startGameLoop() {
 				else if (event.type() == protos::Event_Type_HATL) {
 					handleSecondaryHatLogic(&event);
 				}
+				else if (event.type() == protos::Event_Type_PUNCH) {
+					handlePunchLogic(&event);
+				}
 			}
 			messageQueue_.pop_front();
 		}
@@ -155,12 +160,15 @@ void Game::handleDquipLogic(const protos::Event* event) {
 	hatSet_.emplace(oHat);
 	world_->addRigidBody(oHat);
 }
+
 void Game::handleSpawnLogic(const protos::Event* event) {
 	std::lock_guard<std::mutex> lock(playerMapLock_);
 	std::cerr << "SPAWN HAPPENED" << std::endl;
 	Player* player = new Player(playerBody_, event->clientid(), 3);
 	playerMap_[event->clientid()] = player;
-	world_->addRigidBody(player->getController()->getRigidBody());
+	btRigidBody* body = player->getController()->getRigidBody();
+	playerSet_.emplace(body);
+	world_->addRigidBody(body);
 	world_->addAction(player->getController());
 }
 
@@ -224,7 +232,10 @@ void Game::sendStateToClients() {
 		transform.getOpenGLMatrix(glm);
 
 		auto* gameObject = message.add_gameobject();
-		gameObject->set_hattype(pair.second->getHat() != nullptr);
+
+		Hat* hat = pair.second->getHat();
+
+		gameObject->set_hattype(pair.second->getHatType());
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
 		gameObject->set_id(pair.first);
 		for (auto v : glm) {
@@ -317,7 +328,6 @@ bool Game::canEquip(Player * playa, Hat * hata) {
 	return equipDistance>=playa->getController()->getRigidBody()->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition());
 }
 
-
 void Game::handleEquipLogic(const protos::Event* event) {
 	Player * player = playerMap_[event->clientid()];
 	std::cout << event->clientid() << " Attempting to equip hat\n";
@@ -350,6 +360,17 @@ void Game::handleEquipLogic(const protos::Event* event) {
 	}
 }
 
+void Game::handlePunchLogic(const protos::Event* event) {
+	Player* player = playerMap_[event->clientid()];
+	btCollisionObject* target = player->getController()->getPunchTarget();
+
+	if (target) {
+		auto search = playerSet_.find(target);
+		if (search != playerSet_.end()) {
+			std::cerr << "PUNCH DETECTED" << std::endl;
+		}
+	}
+}
 
 void Game::handlePrimaryHatLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];

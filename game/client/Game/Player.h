@@ -6,6 +6,7 @@
 #include "PlayerAnim.h"
 //#include "client\Graphics\Model.h"
 #include "Hat.h"
+#include "util\HatType.h"
 
 class Player : public SMatrixTransform {
 	private:

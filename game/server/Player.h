@@ -20,7 +20,13 @@ public:
 
 
 	Hat*  setHat(Hat * hat);
-	Hat * getHat() { return currHat_; };
+	Hat* getHat() {
+		return currHat_;
+	}
+
+	HatType getHatType() {
+		return getHat() == nullptr ? NO_HAT : getHat()->getHatType();
+	}
 
 	void setSpawn(int x, int y, int z);
 	void setProjectile(btRigidBody * body, unsigned int baseVelocity);

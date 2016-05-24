@@ -8,7 +8,7 @@ Player::Player(unordered_map<std::uint32_t, PlayerAnim*> playerModels, unordered
 	player = new SMatrixTransform();
 	this->hatModels = hatModels;
 	this->playerModels = playerModels;
-	currHat = _none;
+	currHat = NO_HAT;
 	currState = _standing;
 
 	//add models to coresponding transform matrix
@@ -49,7 +49,7 @@ void Player::createPlayer() {
 }
 
 void Player::detachHat() {
-	if (currHat == _none) {
+	if (currHat == NO_HAT) {
 		return;
 	}
 
@@ -57,7 +57,7 @@ void Player::detachHat() {
 
 	if (value != this->hatModels.end()) {
 		value->second->setVisible(false);
-		currHat = _none;
+		currHat = NO_HAT;
 	}
 }
 
