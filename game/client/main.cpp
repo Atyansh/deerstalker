@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Create the GLFW window
-	window = Window::create_window(640, 480);
+	window = Window::create_window(1920, 1080);
 	// Print OpenGL and GLSL versions
 	print_versions();
 	// Setup callbacks

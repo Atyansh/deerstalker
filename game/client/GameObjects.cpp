@@ -9,6 +9,9 @@ const char* playerRunPath = "Assets/FBX/running.fbx";
 const char* playerPunchingPath = "Assets/FBX/punching.fbx";
 const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 const char* hardHatPath = "Assets/OBJ/Hard_Hat/HardHat.obj";
+const char* propellerHatPath = "Assets/OBJ/PropellerHat/PropellerHat.obj";
+const char* bearHatPath = "Assets/OBJ/BearHat/BearHat.obj";
+const char* deerstalkerHatPath = "Assets/OBJ/DeerstalkerHat/DeerstalkerHat.obj";
 
 string skyboxDirectory = "Assets/Cubemap";
 string backgroundPath = "Assets/UI/DeerMenu.jpg";
@@ -49,9 +52,9 @@ void GameObjects::loadGameObjects() {
 	modelMap[_HardHat] = new Model(hardHatPath, shaderMap[_LtShader]);
 
 	
-	guiMap[_Background] = new GuiItem(backgroundPath, shaderMap[_GShader], 46, 34, 0, 0);
-	guiMap[_LobbyBG] = new GuiItem(lobbyPath, shaderMap[_GShader], 46, 34, 0, 0);
-	guiMap[_EndGameBG] = new GuiItem(endPath, shaderMap[_GShader], 46, 34, 0, 0);
+	guiMap[_Background] = new GuiItem(backgroundPath, shaderMap[_GShader], 60, 34, 0, 0);
+	guiMap[_LobbyBG] = new GuiItem(lobbyPath, shaderMap[_GShader], 60, 34, 0, 0);
+	guiMap[_EndGameBG] = new GuiItem(endPath, shaderMap[_GShader], 60, 34, 0, 0);
 
 	generateWorld(skyboxDirectory);
 }
