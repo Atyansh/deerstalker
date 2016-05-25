@@ -76,9 +76,9 @@ void setup_opengl_settings() {
 	glEnable(GL_NORMALIZE);
 
 	// Setup materials
-	setup_materials();
+	// setup_materials();
 	// Setup lighting
-	setup_lighting();
+	// setup_lighting();
 }
 
 void print_versions() {
