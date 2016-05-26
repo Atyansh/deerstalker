@@ -33,10 +33,10 @@ void GameObjects::loadGameObjects() {
 	};
 
 	LightShader* lightShader = new LightShader(Globals::cam.getPosition(), "Shaders/shader_lighting.vert", "Shaders/shader_lighting.frag");
-	lightShader->addDirectionalLight(glm::vec3(0.f, 10.0f, -10.f), glm::vec3(0.6f), glm::vec3(0.4f), glm::vec3(0.5f));
+	lightShader->addDirectionalLight(glm::vec3(0.f, 1.0f, 0.f), glm::vec3(0.7f), glm::vec3(0.4f));
 	//lightShader->addDirectionalLight(glm::vec3(0.2f, 10.0f, 0.f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
-	//lightShader->addPointLight(pointLightPositions[0], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
-	//lightShader->addPointLight(pointLightPositions[1], glm::vec3(0.05f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+	//lightShader->addPointLight(pointLightPositions[0], glm::vec3(.8f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
+	//lightShader->addPointLight(pointLightPositions[1], glm::vec3(.8f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 
 	Shader *guiShader = new Shader("Shaders/guiItem.vert", "Shaders/guiItem.frag");
 
