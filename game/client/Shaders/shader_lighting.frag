@@ -27,7 +27,7 @@ struct PointLight {
     float linear;
     float quadratic;
 	
-	vec3 diffuse;
+    vec3 diffuse;
     vec3 specular;
 };
 
@@ -41,7 +41,7 @@ struct SpotLight {
     float linear;
     float quadratic;
   
-	vec3 diffuse;
+    vec3 diffuse;
     vec3 specular;       
 };
 
