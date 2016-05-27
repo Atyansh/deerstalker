@@ -12,7 +12,6 @@ private:
 	struct DirLight {
 		glm::vec3 direction;
 
-		glm::vec3 ambient;
 		glm::vec3 diffuse;
 		glm::vec3 specular;
 	};
@@ -24,7 +23,6 @@ private:
 		float linear;
 		float quadratic;
 
-		glm::vec3 ambient;
 		glm::vec3 diffuse;
 		glm::vec3 specular;
 	};
@@ -39,7 +37,6 @@ private:
 		float linear;
 		float quadratic;
 
-		glm::vec3 ambient;
 		glm::vec3 diffuse;
 		glm::vec3 specular;
 	};
@@ -60,11 +57,11 @@ public:
 	~LightShader();
 
 	void setViewPos(glm::vec3 viewPos);
-	void addDirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
-	void addPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, 
+	void addDirectionalLight(glm::vec3 direction, glm::vec3 diffuse, glm::vec3 specular);
+	void addPointLight(glm::vec3 position, glm::vec3 diffuse, glm::vec3 specular, 
 					   float constant, float linear, float quadratic);
 	void addSpotLight(glm::vec3 position, glm::vec3 direction, float cutOff, float outerCutOff, 
-					  glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, 
+					  glm::vec3 diffuse, glm::vec3 specular, 
 					  float constant, float linear, float quadratic);
 
 	virtual void bind();

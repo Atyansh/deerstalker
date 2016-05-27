@@ -156,15 +156,18 @@ void Model::processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> 
 
 			if (diffuseMaps.size() == 0 && specularMaps.size() == 0) {
 				aiColor3D color(0.f, 0.f, 0.f);
-				float shininess = 0.0f;
 				material->Get(AI_MATKEY_COLOR_AMBIENT, color);
 				materialNoTex.ambient = glm::vec3(color[0], color[1], color[2]);
 				material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
 				materialNoTex.diffuse = glm::vec3(color[0], color[1], color[2]);
 				material->Get(AI_MATKEY_COLOR_SPECULAR, color);
 				materialNoTex.specular = glm::vec3(color[0], color[1], color[2]);
-				material->Get(AI_MATKEY_SHININESS, shininess);
-				materialNoTex.shininess = shininess;
+
+				if (materialNoTex.ambient == glm::vec3(0.f)) {
+					materialNoTex.ambient = materialNoTex.diffuse * 0.6f; // if no value, ambient is 60% color of diffuse
+				}
+
+
 			} else {
 				textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 				textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
@@ -172,15 +175,12 @@ void Model::processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> 
 			
 		} else {
 			aiColor3D color(0.f, 0.f, 0.f);
-			float shininess = 0.0f;
 			material->Get(AI_MATKEY_COLOR_AMBIENT, color);
 			materialNoTex.ambient = glm::vec3(color[0], color[1], color[2]);
 			material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
 			materialNoTex.diffuse = glm::vec3(color[0], color[1], color[2]);
 			material->Get(AI_MATKEY_COLOR_SPECULAR, color);
 			materialNoTex.specular = glm::vec3(color[0], color[1], color[2]);
-			material->Get(AI_MATKEY_SHININESS, shininess);
-			materialNoTex.shininess = shininess;
 		}
 	}
 }
