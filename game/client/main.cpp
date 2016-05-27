@@ -385,7 +385,7 @@ int main() {
 	alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
 	alSource3f(sourceID, AL_POSITION, 0.0f, 0.0f, 0.0f);
 
-	loadWavFile("C:\\Users\\atjaiswa\\Downloads\\test.wav", &bufferID, &size, &freq, &format);
+	loadWavFile("test.wav", &bufferID, &size, &freq, &format);
 
 	alSourcei(sourceID, AL_BUFFER, bufferID);
 
