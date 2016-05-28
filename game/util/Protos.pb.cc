@@ -84,12 +84,13 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Message));
   Message_GameObject_descriptor_ = Message_descriptor_->nested_type(0);
-  static const int Message_GameObject_offsets_[5] = {
+  static const int Message_GameObject_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, matrix_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, hattype_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, animationstate_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, health_),
   };
   Message_GameObject_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -153,16 +154,16 @@ void protobuf_AddDesc_Protos_2eproto() {
     "E_BULLET\020\013\"m\n\tDirection\022\006\n\002UP\020\001\022\010\n\004DOWN\020"
     "\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010B"
     "ACKWARD\020\006\022\006\n\002FL\020\007\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020"
-    "\n\"\365\002\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\013"
+    "\n\"\205\003\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\013"
     "2\r.protos.Event\022.\n\ngameObject\030\003 \003(\0132\032.pr"
-    "otos.Message.GameObject\032\217\002\n\nGameObject\022\n"
+    "otos.Message.GameObject\032\237\002\n\nGameObject\022\n"
     "\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\016"
     "2\037.protos.Message.GameObject.Type\022\017\n\007hat"
     "Type\030\004 \001(\005\022A\n\016animationState\030\005 \001(\0162).pro"
-    "tos.Message.GameObject.AnimationState\"\'\n"
-    "\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003\"9"
-    "\n\016AnimationState\022\014\n\010STANDING\020\001\022\013\n\007RUNNIN"
-    "G\020\002\022\014\n\010PUNCHING\020\003", 817);
+    "tos.Message.GameObject.AnimationState\022\016\n"
+    "\006health\030\006 \001(\005\"\'\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BUL"
+    "LET\020\002\022\007\n\003HAT\020\003\"9\n\016AnimationState\022\014\n\010STAN"
+    "DING\020\001\022\013\n\007RUNNING\020\002\022\014\n\010PUNCHING\020\003", 833);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -796,6 +797,7 @@ const int Message_GameObject::kMatrixFieldNumber;
 const int Message_GameObject::kTypeFieldNumber;
 const int Message_GameObject::kHatTypeFieldNumber;
 const int Message_GameObject::kAnimationStateFieldNumber;
+const int Message_GameObject::kHealthFieldNumber;
 #endif  // !_MSC_VER
 
 Message_GameObject::Message_GameObject()
@@ -820,6 +822,7 @@ void Message_GameObject::SharedCtor() {
   type_ = 1;
   hattype_ = 0;
   animationstate_ = 1;
+  health_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -855,11 +858,12 @@ Message_GameObject* Message_GameObject::New() const {
 }
 
 void Message_GameObject::Clear() {
-  if (_has_bits_[0 / 32] & 29) {
+  if (_has_bits_[0 / 32] & 61) {
     id_ = 0;
     type_ = 1;
     hattype_ = 0;
     animationstate_ = 1;
+    health_ = 0;
   }
   matrix_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -960,6 +964,21 @@ bool Message_GameObject::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(48)) goto parse_health;
+        break;
+      }
+
+      // optional int32 health = 6;
+      case 6: {
+        if (tag == 48) {
+         parse_health:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &health_)));
+          set_has_health();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1017,6 +1036,11 @@ void Message_GameObject::SerializeWithCachedSizes(
       5, this->animationstate(), output);
   }
 
+  // optional int32 health = 6;
+  if (has_health()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->health(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1055,6 +1079,11 @@ void Message_GameObject::SerializeWithCachedSizes(
       5, this->animationstate(), target);
   }
 
+  // optional int32 health = 6;
+  if (has_health()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->health(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1091,6 +1120,13 @@ int Message_GameObject::ByteSize() const {
     if (has_animationstate()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->animationstate());
+    }
+
+    // optional int32 health = 6;
+    if (has_health()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->health());
     }
 
   }
@@ -1140,6 +1176,9 @@ void Message_GameObject::MergeFrom(const Message_GameObject& from) {
     if (from.has_animationstate()) {
       set_animationstate(from.animationstate());
     }
+    if (from.has_health()) {
+      set_health(from.health());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1168,6 +1207,7 @@ void Message_GameObject::Swap(Message_GameObject* other) {
     std::swap(type_, other->type_);
     std::swap(hattype_, other->hattype_);
     std::swap(animationstate_, other->animationstate_);
+    std::swap(health_, other->health_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

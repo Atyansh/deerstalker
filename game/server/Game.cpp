@@ -464,6 +464,7 @@ void Game::sendStateToClients() {
 
 		gameObject->set_hattype(pair.second->getHatType());
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
+		gameObject->set_health(pair.second->getHealth());
 		gameObject->set_animationstate(animationStateMap_[pair.first]);
 		std::cerr << animationStateMap_[pair.first];
 		gameObject->set_id(pair.first);

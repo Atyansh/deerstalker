@@ -28,6 +28,14 @@ public:
 		return getHat() == nullptr ? NO_HAT : getHat()->getHatType();
 	}
 
+	int32_t getHealth() {
+		return health_;
+	}
+
+	void setHealth(uint32_t health) {
+		health_ = health;
+	}
+
 	void setSpawn();
 	void setProjectile(btRigidBody * body, unsigned int baseVelocity);
 
@@ -41,6 +49,8 @@ public:
 private:
 	const unsigned int id_;
 	unsigned int lives_;
+
+	int32_t health_ = 100;
 
 	Hat * currHat_;
 	DynamicCharacterController* controller_;

@@ -46,7 +46,6 @@ void Player::setSpawn() {
 	}
 	this->getController()->getRigidBody()->setCenterOfMassTransform(trans);
 	this->getController()->getRigidBody()->setLinearVelocity(btVector3(0, 0, 0));
-
 }
 
 Hat * Player::setHat(Hat * hat) {

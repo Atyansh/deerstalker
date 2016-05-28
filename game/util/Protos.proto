@@ -54,6 +54,7 @@ message Message {
 		optional Type type = 3;
 		optional int32 hatType = 4;
 		optional AnimationState animationState = 5;
+		optional int32 health = 6;
 	}
 
 	optional int32 id = 1;

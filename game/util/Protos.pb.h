@@ -485,6 +485,13 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline ::protos::Message_GameObject_AnimationState animationstate() const;
   inline void set_animationstate(::protos::Message_GameObject_AnimationState value);
 
+  // optional int32 health = 6;
+  inline bool has_health() const;
+  inline void clear_health();
+  static const int kHealthFieldNumber = 6;
+  inline ::google::protobuf::int32 health() const;
+  inline void set_health(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
@@ -495,6 +502,8 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline void clear_has_hattype();
   inline void set_has_animationstate();
   inline void clear_has_animationstate();
+  inline void set_has_health();
+  inline void clear_has_health();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -505,6 +514,7 @@ class Message_GameObject : public ::google::protobuf::Message {
   int type_;
   ::google::protobuf::int32 hattype_;
   int animationstate_;
+  ::google::protobuf::int32 health_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -932,6 +942,30 @@ inline void Message_GameObject::set_animationstate(::protos::Message_GameObject_
   set_has_animationstate();
   animationstate_ = value;
   // @@protoc_insertion_point(field_set:protos.Message.GameObject.animationState)
+}
+
+// optional int32 health = 6;
+inline bool Message_GameObject::has_health() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Message_GameObject::set_has_health() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Message_GameObject::clear_has_health() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Message_GameObject::clear_health() {
+  health_ = 0;
+  clear_has_health();
+}
+inline ::google::protobuf::int32 Message_GameObject::health() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.health)
+  return health_;
+}
+inline void Message_GameObject::set_health(::google::protobuf::int32 value) {
+  set_has_health();
+  health_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.health)
 }
 
 // -------------------------------------------------------------------
