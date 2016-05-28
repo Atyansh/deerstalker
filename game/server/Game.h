@@ -47,6 +47,7 @@ private:
 	void handlePunchLogic(const protos::Event* event);
 
 	void sendStateToClients();
+	void sendEventsToClients();
 
 	void spawnNewHat();
 
@@ -72,7 +73,10 @@ private:
 
 
 	std::deque<protos::Message> messageQueue_;
-	std::mutex queueLock_;
+	std::mutex messageQueueLock_;
+
+	std::deque<protos::Event> eventQueue_;
+	std::mutex eventQueueLock_;
 
 	std::unordered_set<Bullet*> bulletSet_;
 	std::unordered_set<Bullet*> bulletRemovedSet_;

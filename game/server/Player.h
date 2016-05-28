@@ -7,12 +7,12 @@
 
 #include "BulletDynamics/Character/btCharacterControllerInterface.h"
 
-class Player {
+class Player : public btRigidBody {
 public:
-	Player(btCollisionObject* body, uint32_t id, uint32_t lives);
+	Player(btRigidBodyConstructionInfo& info, uint32_t id, uint32_t lives);
 	~Player();
 
-	//static Player* createNewPlayer(ClientId clientId, btCollisionShape* collisionShape);
+	static Player* createNewPlayer(ClientId clientId, btCollisionShape* collisionShape);
 
 	int getId();
 	void setLives(unsigned int lives);
@@ -32,8 +32,29 @@ public:
 		return health_;
 	}
 
-	void setHealth(uint32_t health) {
-		health_ = health;
+	bool getStunned() {
+		return stunned_;
+	}
+
+	void stun() {
+		stunned_ = true;
+	}
+
+	void revive() {
+		stunned_ = false;
+	}
+
+	void changeHealth(int delta) {
+		int newHealth = health_ + delta;
+		if (newHealth > 100) {
+			setHealth(100);
+		}
+		else if (newHealth < 0) {
+			setHealth(0);
+		}
+		else {
+			setHealth(newHealth);
+		}
 	}
 
 	void setSpawn();
@@ -50,6 +71,8 @@ private:
 	const unsigned int id_;
 	unsigned int lives_;
 
+	bool stunned_ = false;
+
 	int32_t health_ = 100;
 
 	Hat * currHat_;
@@ -59,4 +82,8 @@ private:
 	static const btVector3 P2_SPAWN_POINT;
 	static const btVector3 P3_SPAWN_POINT;
 	static const btVector3 P4_SPAWN_POINT;
+
+	void setHealth(int32_t health) {
+		health_ = health;
+	}
 };

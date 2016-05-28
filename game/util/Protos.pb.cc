@@ -143,27 +143,30 @@ void protobuf_AddDesc_Protos_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\014Protos.proto\022\006protos\"\240\003\n\005Event\022\n\n\002id\030\001"
+    "\n\014Protos.proto\022\006protos\"\213\004\n\005Event\022\n\n\002id\030\001"
     " \001(\005\022 \n\004type\030\002 \001(\0162\022.protos.Event.Type\022\020"
     "\n\010clientID\030\003 \001(\005\022\r\n\005hatID\030\004 \001(\005\022\020\n\010bulle"
     "tID\030\005 \001(\005\022*\n\tdirection\030\006 \001(\0162\027.protos.Ev"
-    "ent.Direction\022\024\n\014cameraVector\030\007 \003(\001\"\204\001\n\004"
+    "ent.Direction\022\024\n\014cameraVector\030\007 \003(\001\"\357\001\n\004"
     "Type\022\t\n\005SPAWN\020\001\022\010\n\004MOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006A"
     "SSIGN\020\004\022\t\n\005EQUIP\020\005\022\t\n\005DQUIP\020\006\022\t\n\005SHOOT\020\007"
     "\022\010\n\004HATR\020\010\022\010\n\004HATL\020\t\022\t\n\005PUNCH\020\n\022\021\n\rDELET"
-    "E_BULLET\020\013\"m\n\tDirection\022\006\n\002UP\020\001\022\010\n\004DOWN\020"
-    "\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010B"
-    "ACKWARD\020\006\022\006\n\002FL\020\007\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020"
-    "\n\"\205\003\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\013"
-    "2\r.protos.Event\022.\n\ngameObject\030\003 \003(\0132\032.pr"
-    "otos.Message.GameObject\032\237\002\n\nGameObject\022\n"
-    "\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\016"
-    "2\037.protos.Message.GameObject.Type\022\017\n\007hat"
-    "Type\030\004 \001(\005\022A\n\016animationState\030\005 \001(\0162).pro"
-    "tos.Message.GameObject.AnimationState\022\016\n"
-    "\006health\030\006 \001(\005\"\'\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BUL"
-    "LET\020\002\022\007\n\003HAT\020\003\"9\n\016AnimationState\022\014\n\010STAN"
-    "DING\020\001\022\013\n\007RUNNING\020\002\022\014\n\010PUNCHING\020\003", 833);
+    "E_BULLET\020\013\022\022\n\016PLAYER_PUNCHED\020\014\022\017\n\013PLAYER"
+    "_DIED\020\r\022\020\n\014PROPELLER_UP\020\016\022\017\n\013PLAYER_JUMP"
+    "\020\017\022\r\n\tGAME_OVER\020\020\022\022\n\016PLAYER_STUNNED\020\021\"m\n"
+    "\tDirection\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t"
+    "\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\022\006\n\002"
+    "FL\020\007\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020\n\"\205\003\n\007Message"
+    "\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132\r.protos.Eve"
+    "nt\022.\n\ngameObject\030\003 \003(\0132\032.protos.Message."
+    "GameObject\032\237\002\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016\n"
+    "\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162\037.protos.Mes"
+    "sage.GameObject.Type\022\017\n\007hatType\030\004 \001(\005\022A\n"
+    "\016animationState\030\005 \001(\0162).protos.Message.G"
+    "ameObject.AnimationState\022\016\n\006health\030\006 \001(\005"
+    "\"\'\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020"
+    "\003\"9\n\016AnimationState\022\014\n\010STANDING\020\001\022\013\n\007RUN"
+    "NING\020\002\022\014\n\010PUNCHING\020\003", 940);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -201,6 +204,12 @@ bool Event_Type_IsValid(int value) {
     case 9:
     case 10:
     case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+    case 17:
       return true;
     default:
       return false;
@@ -219,6 +228,12 @@ const Event_Type Event::HATR;
 const Event_Type Event::HATL;
 const Event_Type Event::PUNCH;
 const Event_Type Event::DELETE_BULLET;
+const Event_Type Event::PLAYER_PUNCHED;
+const Event_Type Event::PLAYER_DIED;
+const Event_Type Event::PROPELLER_UP;
+const Event_Type Event::PLAYER_JUMP;
+const Event_Type Event::GAME_OVER;
+const Event_Type Event::PLAYER_STUNNED;
 const Event_Type Event::Type_MIN;
 const Event_Type Event::Type_MAX;
 const int Event::Type_ARRAYSIZE;

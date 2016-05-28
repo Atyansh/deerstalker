@@ -49,11 +49,17 @@ enum Event_Type {
   Event_Type_HATR = 8,
   Event_Type_HATL = 9,
   Event_Type_PUNCH = 10,
-  Event_Type_DELETE_BULLET = 11
+  Event_Type_DELETE_BULLET = 11,
+  Event_Type_PLAYER_PUNCHED = 12,
+  Event_Type_PLAYER_DIED = 13,
+  Event_Type_PROPELLER_UP = 14,
+  Event_Type_PLAYER_JUMP = 15,
+  Event_Type_GAME_OVER = 16,
+  Event_Type_PLAYER_STUNNED = 17
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
-const Event_Type Event_Type_Type_MAX = Event_Type_DELETE_BULLET;
+const Event_Type Event_Type_Type_MAX = Event_Type_PLAYER_STUNNED;
 const int Event_Type_Type_ARRAYSIZE = Event_Type_Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Event_Type_descriptor();
@@ -198,6 +204,12 @@ class Event : public ::google::protobuf::Message {
   static const Type HATL = Event_Type_HATL;
   static const Type PUNCH = Event_Type_PUNCH;
   static const Type DELETE_BULLET = Event_Type_DELETE_BULLET;
+  static const Type PLAYER_PUNCHED = Event_Type_PLAYER_PUNCHED;
+  static const Type PLAYER_DIED = Event_Type_PLAYER_DIED;
+  static const Type PROPELLER_UP = Event_Type_PROPELLER_UP;
+  static const Type PLAYER_JUMP = Event_Type_PLAYER_JUMP;
+  static const Type GAME_OVER = Event_Type_GAME_OVER;
+  static const Type PLAYER_STUNNED = Event_Type_PLAYER_STUNNED;
   static inline bool Type_IsValid(int value) {
     return Event_Type_IsValid(value);
   }

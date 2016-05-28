@@ -30,6 +30,7 @@ void Game::remove(client_ptr client) {
 	if (iter != playerMap_.end()) {
 		auto* action = iter->second->getController();
 		auto* body = action->getRigidBody();
+		playerSet_.erase(body);
 		world_->removeAction(action);
 		world_->removeRigidBody(body);
 		playerMap_.erase(iter);
@@ -42,9 +43,9 @@ unsigned int Game::generateId() {
 }
 
 void Game::deliver(protos::Message msg) {
-	queueLock_.lock();
+	messageQueueLock_.lock();
 	messageQueue_.push_back(msg);
-	queueLock_.unlock();
+	messageQueueLock_.unlock();
 }
 
 int Game::size() {
@@ -137,7 +138,7 @@ void Game::startGameLoop() {
 
 		clearAnimations();
 
-		queueLock_.lock();
+		messageQueueLock_.lock();
 		while (!messageQueue_.empty()) {
 			protos::Message message = messageQueue_.front();
 
@@ -177,17 +178,17 @@ void Game::startGameLoop() {
 					handlePunchLogic(&event);
 				}
 			}
-
 			messageQueue_.pop_front();
 		}
 		world_->stepSimulation(1.f / 15.f, 10);
-		queueLock_.unlock();
+		messageQueueLock_.unlock();
 
 		handleReSpawnLogic();
 
 		deleteBullets();
 
 		sendStateToClients();
+		//sendEventsToClients();
 
 		milliseconds stamp2 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
@@ -233,7 +234,7 @@ void Game::handleDquipLogic(const protos::Event* event) {
 
 void Game::handleSpawnLogic(const protos::Event* event) {
 	std::cerr << "SPAWN HAPPENED" << std::endl;
-	Player* player = new Player(playerBody_, event->clientid(), 3);
+	Player* player = Player::createNewPlayer(event->clientid(), playerBody_->getCollisionShape());
 	playerMap_[event->clientid()] = player;
 	btRigidBody* body = player->getController()->getRigidBody();
 	playerSet_.emplace(body);
@@ -382,13 +383,21 @@ void Game::handlePunchLogic(const protos::Event* event) {
 		std::cerr << "SOME TARGET" << std::endl;
 		auto search = playerSet_.find(target);
 		if (search != playerSet_.end()) {
+			Player* punchedPlayer = (Player*)target;
 			std::cerr << "PUNCH DETECTED" << std::endl;
 			btVector3 localLook(0.0f, 0.0f, 1.0f);
 			btTransform transform = player->getController()->getRigidBody()->getCenterOfMassTransform();
 			btQuaternion rotation = transform.getRotation();
 			btVector3 currentLook = quatRotate(rotation, localLook);
-			((btRigidBody*)target)->applyCentralImpulse(currentLook.normalized() * 2);
+			punchedPlayer->applyCentralImpulse(currentLook.normalized() * 5);
+			punchedPlayer->changeHealth(-5);
 			// Throw Punch event to clients
+			eventQueueLock_.lock();
+			protos::Event event;
+			event.set_type(protos::Event_Type_PLAYER_PUNCHED);
+			event.set_clientid(punchedPlayer->getId());
+			eventQueue_.emplace_back(event);
+			eventQueueLock_.unlock();
 		}
 	}
 }
@@ -466,7 +475,6 @@ void Game::sendStateToClients() {
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
 		gameObject->set_health(pair.second->getHealth());
 		gameObject->set_animationstate(animationStateMap_[pair.first]);
-		std::cerr << animationStateMap_[pair.first];
 		gameObject->set_id(pair.first);
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
@@ -528,5 +536,23 @@ void Game::sendStateToClients() {
 
 	for (auto client : clients_) {
 		client->deliver(message);
+	}
+}
+
+void Game::sendEventsToClients() {
+	protos::Message message;
+
+	eventQueueLock_.lock();
+	for (auto& event : eventQueue_) {
+		auto* e = message.add_event();
+		e->MergeFrom(event);
+	}
+	eventQueue_.clear();
+	eventQueueLock_.unlock();
+
+	if (message.event_size()) {
+		for (auto client : clients_) {
+			client->deliver(message);
+		}
 	}
 }

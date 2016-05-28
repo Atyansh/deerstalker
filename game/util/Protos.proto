@@ -13,6 +13,12 @@ message Event {
 		HATL = 9;
 		PUNCH = 10;
 		DELETE_BULLET = 11;
+		PLAYER_PUNCHED = 12;
+		PLAYER_DIED = 13;
+		PROPELLER_UP = 14;
+		PLAYER_JUMP = 15;
+		GAME_OVER = 16;
+		PLAYER_STUNNED = 17;
 	}
 
 	enum Direction {
