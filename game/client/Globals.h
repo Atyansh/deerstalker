@@ -14,6 +14,8 @@
 
 #include <mutex>
 
+#include "SoundEngine.h"
+
 using boost::asio::ip::tcp;
 
 class Globals {
@@ -32,5 +34,7 @@ public:
 	static bool socketError;
 
 	static unordered_map<HatType, Models> hatModelsMap;
+
+	static SoundEngine soundEngine;
 };
 

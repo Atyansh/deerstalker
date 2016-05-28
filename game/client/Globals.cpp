@@ -11,3 +11,4 @@ char Globals::currentHeader[util::HEADER_SIZE] = "";
 uint32_t Globals::ID = 0;
 bool Globals::socketError = false;
 unordered_map<HatType, Models> Globals::hatModelsMap;
+SoundEngine Globals::soundEngine;

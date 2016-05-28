@@ -142,8 +142,7 @@ void do_read_body(size_t length) {
 	});
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	std::string hostname;
 	std::string port;
 
@@ -176,8 +175,7 @@ int main(int argc, char *argv[])
 	
 	// Initialize GLEW to setup the OpenGL Function pointers
 	GLenum glew_err = glewInit();
-	if (glew_err != GLEW_OK)
-	{
+	if (glew_err != GLEW_OK) {
 		fprintf(stderr, "GLEW NOT INITIALIZED");
 		exit(-1);
 	}
@@ -212,6 +210,9 @@ int main(int argc, char *argv[])
 	
 	// Initialize objects/pointers for rendering
 	Window::initialize_objects();
+
+	Globals::soundEngine.initialize();
+	Globals::soundEngine.playGameMusic();
 
 	// Loop while GLFW window should stay open
 	while (!glfwWindowShouldClose(window)) {
