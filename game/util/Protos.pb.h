@@ -319,6 +319,13 @@ class Event : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< double >*
       mutable_cameravector();
 
+  // optional bool hold = 8;
+  inline bool has_hold() const;
+  inline void clear_hold();
+  static const int kHoldFieldNumber = 8;
+  inline bool hold() const;
+  inline void set_hold(bool value);
+
   // @@protoc_insertion_point(class_scope:protos.Event)
  private:
   inline void set_has_id();
@@ -333,6 +340,8 @@ class Event : public ::google::protobuf::Message {
   inline void clear_has_bulletid();
   inline void set_has_direction();
   inline void clear_has_direction();
+  inline void set_has_hold();
+  inline void clear_has_hold();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -345,6 +354,7 @@ class Event : public ::google::protobuf::Message {
   ::google::protobuf::int32 bulletid_;
   int direction_;
   ::google::protobuf::RepeatedField< double > cameravector_;
+  bool hold_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -822,6 +832,30 @@ inline ::google::protobuf::RepeatedField< double >*
 Event::mutable_cameravector() {
   // @@protoc_insertion_point(field_mutable_list:protos.Event.cameraVector)
   return &cameravector_;
+}
+
+// optional bool hold = 8;
+inline bool Event::has_hold() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void Event::set_has_hold() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void Event::clear_has_hold() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void Event::clear_hold() {
+  hold_ = false;
+  clear_has_hold();
+}
+inline bool Event::hold() const {
+  // @@protoc_insertion_point(field_get:protos.Event.hold)
+  return hold_;
+}
+inline void Event::set_hold(bool value) {
+  set_has_hold();
+  hold_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.hold)
 }
 
 // -------------------------------------------------------------------

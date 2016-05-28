@@ -4,8 +4,6 @@
 using namespace std::chrono;
 using namespace std::this_thread;
 
-std::deque<uint32_t> Game::availableIds;
-
 Game::Game() {
 	idGen_ = 1;
 	availableIds.emplace_back(Player::P1_ID);
@@ -124,6 +122,9 @@ void Game::initialize() {
 
 	btBulletWorldImporter* wreckingBallLoader = new btBulletWorldImporter(world_);
 	wreckingBallLoader->loadFile("bullet_assets\\WreckingBall.bullet");
+
+	gravityController_ = new GravityController(this);
+	world_->addAction(gravityController_);
 }
 
 void Game::startGameLoop() {
@@ -136,6 +137,7 @@ void Game::startGameLoop() {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
+		gravityController_->deactivate();
 		clearAnimations();
 
 		messageQueueLock_.lock();
@@ -417,13 +419,21 @@ void Game::handlePrimaryHatLogic(const protos::Event* event) {
 		propellerUp(player);
 		break;
 	case WIZARD_HAT:
-		handleShootLogic(event);
+		if (event->hold() == false) {
+			handleShootLogic(event);
+		}
 		break;
 	case HARD_HAT:
 		break;
 	case BEAR_HAT:
+		killGravity();
 		break;
 	}
+}
+
+void Game::killGravity() {
+	std::cerr << "GRAVITY KILLED" << std::endl;
+	gravityController_->activate();
 }
 
 void Game::handleSecondaryHatLogic(const protos::Event* event) {

@@ -289,16 +289,18 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_DQUIP);
 		}
-		if (buttons[BUTTON_LB] == GLFW_PRESS && !buttonState[BUTTON_LB]) {
+		if (buttons[BUTTON_LB] == GLFW_PRESS) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_HATL);
+			event->set_hold(buttonState[BUTTON_LB]);
 			buttonState[BUTTON_LB] = true;
 		}
-		if (buttons[BUTTON_RB] == GLFW_PRESS && !buttonState[BUTTON_RB]) {
+		if (buttons[BUTTON_RB] == GLFW_PRESS) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_HATR);
+			event->set_hold(buttonState[BUTTON_RB]);
 			buttonState[BUTTON_RB] = true;
 		}
 
