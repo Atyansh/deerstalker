@@ -110,6 +110,7 @@
     <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="Game\AnimationTree.cpp" />
     <ClCompile Include="Game\BoneInfo.cpp" />
+    <ClCompile Include="Game\Clouds.cpp" />
     <ClCompile Include="Game\Cube.cpp" />
     <ClCompile Include="Game\Cubemap.cpp" />
     <ClCompile Include="Game\Hat.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="GameObjects.h" />
     <ClInclude Include="Game\AnimationTree.h" />
     <ClInclude Include="Game\BoneInfo.h" />
+    <ClInclude Include="Game\Clouds.h" />
     <ClInclude Include="Game\Cube.h" />
     <ClInclude Include="Game\Cubemap.h" />
     <ClInclude Include="Game\Hat.h" />

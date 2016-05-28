@@ -1,6 +1,7 @@
 #include "World.h"
 #include "Model.h"
 #include "client\Globals.h"
+#include "Clouds.h"
 #include <glm/gtx/transform.hpp>
 
 const char* floorPath = "Assets/OBJ/Floor/Floor.obj";
@@ -42,6 +43,9 @@ void World::createWorld(Shader* shader, string directory) {
 	floor->addNode(wreckingBall);
 	floor->addNode(wreckingBallBase);
 	floor->addNode(billboard);
+
+	Shader *cloudShader = new Shader("Shaders/cloud.vert", "Shaders/cloud.frag");
+	floor->addNode(new Clouds(cloudShader, 1, 25, 25));
 
 	this->addNode(floor);
 
