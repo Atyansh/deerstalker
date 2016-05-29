@@ -32,7 +32,7 @@ private:
 	vector<GLuint> indices;
 
 	//cloud instance rendering
-	//vector<glm::vec3> offsets;
+	vector<glm::vec3> offsets;
 	/*vector<GLfloat> nonses;
 	vector<GLfloat> scales;
 	vector<glm::vec3> thresholdNormals;
@@ -53,7 +53,7 @@ private:
 	GLuint VAO, EBO;
 	GLuint verticesBuffer;
 	GLuint normalsBuffer;
-	//GLuint offsetsBuffer;
+	GLuint offsetsBuffer;
 	/*GLuint nonseBuffer, scaleBuffer, thresholdNormalsBuffer,
 		frontPointsBuffer, backPointsBuffer;*/
 

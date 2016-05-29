@@ -15,11 +15,11 @@ Clouds::Clouds(Shader *shader, float radius, int rings, int sectors, glm::vec3 c
 	setupCloud();
 	setUpBuffer();
 	setupUniformLoc();
-	//offsets.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
-	//offsets.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
-	//offsets.push_back(glm::vec3(2.0f, 0.0f, 0.0f));
-	//offsets.push_back(glm::vec3(3.0f, 0.0f, 0.0f));
-	//offsets.push_back(glm::vec3(4.0f, 0.0f, 0.0f));
+	offsets.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
+	offsets.push_back(glm::vec3(2.0f, 0.0f, 0.0f));
+	offsets.push_back(glm::vec3(4.0f, 0.0f, 0.0f));
+	offsets.push_back(glm::vec3(6.0f, 0.0f, 0.0f));
+	offsets.push_back(glm::vec3(8.0f, 0.0f, 0.0f));
 }
 	
 
@@ -42,8 +42,8 @@ void Clouds::draw(DrawData& data) {
 
 	glBindVertexArray(this->VAO);
 	bindBuffers();
-	//glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL, offsets.size());
-	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL, offsets.size());
+	//glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
 	shader->unbind();
@@ -90,7 +90,7 @@ void Clouds::setUpBuffer() {
 	glGenBuffers(1, &this->EBO);
 	glGenBuffers(1, &this->verticesBuffer);
 	glGenBuffers(1, &this->normalsBuffer);
-	//glGenBuffers(1, &this->offsetsBuffer);
+	glGenBuffers(1, &this->offsetsBuffer);
 	//glGenBuffers(1, &this->nonseBuffer);
 	//glGenBuffers(1, &this->scaleBuffer);
 	//glGenBuffers(1, &this->thresholdNormalsBuffer);
@@ -126,8 +126,11 @@ void Clouds::bindBuffers() {
 	glEnableVertexAttribArray(NORMAL_LOCATION);
 	glVertexAttribPointer(NORMAL_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, this->offsetsBuffer);
-	//glBufferData(GL_ARRAY_BUFFER, this->offsets.size() * sizeof(glm::vec3), &this->offsets[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, this->offsetsBuffer);
+	glBufferData(GL_ARRAY_BUFFER, this->offsets.size() * sizeof(glm::vec3), &this->offsets[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(OFFSET_LOCATION);
+	glVertexAttribPointer(OFFSET_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+	glVertexAttribDivisor(OFFSET_LOCATION, 1);
 
 	//glBindBuffer(GL_ARRAY_BUFFER, this->nonseBuffer);
 	//glBufferData(GL_ARRAY_BUFFER, this->nonses.size() * sizeof(GLfloat), &this->nonses[0], GL_STATIC_DRAW);
@@ -146,10 +149,5 @@ void Clouds::bindBuffers() {
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &this->indices[0], GL_STATIC_DRAW);
-		
-	// Offset
-	/*glEnableVertexAttribArray(OFFSET_LOCATION);
-	glVertexAttribPointer(OFFSET_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-	glVertexAttribDivisor(OFFSET_LOCATION, 1);*/
 	
 }
