@@ -38,5 +38,9 @@ public:
 	//static void generateWorld(string directory);
 
 private:
+	static int nbFrames; 
+	static float lastTime;
+	static float currentFrameRate;
 	static void addMoveEvent(protos::Message& message, protos::Event_Direction direction);
+	static void FPS(GLFWwindow* window);
 };
