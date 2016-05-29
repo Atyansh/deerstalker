@@ -66,7 +66,7 @@ void Clouds::setupCloud() {
 			float const x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
 			float const z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
 
-			vertices.push_back(glm::vec3(x, y, z));
+			vertices.push_back(glm::vec3(x, y, z)*radius + center);
 			normals.push_back(glm::vec3(x, y, z));
 			
 		}
@@ -87,6 +87,7 @@ void Clouds::setupCloud() {
 void Clouds::setUpBuffer() {
 	// Create buffers/arrays
 	glGenVertexArrays(1, &this->VAO);
+	glGenBuffers(1, &this->EBO);
 	glGenBuffers(1, &this->verticesBuffer);
 	glGenBuffers(1, &this->normalsBuffer);
 	//glGenBuffers(1, &this->offsetsBuffer);
@@ -95,7 +96,7 @@ void Clouds::setUpBuffer() {
 	//glGenBuffers(1, &this->thresholdNormalsBuffer);
 	//glGenBuffers(1, &this->frontPointsBuffer);
 	//glGenBuffers(1, &this->backPointsBuffer);
-	glGenBuffers(1, &this->EBO);
+	
 }
 
 void Clouds::setupUniformLoc(){
@@ -115,14 +116,15 @@ void Clouds::setupUniformLoc(){
 
 void Clouds::bindBuffers() {
 	 // Load data into vertex buffers
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &this->indices[0], GL_STATIC_DRAW);
-
 	glBindBuffer(GL_ARRAY_BUFFER, this->verticesBuffer);
 	glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(glm::vec3), &this->vertices[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(POSITION_LOCATION);
+	glVertexAttribPointer(POSITION_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, this->normalsBuffer);
 	glBufferData(GL_ARRAY_BUFFER, this->normals.size() * sizeof(glm::vec3), &this->normals[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(NORMAL_LOCATION);
+	glVertexAttribPointer(NORMAL_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 
 	//glBindBuffer(GL_ARRAY_BUFFER, this->offsetsBuffer);
 	//glBufferData(GL_ARRAY_BUFFER, this->offsets.size() * sizeof(glm::vec3), &this->offsets[0], GL_STATIC_DRAW);
@@ -142,12 +144,9 @@ void Clouds::bindBuffers() {
 	//glBindBuffer(GL_ARRAY_BUFFER, this->backPointsBuffer);
 	//glBufferData(GL_ARRAY_BUFFER, this->backPoints.size() * sizeof(glm::vec3), &this->backPoints[0], GL_STATIC_DRAW);
 
-	// Position
-	glEnableVertexAttribArray(POSITION_LOCATION);
-	glVertexAttribPointer(POSITION_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-	// Normals
-	glEnableVertexAttribArray(NORMAL_LOCATION);
-	glVertexAttribPointer(NORMAL_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &this->indices[0], GL_STATIC_DRAW);
+		
 	// Offset
 	/*glEnableVertexAttribArray(OFFSET_LOCATION);
 	glVertexAttribPointer(OFFSET_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
