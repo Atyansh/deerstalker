@@ -8,13 +8,12 @@ using namespace std;
 
 #define POSITION_LOCATION 0
 #define NORMAL_LOCATION 1
-#define TEX_COORD_LOCATION 2
-#define OFFSET_LOCATION 3
-#define NONSES_LOCATION 4
-#define SCALES_LOCATION 5
-#define THRESHOLD_NORMALS_LOCATION 6
-#define FRONT_POINTS_LOCATION 7
-#define BACK_POINTS_LOCATION 8
+#define OFFSET_LOCATION 2
+#define NONSES_LOCATION 3
+#define SCALES_LOCATION 4
+#define THRESHOLD_NORMALS_LOCATION 5
+#define FRONT_POINTS_LOCATION 6
+#define BACK_POINTS_LOCATION 7
 
 #define M_PI 3.14159265359
 #define M_PI_2 1.57079632679
@@ -30,7 +29,6 @@ private:
 	
 	vector<glm::vec3> vertices;
 	vector<glm::vec3> normals;
-	vector<glm::vec2> texcoords;
 	vector<GLuint> indices;
 
 	//cloud instance rendering
@@ -55,7 +53,6 @@ private:
 	GLuint VAO, EBO;
 	GLuint verticesBuffer;
 	GLuint normalsBuffer;
-	GLuint texcoordsBuffer;
 	//GLuint offsetsBuffer;
 	/*GLuint nonseBuffer, scaleBuffer, thresholdNormalsBuffer,
 		frontPointsBuffer, backPointsBuffer;*/
@@ -66,7 +63,7 @@ private:
 	void bindBuffers();
 
 public:
-	Clouds(Shader *shader, float radius, int rings, int sectors, glm::vec3 center=glm::vec3(0.f,2.f,0.f));
+	Clouds(Shader *shader, float radius, int rings, int sectors, glm::vec3 center=glm::vec3(0.f,0.f,0.f));
 	~Clouds();
 
 	virtual void update(UpdateData&);

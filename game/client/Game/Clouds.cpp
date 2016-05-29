@@ -66,9 +66,8 @@ void Clouds::setupCloud() {
 			float const x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
 			float const z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
 
-			vertices.push_back(glm::vec3(x, y, z) * radius + center);
+			vertices.push_back(glm::vec3(x, y, z));
 			normals.push_back(glm::vec3(x, y, z));
-			texcoords.push_back(glm::vec2(s*S, r*R));
 			
 		}
 	}
@@ -90,7 +89,6 @@ void Clouds::setUpBuffer() {
 	glGenVertexArrays(1, &this->VAO);
 	glGenBuffers(1, &this->verticesBuffer);
 	glGenBuffers(1, &this->normalsBuffer);
-	glGenBuffers(1, &this->texcoordsBuffer);
 	//glGenBuffers(1, &this->offsetsBuffer);
 	//glGenBuffers(1, &this->nonseBuffer);
 	//glGenBuffers(1, &this->scaleBuffer);
@@ -126,9 +124,6 @@ void Clouds::bindBuffers() {
 	glBindBuffer(GL_ARRAY_BUFFER, this->normalsBuffer);
 	glBufferData(GL_ARRAY_BUFFER, this->normals.size() * sizeof(glm::vec3), &this->normals[0], GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ARRAY_BUFFER, this->texcoordsBuffer);
-	glBufferData(GL_ARRAY_BUFFER, this->texcoords.size() * sizeof(glm::vec3), &this->texcoords[0], GL_STATIC_DRAW);
-
 	//glBindBuffer(GL_ARRAY_BUFFER, this->offsetsBuffer);
 	//glBufferData(GL_ARRAY_BUFFER, this->offsets.size() * sizeof(glm::vec3), &this->offsets[0], GL_STATIC_DRAW);
 
@@ -153,9 +148,6 @@ void Clouds::bindBuffers() {
 	// Normals
 	glEnableVertexAttribArray(NORMAL_LOCATION);
 	glVertexAttribPointer(NORMAL_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-	// Texture Coords
-	glEnableVertexAttribArray(TEX_COORD_LOCATION);
-	glVertexAttribPointer(TEX_COORD_LOCATION, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 	// Offset
 	/*glEnableVertexAttribArray(OFFSET_LOCATION);
 	glVertexAttribPointer(OFFSET_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
