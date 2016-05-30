@@ -19,6 +19,7 @@ message Event {
 		PLAYER_JUMP = 15;
 		GAME_OVER = 16;
 		PLAYER_STUNNED = 17;
+		PLAYER_WIN = 18;
 	}
 
 	enum Direction {
@@ -42,6 +43,10 @@ message Event {
 	optional Direction direction = 6;
 	repeated double cameraVector = 7;
 	optional bool hold = 8;
+	optional int32 first = 9;
+	optional int32 second = 10;
+	optional int32 third = 11;
+	optional int32 fourth = 12;
 }
 
 message Message {

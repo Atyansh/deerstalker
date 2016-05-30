@@ -55,11 +55,12 @@ enum Event_Type {
   Event_Type_PROPELLER_UP = 14,
   Event_Type_PLAYER_JUMP = 15,
   Event_Type_GAME_OVER = 16,
-  Event_Type_PLAYER_STUNNED = 17
+  Event_Type_PLAYER_STUNNED = 17,
+  Event_Type_PLAYER_WIN = 18
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
-const Event_Type Event_Type_Type_MAX = Event_Type_PLAYER_STUNNED;
+const Event_Type Event_Type_Type_MAX = Event_Type_PLAYER_WIN;
 const int Event_Type_Type_ARRAYSIZE = Event_Type_Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Event_Type_descriptor();
@@ -210,6 +211,7 @@ class Event : public ::google::protobuf::Message {
   static const Type PLAYER_JUMP = Event_Type_PLAYER_JUMP;
   static const Type GAME_OVER = Event_Type_GAME_OVER;
   static const Type PLAYER_STUNNED = Event_Type_PLAYER_STUNNED;
+  static const Type PLAYER_WIN = Event_Type_PLAYER_WIN;
   static inline bool Type_IsValid(int value) {
     return Event_Type_IsValid(value);
   }
@@ -326,6 +328,34 @@ class Event : public ::google::protobuf::Message {
   inline bool hold() const;
   inline void set_hold(bool value);
 
+  // optional int32 first = 9;
+  inline bool has_first() const;
+  inline void clear_first();
+  static const int kFirstFieldNumber = 9;
+  inline ::google::protobuf::int32 first() const;
+  inline void set_first(::google::protobuf::int32 value);
+
+  // optional int32 second = 10;
+  inline bool has_second() const;
+  inline void clear_second();
+  static const int kSecondFieldNumber = 10;
+  inline ::google::protobuf::int32 second() const;
+  inline void set_second(::google::protobuf::int32 value);
+
+  // optional int32 third = 11;
+  inline bool has_third() const;
+  inline void clear_third();
+  static const int kThirdFieldNumber = 11;
+  inline ::google::protobuf::int32 third() const;
+  inline void set_third(::google::protobuf::int32 value);
+
+  // optional int32 fourth = 12;
+  inline bool has_fourth() const;
+  inline void clear_fourth();
+  static const int kFourthFieldNumber = 12;
+  inline ::google::protobuf::int32 fourth() const;
+  inline void set_fourth(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:protos.Event)
  private:
   inline void set_has_id();
@@ -342,6 +372,14 @@ class Event : public ::google::protobuf::Message {
   inline void clear_has_direction();
   inline void set_has_hold();
   inline void clear_has_hold();
+  inline void set_has_first();
+  inline void clear_has_first();
+  inline void set_has_second();
+  inline void clear_has_second();
+  inline void set_has_third();
+  inline void clear_has_third();
+  inline void set_has_fourth();
+  inline void clear_has_fourth();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -355,6 +393,10 @@ class Event : public ::google::protobuf::Message {
   int direction_;
   ::google::protobuf::RepeatedField< double > cameravector_;
   bool hold_;
+  ::google::protobuf::int32 first_;
+  ::google::protobuf::int32 second_;
+  ::google::protobuf::int32 third_;
+  ::google::protobuf::int32 fourth_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -866,6 +908,102 @@ inline void Event::set_hold(bool value) {
   set_has_hold();
   hold_ = value;
   // @@protoc_insertion_point(field_set:protos.Event.hold)
+}
+
+// optional int32 first = 9;
+inline bool Event::has_first() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void Event::set_has_first() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void Event::clear_has_first() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void Event::clear_first() {
+  first_ = 0;
+  clear_has_first();
+}
+inline ::google::protobuf::int32 Event::first() const {
+  // @@protoc_insertion_point(field_get:protos.Event.first)
+  return first_;
+}
+inline void Event::set_first(::google::protobuf::int32 value) {
+  set_has_first();
+  first_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.first)
+}
+
+// optional int32 second = 10;
+inline bool Event::has_second() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void Event::set_has_second() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void Event::clear_has_second() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+inline void Event::clear_second() {
+  second_ = 0;
+  clear_has_second();
+}
+inline ::google::protobuf::int32 Event::second() const {
+  // @@protoc_insertion_point(field_get:protos.Event.second)
+  return second_;
+}
+inline void Event::set_second(::google::protobuf::int32 value) {
+  set_has_second();
+  second_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.second)
+}
+
+// optional int32 third = 11;
+inline bool Event::has_third() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void Event::set_has_third() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void Event::clear_has_third() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void Event::clear_third() {
+  third_ = 0;
+  clear_has_third();
+}
+inline ::google::protobuf::int32 Event::third() const {
+  // @@protoc_insertion_point(field_get:protos.Event.third)
+  return third_;
+}
+inline void Event::set_third(::google::protobuf::int32 value) {
+  set_has_third();
+  third_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.third)
+}
+
+// optional int32 fourth = 12;
+inline bool Event::has_fourth() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void Event::set_has_fourth() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void Event::clear_has_fourth() {
+  _has_bits_[0] &= ~0x00000800u;
+}
+inline void Event::clear_fourth() {
+  fourth_ = 0;
+  clear_has_fourth();
+}
+inline ::google::protobuf::int32 Event::fourth() const {
+  // @@protoc_insertion_point(field_get:protos.Event.fourth)
+  return fourth_;
+}
+inline void Event::set_fourth(::google::protobuf::int32 value) {
+  set_has_fourth();
+  fourth_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.fourth)
 }
 
 // -------------------------------------------------------------------

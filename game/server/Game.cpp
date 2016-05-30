@@ -255,7 +255,8 @@ void Game::handleSpawnLogic(const protos::Event* event) {
 void Game::handleMoveLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
 
-	if (animationStateMap_[event->clientid()] == protos::Message_GameObject_AnimationState_STANDING) {
+	if (animationStateMap_[event->clientid()] == protos::Message_GameObject_AnimationState_STANDING && 
+		player->getController()->onGround()) {
 		animationStateMap_[event->clientid()] = protos::Message_GameObject_AnimationState_RUNNING;
 	}
 
@@ -466,6 +467,9 @@ void Game::handleSecondaryHatLogic(const protos::Event* event) {
 		break;
 	case BEAR_HAT:
 		break;
+	case DEERSTALKER_HAT:
+		ramOff(player);
+		break;
 	}
 }
 
@@ -479,6 +483,10 @@ void Game::propellerDown(Player* player) {
 
 void Game::setInvisible(Player* player) {
 	player->setVisible(false);
+}
+
+void Game::ramOff(Player* player) {
+
 }
 
 void Game::sendStateToClients() {
