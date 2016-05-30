@@ -123,11 +123,13 @@ inline bool Message_GameObject_Type_Parse(
 enum Message_GameObject_AnimationState {
   Message_GameObject_AnimationState_STANDING = 1,
   Message_GameObject_AnimationState_RUNNING = 2,
-  Message_GameObject_AnimationState_PUNCHING = 3
+  Message_GameObject_AnimationState_PUNCHING = 3,
+  Message_GameObject_AnimationState_BEAR = 4,
+  Message_GameObject_AnimationState_WUSON = 5
 };
 bool Message_GameObject_AnimationState_IsValid(int value);
 const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MIN = Message_GameObject_AnimationState_STANDING;
-const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MAX = Message_GameObject_AnimationState_PUNCHING;
+const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MAX = Message_GameObject_AnimationState_WUSON;
 const int Message_GameObject_AnimationState_AnimationState_ARRAYSIZE = Message_GameObject_AnimationState_AnimationState_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Message_GameObject_AnimationState_descriptor();
@@ -486,6 +488,8 @@ class Message_GameObject : public ::google::protobuf::Message {
   static const AnimationState STANDING = Message_GameObject_AnimationState_STANDING;
   static const AnimationState RUNNING = Message_GameObject_AnimationState_RUNNING;
   static const AnimationState PUNCHING = Message_GameObject_AnimationState_PUNCHING;
+  static const AnimationState BEAR = Message_GameObject_AnimationState_BEAR;
+  static const AnimationState WUSON = Message_GameObject_AnimationState_WUSON;
   static inline bool AnimationState_IsValid(int value) {
     return Message_GameObject_AnimationState_IsValid(value);
   }

@@ -133,6 +133,7 @@ void Game::loopReset() {
 
 	for (auto pair : playerMap_) {
 		pair.second->setVisible(true);
+		pair.second->setLinearFactor(btVector3(1,1,1));
 	}
 }
 
@@ -462,10 +463,23 @@ void Game::handleSecondaryHatLogic(const protos::Event* event) {
 	case HARD_HAT:
 		break;
 	case BEAR_HAT:
+		becomeBear(player);
 		break;
 	case DEERSTALKER_HAT:
 		ramOff(event);
 		break;
+	}
+}
+
+void Game::becomeBear(Player* player) {
+	animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_BEAR;
+	if (player->getController()->onGround()) {
+		player->setLinearFactor(btVector3(0, 0, 0));
+		player->setLinearVelocity(btVector3(0, 0, 0));
+	}
+	else {
+		player->setLinearVelocity(btVector3(0, player->getLinearVelocity().getY(), 0));
+		player->setLinearFactor(btVector3(0, 1, 0));
 	}
 }
 
@@ -488,6 +502,8 @@ void Game::setInvisible(Player* player) {
 void Game::ramOff(const protos::Event* event) {
 	std::cerr << "ramOff" << std::endl;
 	Player* player = playerMap_[event->clientid()];
+
+	animationStateMap_[event->clientid()] = protos::Message_GameObject_AnimationState_WUSON;
 
 	double x = event->cameravector(0);
 	double y = event->cameravector(1);

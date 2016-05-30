@@ -165,17 +165,17 @@ void protobuf_AddDesc_Protos_2eproto() {
     "YER_WIN\020\022\"m\n\tDirection\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002"
     "\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BA"
     "CKWARD\020\006\022\006\n\002FL\020\007\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020\n"
-    "\"\226\003\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132"
+    "\"\253\003\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132"
     "\r.protos.Event\022.\n\ngameObject\030\003 \003(\0132\032.pro"
-    "tos.Message.GameObject\032\260\002\n\nGameObject\022\n\n"
+    "tos.Message.GameObject\032\305\002\n\nGameObject\022\n\n"
     "\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162"
     "\037.protos.Message.GameObject.Type\022\017\n\007hatT"
     "ype\030\004 \001(\005\022A\n\016animationState\030\005 \001(\0162).prot"
     "os.Message.GameObject.AnimationState\022\016\n\006"
     "health\030\006 \001(\005\022\017\n\007visible\030\007 \001(\010\"\'\n\004Type\022\n\n"
-    "\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003\"9\n\016Animat"
+    "\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003\"N\n\016Animat"
     "ionState\022\014\n\010STANDING\020\001\022\013\n\007RUNNING\020\002\022\014\n\010P"
-    "UNCHING\020\003", 1049);
+    "UNCHING\020\003\022\010\n\004BEAR\020\004\022\t\n\005WUSON\020\005", 1070);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -997,6 +997,8 @@ bool Message_GameObject_AnimationState_IsValid(int value) {
     case 1:
     case 2:
     case 3:
+    case 4:
+    case 5:
       return true;
     default:
       return false;
@@ -1007,6 +1009,8 @@ bool Message_GameObject_AnimationState_IsValid(int value) {
 const Message_GameObject_AnimationState Message_GameObject::STANDING;
 const Message_GameObject_AnimationState Message_GameObject::RUNNING;
 const Message_GameObject_AnimationState Message_GameObject::PUNCHING;
+const Message_GameObject_AnimationState Message_GameObject::BEAR;
+const Message_GameObject_AnimationState Message_GameObject::WUSON;
 const Message_GameObject_AnimationState Message_GameObject::AnimationState_MIN;
 const Message_GameObject_AnimationState Message_GameObject::AnimationState_MAX;
 const int Message_GameObject::AnimationState_ARRAYSIZE;

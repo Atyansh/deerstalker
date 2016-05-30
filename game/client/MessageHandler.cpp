@@ -76,6 +76,18 @@ void MessageHandler::handleGameMessages() {
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 				Player* player = dynamic_cast<Player*>(&entity);
 
+
+				if (gameObject.animationstate() == protos::Message_GameObject_AnimationState_BEAR) {
+					auto scale = glm::vec3(1) / 0.075;
+					glm::mat4 scaleMat = glm::scale(mat, scale);
+					entity.setMatrix(scaleMat);
+				}
+				else if (gameObject.animationstate() == protos::Message_GameObject_AnimationState_WUSON) {
+					auto scale = glm::vec3(1) / 0.075 * 8;
+					glm::mat4 scaleMat = glm::scale(mat, scale);
+					entity.setMatrix(scaleMat);
+				}
+
 				if (Globals::ID != id) {
 					player->setVisible(gameObject.visible());
 				}
@@ -84,7 +96,6 @@ void MessageHandler::handleGameMessages() {
 				}
 
 				if (gameObject.id() == Globals::ID) { // follow camera based player
-					glm::mat4 toWorld = Globals::drawData.matrix * mat;
 					Globals::cam.updateCamObjectMat(glm::vec3(mat[3]));
 				}
 

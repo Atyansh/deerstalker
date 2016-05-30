@@ -65,6 +65,7 @@ private:
 	void setInvisible(Player* player);
 	void ramOff(const protos::Event* event);
 
+	void becomeBear(Player* player);
 	void killGravity();
 
 	std::set<client_ptr> clients_;

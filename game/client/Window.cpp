@@ -30,13 +30,11 @@ SMatrixTransform *root;
 
 int STATE;
 
-void Window::initialize_objects()
-{
+void Window::initialize_objects() {
 	Globals::gameObjects.loadGameObjects();
 
 	STATE = State::_Start;
-	cout << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
-
+	cerr << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
 }
 
 void Window::clean_up() {
@@ -87,7 +85,6 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	cout << glm::to_string(Globals::drawData.projection) << endl;
 }
 
-
 void Window::idle_callback(GLFWwindow* window) {
 	if (STATE == State::_Lobby) {
 		MessageHandler::handleLobbyMessages();
@@ -102,7 +99,6 @@ void Window::idle_callback(GLFWwindow* window) {
 		MessageHandler::handleEndGameMessages();
 	}
 }
-
 
 void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
@@ -232,8 +228,9 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second); 
 		
 		Hat* deerHat = (player->hatModels.find(DEERSTALKER_HAT))->second;
+		Hat* bearHat = (player->hatModels.find(BEAR_HAT))->second;
 
-		if (deerHat->getVisible() &&
+		if ((deerHat->getVisible() || bearHat->getVisible()) &&
 			buttons[BUTTON_LB] == GLFW_PRESS) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
@@ -396,6 +393,8 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model) {
 			playerStateMap[protos::Message_GameObject_AnimationState_STANDING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Standing]));
 			playerStateMap[protos::Message_GameObject_AnimationState_RUNNING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Running]));
 			playerStateMap[protos::Message_GameObject_AnimationState_PUNCHING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Punching]));
+			playerStateMap[protos::Message_GameObject_AnimationState_BEAR] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Bear]));
+			playerStateMap[protos::Message_GameObject_AnimationState_WUSON] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Wuson]));
 			return new Player(playerStateMap, playerHatMap);
 		default:
 			transform->addNode(model);

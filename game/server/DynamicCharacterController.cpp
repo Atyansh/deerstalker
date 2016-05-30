@@ -169,16 +169,34 @@ void DynamicCharacterController::setLookDirection(const btVector3& newLook) {
 	btVector3 rotationAxis(0.0f, 1.0f, 0.0f);
 	
 	// compute currentLook and angle
-	btTransform transform = m_rigidBody->getCenterOfMassTransform();
+	btTransform transform;
+	m_rigidBody->getMotionState()->getWorldTransform(transform);
 	btQuaternion rotation = transform.getRotation();
 	btVector3 currentLook = quatRotate(rotation, localLook);
 	btScalar angle = currentLook.angle(newLook.normalized());
 
+	std::cerr << "Angle:" << angle << std::endl;
+
 	// compute new rotation
-	btQuaternion deltaRotation(rotationAxis, angle);
-	btQuaternion newRotation = deltaRotation * rotation;
+	btQuaternion deltaRotation1(rotationAxis, angle);
+	btQuaternion deltaRotation2(rotationAxis, -angle);
+	btQuaternion newRotation1 = deltaRotation1 * rotation;
+	btQuaternion newRotation2 = deltaRotation2 * rotation;
+
+	btVector3 testLook1 = quatRotate(newRotation1, localLook);
+	btVector3 testLook2 = quatRotate(newRotation2, localLook);
+
+	btQuaternion newRotation;
+
+	if (testLook1.angle(newLook.normalized()) < testLook2.angle(newLook.normalized())) {
+		newRotation = newRotation1;
+	}
+	else {
+		newRotation = newRotation2;
+	}
 
 	// apply new rotation
 	transform.setRotation(newRotation);
 	m_rigidBody->setCenterOfMassTransform(transform);
+	m_rigidBody->getMotionState()->setWorldTransform(transform);
 }
