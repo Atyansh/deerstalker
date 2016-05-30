@@ -4,9 +4,6 @@ layout (location = 1) in vec3 Normal;
 layout(location = 2) in vec3 Offset;
 layout(location = 3) in float Noise;
 layout(location = 4) in float Scale;
-layout(location = 5) in vec3 ThresholdNormal;
-layout(location = 6) in vec3 FrontPointOnThreshold;
-layout(location = 7) in vec3 BackPointOnThreshold;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -15,7 +12,6 @@ uniform vec3 expansionDirection;
 uniform float time;
 
 out float noise;
-out float transparency;
 out vec3 normal;
 
 vec4 mod289(vec4 x)
@@ -197,29 +193,4 @@ void main()
 	vec3 newPosition = strechedPosition + Normal * displacement;
 	
 	gl_Position =  projection * view * model * vec4(newPosition,1);
-
-	// check whether the area is visible
-	float frontDistance = dot(FrontPointOnThreshold, ThresholdNormal) - dot(vertex, ThresholdNormal);
-	float backDistance = dot(BackPointOnThreshold, ThresholdNormal) - dot(vertex, ThresholdNormal);
-
-	// calculate fading
-	if (backDistance > 0) 
-	{
-			transparency = 0.0f;
-	}
-	else if (frontDistance > 0 && backDistance < 0)
-	{
-		// percentage in range [0..1]
-		float p = 1.0f - (backDistance / length(FrontPointOnThreshold - BackPointOnThreshold));
-		// fade out (linear)
-		//transparency = p;
-		// fade out (cubic)
-		transparency = (p <= 0.5)? 1 - 2 * p * p : 2 * p * p - 4 * p + 2;
-		// fade out (quadratic)
-		//transparency = (1 - p) * (1-p);
-	}
-	else
-	{
-		transparency = 1.0f;
-	}
 }

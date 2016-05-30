@@ -91,9 +91,6 @@ void Clouds::setUpBuffer() {
 	glGenBuffers(1, &this->offsetsBuffer);
 	glGenBuffers(1, &this->noiseBuffer);
 	glGenBuffers(1, &this->scaleBuffer);
-	glGenBuffers(1, &this->thresholdNormalsBuffer);
-	glGenBuffers(1, &this->frontPointsBuffer);
-	glGenBuffers(1, &this->backPointsBuffer);
 	
 }
 
@@ -144,25 +141,6 @@ void Clouds::bindBuffers() {
 	glVertexAttribPointer(SCALES_LOCATION, 1, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glVertexAttribDivisor(SCALES_LOCATION, 1);
 
-
-	glBindBuffer(GL_ARRAY_BUFFER, this->thresholdNormalsBuffer);
-	glBufferData(GL_ARRAY_BUFFER, this->thresholdNormals.size() * sizeof(glm::vec3), &this->thresholdNormals[0], GL_STATIC_DRAW);
-	glEnableVertexAttribArray(THRESHOLD_NORMALS_LOCATION);
-	glVertexAttribPointer(THRESHOLD_NORMALS_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glVertexAttribDivisor(THRESHOLD_NORMALS_LOCATION, 1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, this->frontPointsBuffer);
-	glBufferData(GL_ARRAY_BUFFER, this->frontPoints.size() * sizeof(glm::vec3), &this->frontPoints[0], GL_STATIC_DRAW);
-	glEnableVertexAttribArray(FRONT_POINTS_LOCATION);
-	glVertexAttribPointer(FRONT_POINTS_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glVertexAttribDivisor(FRONT_POINTS_LOCATION, 1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, this->backPointsBuffer);
-	glBufferData(GL_ARRAY_BUFFER, this->backPoints.size() * sizeof(glm::vec3), &this->backPoints[0], GL_STATIC_DRAW);
-	glEnableVertexAttribArray(BACK_POINTS_LOCATION);
-	glVertexAttribPointer(BACK_POINTS_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glVertexAttribDivisor(BACK_POINTS_LOCATION, 1);
-
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &this->indices[0], GL_STATIC_DRAW);
 	
@@ -186,9 +164,6 @@ void Clouds::updateScene(float passedSeconds, float totalPassedTime)
 			offsets.erase(offsets.begin() + i);
 			noises.erase(noises.begin() + i);
 			scales.erase(scales.begin() + i);
-			thresholdNormals.erase(thresholdNormals.begin() + i);
-			frontPoints.erase(frontPoints.begin() + i);
-			backPoints.erase(backPoints.begin() + i);
 			i--;
 		}
 	}
@@ -233,9 +208,6 @@ void Clouds::addSphere(glm::vec3 offset)
 
 	noises.insert(noises.begin(), NOISE_FACTOR * static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // [0,NONSE_FACTOR]
 	scales.insert(scales.begin(), MIN_CLOUD_SCALE + (MAX_CLOUD_SCALE - MIN_CLOUD_SCALE) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // [min,max]
-	thresholdNormals.insert(thresholdNormals.begin(), glm::vec3(0)); // add standard value which will be updated
-	backPoints.insert(backPoints.begin(), glm::vec3(0)); // add standard value which will be updated
-	frontPoints.insert(frontPoints.begin(), glm::vec3(0)); // add standard value which will be updated
 }
 
 void Clouds::addCloud(int numberOfSpheres)

@@ -11,9 +11,6 @@ using namespace std;
 #define OFFSET_LOCATION 2
 #define NOISES_LOCATION 3
 #define SCALES_LOCATION 4
-#define THRESHOLD_NORMALS_LOCATION 5
-#define FRONT_POINTS_LOCATION 6
-#define BACK_POINTS_LOCATION 7
 
 #define M_PI 3.14159265359
 #define M_PI_2 1.57079632679
@@ -35,9 +32,6 @@ private:
 	vector<glm::vec3> offsets;
 	vector<GLfloat> noises;
 	vector<GLfloat> scales;
-	vector<glm::vec3> thresholdNormals;
-	vector<glm::vec3> frontPoints;
-	vector<glm::vec3> backPoints;
 
 	//Cloud time
 	float prevTime = 0;
@@ -58,7 +52,6 @@ private:
 	GLuint normalsBuffer;
 	GLuint offsetsBuffer;
 	GLuint noiseBuffer, scaleBuffer;
-	GLuint thresholdNormalsBuffer, frontPointsBuffer, backPointsBuffer;
 
 	void setupCloud();
 	void setUpBuffer();

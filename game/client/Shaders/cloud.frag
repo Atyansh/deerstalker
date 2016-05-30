@@ -3,7 +3,6 @@
 out vec4 color;
 
 in float noise;
-in float transparency;
 in vec3 normal;
 
 //uniform vec3 lightDirection;
@@ -25,10 +24,6 @@ void main()
 {
 	vec3 lightDirection = vec3(0,10,0); // change
 	float lightIntensity = 0.5f; // change
-
-	float saturatedTransparency = saturate(transparency);
-	if (saturatedTransparency == 0) discard;
-
 	vec3 sunColor = vec3(1,1,1); // change
 
 	vec3 ambientIllumination = sunColor * (1.2 - noise * 0.6);
@@ -38,5 +33,5 @@ void main()
 
 	vec3 composedIllumination = max(sqrt(lightIntensity), 0.3) * 0.8 * ambientIllumination + sqrt(lightIntensity) * 0.25 * diffuseIllumination;
 
-	color = vec4(composedIllumination , saturatedTransparency);
+	color = vec4(composedIllumination , 1.0f);
 }
