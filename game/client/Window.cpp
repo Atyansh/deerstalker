@@ -18,6 +18,8 @@
 
 #include <unordered_map>
 
+#include "Graphics\GUIText.h"
+#include "Graphics\FontShader.h"
 using namespace util;
 using namespace Gamepad;
 
@@ -30,13 +32,17 @@ SMatrixTransform *root;
 
 int STATE;
 
+GUIText* text;
+
 void Window::initialize_objects()
 {
 	Globals::gameObjects.loadGameObjects();
 
 	STATE = State::_Start;
 	cout << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
-
+	FontShader* shader = new FontShader(Window::width, Window::height, "Shader\\fontShader.vert", "Shader\\fontShader.frag");
+	text = new GUIText(shader);
+	text->init();
 }
 
 void Window::clean_up() {
@@ -108,6 +114,7 @@ void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	text->renderText("HI! If I work, I will so up. If not, sad life\n", 50.0f, 50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	switch (STATE) {
 	case State::_Start:
 		Globals::gameObjects.guiMap[_Background]->draw(Globals::drawData);

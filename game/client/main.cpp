@@ -68,6 +68,8 @@ void setup_opengl_settings() {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	// Disable backface culling to render both sides of polygons
 	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// Set clear color to black
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	// Set shading to smooth
