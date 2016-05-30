@@ -70,7 +70,7 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
 	btQuaternion rotation = transform.getRotation();
 	btVector3 currentLook = quatRotate(rotation, localLook);
 	btVector3 rotationAxis(0.0f, 1.0f, 0.0f);
-	btScalar angle = 0.524f;
+	btScalar angle = 1.05f;
 
 	btQuaternion rot1(rotationAxis, angle);
 	btQuaternion rot2(rotationAxis, -angle);
