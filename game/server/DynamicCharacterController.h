@@ -24,11 +24,11 @@ protected:
 
 	btVector3 forwardRaySource;
 	btVector3 forwardRayTarget;
-	btScalar forwardRayLambda;
 
 	float range = 5;
 
 	const btCollisionObject* punchTarget;
+	const btCollisionObject* ramTarget;
 
 public:
 	DynamicCharacterController(btCollisionObject* body);
@@ -66,6 +66,10 @@ public:
 
 	btCollisionObject* getPunchTarget() {
 		return (btCollisionObject*)punchTarget;
+	}
+
+	btCollisionObject* getRamTarget() {
+		return (btCollisionObject*)ramTarget;
 	}
 
 	void setRange(float range) {

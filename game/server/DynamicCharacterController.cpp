@@ -6,7 +6,6 @@
 
 DynamicCharacterController::DynamicCharacterController(btCollisionObject* body) {
 	downRayLambda = 1.0;
-	forwardRayLambda = 1.0;
 	m_rigidBody = (btRigidBody*) body;
 }
 
@@ -66,16 +65,27 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
 		downRayLambda = 1.0;
 	}
 
-	ClosestNotMe rayCallback2(m_rigidBody);
-
 	btVector3 localLook(0.0f, 0.0f, 1.0f);
 	btTransform transform = m_rigidBody->getCenterOfMassTransform();
 	btQuaternion rotation = transform.getRotation();
 	btVector3 currentLook = quatRotate(rotation, localLook);
+	btVector3 rotationAxis(0.0f, 1.0f, 0.0f);
+	btScalar angle = 0.524f;
+
+	btQuaternion rot1(rotationAxis, angle);
+	btQuaternion rot2(rotationAxis, -angle);
+
+
+	btQuaternion newRot1 = rot1 * rotation;
+	btQuaternion newRot2 = rot2 * rotation;
+
+	btVector3 look1 = quatRotate(newRot1, localLook);
+	btVector3 look2 = quatRotate(newRot2, localLook);
 	
 	forwardRaySource = xform.getOrigin() + btVector3(0, 5, 0);
 	forwardRayTarget = forwardRaySource + currentLook * range;
 
+	ClosestNotMe rayCallback2(m_rigidBody);
 	rayCallback2.m_closestHitFraction = 1.0;
 	collisionWorld->rayTest(forwardRaySource, forwardRayTarget, rayCallback2);
 
@@ -83,8 +93,40 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
 		punchTarget = rayCallback2.m_collisionObject;
 	}
 	else {
-		forwardRayLambda = 1.0;
 		punchTarget = nullptr;
+	}
+
+	btVector3 ram0Source = xform.getOrigin() + btVector3(0, 1, 0);
+	btVector3 ram0Target = forwardRaySource + currentLook * 10;
+
+	btVector3 ram1Source = xform.getOrigin() + btVector3(0, 1, 0);
+	btVector3 ram1Target = forwardRaySource + look1 * 10;
+
+	btVector3 ram2Source = xform.getOrigin() + btVector3(0, 1, 0);
+	btVector3 ram2Target = forwardRaySource + look2 * 10;
+
+	ClosestNotMe rayCallback3(m_rigidBody);
+	rayCallback3.m_closestHitFraction = 1.0;
+	ClosestNotMe rayCallback4(m_rigidBody);
+	rayCallback4.m_closestHitFraction = 1.0;
+	ClosestNotMe rayCallback5(m_rigidBody);
+	rayCallback5.m_closestHitFraction = 1.0;
+
+	collisionWorld->rayTest(ram0Source, ram0Target, rayCallback2);
+	collisionWorld->rayTest(ram1Source, ram1Target, rayCallback3);
+	collisionWorld->rayTest(ram2Source, ram2Target, rayCallback4);
+
+	if (rayCallback3.hasHit()) {
+		ramTarget = rayCallback3.m_collisionObject;
+	}
+	else if (rayCallback4.hasHit()){
+		ramTarget = rayCallback4.m_collisionObject;
+	}
+	else if (rayCallback5.hasHit()){
+		ramTarget = rayCallback5.m_collisionObject;
+	}
+	else {
+		ramTarget = nullptr;
 	}
 }
 

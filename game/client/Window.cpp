@@ -210,9 +210,44 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
 	if (STATE == State::_Game) {
-		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second);
+		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
+			fprintf(stderr, "Going Down\n");
+			Globals::cam.pitch(0);
+		}
+		else if (axes[RIGHT_STICK_X] < NEG_AXIS_TILT) {
+			fprintf(stderr, "Going Up\n");
+			Globals::cam.pitch(1);
+		}
 
-		if (axes[LEFT_STICK_X] > POS_AXIS_TILT &&
+		if (axes[RIGHT_STICK_Y] > POS_AXIS_TILT) {
+			fprintf(stderr, "Going Right\n");
+			Globals::cam.yaw(0);
+		}
+
+		else if (axes[RIGHT_STICK_Y] < NEG_AXIS_TILT) {
+			fprintf(stderr, "Going Left\n");
+			Globals::cam.yaw(1);
+		}
+
+		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second); 
+		
+		Hat* deerHat = (player->hatModels.find(DEERSTALKER_HAT))->second;
+
+		if (deerHat->getVisible() &&
+			buttons[BUTTON_LB] == GLFW_PRESS) {
+			auto* event = message.add_event();
+			event->set_clientid(Globals::ID);
+			event->set_type(protos::Event_Type_HATL);
+			event->set_hold(buttonState[BUTTON_LB]);
+			glm::vec3 camDir = Globals::cam.getCamDirection();
+			event->add_cameravector(camDir.x);
+			event->add_cameravector(camDir.y);
+			event->add_cameravector(camDir.z);
+			buttonState[BUTTON_LB] = true;
+			sendMessage(Globals::socket, message);
+			return;
+		}
+		else if (axes[LEFT_STICK_X] > POS_AXIS_TILT &&
 			axes[LEFT_STICK_Y] < NEG_AXIS_TILT) {
 			addMoveEvent(message, protos::Event_Direction_FR);
 		}
@@ -247,26 +282,6 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		else if (axes[TRIGGER_AXIS] < NEG_AXIS_TILT) {
 			addMoveEvent(message, protos::Event_Direction_UP);
 		}
-
-		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
-			fprintf(stderr, "Going Down\n");
-			Globals::cam.pitch(0);
-		}
-		else if (axes[RIGHT_STICK_X] < NEG_AXIS_TILT) {
-			fprintf(stderr, "Going Up\n");
-			Globals::cam.pitch(1);
-		}
-
-		if (axes[RIGHT_STICK_Y] > POS_AXIS_TILT) {
-			fprintf(stderr, "Going Right\n");
-			Globals::cam.yaw(0);
-		}
-
-		else if (axes[RIGHT_STICK_Y] < NEG_AXIS_TILT) {
-			fprintf(stderr, "Going Left\n");
-			Globals::cam.yaw(1);
-		}
-
 
 		if (buttons[BUTTON_A] == GLFW_PRESS && !buttonState[BUTTON_A]) {
 			auto* event = message.add_event();

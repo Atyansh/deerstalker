@@ -14,4 +14,7 @@ public:
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
 	void setVisible(bool visible);
+	bool getVisible() {
+		return isVisible;
+	}
 };

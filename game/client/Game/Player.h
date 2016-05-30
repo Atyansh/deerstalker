@@ -13,7 +13,6 @@ class Player : public SMatrixTransform {
 	private:
 		SMatrixTransform *hat;
 		SMatrixTransform *player;
-		unordered_map<std::uint32_t, Hat*> hatModels;
 		unordered_map<std::uint32_t, PlayerAnim*> playerModels;
 		HatType currHat;
 		protos::Message_GameObject_AnimationState currState;
@@ -21,6 +20,7 @@ class Player : public SMatrixTransform {
 		void createPlayer();
 
 	public:
+		unordered_map<std::uint32_t, Hat*> hatModels;
 		bool visible_;
 
 		Player(unordered_map<std::uint32_t, PlayerAnim*> playerModels, unordered_map<std::uint32_t, Hat*> hatModels);

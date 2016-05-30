@@ -63,7 +63,7 @@ private:
 	void propellerDown(Player* player);
 
 	void setInvisible(Player* player);
-	void ramOff(Player* player);
+	void ramOff(const protos::Event* event);
 
 	void killGravity();
 

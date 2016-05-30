@@ -443,10 +443,6 @@ void Game::handlePrimaryHatLogic(const protos::Event* event) {
 	}
 }
 
-void Game::killGravity() {
-	gravityController_->activate();
-}
-
 void Game::handleSecondaryHatLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
 	Hat* hat = player->getHat();
@@ -468,9 +464,13 @@ void Game::handleSecondaryHatLogic(const protos::Event* event) {
 	case BEAR_HAT:
 		break;
 	case DEERSTALKER_HAT:
-		ramOff(player);
+		ramOff(event);
 		break;
 	}
+}
+
+void Game::killGravity() {
+	gravityController_->activate();
 }
 
 void Game::propellerUp(Player* player) {
@@ -485,8 +485,44 @@ void Game::setInvisible(Player* player) {
 	player->setVisible(false);
 }
 
-void Game::ramOff(Player* player) {
+void Game::ramOff(const protos::Event* event) {
+	std::cerr << "ramOff" << std::endl;
+	Player* player = playerMap_[event->clientid()];
 
+	double x = event->cameravector(0);
+	double y = event->cameravector(1);
+	double z = event->cameravector(2);
+
+	btVector3 f(-x, -y, -z);
+
+	player->getController()->playerStep(world_, f);
+
+	auto position = player->getController()->getRigidBody()->getCenterOfMassPosition();
+
+	btCollisionObject* target = player->getController()->getRamTarget();
+
+	if (target) {
+		std::cerr << "SOME TARGET" << std::endl;
+		auto search = playerSet_.find(target);
+		if (search != playerSet_.end()) {
+			Player* rammedPlayer = (Player*)target;
+			std::cerr << "PUNCH DETECTED" << std::endl;
+			btVector3 localLook(0.0f, 0.0f, 1.0f);
+			btTransform transform = player->getController()->getRigidBody()->getCenterOfMassTransform();
+			btQuaternion rotation = transform.getRotation();
+			btVector3 ramDirection = quatRotate(rotation, localLook);
+			ramDirection = ramDirection + btVector3(0, 1, 0);
+			rammedPlayer->applyCentralImpulse(ramDirection.normalized() * 10);
+			rammedPlayer->changeHealth(-5);
+			// Throw Punch event to clients
+			eventQueueLock_.lock();
+			protos::Event event;
+			event.set_type(protos::Event_Type_PLAYER_PUNCHED);
+			event.set_clientid(rammedPlayer->getId());
+			eventQueue_.emplace_back(event);
+			eventQueueLock_.unlock();
+		}
+	}
 }
 
 void Game::sendStateToClients() {
