@@ -36,6 +36,8 @@ void Clouds::draw(DrawData& data) {
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(data.matrix));
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(data.view));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(data.projection));
+	glUniform3fv(expansionDirectionLoc, 1, glm::value_ptr(expansionDirection));
+	glUniform1f(timeLoc, currCloudTime * MORPHING_SPEED_PER_SECOND);
 
 	glBindVertexArray(this->VAO);
 	bindBuffers();
@@ -87,11 +89,11 @@ void Clouds::setUpBuffer() {
 	glGenBuffers(1, &this->verticesBuffer);
 	glGenBuffers(1, &this->normalsBuffer);
 	glGenBuffers(1, &this->offsetsBuffer);
-	//glGenBuffers(1, &this->nonseBuffer);
-	//glGenBuffers(1, &this->scaleBuffer);
-	//glGenBuffers(1, &this->thresholdNormalsBuffer);
-	//glGenBuffers(1, &this->frontPointsBuffer);
-	//glGenBuffers(1, &this->backPointsBuffer);
+	glGenBuffers(1, &this->noiseBuffer);
+	glGenBuffers(1, &this->scaleBuffer);
+	glGenBuffers(1, &this->thresholdNormalsBuffer);
+	glGenBuffers(1, &this->frontPointsBuffer);
+	glGenBuffers(1, &this->backPointsBuffer);
 	
 }
 
@@ -106,6 +108,8 @@ void Clouds::setupUniformLoc(){
 	modelLoc = glGetUniformLocation(shader->getPid(), "model");
 	viewLoc = glGetUniformLocation(shader->getPid(), "view");
 	projLoc = glGetUniformLocation(shader->getPid(), "projection");
+	expansionDirectionLoc = glGetUniformLocation(shader->getPid(), "expansionDirection");
+	timeLoc = glGetUniformLocation(shader->getPid(), "time");
 
 	shader->unbind();
 }
@@ -127,21 +131,37 @@ void Clouds::bindBuffers() {
 	glEnableVertexAttribArray(OFFSET_LOCATION);
 	glVertexAttribPointer(OFFSET_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 	glVertexAttribDivisor(OFFSET_LOCATION, 1);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, this->noiseBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->noises.size(), &this->noises[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(NOISES_LOCATION);
+	glVertexAttribPointer(NOISES_LOCATION, 1, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribDivisor(NOISES_LOCATION, 1);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, this->nonseBuffer);
-	//glBufferData(GL_ARRAY_BUFFER, this->nonses.size() * sizeof(GLfloat), &this->nonses[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, this->scaleBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->scales.size(), &this->scales[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(SCALES_LOCATION);
+	glVertexAttribPointer(SCALES_LOCATION, 1, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribDivisor(SCALES_LOCATION, 1);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, this->scaleBuffer);
-	//glBufferData(GL_ARRAY_BUFFER, this->scales.size() * sizeof(GLfloat), &this->scales[0], GL_STATIC_DRAW);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, this->thresholdNormalsBuffer);
-	//glBufferData(GL_ARRAY_BUFFER, this->thresholdNormals.size() * sizeof(glm::vec3), &this->thresholdNormals[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, this->thresholdNormalsBuffer);
+	glBufferData(GL_ARRAY_BUFFER, this->thresholdNormals.size() * sizeof(glm::vec3), &this->thresholdNormals[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(THRESHOLD_NORMALS_LOCATION);
+	glVertexAttribPointer(THRESHOLD_NORMALS_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribDivisor(THRESHOLD_NORMALS_LOCATION, 1);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, this->frontPointsBuffer);
-	//glBufferData(GL_ARRAY_BUFFER, this->frontPoints.size() * sizeof(glm::vec3), &this->frontPoints[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, this->frontPointsBuffer);
+	glBufferData(GL_ARRAY_BUFFER, this->frontPoints.size() * sizeof(glm::vec3), &this->frontPoints[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(FRONT_POINTS_LOCATION);
+	glVertexAttribPointer(FRONT_POINTS_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribDivisor(FRONT_POINTS_LOCATION, 1);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, this->backPointsBuffer);
-	//glBufferData(GL_ARRAY_BUFFER, this->backPoints.size() * sizeof(glm::vec3), &this->backPoints[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, this->backPointsBuffer);
+	glBufferData(GL_ARRAY_BUFFER, this->backPoints.size() * sizeof(glm::vec3), &this->backPoints[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(BACK_POINTS_LOCATION);
+	glVertexAttribPointer(BACK_POINTS_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribDivisor(BACK_POINTS_LOCATION, 1);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &this->indices[0], GL_STATIC_DRAW);
@@ -164,11 +184,11 @@ void Clouds::updateScene(float passedSeconds, float totalPassedTime)
 		if (invisible)
 		{
 			offsets.erase(offsets.begin() + i);
-			/*noises.erase(noises.begin() + i);
+			noises.erase(noises.begin() + i);
 			scales.erase(scales.begin() + i);
 			thresholdNormals.erase(thresholdNormals.begin() + i);
 			frontPoints.erase(frontPoints.begin() + i);
-			backPoints.erase(backPoints.begin() + i);*/
+			backPoints.erase(backPoints.begin() + i);
 			i--;
 		}
 	}
@@ -184,7 +204,6 @@ void Clouds::updateScene(float passedSeconds, float totalPassedTime)
 			if ((totalPassedTime - lastCloudCreated > MIN_CLOUD_CREATION_DISTANCE_SECONDS && randDecision < SPAWN_CLOUD_LIKELYHOOD)
 				|| offsets.size() == 0)
 			{
-				cout << "added " << i << endl;
 				addCloud(SPHERES_PER_CLOUD);
 				lastCloudCreated = totalPassedTime;
 			}
@@ -198,7 +217,7 @@ void Clouds::addSphere(glm::vec3 offset)
 	float xRand2D = -0.5f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX); // [-0.5, 0.5]
 	float yRand2D = -0.5f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX); // [-0.5, 0.5]
 																						   // create the plane for the clouds
-	glm::vec2 planarExpansionDirection(expansionDirection.x, expansionDirection.z); // the y coordinate points upward and is thus only the hight
+	glm::vec2 planarExpansionDirection(expansionDirection.x, expansionDirection.z);
 	planarExpansionDirection = normalize(planarExpansionDirection);
 	// randomize the start position
 	planarExpansionDirection.x += xRand2D;
@@ -212,11 +231,11 @@ void Clouds::addSphere(glm::vec3 offset)
 	float rZ = planarExpansionDirection.y;
 	offsets.insert(offsets.begin(), glm::vec3(rX, rY, rZ));
 
-	//noises.insert(noises.begin(), NOISE_FACTOR * static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // [0,NONSE_FACTOR]
-	//scales.insert(scales.begin(), MIN_CLOUD_SCALE + (MAX_CLOUD_SCALE - MIN_CLOUD_SCALE) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // [min,max]
-	//thresholdNormals.insert(thresholdNormals.begin(), glm::vec3(0)); // add standard value which will be updated
-	//backPoints.insert(backPoints.begin(), glm::vec3(0)); // add standard value which will be updated
-	//frontPoints.insert(frontPoints.begin(), glm::vec3(0)); // add standard value which will be updated
+	noises.insert(noises.begin(), NOISE_FACTOR * static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // [0,NONSE_FACTOR]
+	scales.insert(scales.begin(), MIN_CLOUD_SCALE + (MAX_CLOUD_SCALE - MIN_CLOUD_SCALE) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // [min,max]
+	thresholdNormals.insert(thresholdNormals.begin(), glm::vec3(0)); // add standard value which will be updated
+	backPoints.insert(backPoints.begin(), glm::vec3(0)); // add standard value which will be updated
+	frontPoints.insert(frontPoints.begin(), glm::vec3(0)); // add standard value which will be updated
 }
 
 void Clouds::addCloud(int numberOfSpheres)

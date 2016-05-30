@@ -26,9 +26,6 @@ const char* window_title = "Deerstalker";
 
 int Window::width;
 int Window::height;
-int Window::nbFrames = 0;
-float Window::lastTime = 0;
-float Window::currentFrameRate = 0;
 SMatrixTransform *root;
 
 int STATE;
@@ -107,27 +104,8 @@ void Window::idle_callback(GLFWwindow* window) {
 }
 
 
-void Window::FPS(GLFWwindow* window) {
-	// Measure speed
-	float currentTime = glfwGetTime();
-	nbFrames++;
-
-	if (currentTime - lastTime >= 1.0) { // If last cout was more than 1 sec ago
-		char title[256];
-		title[255] = '\0';
-		currentFrameRate = (float)nbFrames / (currentTime - lastTime);
-		sprintf_s(title, "FPS: %3.2f", currentFrameRate);
-
-		glfwSetWindowTitle(window, title);
-
-		nbFrames = 0;
-		lastTime += 1.0;
-	}
-}
 
 void Window::display_callback(GLFWwindow* window) {
-	FPS(window);
-
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

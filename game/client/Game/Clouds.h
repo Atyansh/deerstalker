@@ -9,7 +9,7 @@ using namespace std;
 #define POSITION_LOCATION 0
 #define NORMAL_LOCATION 1
 #define OFFSET_LOCATION 2
-#define NONSES_LOCATION 3
+#define NOISES_LOCATION 3
 #define SCALES_LOCATION 4
 #define THRESHOLD_NORMALS_LOCATION 5
 #define FRONT_POINTS_LOCATION 6
@@ -48,6 +48,8 @@ private:
 	GLuint modelLoc;
 	GLuint viewLoc;
 	GLuint projLoc;
+	GLuint expansionDirectionLoc;
+	GLuint timeLoc;
 	
 
 	/*  Render data  */
@@ -55,8 +57,8 @@ private:
 	GLuint verticesBuffer;
 	GLuint normalsBuffer;
 	GLuint offsetsBuffer;
-	/*GLuint nonseBuffer, scaleBuffer, thresholdNormalsBuffer,
-		frontPointsBuffer, backPointsBuffer;*/
+	GLuint noiseBuffer, scaleBuffer;
+	GLuint thresholdNormalsBuffer, frontPointsBuffer, backPointsBuffer;
 
 	void setupCloud();
 	void setUpBuffer();
@@ -64,7 +66,7 @@ private:
 	void bindBuffers();
 
 	//cloud sky creation
-	const int NUMBER_OF_SPHERES = 100000;
+	const int NUMBER_OF_SPHERES = 1000;
 	const int SPHERES_PER_CLOUD = 1;
 	const float FLOATING_SPEED_PER_SECOND = 2.0f;
 	const float SKYBOX_LENGTH = 500; //pass in?
@@ -75,6 +77,7 @@ private:
 	const float NOISE_FACTOR = 100;
 	const float MAX_CLOUD_SCALE = 10.0f;
 	const float MIN_CLOUD_SCALE = 4.0f;
+	const float MORPHING_SPEED_PER_SECOND = 0.1f;
 
 
 	glm::vec3 expansionDirection = INITIAL_EXPANSION_DIRECTION;
