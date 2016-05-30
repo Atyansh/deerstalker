@@ -11,23 +11,23 @@ FontShader::FontShader(int width, int height, const char *vs, const char *fg, bo
 	_width = width;
 	_height = height;
 
-	setupProjection();
+	//setupProjection();
 }
 
 FontShader::~FontShader() {}
-
-void FontShader::setupProjection() {
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(_width), 0.0f, static_cast<GLfloat>(_height));
-	bind();
-	glUniformMatrix4fv(glGetUniformLocation(pid, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-}
-
-void FontShader::updateProjection(int width, int height) {
-	_width = width;
-	_height = height;
-
-	setupProjection();
-}
+//
+//void FontShader::setupProjection() {
+//	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(_width), 0.0f, static_cast<GLfloat>(_height));
+//	bind();
+//	glUniformMatrix4fv(glGetUniformLocation(pid, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+//}
+//
+//void FontShader::updateProjection(int width, int height) {
+//	_width = width;
+//	_height = height;
+//
+//	setupProjection();
+//}
 
 void FontShader::bind() {
 	if (currentlyBoundShaderID != pid)

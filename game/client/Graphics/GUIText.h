@@ -20,6 +20,10 @@ struct Character {
 class GUIText : public GuiItem {
 
 private:
+
+	int _width;
+	int _height;
+
 	FT_Library _ft;
 	FT_Face _face;
 
@@ -36,7 +40,7 @@ private:
 
 public:
 	GUIText();
-	GUIText(Shader *shader) : _shader(shader) {}
+	GUIText(Shader *shader, int width, int height) : _shader(shader), _width(width), _height(height) {}
 	~GUIText();
 
 	bool init();

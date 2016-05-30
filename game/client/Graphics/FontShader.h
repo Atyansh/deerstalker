@@ -6,13 +6,13 @@ class FontShader : public Shader {
 private:
 	int _width;
 	int _height;
-	void setupProjection();
+	//void setupProjection();
 public:
 	FontShader();
 	FontShader(int width, int height, const char *vs, const char *fg, bool isFile = true);
 	~FontShader();
 
-	void updateProjection(int width, int height);
+	//void updateProjection(int width, int height);
 
 	void bind();
 	void unbind();

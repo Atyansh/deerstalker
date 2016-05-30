@@ -40,8 +40,8 @@ void Window::initialize_objects()
 
 	STATE = State::_Start;
 	cout << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
-	FontShader* shader = new FontShader(Window::width, Window::height, "Shader\\fontShader.vert", "Shader\\fontShader.frag");
-	text = new GUIText(shader);
+	Shader* shader = new Shader("Shaders/fontShader.vert", "Shaders/fontShader.frag");
+	text = new GUIText(shader, Window::width, Window::height);
 	text->init();
 }
 
@@ -60,7 +60,8 @@ GLFWwindow* Window::create_window(int width, int height) {
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	// Create the GLFW window
-	GLFWwindow* window = glfwCreateWindow(width, height, window_title, glfwGetPrimaryMonitor(), NULL);
+	//GLFWwindow* window = glfwCreateWindow(width, height, window_title, glfwGetPrimaryMonitor(), NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
 
 	// Check if the window could not be created
 	if (!window) {
@@ -114,7 +115,7 @@ void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	text->renderText("HI! If I work, I will so up. If not, sad life\n", 50.0f, 50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	text->renderText("Hi! If I work, I will show up. If not, sad life.", 50.0f, 50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	switch (STATE) {
 	case State::_Start:
 		Globals::gameObjects.guiMap[_Background]->draw(Globals::drawData);
