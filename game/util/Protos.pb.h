@@ -514,6 +514,13 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 health() const;
   inline void set_health(::google::protobuf::int32 value);
 
+  // optional bool visible = 7;
+  inline bool has_visible() const;
+  inline void clear_visible();
+  static const int kVisibleFieldNumber = 7;
+  inline bool visible() const;
+  inline void set_visible(bool value);
+
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
@@ -526,6 +533,8 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline void clear_has_animationstate();
   inline void set_has_health();
   inline void clear_has_health();
+  inline void set_has_visible();
+  inline void clear_has_visible();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -537,6 +546,7 @@ class Message_GameObject : public ::google::protobuf::Message {
   ::google::protobuf::int32 hattype_;
   int animationstate_;
   ::google::protobuf::int32 health_;
+  bool visible_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -1012,6 +1022,30 @@ inline void Message_GameObject::set_health(::google::protobuf::int32 value) {
   set_has_health();
   health_ = value;
   // @@protoc_insertion_point(field_set:protos.Message.GameObject.health)
+}
+
+// optional bool visible = 7;
+inline bool Message_GameObject::has_visible() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void Message_GameObject::set_has_visible() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void Message_GameObject::clear_has_visible() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void Message_GameObject::clear_visible() {
+  visible_ = false;
+  clear_has_visible();
+}
+inline bool Message_GameObject::visible() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.visible)
+  return visible_;
+}
+inline void Message_GameObject::set_visible(bool value) {
+  set_has_visible();
+  visible_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.visible)
 }
 
 // -------------------------------------------------------------------

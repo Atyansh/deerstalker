@@ -127,6 +127,15 @@ void Game::initialize() {
 	world_->addAction(gravityController_);
 }
 
+void Game::loopReset() {
+	gravityController_->deactivate();
+	clearAnimations();
+
+	for (auto pair : playerMap_) {
+		pair.second->setVisible(true);
+	}
+}
+
 void Game::startGameLoop() {
 	// TODO(Atyansh): Make this part of config settings 
 	milliseconds interval = milliseconds(1000/30);
@@ -137,8 +146,7 @@ void Game::startGameLoop() {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
-		gravityController_->deactivate();
-		clearAnimations();
+		loopReset();
 
 		messageQueueLock_.lock();
 		while (!messageQueue_.empty()) {
@@ -428,11 +436,13 @@ void Game::handlePrimaryHatLogic(const protos::Event* event) {
 	case BEAR_HAT:
 		killGravity();
 		break;
+	case DEERSTALKER_HAT:
+		setInvisible(player);
+		break;
 	}
 }
 
 void Game::killGravity() {
-	std::cerr << "GRAVITY KILLED" << std::endl;
 	gravityController_->activate();
 }
 
@@ -467,24 +477,31 @@ void Game::propellerDown(Player* player) {
 	player->getController()->getRigidBody()->applyCentralForce(btVector3(0, -10, 0));
 }
 
+void Game::setInvisible(Player* player) {
+	player->setVisible(false);
+}
+
 void Game::sendStateToClients() {
 	protos::Message message;
 
 	for (auto& pair : playerMap_) {
+		Player* player = pair.second;
+
 		btTransform transform;
-		pair.second->getController()->getRigidBody()->getMotionState()->getWorldTransform(transform);
+		player->getController()->getRigidBody()->getMotionState()->getWorldTransform(transform);
 		btScalar glm[16] = {};
 
 		transform.getOpenGLMatrix(glm);
 
 		auto* gameObject = message.add_gameobject();
 
-		Hat* hat = pair.second->getHat();
+		Hat* hat = player->getHat();
 
-		gameObject->set_hattype(pair.second->getHatType());
+		gameObject->set_hattype(player->getHatType());
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
-		gameObject->set_health(pair.second->getHealth());
-		gameObject->set_animationstate(animationStateMap_[pair.first]);
+		gameObject->set_health(player->getHealth());
+		gameObject->set_animationstate(animationStateMap_[player->getId()]);
+		gameObject->set_visible(player->getVisible());
 		gameObject->set_id(pair.first);
 		for (auto v : glm) {
 			gameObject->add_matrix(v);

@@ -62,6 +62,7 @@ message Message {
 		optional int32 hatType = 4;
 		optional AnimationState animationState = 5;
 		optional int32 health = 6;
+		optional bool visible = 7;
 	}
 
 	optional int32 id = 1;

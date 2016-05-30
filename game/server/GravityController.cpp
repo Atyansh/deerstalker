@@ -12,7 +12,7 @@ void GravityController::updateAction(btCollisionWorld *collisionWorld, btScalar 
 	if (active) {
 		for (auto* it : game_->playerSet_) {
 			Player* player = (Player*)it;
-			if (player->getHatType() != BEAR_HAT) {
+			if (true) {//player->getHatType() != BEAR_HAT) {
 				player->applyCentralImpulse(btVector3(0, 10, 0) * deltaTimeStep);
 			}
 		}

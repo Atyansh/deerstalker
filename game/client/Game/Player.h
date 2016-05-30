@@ -21,11 +21,22 @@ class Player : public SMatrixTransform {
 		void createPlayer();
 
 	public:
+		bool visible_;
+
 		Player(unordered_map<std::uint32_t, PlayerAnim*> playerModels, unordered_map<std::uint32_t, Hat*> hatModels);
 		~Player();
 
 		void detachHat();
 		void attachHat(HatType newHat);
+
+		bool getVisible() {
+			return visible_;
+		}
+
+		void setVisible(bool visible) {
+			visible_ = visible;
+		}
+
 		void changeState(protos::Message_GameObject_AnimationState newState);
 
 };

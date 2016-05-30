@@ -125,7 +125,9 @@ void Window::display_callback(GLFWwindow* window) {
 
 		// Render objects
 		for (auto& pair : Globals::gameObjects.playerMap) {
-			pair.second->draw(Globals::drawData);
+			if (dynamic_cast<Player*>((pair.second))->getVisible()) {
+				pair.second->draw(Globals::drawData);
+			}
 		}
 		// hat
 		for (auto& pair : Globals::gameObjects.hatMap) {

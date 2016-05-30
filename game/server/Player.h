@@ -36,6 +36,14 @@ public:
 		return stunned_;
 	}
 
+	void setVisible(bool visible) {
+		visible_ = visible;
+	}
+
+	bool getVisible() {
+		return visible_;
+	}
+
 	void stun() {
 		stunned_ = true;
 	}
@@ -72,10 +80,12 @@ private:
 	unsigned int lives_;
 
 	bool stunned_ = false;
+	bool visible_ = true;
 
 	int32_t health_ = 100;
 
 	Hat * currHat_;
+
 	DynamicCharacterController* controller_;
 
 	static const btVector3 P1_SPAWN_POINT;

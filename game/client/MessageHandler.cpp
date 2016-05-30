@@ -68,25 +68,34 @@ void MessageHandler::handleGameMessages() {
 				(*map)[id] = Window::createGameObj(model, Globals::gameObjects.modelMap[model]);
 			}
 
-			auto& player = *(*map)[id];
+			auto& entity = *(*map)[id];
 
 			glm::mat4 mat = glm::make_mat4(matrix);
 
-			player.setMatrix(mat);
+			entity.setMatrix(mat);
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
+				Player* player = dynamic_cast<Player*>(&entity);
+
+				if (Globals::ID != id) {
+					player->setVisible(gameObject.visible());
+				}
+				else {
+					player->setVisible(true);
+				}
 
 				if (gameObject.id() == Globals::ID) { // follow camera based player
 					glm::mat4 toWorld = Globals::drawData.matrix * mat;
 					Globals::cam.updateCamObjectMat(glm::vec3(mat[3]));
 				}
 
-				dynamic_cast<Player*>(&player)->changeState(gameObject.animationstate());
+
+				player->changeState(gameObject.animationstate());
 
 				if (gameObject.hattype() != NO_HAT) {
-					dynamic_cast<Player*>(&player)->attachHat((HatType)gameObject.hattype());
+					player->attachHat((HatType)gameObject.hattype());
 				}
 				else {
-					dynamic_cast<Player*>(&player)->detachHat();
+					player->detachHat();
 				}
 			}
 

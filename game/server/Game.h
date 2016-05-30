@@ -42,6 +42,8 @@ private:
 
 	void deleteBullets();
 
+	void loopReset();
+
 	void handleSpawnLogic(const protos::Event* event);
 	void handleMoveLogic(const protos::Event* event);
 	void handleJumpLogic(const protos::Event* event);
@@ -59,6 +61,8 @@ private:
 
 	void propellerUp(Player* player);
 	void propellerDown(Player* player);
+
+	void setInvisible(Player* player);
 
 	void killGravity();
 
