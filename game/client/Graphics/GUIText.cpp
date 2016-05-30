@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-const char* arialPath = "C:\\Users\\ckv001\\Source\\Repos\\deerstalker\\game\\client\\Assets\\Font\\arial.ttf";
+//const char* arialPath = "C:\\Users\\ckv001\\Source\\Repos\\deerstalker\\game\\client\\Assets\\Font\\arial.ttf";
 
 GUIText::GUIText() {
 }
@@ -23,7 +23,7 @@ bool GUIText::initFT() {
 }
 
 bool GUIText::initFace() {
-	if (FT_New_Face(_ft, arialPath, 0, &_face)) {
+	if (FT_New_Face(_ft, _fontPath, 0, &_face)) {
 		cerr << "FREETYPE FACE DID NOT INIT CORRECTLY\n";
 		return false;
 	}
@@ -97,7 +97,7 @@ bool GUIText::init() {
 		return false;
 	}
 
-	setFontSize(48);
+	setFontSize(100);
 
 	// Disable byte-alignment restriction
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -115,8 +115,7 @@ void GUIText::setFontSize(int size) {
 void GUIText::renderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
 	_shader->bind();
 
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(_width), 0.0f, static_cast<GLfloat>(_height));
-	glUniformMatrix4fv(glGetUniformLocation(_shader->getPid(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(glGetUniformLocation(_shader->getPid(), "projection"), 1, GL_FALSE, glm::value_ptr(_projection));
 
 
 	glUniform3f(glGetUniformLocation(shader->getPid(), "textColor"), color.x, color.y, color.z);

@@ -18,8 +18,9 @@
 
 #include <unordered_map>
 
-#include "Graphics\GUIText.h"
-#include "Graphics\FontShader.h"
+#include "Graphics\PlayerGameGUI.h"
+#include "Graphics\HealthBarGUI.h"
+
 using namespace util;
 using namespace Gamepad;
 
@@ -32,7 +33,8 @@ SMatrixTransform *root;
 
 int STATE;
 
-GUIText* text;
+PlayerGameGUI * playerGame;
+HealthBarGUI * health;
 
 void Window::initialize_objects()
 {
@@ -41,8 +43,10 @@ void Window::initialize_objects()
 	STATE = State::_Start;
 	cout << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
 	Shader* shader = new Shader("Shaders/fontShader.vert", "Shaders/fontShader.frag");
-	text = new GUIText(shader, Window::width, Window::height);
-	text->init();
+	Shader* twodShader = new Shader("Shaders/2DShader.vert", "Shaders/2DShader.frag");
+
+	playerGame = new PlayerGameGUI(twodShader, Window::width, Window::height);
+	//health = new HealthBarGUI(twodShader, Window::width, Window::height);
 }
 
 void Window::clean_up() {
@@ -115,7 +119,10 @@ void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	text->renderText("Hi! If I work, I will show up. If not, sad life.", 50.0f, 50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	glm::mat4 trans;
+	trans = glm::scale(trans, glm::vec3(0.5f));
+	trans = glm::translate(trans, glm::vec3(20.f, 20.f, 0.f));
+	playerGame->draw(trans);
 	switch (STATE) {
 	case State::_Start:
 		Globals::gameObjects.guiMap[_Background]->draw(Globals::drawData);

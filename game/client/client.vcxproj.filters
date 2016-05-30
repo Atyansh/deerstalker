@@ -108,7 +108,13 @@
     <ClCompile Include="Graphics\GUIText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\FontShader.cpp">
+    <ClCompile Include="Graphics\PlayerGameGUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\HealthBarGUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\LivesGUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -203,7 +209,13 @@
     <ClInclude Include="Graphics\GUIText.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\FontShader.h">
+    <ClInclude Include="Graphics\PlayerGameGUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\HealthBarGUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\LivesGUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

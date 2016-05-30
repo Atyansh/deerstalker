@@ -21,8 +21,9 @@ class GUIText : public GuiItem {
 
 private:
 
-	int _width;
-	int _height;
+	glm::mat4 _projection;
+
+	const char* _fontPath;
 
 	FT_Library _ft;
 	FT_Face _face;
@@ -40,12 +41,13 @@ private:
 
 public:
 	GUIText();
-	GUIText(Shader *shader, int width, int height) : _shader(shader), _width(width), _height(height) {}
+	GUIText(Shader *shader, glm::mat4 proj, const char* fontPath) : _shader(shader), _projection(proj), _fontPath(fontPath) {}
 	~GUIText();
 
 	bool init();
 	void setFontSize(int size);
 	void renderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
+	void updateProj(glm::mat4 proj) { _projection = proj; } // Update the width and height when resize window
 
 	void draw(DrawData &data);
 	void update(UpdateData &data);

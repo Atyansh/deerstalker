@@ -54,7 +54,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions); _WIN32_WINNT=0x0501</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\workarea\protobuf-2.6.1\src;$(SolutionDir);$(SolutionDir)client\Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\ckv001\Source\Repos\deerstalker\game\client\Dependencies\include\FreeType;C:\workarea\protobuf-2.6.1\src;$(SolutionDir);$(SolutionDir)client\Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -129,10 +129,12 @@
     <ClCompile Include="Graphics\Camera_Original.cpp" />
     <ClCompile Include="Graphics\Drawable.cpp" />
     <ClCompile Include="Graphics\DrawData.cpp" />
-    <ClCompile Include="Graphics\FontShader.cpp" />
     <ClCompile Include="Graphics\GuiItem.cpp" />
     <ClCompile Include="Graphics\GUIText.cpp" />
+    <ClCompile Include="Graphics\HealthBarGUI.cpp" />
     <ClCompile Include="Graphics\LightShader.cpp" />
+    <ClCompile Include="Graphics\LivesGUI.cpp" />
+    <ClCompile Include="Graphics\PlayerGameGUI.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
     <ClCompile Include="Graphics\UpdateData.cpp" />
     <ClCompile Include="main.cpp" />
@@ -162,10 +164,12 @@
     <ClInclude Include="Graphics\Camera_Original.h" />
     <ClInclude Include="Graphics\Drawable.h" />
     <ClInclude Include="Graphics\DrawData.h" />
-    <ClInclude Include="Graphics\FontShader.h" />
     <ClInclude Include="Graphics\GuiItem.h" />
     <ClInclude Include="Graphics\GUIText.h" />
+    <ClInclude Include="Graphics\HealthBarGUI.h" />
     <ClInclude Include="Graphics\LightShader.h" />
+    <ClInclude Include="Graphics\LivesGUI.h" />
+    <ClInclude Include="Graphics\PlayerGameGUI.h" />
     <ClInclude Include="Graphics\Shader.h" />
     <ClInclude Include="Graphics\UpdateData.h" />
     <ClInclude Include="MessageHandler.h" />
