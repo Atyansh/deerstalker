@@ -2,10 +2,11 @@
 
 #include <time.h>  
 
-PlayerAnim::PlayerAnim(PlayerModel *model) : SGeode()
+PlayerAnim::PlayerAnim(PlayerModel *model, int id) : SGeode()
 {
 	isVisible = false;
 	this->model = model;
+	this->id = id;
 }
 	
 
@@ -23,6 +24,7 @@ void PlayerAnim::draw(DrawData& data) {
 		currAnimTime += min(delta, 0.05f);
 
 		data.animTime = currAnimTime;
+		data.playerId = id;
 		model->draw(data);
 	}
 }

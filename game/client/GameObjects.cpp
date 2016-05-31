@@ -4,7 +4,7 @@
 const char* mangoPath = "Assets/OBJ/Mango/mango.obj";
 const char* chickenPath = "Assets/FBX/chicken_dance.fbx";
 const char* cratePath = "Assets/OBJ/Crate/Crate1.obj";
-const char* playerStandPath = "Assets/FBX/standing.fbx"; 
+const char* playerStandPath = "Assets/FBX/standing.fbx";
 const char* playerRunPath = "Assets/FBX/running.fbx";
 const char* playerPunchingPath = "Assets/FBX/punching.fbx";
 const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
