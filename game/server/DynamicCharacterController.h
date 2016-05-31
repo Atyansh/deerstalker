@@ -32,6 +32,7 @@ protected:
 
 	const btCollisionObject* punchTarget;
 	const btCollisionObject* ramTarget;
+	const btCollisionObject* wrenchTarget;
 
 public:
 	DynamicCharacterController(btCollisionObject* body);
@@ -74,6 +75,10 @@ public:
 
 	btCollisionObject* getRamTarget() {
 		return (btCollisionObject*)ramTarget;
+	}
+
+	btCollisionObject* getWrenchTarget() {
+		return (btCollisionObject*)wrenchTarget;
 	}
 
 	void setLookDirection(const btVector3& newLook);

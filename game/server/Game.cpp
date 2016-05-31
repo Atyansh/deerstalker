@@ -509,7 +509,7 @@ void Game::handlePunchLogic(const protos::Event* event) {
 
 	animationStateMap_[event->clientid()] = protos::Message_GameObject_AnimationState_PUNCHING;
 
-	auto position = player->getController()->getRigidBody()->getCenterOfMassPosition();
+	auto position = player->getCenterOfMassPosition();
 
 	btCollisionObject* target = player->getController()->getPunchTarget();
 
@@ -603,6 +603,7 @@ void Game::handlePrimaryHatLogic(const protos::Event* event) {
 		}
 		break;
 	case HARD_HAT:
+		wrenchHit(player);
 		break;
 	case BEAR_HAT:
 		killGravity();
@@ -637,6 +638,34 @@ void Game::handleSecondaryHatLogic(const protos::Event* event) {
 	case DEERSTALKER_HAT:
 		ramOff(event);
 		break;
+	}
+}
+
+void Game::wrenchHit(Player* player) {
+	// TODO Add Wrench animation
+	auto position = player->getCenterOfMassPosition();
+
+	btCollisionObject* target = player->getController()->getWrenchTarget();
+
+	if (target) {
+		auto search = playerSet_.find(target);
+		if (search != playerSet_.end()) {
+			Player* wrenchedPlayer = (Player*)target;
+			btVector3 localLook(0.0f, 0.0f, 1.0f);
+			btTransform transform = player->getController()->getRigidBody()->getCenterOfMassTransform();
+			btQuaternion rotation = transform.getRotation();
+			btVector3 currentLook = quatRotate(rotation, localLook);
+			wrenchedPlayer->applyCentralImpulse((currentLook.normalized() + btVector3(0, 1, 0)) * 10);
+			wrenchedPlayer->changeHealth(-100);
+			// Throw Punch event to clients
+			eventQueueLock_.lock();
+			protos::Event event;
+			// TODO Change this to wrench like event
+			event.set_type(protos::Event_Type_PLAYER_PUNCHED);
+			event.set_clientid(wrenchedPlayer->getId());
+			eventQueue_.emplace_back(event);
+			eventQueueLock_.unlock();
+		}
 	}
 }
 

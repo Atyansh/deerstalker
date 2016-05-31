@@ -77,6 +77,8 @@ private:
 	void becomeBear(Player* player);
 	void killGravity();
 
+	void wrenchHit(Player* player);
+
 	std::set<client_ptr> clients_;
 	World* world_;
 

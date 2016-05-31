@@ -136,9 +136,9 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld, btSca
 	ClosestNotMe rayCallback5(m_rigidBody);
 	rayCallback5.m_closestHitFraction = 1.0;
 
-	collisionWorld->rayTest(ram0Source, ram0Target, rayCallback2);
-	collisionWorld->rayTest(ram1Source, ram1Target, rayCallback3);
-	collisionWorld->rayTest(ram2Source, ram2Target, rayCallback4);
+	collisionWorld->rayTest(ram0Source, ram0Target, rayCallback3);
+	collisionWorld->rayTest(ram1Source, ram1Target, rayCallback4);
+	collisionWorld->rayTest(ram2Source, ram2Target, rayCallback5);
 
 	if (rayCallback3.hasHit()) {
 		ramTarget = rayCallback3.m_collisionObject;
@@ -151,6 +151,21 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld, btSca
 	}
 	else {
 		ramTarget = nullptr;
+	}
+
+	ClosestNotMe rayCallback6(m_rigidBody);
+	rayCallback6.m_closestHitFraction = 1.0;
+
+	forwardRaySource = xform.getOrigin() + btVector3(0, 5, 0);
+	forwardRayTarget = forwardRaySource + currentLook * 10;
+
+	collisionWorld->rayTest(forwardRaySource, forwardRayTarget, rayCallback6);
+
+	if (rayCallback6.hasHit()) {
+		wrenchTarget = rayCallback6.m_collisionObject;
+	}
+	else {
+		wrenchTarget = nullptr;
 	}
 }
 
