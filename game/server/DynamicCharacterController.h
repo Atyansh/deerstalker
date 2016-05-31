@@ -6,17 +6,20 @@
 #include "LinearMath/btVector3.h"
 
 #include "BulletDynamics/Character/btCharacterControllerInterface.h"
+#include "Player.h"
+
 
 class btCollisionShape;
 class btRigidBody;
 class btCollisionWorld;
+class Player;
 
 ///DynamicCharacterController is obsolete/unsupported at the moment
 class DynamicCharacterController : public btCharacterControllerInterface
 {
 protected:
 	btCollisionShape* m_shape;
-	btRigidBody* m_rigidBody;
+	Player* m_rigidBody;
 
 	btVector3 downRaySource;
 	btVector3 downRayTarget;
@@ -60,7 +63,7 @@ public:
 	}
 	void debugDraw(btIDebugDraw *debugDrawer) {}
 
-	btRigidBody* getRigidBody() {
+	Player* getRigidBody() {
 		return m_rigidBody;
 	}
 
@@ -81,6 +84,10 @@ public:
 	}
 
 	void setLookDirection(const btVector3& newLook);
+
+	void grabOrientation();
+
+	void straightOrientation();
 };
 
 #endif

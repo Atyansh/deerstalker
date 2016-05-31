@@ -6,7 +6,7 @@
 
 DynamicCharacterController::DynamicCharacterController(btCollisionObject* body) {
 	downRayLambda = 1.0;
-	m_rigidBody = (btRigidBody*) body;
+	m_rigidBody = (Player*) body;
 }
 
 DynamicCharacterController::~DynamicCharacterController() {
@@ -28,6 +28,21 @@ btCollisionObject* DynamicCharacterController::getCollisionObject() {
 }
 
 void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
+	Player* myGrabber = m_rigidBody->getMyGrabber();
+
+	if (myGrabber) {
+		btTransform grabbeeTransform;
+		m_rigidBody->getMotionState()->getWorldTransform(grabbeeTransform);
+		
+		btVector3 grabberPosition = myGrabber->getCenterOfMassPosition();
+
+		grabbeeTransform.setOrigin(grabberPosition + btVector3(0, 20, 0));
+
+		m_rigidBody->setCenterOfMassTransform(grabbeeTransform);
+		m_rigidBody->getMotionState()->setWorldTransform(grabbeeTransform);
+		return;
+	}
+
 	btTransform xform;
 	m_rigidBody->getMotionState()->getWorldTransform(xform);
 	btVector3 down = -xform.getBasis()[1];
@@ -168,16 +183,12 @@ void DynamicCharacterController::setLookDirection(const btVector3& newLook) {
 	btVector3 localLook(0.0f, 0.0f, 1.0f);
 	btVector3 rotationAxis(0.0f, 1.0f, 0.0f);
 	
-	// compute currentLook and angle
 	btTransform transform;
-	m_rigidBody->getMotionState()->getWorldTransform(transform);
+	transform = m_rigidBody->getCenterOfMassTransform();
 	btQuaternion rotation = transform.getRotation();
 	btVector3 currentLook = quatRotate(rotation, localLook);
 	btScalar angle = currentLook.angle(newLook.normalized());
 
-	std::cerr << "Angle:" << angle << std::endl;
-
-	// compute new rotation
 	btQuaternion deltaRotation1(rotationAxis, angle);
 	btQuaternion deltaRotation2(rotationAxis, -angle);
 	btQuaternion newRotation1 = deltaRotation1 * rotation;
@@ -195,8 +206,48 @@ void DynamicCharacterController::setLookDirection(const btVector3& newLook) {
 		newRotation = newRotation2;
 	}
 
-	// apply new rotation
 	transform.setRotation(newRotation);
+	m_rigidBody->setCenterOfMassTransform(transform);
+	m_rigidBody->getMotionState()->setWorldTransform(transform);
+}
+
+void DynamicCharacterController::grabOrientation() {
+	btVector3 localLook(0.0f, 0.0f, 1.0f);
+	btVector3 rotationAxis(0.0f, 1.0f, 0.0f);
+
+	btTransform transform;
+	transform = m_rigidBody->getCenterOfMassTransform();
+	btQuaternion rotation = transform.getRotation();
+	
+	btQuaternion deltaRotation(rotationAxis, 3.14 / 2);
+	btQuaternion sideRotation = deltaRotation * rotation;
+	btVector3 sideAxis = quatRotate(sideRotation, localLook);
+
+	btQuaternion turnDelta(sideAxis, 3.14 / 2);
+	btQuaternion turnRotation = turnDelta * rotation;
+
+
+	transform.setRotation(turnRotation);
+	m_rigidBody->setCenterOfMassTransform(transform);
+	m_rigidBody->getMotionState()->setWorldTransform(transform);
+}
+
+void DynamicCharacterController::straightOrientation() {
+	btVector3 localLook(0.0f, -1.0f, 0.0f);
+	btVector3 rotationAxis(0.0f, 1.0f, 0.0f);
+
+	btTransform transform;
+	transform = m_rigidBody->getCenterOfMassTransform();
+	btQuaternion rotation = transform.getRotation();
+
+	btQuaternion deltaRotation(rotationAxis, 3.14 / 2);
+	btQuaternion sideRotation = deltaRotation * rotation;
+	btVector3 sideAxis = quatRotate(sideRotation, localLook);
+
+	btQuaternion turnDelta(sideAxis, 3.14 / 2);
+	btQuaternion turnRotation = turnDelta * rotation;
+
+	transform.setRotation(turnRotation);
 	m_rigidBody->setCenterOfMassTransform(transform);
 	m_rigidBody->getMotionState()->setWorldTransform(transform);
 }

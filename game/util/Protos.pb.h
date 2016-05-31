@@ -56,11 +56,13 @@ enum Event_Type {
   Event_Type_PLAYER_JUMP = 15,
   Event_Type_GAME_OVER = 16,
   Event_Type_PLAYER_STUNNED = 17,
-  Event_Type_PLAYER_WIN = 18
+  Event_Type_PLAYER_WIN = 18,
+  Event_Type_GRAB = 19,
+  Event_Type_PLAYER_GRABBED = 20
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
-const Event_Type Event_Type_Type_MAX = Event_Type_PLAYER_WIN;
+const Event_Type Event_Type_Type_MAX = Event_Type_PLAYER_GRABBED;
 const int Event_Type_Type_ARRAYSIZE = Event_Type_Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Event_Type_descriptor();
@@ -214,6 +216,8 @@ class Event : public ::google::protobuf::Message {
   static const Type GAME_OVER = Event_Type_GAME_OVER;
   static const Type PLAYER_STUNNED = Event_Type_PLAYER_STUNNED;
   static const Type PLAYER_WIN = Event_Type_PLAYER_WIN;
+  static const Type GRAB = Event_Type_GRAB;
+  static const Type PLAYER_GRABBED = Event_Type_PLAYER_GRABBED;
   static inline bool Type_IsValid(int value) {
     return Event_Type_IsValid(value);
   }
@@ -358,6 +362,20 @@ class Event : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 fourth() const;
   inline void set_fourth(::google::protobuf::int32 value);
 
+  // optional int32 grabber = 13;
+  inline bool has_grabber() const;
+  inline void clear_grabber();
+  static const int kGrabberFieldNumber = 13;
+  inline ::google::protobuf::int32 grabber() const;
+  inline void set_grabber(::google::protobuf::int32 value);
+
+  // optional int32 grabbee = 14;
+  inline bool has_grabbee() const;
+  inline void clear_grabbee();
+  static const int kGrabbeeFieldNumber = 14;
+  inline ::google::protobuf::int32 grabbee() const;
+  inline void set_grabbee(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:protos.Event)
  private:
   inline void set_has_id();
@@ -382,6 +400,10 @@ class Event : public ::google::protobuf::Message {
   inline void clear_has_third();
   inline void set_has_fourth();
   inline void clear_has_fourth();
+  inline void set_has_grabber();
+  inline void clear_has_grabber();
+  inline void set_has_grabbee();
+  inline void clear_has_grabbee();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -399,6 +421,8 @@ class Event : public ::google::protobuf::Message {
   ::google::protobuf::int32 second_;
   ::google::protobuf::int32 third_;
   ::google::protobuf::int32 fourth_;
+  ::google::protobuf::int32 grabber_;
+  ::google::protobuf::int32 grabbee_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -1008,6 +1032,54 @@ inline void Event::set_fourth(::google::protobuf::int32 value) {
   set_has_fourth();
   fourth_ = value;
   // @@protoc_insertion_point(field_set:protos.Event.fourth)
+}
+
+// optional int32 grabber = 13;
+inline bool Event::has_grabber() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void Event::set_has_grabber() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void Event::clear_has_grabber() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+inline void Event::clear_grabber() {
+  grabber_ = 0;
+  clear_has_grabber();
+}
+inline ::google::protobuf::int32 Event::grabber() const {
+  // @@protoc_insertion_point(field_get:protos.Event.grabber)
+  return grabber_;
+}
+inline void Event::set_grabber(::google::protobuf::int32 value) {
+  set_has_grabber();
+  grabber_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.grabber)
+}
+
+// optional int32 grabbee = 14;
+inline bool Event::has_grabbee() const {
+  return (_has_bits_[0] & 0x00002000u) != 0;
+}
+inline void Event::set_has_grabbee() {
+  _has_bits_[0] |= 0x00002000u;
+}
+inline void Event::clear_has_grabbee() {
+  _has_bits_[0] &= ~0x00002000u;
+}
+inline void Event::clear_grabbee() {
+  grabbee_ = 0;
+  clear_has_grabbee();
+}
+inline ::google::protobuf::int32 Event::grabbee() const {
+  // @@protoc_insertion_point(field_get:protos.Event.grabbee)
+  return grabbee_;
+}
+inline void Event::set_grabbee(::google::protobuf::int32 value) {
+  set_has_grabbee();
+  grabbee_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.grabbee)
 }
 
 // -------------------------------------------------------------------

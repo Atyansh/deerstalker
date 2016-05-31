@@ -20,6 +20,8 @@ message Event {
 		GAME_OVER = 16;
 		PLAYER_STUNNED = 17;
 		PLAYER_WIN = 18;
+		GRAB = 19;
+		PLAYER_GRABBED = 20;
 	}
 
 	enum Direction {
@@ -47,6 +49,8 @@ message Event {
 	optional int32 second = 10;
 	optional int32 third = 11;
 	optional int32 fourth = 12;
+	optional int32 grabber = 13;
+	optional int32 grabbee = 14;
 }
 
 message Message {

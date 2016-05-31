@@ -44,7 +44,7 @@ void protobuf_AssignDesc_Protos_2eproto() {
       "Protos.proto");
   GOOGLE_CHECK(file != NULL);
   Event_descriptor_ = file->message_type(0);
-  static const int Event_offsets_[12] = {
+  static const int Event_offsets_[14] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, clientid_),
@@ -57,6 +57,8 @@ void protobuf_AssignDesc_Protos_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, second_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, third_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, fourth_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, grabber_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Event, grabbee_),
   };
   Event_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -149,33 +151,35 @@ void protobuf_AddDesc_Protos_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\014Protos.proto\022\006protos\"\347\004\n\005Event\022\n\n\002id\030\001"
+    "\n\014Protos.proto\022\006protos\"\247\005\n\005Event\022\n\n\002id\030\001"
     " \001(\005\022 \n\004type\030\002 \001(\0162\022.protos.Event.Type\022\020"
     "\n\010clientID\030\003 \001(\005\022\r\n\005hatID\030\004 \001(\005\022\020\n\010bulle"
     "tID\030\005 \001(\005\022*\n\tdirection\030\006 \001(\0162\027.protos.Ev"
     "ent.Direction\022\024\n\014cameraVector\030\007 \003(\001\022\014\n\004h"
     "old\030\010 \001(\010\022\r\n\005first\030\t \001(\005\022\016\n\006second\030\n \001(\005"
-    "\022\r\n\005third\030\013 \001(\005\022\016\n\006fourth\030\014 \001(\005\"\377\001\n\004Type"
-    "\022\t\n\005SPAWN\020\001\022\010\n\004MOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006ASSIG"
-    "N\020\004\022\t\n\005EQUIP\020\005\022\t\n\005DQUIP\020\006\022\t\n\005SHOOT\020\007\022\010\n\004"
-    "HATR\020\010\022\010\n\004HATL\020\t\022\t\n\005PUNCH\020\n\022\021\n\rDELETE_BU"
-    "LLET\020\013\022\022\n\016PLAYER_PUNCHED\020\014\022\017\n\013PLAYER_DIE"
-    "D\020\r\022\020\n\014PROPELLER_UP\020\016\022\017\n\013PLAYER_JUMP\020\017\022\r"
-    "\n\tGAME_OVER\020\020\022\022\n\016PLAYER_STUNNED\020\021\022\016\n\nPLA"
-    "YER_WIN\020\022\"m\n\tDirection\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002"
-    "\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BA"
-    "CKWARD\020\006\022\006\n\002FL\020\007\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020\n"
-    "\"\253\003\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132"
-    "\r.protos.Event\022.\n\ngameObject\030\003 \003(\0132\032.pro"
-    "tos.Message.GameObject\032\305\002\n\nGameObject\022\n\n"
-    "\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162"
-    "\037.protos.Message.GameObject.Type\022\017\n\007hatT"
-    "ype\030\004 \001(\005\022A\n\016animationState\030\005 \001(\0162).prot"
-    "os.Message.GameObject.AnimationState\022\016\n\006"
-    "health\030\006 \001(\005\022\017\n\007visible\030\007 \001(\010\"\'\n\004Type\022\n\n"
-    "\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003\"N\n\016Animat"
-    "ionState\022\014\n\010STANDING\020\001\022\013\n\007RUNNING\020\002\022\014\n\010P"
-    "UNCHING\020\003\022\010\n\004BEAR\020\004\022\t\n\005WUSON\020\005", 1070);
+    "\022\r\n\005third\030\013 \001(\005\022\016\n\006fourth\030\014 \001(\005\022\017\n\007grabb"
+    "er\030\r \001(\005\022\017\n\007grabbee\030\016 \001(\005\"\235\002\n\004Type\022\t\n\005SP"
+    "AWN\020\001\022\010\n\004MOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006ASSIGN\020\004\022\t\n"
+    "\005EQUIP\020\005\022\t\n\005DQUIP\020\006\022\t\n\005SHOOT\020\007\022\010\n\004HATR\020\010"
+    "\022\010\n\004HATL\020\t\022\t\n\005PUNCH\020\n\022\021\n\rDELETE_BULLET\020\013"
+    "\022\022\n\016PLAYER_PUNCHED\020\014\022\017\n\013PLAYER_DIED\020\r\022\020\n"
+    "\014PROPELLER_UP\020\016\022\017\n\013PLAYER_JUMP\020\017\022\r\n\tGAME"
+    "_OVER\020\020\022\022\n\016PLAYER_STUNNED\020\021\022\016\n\nPLAYER_WI"
+    "N\020\022\022\010\n\004GRAB\020\023\022\022\n\016PLAYER_GRABBED\020\024\"m\n\tDir"
+    "ection\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RI"
+    "GHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\022\006\n\002FL\020\007"
+    "\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020\n\"\253\003\n\007Message\022\n\n\002"
+    "id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132\r.protos.Event\022."
+    "\n\ngameObject\030\003 \003(\0132\032.protos.Message.Game"
+    "Object\032\305\002\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016\n\006mat"
+    "rix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162\037.protos.Message"
+    ".GameObject.Type\022\017\n\007hatType\030\004 \001(\005\022A\n\016ani"
+    "mationState\030\005 \001(\0162).protos.Message.GameO"
+    "bject.AnimationState\022\016\n\006health\030\006 \001(\005\022\017\n\007"
+    "visible\030\007 \001(\010\"\'\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BUL"
+    "LET\020\002\022\007\n\003HAT\020\003\"N\n\016AnimationState\022\014\n\010STAN"
+    "DING\020\001\022\013\n\007RUNNING\020\002\022\014\n\010PUNCHING\020\003\022\010\n\004BEA"
+    "R\020\004\022\t\n\005WUSON\020\005", 1134);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -220,6 +224,8 @@ bool Event_Type_IsValid(int value) {
     case 16:
     case 17:
     case 18:
+    case 19:
+    case 20:
       return true;
     default:
       return false;
@@ -245,6 +251,8 @@ const Event_Type Event::PLAYER_JUMP;
 const Event_Type Event::GAME_OVER;
 const Event_Type Event::PLAYER_STUNNED;
 const Event_Type Event::PLAYER_WIN;
+const Event_Type Event::GRAB;
+const Event_Type Event::PLAYER_GRABBED;
 const Event_Type Event::Type_MIN;
 const Event_Type Event::Type_MAX;
 const int Event::Type_ARRAYSIZE;
@@ -299,6 +307,8 @@ const int Event::kFirstFieldNumber;
 const int Event::kSecondFieldNumber;
 const int Event::kThirdFieldNumber;
 const int Event::kFourthFieldNumber;
+const int Event::kGrabberFieldNumber;
+const int Event::kGrabbeeFieldNumber;
 #endif  // !_MSC_VER
 
 Event::Event()
@@ -330,6 +340,8 @@ void Event::SharedCtor() {
   second_ = 0;
   third_ = 0;
   fourth_ = 0;
+  grabber_ = 0;
+  grabbee_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -382,7 +394,9 @@ void Event::Clear() {
     direction_ = 1;
     hold_ = false;
   }
-  ZR_(first_, fourth_);
+  if (_has_bits_[8 / 32] & 16128) {
+    ZR_(first_, grabbee_);
+  }
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -591,6 +605,36 @@ bool Event::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(104)) goto parse_grabber;
+        break;
+      }
+
+      // optional int32 grabber = 13;
+      case 13: {
+        if (tag == 104) {
+         parse_grabber:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &grabber_)));
+          set_has_grabber();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(112)) goto parse_grabbee;
+        break;
+      }
+
+      // optional int32 grabbee = 14;
+      case 14: {
+        if (tag == 112) {
+         parse_grabbee:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &grabbee_)));
+          set_has_grabbee();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -683,6 +727,16 @@ void Event::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(12, this->fourth(), output);
   }
 
+  // optional int32 grabber = 13;
+  if (has_grabber()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(13, this->grabber(), output);
+  }
+
+  // optional int32 grabbee = 14;
+  if (has_grabbee()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(14, this->grabbee(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -754,6 +808,16 @@ void Event::SerializeWithCachedSizes(
   // optional int32 fourth = 12;
   if (has_fourth()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(12, this->fourth(), target);
+  }
+
+  // optional int32 grabber = 13;
+  if (has_grabber()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(13, this->grabber(), target);
+  }
+
+  // optional int32 grabbee = 14;
+  if (has_grabbee()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(14, this->grabbee(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -843,6 +907,20 @@ int Event::ByteSize() const {
           this->fourth());
     }
 
+    // optional int32 grabber = 13;
+    if (has_grabber()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->grabber());
+    }
+
+    // optional int32 grabbee = 14;
+    if (has_grabbee()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->grabbee());
+    }
+
   }
   // repeated double cameraVector = 7;
   {
@@ -913,6 +991,12 @@ void Event::MergeFrom(const Event& from) {
     if (from.has_fourth()) {
       set_fourth(from.fourth());
     }
+    if (from.has_grabber()) {
+      set_grabber(from.grabber());
+    }
+    if (from.has_grabbee()) {
+      set_grabbee(from.grabbee());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -948,6 +1032,8 @@ void Event::Swap(Event* other) {
     std::swap(second_, other->second_);
     std::swap(third_, other->third_);
     std::swap(fourth_, other->fourth_);
+    std::swap(grabber_, other->grabber_);
+    std::swap(grabbee_, other->grabbee_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

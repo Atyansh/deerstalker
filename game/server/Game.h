@@ -53,6 +53,9 @@ private:
 	void handlePrimaryHatLogic(const protos::Event* event);
 	void handleSecondaryHatLogic(const protos::Event* event);
 	void handlePunchLogic(const protos::Event* event);
+	void handleGrabLogic(const protos::Event* event);
+
+	void releaseGrab(Player* player);
 
 	void sendStateToClients();
 	void sendEventsToClients();
@@ -72,7 +75,7 @@ private:
 	World* world_;
 
 	void handleReSpawnLogic();
-	bool canEquip(Player * playa, Hat * hata);
+	bool withinRange(btRigidBody * body1, btRigidBody * body2);
 
 	unsigned int generateId();
 	unsigned int idGen_;

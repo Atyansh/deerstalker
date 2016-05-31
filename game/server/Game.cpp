@@ -161,7 +161,7 @@ void Game::startGameLoop() {
 				
 				else if (playerMap_.count(event.clientid()) == 0) {
 					//TODO WHAT CAN THE DEAD DO
-					std::cout << "WHAT CAN THE DEAD DO\n";
+					//std::cout << "WHAT CAN THE DEAD DO\n";
 					continue;
 				}
 				else if (event.type() == protos::Event_Type_MOVE) {
@@ -188,18 +188,21 @@ void Game::startGameLoop() {
 				else if (event.type() == protos::Event_Type_PUNCH) {
 					handlePunchLogic(&event);
 				}
+				else if (event.type() == protos::Event_Type_GRAB) {
+					handleGrabLogic(&event);
+				}
 			}
 			messageQueue_.pop_front();
 		}
-		world_->stepSimulation(1.f / 15.f, 10);
 		messageQueueLock_.unlock();
 
+		world_->stepSimulation(1.f / 15.f, 10);
 		handleReSpawnLogic();
 
 		deleteBullets();
 
 		sendStateToClients();
-		//sendEventsToClients();
+		sendEventsToClients();
 
 		milliseconds stamp2 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
@@ -324,6 +327,7 @@ void Game::handleReSpawnLogic() {
 		if (world_->isDead(it->second)) {
 			Player * currP = it->second;
 			unsigned int pLives = currP->getLives() - 1;
+			std::cerr << pLives << std::endl;
 			if (pLives > 0) {
 				world_->spawnPlayer(currP);
 				currP->setLives(pLives);
@@ -344,19 +348,25 @@ void Game::handleReSpawnLogic() {
 	}
 }
  
-bool Game::canEquip(Player * playa, Hat * hata) {
+bool Game::withinRange(btRigidBody * body1, btRigidBody * body2) {
 	//TODO MAYBE SOME BETTER SHIT
 	float equipDistance = 5;
-	return equipDistance>=playa->getController()->getRigidBody()->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition());
+	return (equipDistance >= body1->getCenterOfMassPosition().distance(body2->getCenterOfMassPosition()));
 }
 
 void Game::handleEquipLogic(const protos::Event* event) {
 	Player * player = playerMap_[event->clientid()];
+
+	if (player->getHat() != nullptr) {
+		handleDquipLogic(event);
+		return;
+	}
+
 	std::cout << event->clientid() << " Attempting to equip hat\n";
 	Hat* hatToRemove = nullptr;
 	Hat* hatToAdd = nullptr;
 	for (auto hat : hatSet_) {
-		if (canEquip(player, hat)) {
+		if (withinRange(player, hat)) {
 			std::cerr << "Equip success\n";
 			Hat* oldHat  = player->setHat(hat);
 			hatToRemove = hat;
@@ -412,6 +422,47 @@ void Game::handlePunchLogic(const protos::Event* event) {
 			eventQueueLock_.unlock();
 		}
 	}
+}
+
+void Game::handleGrabLogic(const protos::Event* event) {
+	Player * grabber = playerMap_[event->clientid()];
+
+	if (grabber->getGrabbedPlayer() != nullptr) {
+		releaseGrab(grabber);
+		return;
+	}
+
+	for (auto* body : playerSet_) {
+		Player* grabbee = (Player*)body;
+
+		if (grabber == grabbee) {
+			continue;
+		}
+
+		if (!withinRange(grabber, grabbee)) {
+			continue;
+		}
+
+		/*if (!grabbee->getStunned()) {
+			continue;
+		}*/
+
+		grabber->setGrabbedPlayer(grabbee);
+		grabbee->setMyGrabber(grabber);
+		grabbee->getController()->grabOrientation();
+		grabbee->setLinearFactor(btVector3(0, 0, 0));
+
+		break;
+	}
+}
+
+void Game::releaseGrab(Player* grabber) {
+	Player* grabbee = grabber->getGrabbedPlayer();
+
+	grabber->setGrabbedPlayer(nullptr);
+	grabbee->setMyGrabber(nullptr);
+	grabbee->getController()->straightOrientation();
+	grabbee->setLinearFactor(btVector3(1, 1, 1));
 }
 
 void Game::handlePrimaryHatLogic(const protos::Event* event) {

@@ -7,6 +7,8 @@
 
 #include "BulletDynamics/Character/btCharacterControllerInterface.h"
 
+class DynamicCharacterController;
+
 class Player : public btRigidBody {
 public:
 	Player(btRigidBodyConstructionInfo& info, uint32_t id, uint32_t lives);
@@ -36,6 +38,10 @@ public:
 		return stunned_;
 	}
 
+	void setStunned(bool stunned) {
+		stunned_ = stunned;
+	}
+
 	void setVisible(bool visible) {
 		visible_ = visible;
 	}
@@ -44,12 +50,20 @@ public:
 		return visible_;
 	}
 
-	void stun() {
-		stunned_ = true;
+	Player* getMyGrabber() {
+		return myGrabber_;
 	}
 
-	void revive() {
-		stunned_ = false;
+	void setMyGrabber(Player* myGrabber) {
+		myGrabber_ = myGrabber;
+	}
+
+	Player* getGrabbedPlayer() {
+		return grabbedPlayer_;
+	}
+
+	void setGrabbedPlayer(Player* grabbedPlayer) {
+		grabbedPlayer_ = grabbedPlayer;
 	}
 
 	void changeHealth(int delta) {
@@ -81,6 +95,9 @@ private:
 
 	bool stunned_ = false;
 	bool visible_ = true;
+
+	Player* myGrabber_ = nullptr;
+	Player* grabbedPlayer_ = nullptr;
 
 	int32_t health_ = 100;
 
