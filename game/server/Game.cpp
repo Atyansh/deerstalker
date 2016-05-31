@@ -132,6 +132,12 @@ void Game::revivePlayers() {
 			if (currTime - player->getStunTimestamp() > reviveSpan) {
 				player->setHealth(50);
 				player->setStunned(false);
+
+				Player* grabber = player->getMyGrabber();
+
+				if (grabber) {
+					releaseGrab(grabber);
+				}
 			}
 		}
 	}

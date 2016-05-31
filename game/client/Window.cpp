@@ -226,6 +226,10 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second); 
 		
+		if (player->getState() == protos::Message_GameObject_AnimationState_STUNNED) {
+			return;
+		}
+
 		Hat* deerHat = (player->hatModels.find(DEERSTALKER_HAT))->second;
 		Hat* bearHat = (player->hatModels.find(BEAR_HAT))->second;
 

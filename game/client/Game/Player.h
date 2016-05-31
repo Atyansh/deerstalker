@@ -58,4 +58,7 @@ class Player : public SMatrixTransform {
 
 		void changeState(protos::Message_GameObject_AnimationState newState);
 
+		protos::Message_GameObject_AnimationState getState() {
+			return currState;
+		}
 };
