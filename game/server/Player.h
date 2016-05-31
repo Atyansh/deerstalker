@@ -7,12 +7,14 @@
 
 #include "BulletDynamics/Character/btCharacterControllerInterface.h"
 
-class Player {
+class DynamicCharacterController;
+
+class Player : public btRigidBody {
 public:
-	Player(btCollisionObject* body, uint32_t id, uint32_t lives);
+	Player(btRigidBodyConstructionInfo& info, uint32_t id, uint32_t lives);
 	~Player();
 
-	//static Player* createNewPlayer(ClientId clientId, btCollisionShape* collisionShape);
+	static Player* createNewPlayer(ClientId clientId, btCollisionShape* collisionShape);
 
 	int getId();
 	void setLives(unsigned int lives);
@@ -26,6 +28,55 @@ public:
 
 	HatType getHatType() {
 		return getHat() == nullptr ? NO_HAT : getHat()->getHatType();
+	}
+
+	int32_t getHealth() {
+		return health_;
+	}
+
+	bool getStunned() {
+		return stunned_;
+	}
+
+	void setStunned(bool stunned) {
+		stunned_ = stunned;
+	}
+
+	void setVisible(bool visible) {
+		visible_ = visible;
+	}
+
+	bool getVisible() {
+		return visible_;
+	}
+
+	Player* getMyGrabber() {
+		return myGrabber_;
+	}
+
+	void setMyGrabber(Player* myGrabber) {
+		myGrabber_ = myGrabber;
+	}
+
+	Player* getGrabbedPlayer() {
+		return grabbedPlayer_;
+	}
+
+	void setGrabbedPlayer(Player* grabbedPlayer) {
+		grabbedPlayer_ = grabbedPlayer;
+	}
+
+	void changeHealth(int delta) {
+		int newHealth = health_ + delta;
+		if (newHealth > 100) {
+			setHealth(100);
+		}
+		else if (newHealth < 0) {
+			setHealth(0);
+		}
+		else {
+			setHealth(newHealth);
+		}
 	}
 
 	void setSpawn();
@@ -42,11 +93,24 @@ private:
 	const unsigned int id_;
 	unsigned int lives_;
 
+	bool stunned_ = false;
+	bool visible_ = true;
+
+	Player* myGrabber_ = nullptr;
+	Player* grabbedPlayer_ = nullptr;
+
+	int32_t health_ = 100;
+
 	Hat * currHat_;
+
 	DynamicCharacterController* controller_;
 
 	static const btVector3 P1_SPAWN_POINT;
 	static const btVector3 P2_SPAWN_POINT;
 	static const btVector3 P3_SPAWN_POINT;
 	static const btVector3 P4_SPAWN_POINT;
+
+	void setHealth(int32_t health) {
+		health_ = health;
+	}
 };

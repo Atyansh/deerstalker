@@ -4,14 +4,18 @@
 #include <chrono>
 #include <thread>
 #include <deque>
+#include <unordered_set>
+#include <mutex>
 
 #include "Bullet.h"
 #include "Client.h"
 #include "World.h"
 #include "Player.h"
 #include "Hat.h"
-#include <unordered_set>
-#include <mutex>
+#include "GravityController.h"
+
+
+class GravityController;
 
 class Game {
 public:
@@ -27,7 +31,9 @@ public:
 	void startGameLoop();
 
 	const static uint32_t MAX_PLAYERS = 4;
-	static std::deque<uint32_t> availableIds;
+	std::deque<uint32_t> availableIds;
+
+	std::unordered_set<btCollisionObject*> playerSet_;
 
 private:
 	void loadHatBodyMap();
@@ -35,6 +41,8 @@ private:
 	void clearAnimations();
 
 	void deleteBullets();
+
+	void loopReset();
 
 	void handleSpawnLogic(const protos::Event* event);
 	void handleMoveLogic(const protos::Event* event);
@@ -45,19 +53,29 @@ private:
 	void handlePrimaryHatLogic(const protos::Event* event);
 	void handleSecondaryHatLogic(const protos::Event* event);
 	void handlePunchLogic(const protos::Event* event);
+	void handleGrabLogic(const protos::Event* event);
+
+	void releaseGrab(Player* player);
 
 	void sendStateToClients();
+	void sendEventsToClients();
 
 	void spawnNewHat();
 
 	void propellerUp(Player* player);
 	void propellerDown(Player* player);
 
+	void setInvisible(Player* player);
+	void ramOff(const protos::Event* event);
+
+	void becomeBear(Player* player);
+	void killGravity();
+
 	std::set<client_ptr> clients_;
 	World* world_;
 
 	void handleReSpawnLogic();
-	bool canEquip(Player * playa, Hat * hata);
+	bool withinRange(btRigidBody * body1, btRigidBody * body2);
 
 	unsigned int generateId();
 	unsigned int idGen_;
@@ -72,17 +90,21 @@ private:
 
 
 	std::deque<protos::Message> messageQueue_;
-	std::mutex queueLock_;
+	std::mutex messageQueueLock_;
+
+	std::deque<protos::Event> eventQueue_;
+	std::mutex eventQueueLock_;
 
 	std::unordered_set<Bullet*> bulletSet_;
 	std::unordered_set<Bullet*> bulletRemovedSet_;
 
 	std::unordered_map<ClientId, Player*> playerMap_;
-	std::unordered_set<btCollisionObject*> playerSet_;
 
 	std::unordered_set<Hat*> hatSet_;
 	std::unordered_set<Hat*> hatRemovedSet_;
 
 	std::unordered_map<HatType, btCollisionObject*> hatBodyMap_;
 	std::unordered_map<ClientId, protos::Message_GameObject_AnimationState> animationStateMap_;
+
+	GravityController* gravityController_;
 };

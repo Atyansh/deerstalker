@@ -1,6 +1,8 @@
 #include "GameObjects.h"
 #include "Globals.h"
 
+const char* bearPath = "Assets/OBJ/Bear/bear_full.obj";
+const char* wusonPath = "Assets/X/Wuson.X";
 const char* mangoPath = "Assets/OBJ/Mango/mango.obj";
 const char* chickenPath = "Assets/FBX/chicken_dance.fbx";
 const char* cratePath = "Assets/OBJ/Crate/Crate1.obj";
@@ -57,6 +59,8 @@ void GameObjects::loadModelMap() {
 	modelMap[_Player_Standing] = new PlayerModel(playerStandPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_STANDING);
 	modelMap[_Player_Running] = new PlayerModel(playerRunPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_RUNNING);
 	modelMap[_Player_Punching] = new PlayerModel(playerPunchingPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_PUNCHING);
+	modelMap[_Player_Wuson] = new PlayerModel(wusonPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_WUSON);
+	modelMap[_Player_Bear] = new PlayerModel(bearPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_BEAR);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
 	modelMap[_WizardHat] = new Model(wizardPath, shaderMap[_LtShader]);
 	modelMap[_HardHat] = new Model(hardHatPath, shaderMap[_LtShader]);

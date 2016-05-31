@@ -13,6 +13,15 @@ message Event {
 		HATL = 9;
 		PUNCH = 10;
 		DELETE_BULLET = 11;
+		PLAYER_PUNCHED = 12;
+		PLAYER_DIED = 13;
+		PROPELLER_UP = 14;
+		PLAYER_JUMP = 15;
+		GAME_OVER = 16;
+		PLAYER_STUNNED = 17;
+		PLAYER_WIN = 18;
+		GRAB = 19;
+		PLAYER_GRABBED = 20;
 	}
 
 	enum Direction {
@@ -35,6 +44,13 @@ message Event {
 	optional int32 bulletID = 5;
 	optional Direction direction = 6;
 	repeated double cameraVector = 7;
+	optional bool hold = 8;
+	optional int32 first = 9;
+	optional int32 second = 10;
+	optional int32 third = 11;
+	optional int32 fourth = 12;
+	optional int32 grabber = 13;
+	optional int32 grabbee = 14;
 }
 
 message Message {
@@ -48,12 +64,16 @@ message Message {
 			STANDING = 1;
 			RUNNING = 2;
 			PUNCHING = 3;
+			BEAR = 4;
+			WUSON = 5;
 		}
 		optional int32 id = 1;
 		repeated double matrix = 2;
 		optional Type type = 3;
 		optional int32 hatType = 4;
 		optional AnimationState animationState = 5;
+		optional int32 health = 6;
+		optional bool visible = 7;
 	}
 
 	optional int32 id = 1;

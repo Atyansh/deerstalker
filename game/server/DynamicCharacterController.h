@@ -6,17 +6,20 @@
 #include "LinearMath/btVector3.h"
 
 #include "BulletDynamics/Character/btCharacterControllerInterface.h"
+#include "Player.h"
+
 
 class btCollisionShape;
 class btRigidBody;
 class btCollisionWorld;
+class Player;
 
 ///DynamicCharacterController is obsolete/unsupported at the moment
 class DynamicCharacterController : public btCharacterControllerInterface
 {
 protected:
 	btCollisionShape* m_shape;
-	btRigidBody* m_rigidBody;
+	Player* m_rigidBody;
 
 	btVector3 downRaySource;
 	btVector3 downRayTarget;
@@ -24,11 +27,13 @@ protected:
 
 	btVector3 forwardRaySource;
 	btVector3 forwardRayTarget;
-	btScalar forwardRayLambda;
+
+	btVector3 grabberLook;
 
 	float range = 5;
 
 	const btCollisionObject* punchTarget;
+	const btCollisionObject* ramTarget;
 
 public:
 	DynamicCharacterController(btCollisionObject* body);
@@ -38,7 +43,8 @@ public:
 
 	btCollisionObject* getCollisionObject();
 
-	void preStep(btCollisionWorld* collisionWorld);
+	void preStep(btCollisionWorld* collisionWorld) {}
+	void preStep(btCollisionWorld* collisionWorld, btScalar dt);
 	void playerStep(const btCollisionWorld* collisionWorld, btVector3& dir);
 	bool canJump() const;
 	void jump();
@@ -56,16 +62,20 @@ public:
 	void setUpInterpolate(bool value) {}
 	
 	void updateAction(btCollisionWorld *collisionWorld, btScalar deltaTimeStep) {
-		preStep(collisionWorld);
+		preStep(collisionWorld, deltaTimeStep);
 	}
 	void debugDraw(btIDebugDraw *debugDrawer) {}
 
-	btRigidBody* getRigidBody() {
+	Player* getRigidBody() {
 		return m_rigidBody;
 	}
 
 	btCollisionObject* getPunchTarget() {
 		return (btCollisionObject*)punchTarget;
+	}
+
+	btCollisionObject* getRamTarget() {
+		return (btCollisionObject*)ramTarget;
 	}
 
 	void setRange(float range) {
@@ -77,6 +87,10 @@ public:
 	}
 
 	void setLookDirection(const btVector3& newLook);
+
+	void grabOrientation(Player* grabber);
+
+	void straightOrientation();
 };
 
 #endif

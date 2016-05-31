@@ -30,15 +30,11 @@ SMatrixTransform *root;
 
 int STATE;
 
-void Window::initialize_objects()
-{
+void Window::initialize_objects() {
 	Globals::gameObjects.loadGameObjects();
 
 	STATE = State::_Start;
-	cout << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
-	Shader* shader = new Shader("Shaders/fontShader.vert", "Shaders/fontShader.frag");
-	Shader* twodShader = new Shader("Shaders/2DShader.vert", "Shaders/2DShader.frag");
-
+	cerr << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
 }
 
 void Window::clean_up() {
@@ -90,7 +86,6 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	cout << glm::to_string(Globals::drawData.projection) << endl;
 }
 
-
 void Window::idle_callback(GLFWwindow* window) {
 	if (STATE == State::_Lobby) {
 		MessageHandler::handleLobbyMessages();
@@ -105,7 +100,6 @@ void Window::idle_callback(GLFWwindow* window) {
 		MessageHandler::handleEndGameMessages();
 	}
 }
-
 
 void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
@@ -128,7 +122,9 @@ void Window::display_callback(GLFWwindow* window) {
 
 		// Render objects
 		for (auto& pair : Globals::gameObjects.playerMap) {
-			pair.second->draw(Globals::drawData);
+			if (dynamic_cast<Player*>((pair.second))->getVisible()) {
+				pair.second->draw(Globals::drawData);
+			}
 		}
 		// hat
 		for (auto& pair : Globals::gameObjects.hatMap) {
@@ -211,9 +207,45 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
 	if (STATE == State::_Game) {
-		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second);
+		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
+			fprintf(stderr, "Going Down\n");
+			Globals::cam.pitch(0);
+		}
+		else if (axes[RIGHT_STICK_X] < NEG_AXIS_TILT) {
+			fprintf(stderr, "Going Up\n");
+			Globals::cam.pitch(1);
+		}
 
-		if (axes[LEFT_STICK_X] > POS_AXIS_TILT &&
+		if (axes[RIGHT_STICK_Y] > POS_AXIS_TILT) {
+			fprintf(stderr, "Going Right\n");
+			Globals::cam.yaw(0);
+		}
+
+		else if (axes[RIGHT_STICK_Y] < NEG_AXIS_TILT) {
+			fprintf(stderr, "Going Left\n");
+			Globals::cam.yaw(1);
+		}
+
+		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second); 
+		
+		Hat* deerHat = (player->hatModels.find(DEERSTALKER_HAT))->second;
+		Hat* bearHat = (player->hatModels.find(BEAR_HAT))->second;
+
+		if ((deerHat->getVisible() || bearHat->getVisible()) &&
+			buttons[BUTTON_LB] == GLFW_PRESS) {
+			auto* event = message.add_event();
+			event->set_clientid(Globals::ID);
+			event->set_type(protos::Event_Type_HATL);
+			event->set_hold(buttonState[BUTTON_LB]);
+			glm::vec3 camDir = Globals::cam.getCamDirection();
+			event->add_cameravector(camDir.x);
+			event->add_cameravector(camDir.y);
+			event->add_cameravector(camDir.z);
+			buttonState[BUTTON_LB] = true;
+			sendMessage(Globals::socket, message);
+			return;
+		}
+		else if (axes[LEFT_STICK_X] > POS_AXIS_TILT &&
 			axes[LEFT_STICK_Y] < NEG_AXIS_TILT) {
 			addMoveEvent(message, protos::Event_Direction_FR);
 		}
@@ -249,26 +281,6 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			addMoveEvent(message, protos::Event_Direction_UP);
 		}
 
-		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
-			fprintf(stderr, "Going Down\n");
-			Globals::cam.pitch(0);
-		}
-		else if (axes[RIGHT_STICK_X] < NEG_AXIS_TILT) {
-			fprintf(stderr, "Going Up\n");
-			Globals::cam.pitch(1);
-		}
-
-		if (axes[RIGHT_STICK_Y] > POS_AXIS_TILT) {
-			fprintf(stderr, "Going Right\n");
-			Globals::cam.yaw(0);
-		}
-
-		else if (axes[RIGHT_STICK_Y] < NEG_AXIS_TILT) {
-			fprintf(stderr, "Going Left\n");
-			Globals::cam.yaw(1);
-		}
-
-
 		if (buttons[BUTTON_A] == GLFW_PRESS && !buttonState[BUTTON_A]) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
@@ -278,7 +290,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		if (buttons[BUTTON_B] == GLFW_PRESS && !buttonState[BUTTON_B]) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
-			event->set_type(protos::Event_Type_EQUIP);
+			event->set_type(protos::Event_Type_GRAB);
 			buttonState[BUTTON_B] = true;
 		}
 		if (buttons[BUTTON_X] == GLFW_PRESS && !buttonState[BUTTON_X]) {
@@ -287,21 +299,24 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			event->set_type(protos::Event_Type_PUNCH);
 			//buttonState[BUTTON_X] = true;
 		}
-		if (buttons[BUTTON_Y] == GLFW_PRESS) {
+		if (buttons[BUTTON_Y] == GLFW_PRESS && !buttonState[BUTTON_Y]) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
-			event->set_type(protos::Event_Type_DQUIP);
+			event->set_type(protos::Event_Type_EQUIP);
+			buttonState[BUTTON_Y] = true;
 		}
-		if (buttons[BUTTON_LB] == GLFW_PRESS && !buttonState[BUTTON_LB]) {
+		if (buttons[BUTTON_LB] == GLFW_PRESS) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_HATL);
+			event->set_hold(buttonState[BUTTON_LB]);
 			buttonState[BUTTON_LB] = true;
 		}
-		if (buttons[BUTTON_RB] == GLFW_PRESS && !buttonState[BUTTON_RB]) {
+		if (buttons[BUTTON_RB] == GLFW_PRESS) {
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_HATR);
+			event->set_hold(buttonState[BUTTON_RB]);
 			buttonState[BUTTON_RB] = true;
 		}
 
@@ -380,6 +395,8 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model, int id) 
 			playerStateMap[protos::Message_GameObject_AnimationState_STANDING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Standing]), id);
 			playerStateMap[protos::Message_GameObject_AnimationState_RUNNING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Running]), id);
 			playerStateMap[protos::Message_GameObject_AnimationState_PUNCHING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Punching]), id);
+			playerStateMap[protos::Message_GameObject_AnimationState_BEAR] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Bear]), id);
+			playerStateMap[protos::Message_GameObject_AnimationState_WUSON] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Wuson]), id);
 			return new Player(playerStateMap, playerHatMap);
 		default:
 			transform->addNode(model);

@@ -49,11 +49,20 @@ enum Event_Type {
   Event_Type_HATR = 8,
   Event_Type_HATL = 9,
   Event_Type_PUNCH = 10,
-  Event_Type_DELETE_BULLET = 11
+  Event_Type_DELETE_BULLET = 11,
+  Event_Type_PLAYER_PUNCHED = 12,
+  Event_Type_PLAYER_DIED = 13,
+  Event_Type_PROPELLER_UP = 14,
+  Event_Type_PLAYER_JUMP = 15,
+  Event_Type_GAME_OVER = 16,
+  Event_Type_PLAYER_STUNNED = 17,
+  Event_Type_PLAYER_WIN = 18,
+  Event_Type_GRAB = 19,
+  Event_Type_PLAYER_GRABBED = 20
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
-const Event_Type Event_Type_Type_MAX = Event_Type_DELETE_BULLET;
+const Event_Type Event_Type_Type_MAX = Event_Type_PLAYER_GRABBED;
 const int Event_Type_Type_ARRAYSIZE = Event_Type_Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Event_Type_descriptor();
@@ -116,11 +125,13 @@ inline bool Message_GameObject_Type_Parse(
 enum Message_GameObject_AnimationState {
   Message_GameObject_AnimationState_STANDING = 1,
   Message_GameObject_AnimationState_RUNNING = 2,
-  Message_GameObject_AnimationState_PUNCHING = 3
+  Message_GameObject_AnimationState_PUNCHING = 3,
+  Message_GameObject_AnimationState_BEAR = 4,
+  Message_GameObject_AnimationState_WUSON = 5
 };
 bool Message_GameObject_AnimationState_IsValid(int value);
 const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MIN = Message_GameObject_AnimationState_STANDING;
-const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MAX = Message_GameObject_AnimationState_PUNCHING;
+const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MAX = Message_GameObject_AnimationState_WUSON;
 const int Message_GameObject_AnimationState_AnimationState_ARRAYSIZE = Message_GameObject_AnimationState_AnimationState_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Message_GameObject_AnimationState_descriptor();
@@ -198,6 +209,15 @@ class Event : public ::google::protobuf::Message {
   static const Type HATL = Event_Type_HATL;
   static const Type PUNCH = Event_Type_PUNCH;
   static const Type DELETE_BULLET = Event_Type_DELETE_BULLET;
+  static const Type PLAYER_PUNCHED = Event_Type_PLAYER_PUNCHED;
+  static const Type PLAYER_DIED = Event_Type_PLAYER_DIED;
+  static const Type PROPELLER_UP = Event_Type_PROPELLER_UP;
+  static const Type PLAYER_JUMP = Event_Type_PLAYER_JUMP;
+  static const Type GAME_OVER = Event_Type_GAME_OVER;
+  static const Type PLAYER_STUNNED = Event_Type_PLAYER_STUNNED;
+  static const Type PLAYER_WIN = Event_Type_PLAYER_WIN;
+  static const Type GRAB = Event_Type_GRAB;
+  static const Type PLAYER_GRABBED = Event_Type_PLAYER_GRABBED;
   static inline bool Type_IsValid(int value) {
     return Event_Type_IsValid(value);
   }
@@ -307,6 +327,55 @@ class Event : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< double >*
       mutable_cameravector();
 
+  // optional bool hold = 8;
+  inline bool has_hold() const;
+  inline void clear_hold();
+  static const int kHoldFieldNumber = 8;
+  inline bool hold() const;
+  inline void set_hold(bool value);
+
+  // optional int32 first = 9;
+  inline bool has_first() const;
+  inline void clear_first();
+  static const int kFirstFieldNumber = 9;
+  inline ::google::protobuf::int32 first() const;
+  inline void set_first(::google::protobuf::int32 value);
+
+  // optional int32 second = 10;
+  inline bool has_second() const;
+  inline void clear_second();
+  static const int kSecondFieldNumber = 10;
+  inline ::google::protobuf::int32 second() const;
+  inline void set_second(::google::protobuf::int32 value);
+
+  // optional int32 third = 11;
+  inline bool has_third() const;
+  inline void clear_third();
+  static const int kThirdFieldNumber = 11;
+  inline ::google::protobuf::int32 third() const;
+  inline void set_third(::google::protobuf::int32 value);
+
+  // optional int32 fourth = 12;
+  inline bool has_fourth() const;
+  inline void clear_fourth();
+  static const int kFourthFieldNumber = 12;
+  inline ::google::protobuf::int32 fourth() const;
+  inline void set_fourth(::google::protobuf::int32 value);
+
+  // optional int32 grabber = 13;
+  inline bool has_grabber() const;
+  inline void clear_grabber();
+  static const int kGrabberFieldNumber = 13;
+  inline ::google::protobuf::int32 grabber() const;
+  inline void set_grabber(::google::protobuf::int32 value);
+
+  // optional int32 grabbee = 14;
+  inline bool has_grabbee() const;
+  inline void clear_grabbee();
+  static const int kGrabbeeFieldNumber = 14;
+  inline ::google::protobuf::int32 grabbee() const;
+  inline void set_grabbee(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:protos.Event)
  private:
   inline void set_has_id();
@@ -321,6 +390,20 @@ class Event : public ::google::protobuf::Message {
   inline void clear_has_bulletid();
   inline void set_has_direction();
   inline void clear_has_direction();
+  inline void set_has_hold();
+  inline void clear_has_hold();
+  inline void set_has_first();
+  inline void clear_has_first();
+  inline void set_has_second();
+  inline void clear_has_second();
+  inline void set_has_third();
+  inline void clear_has_third();
+  inline void set_has_fourth();
+  inline void clear_has_fourth();
+  inline void set_has_grabber();
+  inline void clear_has_grabber();
+  inline void set_has_grabbee();
+  inline void clear_has_grabbee();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -333,6 +416,13 @@ class Event : public ::google::protobuf::Message {
   ::google::protobuf::int32 bulletid_;
   int direction_;
   ::google::protobuf::RepeatedField< double > cameravector_;
+  bool hold_;
+  ::google::protobuf::int32 first_;
+  ::google::protobuf::int32 second_;
+  ::google::protobuf::int32 third_;
+  ::google::protobuf::int32 fourth_;
+  ::google::protobuf::int32 grabber_;
+  ::google::protobuf::int32 grabbee_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -422,6 +512,8 @@ class Message_GameObject : public ::google::protobuf::Message {
   static const AnimationState STANDING = Message_GameObject_AnimationState_STANDING;
   static const AnimationState RUNNING = Message_GameObject_AnimationState_RUNNING;
   static const AnimationState PUNCHING = Message_GameObject_AnimationState_PUNCHING;
+  static const AnimationState BEAR = Message_GameObject_AnimationState_BEAR;
+  static const AnimationState WUSON = Message_GameObject_AnimationState_WUSON;
   static inline bool AnimationState_IsValid(int value) {
     return Message_GameObject_AnimationState_IsValid(value);
   }
@@ -485,6 +577,20 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline ::protos::Message_GameObject_AnimationState animationstate() const;
   inline void set_animationstate(::protos::Message_GameObject_AnimationState value);
 
+  // optional int32 health = 6;
+  inline bool has_health() const;
+  inline void clear_health();
+  static const int kHealthFieldNumber = 6;
+  inline ::google::protobuf::int32 health() const;
+  inline void set_health(::google::protobuf::int32 value);
+
+  // optional bool visible = 7;
+  inline bool has_visible() const;
+  inline void clear_visible();
+  static const int kVisibleFieldNumber = 7;
+  inline bool visible() const;
+  inline void set_visible(bool value);
+
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
@@ -495,6 +601,10 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline void clear_has_hattype();
   inline void set_has_animationstate();
   inline void clear_has_animationstate();
+  inline void set_has_health();
+  inline void clear_has_health();
+  inline void set_has_visible();
+  inline void clear_has_visible();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -505,6 +615,8 @@ class Message_GameObject : public ::google::protobuf::Message {
   int type_;
   ::google::protobuf::int32 hattype_;
   int animationstate_;
+  ::google::protobuf::int32 health_;
+  bool visible_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -802,6 +914,174 @@ Event::mutable_cameravector() {
   return &cameravector_;
 }
 
+// optional bool hold = 8;
+inline bool Event::has_hold() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void Event::set_has_hold() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void Event::clear_has_hold() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void Event::clear_hold() {
+  hold_ = false;
+  clear_has_hold();
+}
+inline bool Event::hold() const {
+  // @@protoc_insertion_point(field_get:protos.Event.hold)
+  return hold_;
+}
+inline void Event::set_hold(bool value) {
+  set_has_hold();
+  hold_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.hold)
+}
+
+// optional int32 first = 9;
+inline bool Event::has_first() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void Event::set_has_first() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void Event::clear_has_first() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void Event::clear_first() {
+  first_ = 0;
+  clear_has_first();
+}
+inline ::google::protobuf::int32 Event::first() const {
+  // @@protoc_insertion_point(field_get:protos.Event.first)
+  return first_;
+}
+inline void Event::set_first(::google::protobuf::int32 value) {
+  set_has_first();
+  first_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.first)
+}
+
+// optional int32 second = 10;
+inline bool Event::has_second() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void Event::set_has_second() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void Event::clear_has_second() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+inline void Event::clear_second() {
+  second_ = 0;
+  clear_has_second();
+}
+inline ::google::protobuf::int32 Event::second() const {
+  // @@protoc_insertion_point(field_get:protos.Event.second)
+  return second_;
+}
+inline void Event::set_second(::google::protobuf::int32 value) {
+  set_has_second();
+  second_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.second)
+}
+
+// optional int32 third = 11;
+inline bool Event::has_third() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void Event::set_has_third() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void Event::clear_has_third() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void Event::clear_third() {
+  third_ = 0;
+  clear_has_third();
+}
+inline ::google::protobuf::int32 Event::third() const {
+  // @@protoc_insertion_point(field_get:protos.Event.third)
+  return third_;
+}
+inline void Event::set_third(::google::protobuf::int32 value) {
+  set_has_third();
+  third_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.third)
+}
+
+// optional int32 fourth = 12;
+inline bool Event::has_fourth() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void Event::set_has_fourth() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void Event::clear_has_fourth() {
+  _has_bits_[0] &= ~0x00000800u;
+}
+inline void Event::clear_fourth() {
+  fourth_ = 0;
+  clear_has_fourth();
+}
+inline ::google::protobuf::int32 Event::fourth() const {
+  // @@protoc_insertion_point(field_get:protos.Event.fourth)
+  return fourth_;
+}
+inline void Event::set_fourth(::google::protobuf::int32 value) {
+  set_has_fourth();
+  fourth_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.fourth)
+}
+
+// optional int32 grabber = 13;
+inline bool Event::has_grabber() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void Event::set_has_grabber() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void Event::clear_has_grabber() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+inline void Event::clear_grabber() {
+  grabber_ = 0;
+  clear_has_grabber();
+}
+inline ::google::protobuf::int32 Event::grabber() const {
+  // @@protoc_insertion_point(field_get:protos.Event.grabber)
+  return grabber_;
+}
+inline void Event::set_grabber(::google::protobuf::int32 value) {
+  set_has_grabber();
+  grabber_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.grabber)
+}
+
+// optional int32 grabbee = 14;
+inline bool Event::has_grabbee() const {
+  return (_has_bits_[0] & 0x00002000u) != 0;
+}
+inline void Event::set_has_grabbee() {
+  _has_bits_[0] |= 0x00002000u;
+}
+inline void Event::clear_has_grabbee() {
+  _has_bits_[0] &= ~0x00002000u;
+}
+inline void Event::clear_grabbee() {
+  grabbee_ = 0;
+  clear_has_grabbee();
+}
+inline ::google::protobuf::int32 Event::grabbee() const {
+  // @@protoc_insertion_point(field_get:protos.Event.grabbee)
+  return grabbee_;
+}
+inline void Event::set_grabbee(::google::protobuf::int32 value) {
+  set_has_grabbee();
+  grabbee_ = value;
+  // @@protoc_insertion_point(field_set:protos.Event.grabbee)
+}
+
 // -------------------------------------------------------------------
 
 // Message_GameObject
@@ -932,6 +1212,54 @@ inline void Message_GameObject::set_animationstate(::protos::Message_GameObject_
   set_has_animationstate();
   animationstate_ = value;
   // @@protoc_insertion_point(field_set:protos.Message.GameObject.animationState)
+}
+
+// optional int32 health = 6;
+inline bool Message_GameObject::has_health() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Message_GameObject::set_has_health() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Message_GameObject::clear_has_health() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Message_GameObject::clear_health() {
+  health_ = 0;
+  clear_has_health();
+}
+inline ::google::protobuf::int32 Message_GameObject::health() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.health)
+  return health_;
+}
+inline void Message_GameObject::set_health(::google::protobuf::int32 value) {
+  set_has_health();
+  health_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.health)
+}
+
+// optional bool visible = 7;
+inline bool Message_GameObject::has_visible() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void Message_GameObject::set_has_visible() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void Message_GameObject::clear_has_visible() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void Message_GameObject::clear_visible() {
+  visible_ = false;
+  clear_has_visible();
+}
+inline bool Message_GameObject::visible() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.visible)
+  return visible_;
+}
+inline void Message_GameObject::set_visible(bool value) {
+  set_has_visible();
+  visible_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.visible)
 }
 
 // -------------------------------------------------------------------

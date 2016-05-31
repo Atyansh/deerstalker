@@ -4,8 +4,6 @@
 using namespace std::chrono;
 using namespace std::this_thread;
 
-std::deque<uint32_t> Game::availableIds;
-
 Game::Game() {
 	idGen_ = 1;
 	availableIds.emplace_back(Player::P1_ID);
@@ -30,6 +28,7 @@ void Game::remove(client_ptr client) {
 	if (iter != playerMap_.end()) {
 		auto* action = iter->second->getController();
 		auto* body = action->getRigidBody();
+		playerSet_.erase(body);
 		world_->removeAction(action);
 		world_->removeRigidBody(body);
 		playerMap_.erase(iter);
@@ -42,9 +41,9 @@ unsigned int Game::generateId() {
 }
 
 void Game::deliver(protos::Message msg) {
-	queueLock_.lock();
+	messageQueueLock_.lock();
 	messageQueue_.push_back(msg);
-	queueLock_.unlock();
+	messageQueueLock_.unlock();
 }
 
 int Game::size() {
@@ -123,6 +122,19 @@ void Game::initialize() {
 
 	btBulletWorldImporter* wreckingBallLoader = new btBulletWorldImporter(world_);
 	wreckingBallLoader->loadFile("bullet_assets\\WreckingBall.bullet");
+
+	gravityController_ = new GravityController(this);
+	world_->addAction(gravityController_);
+}
+
+void Game::loopReset() {
+	gravityController_->deactivate();
+	clearAnimations();
+
+	for (auto pair : playerMap_) {
+		pair.second->setVisible(true);
+		pair.second->setLinearFactor(btVector3(1,1,1));
+	}
 }
 
 void Game::startGameLoop() {
@@ -135,9 +147,9 @@ void Game::startGameLoop() {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
-		clearAnimations();
+		loopReset();
 
-		queueLock_.lock();
+		messageQueueLock_.lock();
 		while (!messageQueue_.empty()) {
 			protos::Message message = messageQueue_.front();
 
@@ -149,7 +161,7 @@ void Game::startGameLoop() {
 				
 				else if (playerMap_.count(event.clientid()) == 0) {
 					//TODO WHAT CAN THE DEAD DO
-					std::cout << "WHAT CAN THE DEAD DO\n";
+					//std::cout << "WHAT CAN THE DEAD DO\n";
 					continue;
 				}
 				else if (event.type() == protos::Event_Type_MOVE) {
@@ -176,18 +188,21 @@ void Game::startGameLoop() {
 				else if (event.type() == protos::Event_Type_PUNCH) {
 					handlePunchLogic(&event);
 				}
+				else if (event.type() == protos::Event_Type_GRAB) {
+					handleGrabLogic(&event);
+				}
 			}
-
 			messageQueue_.pop_front();
 		}
-		world_->stepSimulation(1.f / 15.f, 10);
-		queueLock_.unlock();
+		messageQueueLock_.unlock();
 
 		handleReSpawnLogic();
+		world_->stepSimulation(1.f / 15.f, 10);
 
 		deleteBullets();
 
 		sendStateToClients();
+		sendEventsToClients();
 
 		milliseconds stamp2 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
@@ -233,7 +248,7 @@ void Game::handleDquipLogic(const protos::Event* event) {
 
 void Game::handleSpawnLogic(const protos::Event* event) {
 	std::cerr << "SPAWN HAPPENED" << std::endl;
-	Player* player = new Player(playerBody_, event->clientid(), 3);
+	Player* player = Player::createNewPlayer(event->clientid(), playerBody_->getCollisionShape());
 	playerMap_[event->clientid()] = player;
 	btRigidBody* body = player->getController()->getRigidBody();
 	playerSet_.emplace(body);
@@ -244,7 +259,8 @@ void Game::handleSpawnLogic(const protos::Event* event) {
 void Game::handleMoveLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
 
-	if (animationStateMap_[event->clientid()] == protos::Message_GameObject_AnimationState_STANDING) {
+	if (animationStateMap_[event->clientid()] == protos::Message_GameObject_AnimationState_STANDING && 
+		player->getController()->onGround()) {
 		animationStateMap_[event->clientid()] = protos::Message_GameObject_AnimationState_RUNNING;
 	}
 
@@ -331,19 +347,25 @@ void Game::handleReSpawnLogic() {
 	}
 }
  
-bool Game::canEquip(Player * playa, Hat * hata) {
+bool Game::withinRange(btRigidBody * body1, btRigidBody * body2) {
 	//TODO MAYBE SOME BETTER SHIT
 	float equipDistance = 5;
-	return equipDistance>=playa->getController()->getRigidBody()->getCenterOfMassPosition().distance(hata->getCenterOfMassPosition());
+	return (equipDistance >= body1->getCenterOfMassPosition().distance(body2->getCenterOfMassPosition()));
 }
 
 void Game::handleEquipLogic(const protos::Event* event) {
 	Player * player = playerMap_[event->clientid()];
+
+	if (player->getHat() != nullptr) {
+		handleDquipLogic(event);
+		return;
+	}
+
 	std::cout << event->clientid() << " Attempting to equip hat\n";
 	Hat* hatToRemove = nullptr;
 	Hat* hatToAdd = nullptr;
 	for (auto hat : hatSet_) {
-		if (canEquip(player, hat)) {
+		if (withinRange(player, hat)) {
 			std::cerr << "Equip success\n";
 			Hat* oldHat  = player->setHat(hat);
 			hatToRemove = hat;
@@ -382,15 +404,64 @@ void Game::handlePunchLogic(const protos::Event* event) {
 		std::cerr << "SOME TARGET" << std::endl;
 		auto search = playerSet_.find(target);
 		if (search != playerSet_.end()) {
+			Player* punchedPlayer = (Player*)target;
 			std::cerr << "PUNCH DETECTED" << std::endl;
 			btVector3 localLook(0.0f, 0.0f, 1.0f);
 			btTransform transform = player->getController()->getRigidBody()->getCenterOfMassTransform();
 			btQuaternion rotation = transform.getRotation();
 			btVector3 currentLook = quatRotate(rotation, localLook);
-			((btRigidBody*)target)->applyCentralImpulse(currentLook.normalized() * 2);
+			punchedPlayer->applyCentralImpulse(currentLook.normalized() * 5);
+			punchedPlayer->changeHealth(-5);
 			// Throw Punch event to clients
+			eventQueueLock_.lock();
+			protos::Event event;
+			event.set_type(protos::Event_Type_PLAYER_PUNCHED);
+			event.set_clientid(punchedPlayer->getId());
+			eventQueue_.emplace_back(event);
+			eventQueueLock_.unlock();
 		}
 	}
+}
+
+void Game::handleGrabLogic(const protos::Event* event) {
+	Player * grabber = playerMap_[event->clientid()];
+
+	if (grabber->getGrabbedPlayer() != nullptr) {
+		releaseGrab(grabber);
+		return;
+	}
+
+	for (auto* body : playerSet_) {
+		Player* grabbee = (Player*)body;
+
+		if (grabber == grabbee) {
+			continue;
+		}
+
+		if (!withinRange(grabber, grabbee)) {
+			continue;
+		}
+
+		/*if (!grabbee->getStunned()) {
+			continue;
+		}*/
+
+		grabber->setGrabbedPlayer(grabbee);
+		grabbee->setMyGrabber(grabber);
+		grabbee->getController()->grabOrientation(grabber);
+		grabbee->setLinearFactor(btVector3(0, 0, 0));
+
+		break;
+	}
+}
+
+void Game::releaseGrab(Player* grabber) {
+	Player* grabbee = grabber->getGrabbedPlayer();
+
+	grabber->setGrabbedPlayer(nullptr);
+	grabbee->setMyGrabber(nullptr);
+	grabbee->getController()->straightOrientation();
+	grabbee->setLinearFactor(btVector3(1, 1, 1));
 }
 
 void Game::handlePrimaryHatLogic(const protos::Event* event) {
@@ -408,11 +479,17 @@ void Game::handlePrimaryHatLogic(const protos::Event* event) {
 		propellerUp(player);
 		break;
 	case WIZARD_HAT:
-		handleShootLogic(event);
+		if (event->hold() == false) {
+			handleShootLogic(event);
+		}
 		break;
 	case HARD_HAT:
 		break;
 	case BEAR_HAT:
+		killGravity();
+		break;
+	case DEERSTALKER_HAT:
+		setInvisible(player);
 		break;
 	}
 }
@@ -436,8 +513,28 @@ void Game::handleSecondaryHatLogic(const protos::Event* event) {
 	case HARD_HAT:
 		break;
 	case BEAR_HAT:
+		becomeBear(player);
+		break;
+	case DEERSTALKER_HAT:
+		ramOff(event);
 		break;
 	}
+}
+
+void Game::becomeBear(Player* player) {
+	animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_BEAR;
+	if (player->getController()->onGround()) {
+		player->setLinearFactor(btVector3(0, 0, 0));
+		player->setLinearVelocity(btVector3(0, 0, 0));
+	}
+	else {
+		player->setLinearVelocity(btVector3(0, player->getLinearVelocity().getY(), 0));
+		player->setLinearFactor(btVector3(0, 1, 0));
+	}
+}
+
+void Game::killGravity() {
+	gravityController_->activate();
 }
 
 void Game::propellerUp(Player* player) {
@@ -448,27 +545,73 @@ void Game::propellerDown(Player* player) {
 	player->getController()->getRigidBody()->applyCentralForce(btVector3(0, -10, 0));
 }
 
+void Game::setInvisible(Player* player) {
+	player->setVisible(false);
+}
+
+void Game::ramOff(const protos::Event* event) {
+	std::cerr << "ramOff" << std::endl;
+	Player* player = playerMap_[event->clientid()];
+
+	animationStateMap_[event->clientid()] = protos::Message_GameObject_AnimationState_WUSON;
+
+	double x = event->cameravector(0);
+	double y = event->cameravector(1);
+	double z = event->cameravector(2);
+
+	btVector3 f(-x, -y, -z);
+
+	player->getController()->playerStep(world_, f);
+
+	auto position = player->getController()->getRigidBody()->getCenterOfMassPosition();
+
+	btCollisionObject* target = player->getController()->getRamTarget();
+
+	if (target) {
+		std::cerr << "SOME TARGET" << std::endl;
+		auto search = playerSet_.find(target);
+		if (search != playerSet_.end()) {
+			Player* rammedPlayer = (Player*)target;
+			std::cerr << "PUNCH DETECTED" << std::endl;
+			btVector3 localLook(0.0f, 0.0f, 1.0f);
+			btTransform transform = player->getController()->getRigidBody()->getCenterOfMassTransform();
+			btQuaternion rotation = transform.getRotation();
+			btVector3 ramDirection = quatRotate(rotation, localLook);
+			ramDirection = ramDirection + btVector3(0, 1, 0);
+			rammedPlayer->applyCentralImpulse(ramDirection.normalized() * 10);
+			rammedPlayer->changeHealth(-5);
+			// Throw Punch event to clients
+			eventQueueLock_.lock();
+			protos::Event event;
+			event.set_type(protos::Event_Type_PLAYER_PUNCHED);
+			event.set_clientid(rammedPlayer->getId());
+			eventQueue_.emplace_back(event);
+			eventQueueLock_.unlock();
+		}
+	}
+}
+
 void Game::sendStateToClients() {
 	protos::Message message;
 
 	for (auto& pair : playerMap_) {
-		auto vec = pair.second->getController()->getRigidBody()->getCenterOfMassPosition();
-		
-		std::cerr << vec.getX() << " " << vec.getY() << " " << vec.getZ() << std::endl;
+		Player* player = pair.second;
 
 		btTransform transform;
-		pair.second->getController()->getRigidBody()->getMotionState()->getWorldTransform(transform);
+		player->getController()->getRigidBody()->getMotionState()->getWorldTransform(transform);
 		btScalar glm[16] = {};
 
 		transform.getOpenGLMatrix(glm);
 
 		auto* gameObject = message.add_gameobject();
 
-		Hat* hat = pair.second->getHat();
+		Hat* hat = player->getHat();
 
-		gameObject->set_hattype(pair.second->getHatType());
+		gameObject->set_hattype(player->getHatType());
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
-		gameObject->set_animationstate(animationStateMap_[pair.first]);
+		gameObject->set_health(player->getHealth());
+		gameObject->set_animationstate(animationStateMap_[player->getId()]);
+		gameObject->set_visible(player->getVisible());
 		gameObject->set_id(pair.first);
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
@@ -530,5 +673,23 @@ void Game::sendStateToClients() {
 
 	for (auto client : clients_) {
 		client->deliver(message);
+	}
+}
+
+void Game::sendEventsToClients() {
+	protos::Message message;
+
+	eventQueueLock_.lock();
+	for (auto& event : eventQueue_) {
+		auto* e = message.add_event();
+		e->MergeFrom(event);
+	}
+	eventQueue_.clear();
+	eventQueueLock_.unlock();
+
+	if (message.event_size()) {
+		for (auto client : clients_) {
+			client->deliver(message);
+		}
 	}
 }
