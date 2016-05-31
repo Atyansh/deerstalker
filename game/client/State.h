@@ -2,6 +2,7 @@
 
 namespace State {
 	enum {
+		_Loading,
 		_Start,
 		_Lobby,
 		_Game,

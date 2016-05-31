@@ -59,10 +59,10 @@ private:
 	void bindBuffers();
 
 	//cloud sky creation
-	const int NUMBER_OF_SPHERES = 1000;
+	const int NUMBER_OF_SPHERES = 2000;
 	const int SPHERES_PER_CLOUD = 1;
 	const float FLOATING_SPEED_PER_SECOND = 30.0f;
-	const float SKYBOX_LENGTH = 500; //pass in?
+	const float SKYBOX_LENGTH = 1000; //pass in?
 	const glm::vec3 INITIAL_EXPANSION_DIRECTION = glm::vec3(1.0f, 0.0f, 1.0f);
 	const float MIN_CLOUD_CREATION_DISTANCE_SECONDS = .05f;
 	const float SPAWN_CLOUD_LIKELYHOOD = 0.35f * SPHERES_PER_CLOUD / NUMBER_OF_SPHERES;

@@ -301,6 +301,7 @@ GLint PlayerModel::TextureFromFile(const char* path, string directory, int id)
 {
 	//Generate texture ID and load texture data 
 	string filename = string(path);
+	cout << filename << endl;
 	int index = filename.find("_x");
 	switch (id) {
 	case 1:

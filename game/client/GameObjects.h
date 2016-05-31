@@ -28,13 +28,15 @@ enum Models {
 
 enum Shaders {
 	_GShader,
-	_LtShader
+	_LtShader,
+	_AShader
 };
 
 enum GUI {
 	_Background,
 	_LobbyBG,
-	_EndGameBG
+	_EndGameBG,
+	_Loading
 };
 class GameObjects
 {
@@ -53,6 +55,8 @@ public:
 	GameObjects();
 	~GameObjects();
 
+	void loadShaders();
+	void loadLoadingObject();
 	void loadGameObjects();
 	void loadModelMap();
 	void loadHatModelsMap();
