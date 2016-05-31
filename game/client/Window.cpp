@@ -36,6 +36,8 @@ void Window::initialize_objects()
 
 	STATE = State::_Start;
 	cout << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
+	Shader* shader = new Shader("Shaders/fontShader.vert", "Shaders/fontShader.frag");
+	Shader* twodShader = new Shader("Shaders/2DShader.vert", "Shaders/2DShader.frag");
 
 }
 
@@ -54,7 +56,8 @@ GLFWwindow* Window::create_window(int width, int height) {
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	// Create the GLFW window
-	GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, window_title, glfwGetPrimaryMonitor(), NULL);
+	//GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
 
 	// Check if the window could not be created
 	if (!window) {
@@ -81,7 +84,7 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	// Set the viewport size
 	glViewport(0, 0, width, height);
 	float aspect = height == 0 ? 0 : float(width) / (float)height;
-	Globals::drawData.projection = glm::perspective(45.0f, aspect, 0.1f, 1000.0f);
+	Globals::drawData.projection = glm::perspective(45.0f, aspect, 0.1f, 3000.0f);
 	Globals::drawData.view = Globals::cam.getView();
 	cout << "projection in winodw \n";
 	cout << glm::to_string(Globals::drawData.projection) << endl;
@@ -102,7 +105,6 @@ void Window::idle_callback(GLFWwindow* window) {
 		MessageHandler::handleEndGameMessages();
 	}
 }
-
 
 
 void Window::display_callback(GLFWwindow* window) {

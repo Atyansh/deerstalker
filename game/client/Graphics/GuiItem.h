@@ -22,6 +22,7 @@ class GuiItem : public Drawable{
 		void init(int width, int height);
 
 	public:
+		GuiItem() {}
 		GuiItem(string filename, Shader *shader, int w, int h, int x, int y);
 		~GuiItem();
 

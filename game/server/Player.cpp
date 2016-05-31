@@ -1,9 +1,9 @@
 #include "Player.h"
 
-const btVector3 Player::P1_SPAWN_POINT = btVector3(-60, 130, -60);
-const btVector3 Player::P2_SPAWN_POINT = btVector3(-55, 120, 70);
-const btVector3 Player::P3_SPAWN_POINT = btVector3(55, 110, 25);
-const btVector3 Player::P4_SPAWN_POINT = btVector3(80, 100, -40);
+const btVector3 Player::P1_SPAWN_POINT = btVector3(-126, 530, -50);
+const btVector3 Player::P2_SPAWN_POINT = btVector3(-2, 390, 330);
+const btVector3 Player::P3_SPAWN_POINT = btVector3(330, 360, -300);
+const btVector3 Player::P4_SPAWN_POINT = btVector3(50, 340, -350);
 
 Player::Player(btCollisionObject* body, uint32_t id, uint32_t lives) : controller_(new DynamicCharacterController(body)), id_(id), lives_(lives), currHat_(nullptr) {
 	setSpawn();
