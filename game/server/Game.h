@@ -43,6 +43,9 @@ private:
 	void deleteBullets();
 	void deleteHats();
 
+	void detectStun();
+	void revivePlayers();
+
 	void loopReset();
 
 	void handleSpawnLogic(const protos::Event* event);
@@ -50,11 +53,13 @@ private:
 	void handleJumpLogic(const protos::Event* event);
 	void handleEquipLogic(const protos::Event* event);
 	void handleShootLogic(const protos::Event* event);
-	void handleDquipLogic(const protos::Event* event);
+	void handleDquipLogic(Player* player);
 	void handlePrimaryHatLogic(const protos::Event* event);
 	void handleSecondaryHatLogic(const protos::Event* event);
 	void handlePunchLogic(const protos::Event* event);
 	void handleGrabLogic(const protos::Event* event);
+
+	bool withinRange(btRigidBody * body1, btRigidBody * body2, int range);
 
 	void releaseGrab(Player* player);
 
@@ -76,7 +81,6 @@ private:
 	World* world_;
 
 	void handleReSpawnLogic();
-	bool withinRange(btRigidBody * body1, btRigidBody * body2);
 
 	unsigned int generateId();
 	unsigned int idGen_;

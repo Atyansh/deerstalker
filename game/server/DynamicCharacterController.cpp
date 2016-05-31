@@ -107,7 +107,7 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld, btSca
 	btVector3 look2 = quatRotate(newRot2, localLook);
 	
 	forwardRaySource = xform.getOrigin() + btVector3(0, 5, 0);
-	forwardRayTarget = forwardRaySource + currentLook * range;
+	forwardRayTarget = forwardRaySource + currentLook * 7;
 
 	ClosestNotMe rayCallback2(m_rigidBody);
 	rayCallback2.m_closestHitFraction = 1.0;
@@ -121,13 +121,13 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld, btSca
 	}
 
 	btVector3 ram0Source = xform.getOrigin() + btVector3(0, 1, 0);
-	btVector3 ram0Target = forwardRaySource + currentLook * 10;
+	btVector3 ram0Target = forwardRaySource + currentLook * 12;
 
 	btVector3 ram1Source = xform.getOrigin() + btVector3(0, 1, 0);
-	btVector3 ram1Target = forwardRaySource + look1 * 10;
+	btVector3 ram1Target = forwardRaySource + look1 * 12;
 
 	btVector3 ram2Source = xform.getOrigin() + btVector3(0, 1, 0);
-	btVector3 ram2Target = forwardRaySource + look2 * 10;
+	btVector3 ram2Target = forwardRaySource + look2 * 12;
 
 	ClosestNotMe rayCallback3(m_rigidBody);
 	rayCallback3.m_closestHitFraction = 1.0;

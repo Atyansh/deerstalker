@@ -90,14 +90,48 @@ void Game::deleteHats() {
 		}
 	}
 
-	for (auto* player : playerSet_) {
-		Hat* hat = ((Player*)player)->getHat();
+	for (auto* body : playerSet_) {
+		Player* player = (Player*)body;
+		Hat* hat = player->getHat();
 
 		if (hat) {
 			if (currTime - hat->getTimestamp() > hatLifespan) {
 				protos::Event event;
-				event.set_clientid(((Player*)player)->getId());
-				handleDquipLogic(&event);
+				event.set_clientid(player->getId());
+				handleDquipLogic(player);
+			}
+		}
+	}
+}
+
+void Game::detectStun() {
+	milliseconds currTime = duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch());
+
+	for (auto* body : playerSet_) {
+		Player* player = (Player*)body;
+		if (!player->getStunned() && player->getHealth() == 0) {
+			if (player->getHatType()) {
+				handleDquipLogic(player);
+			}
+			player->setStunned(true);
+			player->setStunTimestamp(currTime);
+		}
+	}
+}
+
+void Game::revivePlayers() {
+	milliseconds currTime = duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch());
+
+	milliseconds reviveSpan = milliseconds(10000);
+
+	for (auto* body : playerSet_) {
+		Player* player = (Player*)body;
+		if (player->getStunned()) {
+			if (currTime - player->getStunTimestamp() > reviveSpan) {
+				player->setHealth(50);
+				player->setStunned(false);
 			}
 		}
 	}
@@ -246,9 +280,6 @@ void Game::startGameLoop() {
 				else if (event.type() == protos::Event_Type_EQUIP) {
 					handleEquipLogic(&event);
 				}
-				else if (event.type() == protos::Event_Type_DQUIP) {
-					handleDquipLogic(&event);
-				}
 				else if (event.type() == protos::Event_Type_SHOOT) {
 					handleShootLogic(&event);
 				}
@@ -274,6 +305,9 @@ void Game::startGameLoop() {
 
 		deleteBullets();
 		deleteHats();
+
+		detectStun();
+		revivePlayers();
 
 		sendStateToClients();
 		sendEventsToClients();
@@ -303,8 +337,7 @@ void Game::handleShootLogic(const protos::Event* event) {
 	world_->addRigidBody(bull);
 }
 
-void Game::handleDquipLogic(const protos::Event* event) {
-	Player* player = playerMap_[event->clientid()];
+void Game::handleDquipLogic(Player* player) {
 	Hat * oHat = player->setHat(0);
 	if (oHat == 0) {
 		return;
@@ -421,17 +454,16 @@ void Game::handleReSpawnLogic() {
 	}
 }
  
-bool Game::withinRange(btRigidBody * body1, btRigidBody * body2) {
+bool Game::withinRange(btRigidBody * body1, btRigidBody * body2, int range) {
 	//TODO MAYBE SOME BETTER SHIT
-	float equipDistance = 5;
-	return (equipDistance >= body1->getCenterOfMassPosition().distance(body2->getCenterOfMassPosition()));
+	return (range >= body1->getCenterOfMassPosition().distance(body2->getCenterOfMassPosition()));
 }
 
 void Game::handleEquipLogic(const protos::Event* event) {
 	Player * player = playerMap_[event->clientid()];
 
 	if (player->getHat() != nullptr) {
-		handleDquipLogic(event);
+		handleDquipLogic(player);
 		return;
 	}
 
@@ -439,7 +471,7 @@ void Game::handleEquipLogic(const protos::Event* event) {
 	Hat* hatToRemove = nullptr;
 	Hat* hatToAdd = nullptr;
 	for (auto hat : hatSet_) {
-		if (withinRange(player, hat)) {
+		if (withinRange(player, hat, 5)) {
 			std::cerr << "Equip success\n";
 			Hat* oldHat  = player->setHat(hat);
 			hatToRemove = hat;
@@ -512,13 +544,17 @@ void Game::handleGrabLogic(const protos::Event* event) {
 			continue;
 		}
 
-		if (!withinRange(grabber, grabbee)) {
+		if (!withinRange(grabber, grabbee, 10)) {
 			continue;
 		}
 
-		/*if (!grabbee->getStunned()) {
+		if (grabbee->getMyGrabber()) {
 			continue;
-		}*/
+		}
+
+		if (!grabbee->getStunned()) {
+			continue;
+		}
 
 		grabber->setGrabbedPlayer(grabbee);
 		grabbee->setMyGrabber(grabber);
@@ -686,6 +722,10 @@ void Game::sendStateToClients() {
 		auto* gameObject = message.add_gameobject();
 
 		Hat* hat = player->getHat();
+
+		if (player->getStunned()) {
+			animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_STUNNED;
+		}
 
 		gameObject->set_hattype(player->getHatType());
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);

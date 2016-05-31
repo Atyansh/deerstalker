@@ -7,6 +7,10 @@
 
 #include "BulletDynamics/Character/btCharacterControllerInterface.h"
 
+#include <chrono>
+
+using namespace std::chrono;
+
 class DynamicCharacterController;
 
 class Player : public btRigidBody {
@@ -32,6 +36,23 @@ public:
 
 	int32_t getHealth() {
 		return health_;
+	}
+
+	void changeHealth(int delta) {
+		int newHealth = health_ + delta;
+		if (newHealth > 100) {
+			setHealth(100);
+		}
+		else if (newHealth < 0) {
+			setHealth(0);
+		}
+		else {
+			setHealth(newHealth);
+		}
+	}
+
+	void setHealth(int32_t health) {
+		health_ = health;
 	}
 
 	bool getStunned() {
@@ -66,17 +87,12 @@ public:
 		grabbedPlayer_ = grabbedPlayer;
 	}
 
-	void changeHealth(int delta) {
-		int newHealth = health_ + delta;
-		if (newHealth > 100) {
-			setHealth(100);
-		}
-		else if (newHealth < 0) {
-			setHealth(0);
-		}
-		else {
-			setHealth(newHealth);
-		}
+	milliseconds getStunTimestamp() {
+		return stunTimestamp_;
+	}
+
+	void setStunTimestamp(milliseconds timestamp) {
+		stunTimestamp_ = timestamp;
 	}
 
 	void setSpawn();
@@ -92,6 +108,8 @@ public:
 private:
 	const unsigned int id_;
 	unsigned int lives_;
+
+	milliseconds stunTimestamp_;
 
 	bool stunned_ = false;
 	bool visible_ = true;
@@ -109,8 +127,4 @@ private:
 	static const btVector3 P2_SPAWN_POINT;
 	static const btVector3 P3_SPAWN_POINT;
 	static const btVector3 P4_SPAWN_POINT;
-
-	void setHealth(int32_t health) {
-		health_ = health;
-	}
 };
