@@ -84,15 +84,22 @@ void main()
     // this fragment's final color.
     // == ======================================
     // Phase 1: Directional lighting
-    vec3 result = CalcDirLight(dirLight, norm, viewDir);
+    vec3 result; // = CalcDirLight(dirLight, norm, viewDir);
     // Phase 2: Point lights
-    for(int i = 0; i < PointSize && i < MAX_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
+    //for(int i = 0; i < PointSize && i < MAX_POINT_LIGHTS; i++)
+        //result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
     // Phase 3: Spot light
-	for(int i = 0; i < SpotSize && i < MAX_SPOT_LIGHTS; i++)
-		result += CalcSpotLight(spotLight[i], norm, FragPos, viewDir);    
-    
-	color = vec4(result, 1.0);
+	//for(int i = 0; i < SpotSize && i < MAX_SPOT_LIGHTS; i++)
+		//result += CalcSpotLight(spotLight[i], norm, FragPos, viewDir);    
+	
+    if (hasTexture == 1) {
+		result = vec3(texture(material.diffuse, TexCoords));
+	}
+	else {
+		result = materialNoTex.diffuse;
+	}
+	
+	color = vec4(result-vec3(.15,.15,.15), 1.0);
 }
 
 // Calculates the color when using a directional light.

@@ -20,6 +20,7 @@ string skyboxDirectory = "Assets/Cubemap";
 string backgroundPath = "Assets/UI/DeerMenu.jpg";
 string lobbyPath = "Assets/UI/Lobby.jpg";
 string endPath = "Assets/UI/EndGame.jpg";
+string loadingPath = "Assets/UI/Loading.png";
 
 GameObjects::GameObjects() {
 }
@@ -28,8 +29,7 @@ GameObjects::GameObjects() {
 GameObjects::~GameObjects() {
 }
 
-
-void GameObjects::loadGameObjects() {
+void GameObjects::loadShaders() {
 	glm::vec3 pointLightPositions[] = {
 		glm::vec3(2.3f, -1.6f, -3.0f),
 		glm::vec3(-1.7f, 0.9f, 1.0f)
@@ -41,13 +41,25 @@ void GameObjects::loadGameObjects() {
 	//lightShader->addPointLight(pointLightPositions[0], glm::vec3(.8f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 	//lightShader->addPointLight(pointLightPositions[1], glm::vec3(.8f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 
+	LightShader* animShader = new LightShader(Globals::cam.getPosition(), "Shaders/shader_w_anim.vert", "Shaders/shader_w_anim.frag");
+	animShader->addDirectionalLight(glm::vec3(0.f, 1.0f, 0.f), glm::vec3(0.7f), glm::vec3(0.4f));
+
 	Shader *guiShader = new Shader("Shaders/guiItem.vert", "Shaders/guiItem.frag");
 	Shader *twoShader = new Shader("Shaders/2DShader.vert", "Shaders/2DShader.frag");
 
 	shaderMap[_LtShader] = lightShader;
 	shaderMap[_GShader] = guiShader;
 	shaderMap[_2DShader] = twoShader;
+	shaderMap[_AShader] = animShader;
+}
 
+void GameObjects::loadLoadingObject() {
+	//get this first so don't have white screen
+	guiMap[_Loading] = new GuiItem(loadingPath, shaderMap[_GShader], 60, 34, 0, 0);
+}
+
+
+void GameObjects::loadGameObjects() {
 	guiMap[_Background] = new GuiItem(backgroundPath, shaderMap[_GShader], 60, 34, 0, 0);
 	guiMap[_LobbyBG] = new GuiItem(lobbyPath, shaderMap[_GShader], 60, 34, 0, 0);
 	guiMap[_EndGameBG] = new GuiItem(endPath, shaderMap[_GShader], 60, 34, 0, 0);
@@ -65,19 +77,19 @@ void GameObjects::loadGameObjects() {
 }
 
 void GameObjects::loadModelMap() {
-	modelMap[_Mango] = new Model(mangoPath, shaderMap[_LtShader]);
-	modelMap[_Player_Standing] = new PlayerModel(playerStandPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_STANDING);
-	modelMap[_Player_Running] = new PlayerModel(playerRunPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_RUNNING);
-	modelMap[_Player_Punching] = new PlayerModel(playerPunchingPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_PUNCHING);
-	modelMap[_Player_Stunned] = new PlayerModel(playerStunnedPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_STUNNED);
+	modelMap[_Mango] = new Model(mangoPath, shaderMap[_AShader]);
+	modelMap[_Player_Standing] = new PlayerModel(playerStandPath, shaderMap[_AShader], protos::Message_GameObject_AnimationState_STANDING);
+	modelMap[_Player_Running] = new PlayerModel(playerRunPath, shaderMap[_AShader], protos::Message_GameObject_AnimationState_RUNNING);
+	modelMap[_Player_Punching] = new PlayerModel(playerPunchingPath, shaderMap[_AShader], protos::Message_GameObject_AnimationState_PUNCHING);
+	modelMap[_Player_Stunned] = new PlayerModel(playerStunnedPath, shaderMap[_AShader], protos::Message_GameObject_AnimationState_STUNNED);
 	modelMap[_Player_Wuson] = new PlayerModel(wusonPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_WUSON);
 	modelMap[_Player_Bear] = new PlayerModel(bearPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_BEAR);
-	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);
-	modelMap[_WizardHat] = new Model(wizardPath, shaderMap[_LtShader]);
-	modelMap[_HardHat] = new Model(hardHatPath, shaderMap[_LtShader]);
-	modelMap[_PropellerHat] = new Model(propellerHatPath, shaderMap[_LtShader]);
-	modelMap[_BearHat] = new Model(bearHatPath, shaderMap[_LtShader]);
-	modelMap[_DeerstalkerHat] = new Model(deerstalkerHatPath, shaderMap[_LtShader]);
+	modelMap[_Crate] = new Model(cratePath, shaderMap[_AShader]);
+	modelMap[_WizardHat] = new Model(wizardPath, shaderMap[_AShader]);
+	modelMap[_HardHat] = new Model(hardHatPath, shaderMap[_AShader]);
+	modelMap[_PropellerHat] = new Model(propellerHatPath, shaderMap[_AShader]);
+	modelMap[_BearHat] = new Model(bearHatPath, shaderMap[_AShader]);
+	modelMap[_DeerstalkerHat] = new Model(deerstalkerHatPath, shaderMap[_AShader]);
 }
 
 void GameObjects::loadHatModelsMap() {
@@ -91,7 +103,7 @@ void GameObjects::loadHatModelsMap() {
 
 void GameObjects::generateWorld(string directory) {
 	World *world = new World();
-	world->createWorld(shaderMap[_LtShader], directory);
+	world->createWorld(shaderMap[_AShader], directory);
 	cerr << "A" << endl;
 	root = new SMatrixTransform();
 	root->addNode(world);

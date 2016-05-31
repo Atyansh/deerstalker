@@ -32,15 +32,15 @@ SMatrixTransform *root;
 int STATE;
 
 void Window::initialize_objects() {
-	Globals::gameObjects.loadGameObjects();
+	Globals::gameObjects.loadShaders();
+	Globals::gameObjects.loadLoadingObject();
 
 	guiTranslation = glm::mat4();
 	guiTranslation = glm::scale(guiTranslation, glm::vec3(0.8f));
 	guiTranslation = glm::translate(guiTranslation, glm::vec3(350.0f, 30.0f, 0.0f));
 
 
-	STATE = State::_Start;
-	cerr << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
+	STATE = State::_Loading;
 }
 
 void Window::clean_up() {
@@ -59,7 +59,7 @@ GLFWwindow* Window::create_window(int width, int height) {
 
 	// Create the GLFW window
 	GLFWwindow* window = glfwCreateWindow(width, height, window_title, glfwGetPrimaryMonitor(), NULL);
-	//GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
+	// GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
 
 	// Check if the window could not be created
 	if (!window) {
@@ -95,6 +95,11 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 }
 
 void Window::idle_callback(GLFWwindow* window) {
+	if (STATE == State::_Loading) {
+		Globals::gameObjects.loadGameObjects();
+		STATE = State::_Start;
+		cerr << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
+	}
 	if (STATE == State::_Lobby) {
 		MessageHandler::handleLobbyMessages();
 	}
@@ -114,9 +119,12 @@ void Window::display_callback(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	switch (STATE) {
+	case State::_Loading:
+		Globals::gameObjects.guiMap[_Loading]->draw(Globals::drawData);
+		break;
 	case State::_Start:
 		Globals::gameObjects.guiMap[_Background]->draw(Globals::drawData);
-		
+		//Globals::gameObjects.guiMap[_Loading]->draw(Globals::drawData);
 		break;
 	case State::_Lobby:
 		Globals::gameObjects.guiMap[_LobbyBG]->draw(Globals::drawData);
