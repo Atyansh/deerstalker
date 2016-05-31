@@ -127,11 +127,13 @@ enum Message_GameObject_AnimationState {
   Message_GameObject_AnimationState_RUNNING = 2,
   Message_GameObject_AnimationState_PUNCHING = 3,
   Message_GameObject_AnimationState_BEAR = 4,
-  Message_GameObject_AnimationState_WUSON = 5
+  Message_GameObject_AnimationState_WUSON = 5,
+  Message_GameObject_AnimationState_STUNNED = 6,
+  Message_GameObject_AnimationState_GRABBING = 7
 };
 bool Message_GameObject_AnimationState_IsValid(int value);
 const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MIN = Message_GameObject_AnimationState_STANDING;
-const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MAX = Message_GameObject_AnimationState_WUSON;
+const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MAX = Message_GameObject_AnimationState_GRABBING;
 const int Message_GameObject_AnimationState_AnimationState_ARRAYSIZE = Message_GameObject_AnimationState_AnimationState_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Message_GameObject_AnimationState_descriptor();
@@ -514,6 +516,8 @@ class Message_GameObject : public ::google::protobuf::Message {
   static const AnimationState PUNCHING = Message_GameObject_AnimationState_PUNCHING;
   static const AnimationState BEAR = Message_GameObject_AnimationState_BEAR;
   static const AnimationState WUSON = Message_GameObject_AnimationState_WUSON;
+  static const AnimationState STUNNED = Message_GameObject_AnimationState_STUNNED;
+  static const AnimationState GRABBING = Message_GameObject_AnimationState_GRABBING;
   static inline bool AnimationState_IsValid(int value) {
     return Message_GameObject_AnimationState_IsValid(value);
   }
@@ -591,6 +595,13 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline bool visible() const;
   inline void set_visible(bool value);
 
+  // optional int32 lives = 8;
+  inline bool has_lives() const;
+  inline void clear_lives();
+  static const int kLivesFieldNumber = 8;
+  inline ::google::protobuf::int32 lives() const;
+  inline void set_lives(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
@@ -605,6 +616,8 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline void clear_has_health();
   inline void set_has_visible();
   inline void clear_has_visible();
+  inline void set_has_lives();
+  inline void clear_has_lives();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -617,6 +630,7 @@ class Message_GameObject : public ::google::protobuf::Message {
   int animationstate_;
   ::google::protobuf::int32 health_;
   bool visible_;
+  ::google::protobuf::int32 lives_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -1260,6 +1274,30 @@ inline void Message_GameObject::set_visible(bool value) {
   set_has_visible();
   visible_ = value;
   // @@protoc_insertion_point(field_set:protos.Message.GameObject.visible)
+}
+
+// optional int32 lives = 8;
+inline bool Message_GameObject::has_lives() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void Message_GameObject::set_has_lives() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void Message_GameObject::clear_has_lives() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void Message_GameObject::clear_lives() {
+  lives_ = 0;
+  clear_has_lives();
+}
+inline ::google::protobuf::int32 Message_GameObject::lives() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.lives)
+  return lives_;
+}
+inline void Message_GameObject::set_lives(::google::protobuf::int32 value) {
+  set_has_lives();
+  lives_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.lives)
 }
 
 // -------------------------------------------------------------------

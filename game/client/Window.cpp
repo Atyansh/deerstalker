@@ -114,11 +114,9 @@ void Window::display_callback(GLFWwindow* window) {
 		Globals::gameObjects.guiMap[_LobbyBG]->draw(Globals::drawData);
 		break;
 	case State::_Game:
-
 		Globals::drawData.view = Globals::cam.getView();
 
 		Globals::gameObjects.root->draw(Globals::drawData);
-
 
 		// Render objects
 		for (auto& pair : Globals::gameObjects.playerMap) {
@@ -395,6 +393,7 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model, int id) 
 			playerStateMap[protos::Message_GameObject_AnimationState_STANDING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Standing]), id);
 			playerStateMap[protos::Message_GameObject_AnimationState_RUNNING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Running]), id);
 			playerStateMap[protos::Message_GameObject_AnimationState_PUNCHING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Punching]), id);
+			playerStateMap[protos::Message_GameObject_AnimationState_STUNNED] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Stunned]), id);
 			playerStateMap[protos::Message_GameObject_AnimationState_BEAR] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Bear]), id);
 			playerStateMap[protos::Message_GameObject_AnimationState_WUSON] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Wuson]), id);
 			return new Player(playerStateMap, playerHatMap);

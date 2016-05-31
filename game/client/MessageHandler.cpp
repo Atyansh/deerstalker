@@ -80,6 +80,8 @@ void MessageHandler::handleGameMessages() {
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 				Player* player = dynamic_cast<Player*>(&entity);
 
+				player->setLives(gameObject.lives());
+				player->setHealth(gameObject.health());
 
 				if (gameObject.animationstate() == protos::Message_GameObject_AnimationState_BEAR) {
 					auto scale = glm::vec3(1) / 0.075;

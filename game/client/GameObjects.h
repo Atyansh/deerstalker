@@ -14,6 +14,7 @@ enum Models {
 	_Player_Standing,
 	_Player_Running,
 	_Player_Punching,
+	_Player_Stunned,
 	_Player_Wuson,
 	_Player_Bear,
 	_Mango,

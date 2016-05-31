@@ -462,6 +462,8 @@ void Game::releaseGrab(Player* grabber) {
 	grabbee->setMyGrabber(nullptr);
 	grabbee->getController()->straightOrientation();
 	grabbee->setLinearFactor(btVector3(1, 1, 1));
+
+	grabber->setProjectile(grabbee, 50);
 }
 
 void Game::handlePrimaryHatLogic(const protos::Event* event) {
@@ -610,6 +612,7 @@ void Game::sendStateToClients() {
 		gameObject->set_hattype(player->getHatType());
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
 		gameObject->set_health(player->getHealth());
+		gameObject->set_lives(player->getLives());
 		gameObject->set_animationstate(animationStateMap_[player->getId()]);
 		gameObject->set_visible(player->getVisible());
 		gameObject->set_id(pair.first);

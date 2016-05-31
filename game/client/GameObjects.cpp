@@ -9,6 +9,7 @@ const char* cratePath = "Assets/OBJ/Crate/Crate1.obj";
 const char* playerStandPath = "Assets/FBX/standing.fbx";
 const char* playerRunPath = "Assets/FBX/running.fbx";
 const char* playerPunchingPath = "Assets/FBX/punching.fbx";
+const char* playerStunnedPath = "Assets/FBX/stun.fbx";
 const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 const char* hardHatPath = "Assets/OBJ/Hard_Hat/HardHat.obj";
 const char* propellerHatPath = "Assets/OBJ/PropellerHat/PropellerHat.obj";
@@ -59,6 +60,7 @@ void GameObjects::loadModelMap() {
 	modelMap[_Player_Standing] = new PlayerModel(playerStandPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_STANDING);
 	modelMap[_Player_Running] = new PlayerModel(playerRunPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_RUNNING);
 	modelMap[_Player_Punching] = new PlayerModel(playerPunchingPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_PUNCHING);
+	modelMap[_Player_Stunned] = new PlayerModel(playerStunnedPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_STUNNED);
 	modelMap[_Player_Wuson] = new PlayerModel(wusonPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_WUSON);
 	modelMap[_Player_Bear] = new PlayerModel(bearPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_BEAR);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_LtShader]);

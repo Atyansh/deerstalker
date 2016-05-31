@@ -17,6 +17,9 @@ class Player : public SMatrixTransform {
 		HatType currHat;
 		protos::Message_GameObject_AnimationState currState;
 
+		int lives_;
+		int health_;
+
 		void createPlayer();
 
 	public:
@@ -28,6 +31,22 @@ class Player : public SMatrixTransform {
 
 		void detachHat();
 		void attachHat(HatType newHat);
+
+		void setHealth(int health) {
+			health_ = health;
+		}
+
+		int getHealth() {
+			return health_;
+		}
+
+		void setLives(int lives) {
+			lives_ = lives;
+		}
+
+		int getLives() {
+			return lives_;
+		}
 
 		bool getVisible() {
 			return visible_;

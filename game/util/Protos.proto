@@ -66,6 +66,8 @@ message Message {
 			PUNCHING = 3;
 			BEAR = 4;
 			WUSON = 5;
+			STUNNED = 6;
+			GRABBING = 7;
 		}
 		optional int32 id = 1;
 		repeated double matrix = 2;
@@ -74,6 +76,7 @@ message Message {
 		optional AnimationState animationState = 5;
 		optional int32 health = 6;
 		optional bool visible = 7;
+		optional int32 lives = 8;
 	}
 
 	optional int32 id = 1;
