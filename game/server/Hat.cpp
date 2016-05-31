@@ -23,10 +23,9 @@ Hat* Hat::createNewHat(HatType hatType, btCollisionShape* shape) {
 	startTransform.setIdentity();
 
 	int worldSize = 50;
-	int xPosition = (rand() % worldSize) - 25;
-	int yPosition = 10;
-	int zPosition = (rand() % worldSize) - 25;
-	startTransform.setOrigin(btVector3(xPosition, yPosition, zPosition));
+	int xPosition = (rand() % (HIGH_X - LOW_X)) + LOW_X;
+	int zPosition = (rand() % (HIGH_Z - LOW_Z)) + LOW_Z;
+	startTransform.setOrigin(btVector3(xPosition, Y, zPosition));
 
 	btMotionState* motionState = new btDefaultMotionState(startTransform);
 

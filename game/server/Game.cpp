@@ -599,6 +599,10 @@ void Game::sendStateToClients() {
 	for (auto& pair : playerMap_) {
 		Player* player = pair.second;
 
+		btVector3 position = player->getCenterOfMassPosition();
+
+		//std::cerr << position.getX() << " " << position.getY() << " " << position.getZ() << std::endl;
+
 		btTransform transform;
 		player->getController()->getRigidBody()->getMotionState()->getWorldTransform(transform);
 		btScalar glm[16] = {};
