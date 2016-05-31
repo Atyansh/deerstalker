@@ -4,6 +4,7 @@ Bullet::Bullet(btRigidBodyConstructionInfo& info, int id, int ownerId)
 	: btRigidBody(info), id_(id), ownerId_(ownerId), timestamp_(duration_cast<milliseconds>(
 		system_clock::now().time_since_epoch())) {
 	setActivationState(DISABLE_DEACTIVATION);
+	setAngularFactor(btVector3(0, 0, 0));
 }
 
 Bullet::~Bullet() {

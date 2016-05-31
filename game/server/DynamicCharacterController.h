@@ -30,8 +30,6 @@ protected:
 
 	btVector3 grabberLook;
 
-	float range = 5;
-
 	const btCollisionObject* punchTarget;
 	const btCollisionObject* ramTarget;
 
@@ -76,14 +74,6 @@ public:
 
 	btCollisionObject* getRamTarget() {
 		return (btCollisionObject*)ramTarget;
-	}
-
-	void setRange(float range) {
-		this->range = range;
-	}
-
-	float getRange() {
-		return range;
 	}
 
 	void setLookDirection(const btVector3& newLook);
