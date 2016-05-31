@@ -113,7 +113,7 @@ void Game::initialize() {
 	loadHatBodyMap();
 
 	btBulletWorldImporter* worldLoader = new btBulletWorldImporter(world_);
-	worldLoader->loadFile("bullet_assets\\Construction_Stage_Bullet_Scaled_Separated.bullet");
+	worldLoader->loadFile("bullet_assets\\Construction_Stage_3.bullet");
 
 	btBulletWorldImporter* billboardLoader = new btBulletWorldImporter(world_);
 	billboardLoader->loadFile("bullet_assets\\BillboardPlatform.bullet");
@@ -452,6 +452,10 @@ void Game::sendStateToClients() {
 	protos::Message message;
 
 	for (auto& pair : playerMap_) {
+		auto vec = pair.second->getController()->getRigidBody()->getCenterOfMassPosition();
+		
+		std::cerr << vec.getX() << " " << vec.getY() << " " << vec.getZ() << std::endl;
+
 		btTransform transform;
 		pair.second->getController()->getRigidBody()->getMotionState()->getWorldTransform(transform);
 		btScalar glm[16] = {};
@@ -465,7 +469,6 @@ void Game::sendStateToClients() {
 		gameObject->set_hattype(pair.second->getHatType());
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
 		gameObject->set_animationstate(animationStateMap_[pair.first]);
-		std::cerr << animationStateMap_[pair.first];
 		gameObject->set_id(pair.first);
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
