@@ -5,6 +5,11 @@
 
 #include "util\HatType.h"
 
+#include <chrono>
+
+
+using namespace std::chrono;
+
 class Hat : public btRigidBody {
 public:
 	Hat(btRigidBodyConstructionInfo& info, HatType hatTypee);
@@ -14,8 +19,11 @@ public:
 	HatType getHatType();
 	int getHatId();
 
-	static int idCounter;
+	milliseconds getTimestamp() {
+		return timestamp_;
+	}
 
+	static int idCounter;
 	int playerId_;
 
 private:
@@ -24,6 +32,9 @@ private:
 	btCollisionShape* collisionShape_;
 	HatType hatType_;
 	int id_;
+
+
+	milliseconds timestamp_;
 
 	static const int LOW_X = -50;
 	static const int HIGH_X = 230;

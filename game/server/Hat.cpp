@@ -2,14 +2,12 @@
 
 int Hat::idCounter = 0;
 
-Hat::Hat(btRigidBodyConstructionInfo& info, HatType hatType) : btRigidBody(info), id_(idCounter++), hatType_(hatType) {
+Hat::Hat(btRigidBodyConstructionInfo& info, HatType hatType) : btRigidBody(info), id_(idCounter++), hatType_(hatType), timestamp_(duration_cast<milliseconds>(system_clock::now().time_since_epoch())) {
 }
 
 Hat::~Hat() {
-	btCollisionShape* collisionShape = this->getCollisionShape();
 	btMotionState* motionState = this->getMotionState();
 
-	delete collisionShape;
 	delete motionState;
 }
 

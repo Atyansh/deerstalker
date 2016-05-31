@@ -78,7 +78,7 @@ void Player::setProjectile(btRigidBody * proj, unsigned int baseVelocity) {
 	btTransform trans;
 	trans.setIdentity();
 	trans.setOrigin(this->getController()->getRigidBody()->getCenterOfMassPosition() +
-		            (currentLook * 3) + btVector3(0, 5, 0));
+		            (currentLook * 7) + btVector3(0, 5, 0));
 	proj->setCenterOfMassTransform(trans);
 	proj->setLinearVelocity(this->getController()->getRigidBody()->getLinearVelocity() +
 		                    currentLook * baseVelocity);

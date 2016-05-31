@@ -70,9 +70,23 @@ void Game::deleteBullets() {
 
 	milliseconds bulletLifespan = milliseconds(2000);
 
-	for (auto bullet : bulletSet_) {
+	for (auto* bullet : bulletSet_) {
 		if (currTime - bullet->getTimestamp() > bulletLifespan) {
 			bulletRemovedSet_.emplace(bullet);
+		}
+	}
+}
+
+void Game::deleteHats() {
+	milliseconds currTime = duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch());
+
+	milliseconds hatLifespan = milliseconds(120000);
+
+	for (auto* hat : hatSet_) {
+		if (currTime - hat->getTimestamp() > hatLifespan) {
+			hatRemovedSet_.emplace(hat);
+			world_->removeRigidBody(hat);
 		}
 	}
 }
@@ -81,9 +95,56 @@ void Game::initialize() {
 	world_ = World::createNewWorld();
 	world_->setGravity(btVector3(0, -10, 0));
 
+	btCollisionShape* skyShape = new btStaticPlaneShape(btVector3(0,-1,0), 5);
+	btTransform skyTransform;
+	skyTransform.setIdentity();
+	skyTransform.setOrigin(btVector3(0.0, 1005, 0.0));
+	btDefaultMotionState* myMotionState = new btDefaultMotionState(skyTransform);
+	btRigidBody::btRigidBodyConstructionInfo skyInfo(0, myMotionState, skyShape);
+	btRigidBody* sky = new btRigidBody(skyInfo);
+	world_->addRigidBody(sky);
+
+	btCollisionShape* wallShape1 = new btStaticPlaneShape(btVector3(1, 0, 0), 5);
+	btTransform wallTransform1;
+	wallTransform1.setIdentity();
+	wallTransform1.setOrigin(btVector3(-1000, 0.0, 0.0));
+	btDefaultMotionState* wallState1 = new btDefaultMotionState(wallTransform1);
+	btRigidBody::btRigidBodyConstructionInfo wallInfo1(0, wallState1, wallShape1);
+	btRigidBody* wall1 = new btRigidBody(wallInfo1);
+	world_->addRigidBody(wall1);
+
+	btCollisionShape* wallShape2 = new btStaticPlaneShape(btVector3(-1, 0, 0), 5);
+	btTransform wallTransform2;
+	wallTransform2.setIdentity();
+	wallTransform2.setOrigin(btVector3(1000, 0.0, 0.0));
+	btDefaultMotionState* wallState2 = new btDefaultMotionState(wallTransform2);
+	btRigidBody::btRigidBodyConstructionInfo wallInfo2(0, wallState2, wallShape2);
+	btRigidBody* wall2 = new btRigidBody(wallInfo2);
+	world_->addRigidBody(wall2);
+
+	btCollisionShape* wallShape3 = new btStaticPlaneShape(btVector3(0, 0, 1), 5);
+	btTransform wallTransform3;
+	wallTransform3.setIdentity();
+	wallTransform3.setOrigin(btVector3(0.0, 0.0, -1000));
+	btDefaultMotionState* wallState3 = new btDefaultMotionState(wallTransform3);
+	btRigidBody::btRigidBodyConstructionInfo wallInfo3(0, wallState3, wallShape3);
+	btRigidBody* wall3 = new btRigidBody(wallInfo3);
+	world_->addRigidBody(wall3);
+
+	btCollisionShape* wallShape4 = new btStaticPlaneShape(btVector3(0, 0, -1), 5);
+	btTransform wallTransform4;
+	wallTransform4.setIdentity();
+	wallTransform4.setOrigin(btVector3(0.0, 0.0, 1000));
+	btDefaultMotionState* wallState4 = new btDefaultMotionState(wallTransform4);
+	btRigidBody::btRigidBodyConstructionInfo wallInfo4(0, wallState4, wallShape4);
+	btRigidBody* wall4 = new btRigidBody(wallInfo4);
+	world_->addRigidBody(wall4);
+
 	btBulletWorldImporter* playerLoader = new btBulletWorldImporter();
 	playerLoader->loadFile("bullet_assets\\Player.bullet");
 	playerBody_ = playerLoader->getRigidBodyByIndex(0);
+
+	playerBody_->getCollisionShape()->setLocalScaling(btVector3(1.5, 1.5, 1.5));
 
 	btBulletWorldImporter* mangoLoader = new btBulletWorldImporter();
 	mangoLoader->loadFile("bullet_assets\\mango.bullet");
@@ -200,6 +261,7 @@ void Game::startGameLoop() {
 		world_->stepSimulation(1.f / 15.f, 10);
 
 		deleteBullets();
+		deleteHats();
 
 		sendStateToClients();
 		sendEventsToClients();
@@ -209,7 +271,7 @@ void Game::startGameLoop() {
 
 		sleep_for(interval - (stamp2-stamp1));
 
-		if (frameCounter > 300 && maxHat > hatP) {
+		if (frameCounter > 300) {// && maxHat > hatP) {
 			spawnNewHat();
 			hatP++;
 			frameCounter = 0;
@@ -630,6 +692,11 @@ void Game::sendStateToClients() {
 		event->set_clientid(hat->playerId_);
 		event->set_type(protos::Event_Type_EQUIP);
 		event->set_hatid(hat->getHatId());
+		
+		if (hat->playerId_ == 0) {
+			hatSet_.erase(hat);
+			delete hat;
+		}
 	}
 
 	hatRemovedSet_.clear();

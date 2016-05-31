@@ -41,6 +41,7 @@ private:
 	void clearAnimations();
 
 	void deleteBullets();
+	void deleteHats();
 
 	void loopReset();
 
