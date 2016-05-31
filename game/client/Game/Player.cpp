@@ -2,8 +2,9 @@
 #include <glm/ext.hpp>
 
 
-Player::Player(unordered_map<std::uint32_t, PlayerAnim*> playerModels, unordered_map<std::uint32_t, Hat*> hatModels) : SMatrixTransform()
+Player::Player(unordered_map<std::uint32_t, PlayerAnim*> playerModels, unordered_map<std::uint32_t, Hat*> hatModels, int id) : SMatrixTransform()
 {
+	id_ = id;
 	hat = new SMatrixTransform();
 	player = new SMatrixTransform();
 	this->hatModels = hatModels;

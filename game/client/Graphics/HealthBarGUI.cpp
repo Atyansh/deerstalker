@@ -16,12 +16,12 @@ void HealthBarGUI::setupBuffers() {
 	GLfloat base_vertices[] = {
 
 		20.0f, 80.0f, 1.0f, 1.0f, 0.0f,
-		380.0f * _health, 20.0f, 1.0f, 1.0f, 0.0f,
+		20.0f + (360.0f * _health), 20.0f, 1.0f, 1.0f, 0.0f,
 		20.0f, 20.f, 1.0f, 1.0f, 0.0f,
 
 		20.0f, 80.0f, 1.0f, 1.0f, 0.0f,
-		380.0f * _health, 80.0f, 1.0f, 1.0f, 0.0f,
-		380.0f * _health, 20.0f, 1.0f, 1.0f, 0.0f,
+		20.0f + (360.0f * _health), 80.0f, 1.0f, 1.0f, 0.0f,
+		20.0f + (360.0f * _health), 20.0f, 1.0f, 1.0f, 0.0f,
 
 		// Pos    
 		0.0f, 100.0f, 0.0f, 1.0f, 0.0f,
@@ -76,12 +76,12 @@ void HealthBarGUI::update(float health) {
 	GLfloat base_vertices[] = {
 
 		20.0f, 80.0f, 1.0f, 1.0f, 0.0f,
-		380.0f * _health, 20.0f, 1.0f, 1.0f, 0.0f,
+		20.0f + (360.0f * _health), 20.0f, 1.0f, 1.0f, 0.0f,
 		20.0f, 20.f, 1.0f, 1.0f, 0.0f,
 
 		20.0f, 80.0f, 1.0f, 1.0f, 0.0f,
-		380.0f * _health, 80.0f, 1.0f, 1.0f, 0.0f,
-		380.0f * _health, 20.0f, 1.0f, 1.0f, 0.0f,
+		20.0f + (360.0f * _health), 80.0f, 1.0f, 1.0f, 0.0f,
+		20.0f + (360.0f * _health), 20.0f, 1.0f, 1.0f, 0.0f,
 
 		// Pos    
 		0.0f, 100.0f, 0.0f, 1.0f, 0.0f,

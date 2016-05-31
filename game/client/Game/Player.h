@@ -19,6 +19,7 @@ class Player : public SMatrixTransform {
 
 		int lives_;
 		int health_;
+		int id_;
 
 		void createPlayer();
 
@@ -26,7 +27,7 @@ class Player : public SMatrixTransform {
 		unordered_map<std::uint32_t, Hat*> hatModels;
 		bool visible_;
 
-		Player(unordered_map<std::uint32_t, PlayerAnim*> playerModels, unordered_map<std::uint32_t, Hat*> hatModels);
+		Player(unordered_map<std::uint32_t, PlayerAnim*> playerModels, unordered_map<std::uint32_t, Hat*> hatModels, int id);
 		~Player();
 
 		void detachHat();
@@ -60,5 +61,9 @@ class Player : public SMatrixTransform {
 
 		protos::Message_GameObject_AnimationState getState() {
 			return currState;
+		}
+		
+		int getID() {
+			return id_;
 		}
 };

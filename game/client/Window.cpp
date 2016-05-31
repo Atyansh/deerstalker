@@ -23,6 +23,7 @@ using namespace Gamepad;
 
 const char* window_title = "Deerstalker";
 
+glm::mat4 guiTranslation;
 
 int Window::width;
 int Window::height;
@@ -32,6 +33,11 @@ int STATE;
 
 void Window::initialize_objects() {
 	Globals::gameObjects.loadGameObjects();
+
+	guiTranslation = glm::mat4();
+	guiTranslation = glm::scale(guiTranslation, glm::vec3(0.8f));
+	guiTranslation = glm::translate(guiTranslation, glm::vec3(350.0f, 30.0f, 0.0f));
+
 
 	STATE = State::_Start;
 	cerr << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
@@ -82,6 +88,8 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	float aspect = height == 0 ? 0 : float(width) / (float)height;
 	Globals::drawData.projection = glm::perspective(45.0f, aspect, 0.1f, 3000.0f);
 	Globals::drawData.view = Globals::cam.getView();
+	Globals::drawData.width = width;
+	Globals::drawData.height = height;
 	cout << "projection in winodw \n";
 	cout << glm::to_string(Globals::drawData.projection) << endl;
 }
@@ -117,10 +125,14 @@ void Window::display_callback(GLFWwindow* window) {
 		Globals::drawData.view = Globals::cam.getView();
 
 		Globals::gameObjects.root->draw(Globals::drawData);
+		Globals::gameObjects.drawPlayerGui(guiTranslation);
 
 		// Render objects
 		for (auto& pair : Globals::gameObjects.playerMap) {
-			if (dynamic_cast<Player*>((pair.second))->getVisible()) {
+			Player *player = dynamic_cast<Player*>((pair.second));
+			if (player->getVisible()) {
+				
+				Globals::gameObjects.updatePlayerGui(player->getID(), player->getLives(), player->getHealth());
 				pair.second->draw(Globals::drawData);
 			}
 		}
@@ -400,7 +412,8 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model, int id) 
 			playerStateMap[protos::Message_GameObject_AnimationState_STUNNED] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Stunned]), id);
 			playerStateMap[protos::Message_GameObject_AnimationState_BEAR] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Bear]), id);
 			playerStateMap[protos::Message_GameObject_AnimationState_WUSON] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Wuson]), id);
-			return new Player(playerStateMap, playerHatMap);
+			Globals::gameObjects.setPlayerToGui(id);
+			return new Player(playerStateMap, playerHatMap, id);
 		default:
 			transform->addNode(model);
 			break;

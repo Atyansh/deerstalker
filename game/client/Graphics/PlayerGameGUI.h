@@ -31,7 +31,7 @@ public:
 	// Beacause we want to draw the stuff in othro projection
 	// gonna be different than all the draws with DrawData.
 	// Will refactor when time comes.
-	void draw(glm::mat4 translation);
+	void draw(glm::mat4 translation, glm::vec3 color);
 	void update(int updatedLives, int updatedHealth, int updatedHat);
 };
 

@@ -42,13 +42,22 @@ void GameObjects::loadGameObjects() {
 	//lightShader->addPointLight(pointLightPositions[1], glm::vec3(.8f), glm::vec3(1.0f), 1.0f, 0.009f, 0.0032f);
 
 	Shader *guiShader = new Shader("Shaders/guiItem.vert", "Shaders/guiItem.frag");
+	Shader *twoShader = new Shader("Shaders/2DShader.vert", "Shaders/2DShader.frag");
 
 	shaderMap[_LtShader] = lightShader;
 	shaderMap[_GShader] = guiShader;
+	shaderMap[_2DShader] = twoShader;
 
 	guiMap[_Background] = new GuiItem(backgroundPath, shaderMap[_GShader], 60, 34, 0, 0);
 	guiMap[_LobbyBG] = new GuiItem(lobbyPath, shaderMap[_GShader], 60, 34, 0, 0);
 	guiMap[_EndGameBG] = new GuiItem(endPath, shaderMap[_GShader], 60, 34, 0, 0);
+
+	numPlayerGuiSet = 0;
+
+	playerGUIMap.push_back(std::pair<std::uint32_t, PlayerGameGUI*>(0, new PlayerGameGUI(shaderMap[_2DShader], Globals::drawData.width, Globals::drawData.height, "P1")));
+	playerGUIMap.push_back(std::pair<std::uint32_t, PlayerGameGUI*>(0, new PlayerGameGUI(shaderMap[_2DShader], Globals::drawData.width, Globals::drawData.height, "P2")));
+	playerGUIMap.push_back(std::pair<std::uint32_t, PlayerGameGUI*>(0, new PlayerGameGUI(shaderMap[_2DShader], Globals::drawData.width, Globals::drawData.height, "P3")));
+	playerGUIMap.push_back(std::pair<std::uint32_t, PlayerGameGUI*>(0, new PlayerGameGUI(shaderMap[_2DShader], Globals::drawData.width, Globals::drawData.height, "P4")));
 
 	loadModelMap();
 	loadHatModelsMap();
@@ -87,4 +96,39 @@ void GameObjects::generateWorld(string directory) {
 	root = new SMatrixTransform();
 	root->addNode(world);
 	int width, height;
+}
+
+void GameObjects::setPlayerToGui(int id) {
+	// Change first of pair to playerID
+	if (numPlayerGuiSet < 4) {
+		playerGUIMap[numPlayerGuiSet].first = id;
+		numPlayerGuiSet++;
+	}
+}
+
+void GameObjects::drawPlayerGui(glm::mat4 translation) {
+	glm::vec3 red(1.0f, 0.0f, 0.0f);
+	glm::vec3 yellow(0.6f, 0.2f, 1.0f);
+	glm::mat4 mat = translation;
+	for (int i = 0; i < playerGUIMap.size(); i++) {
+		if (i > 0) {
+			mat = glm::translate(mat, glm::vec3(500.0f, 0.0f, 0.0f));
+		}
+		glm::vec3 color;
+		if (Globals::ID == playerGUIMap[i].first) {
+			color = yellow;
+		}
+		else {
+			color = red;
+		}
+		playerGUIMap[i].second->draw(mat, color);
+	}
+}
+
+void GameObjects::updatePlayerGui(int id, int lives, int health) {
+	for (int i = 0; i < numPlayerGuiSet; i++) {
+		if (playerGUIMap[i].first == id) {
+			playerGUIMap[i].second->update(lives, health, 0);
+		}
+	}
 }

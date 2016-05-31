@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <vector>
 #include "Graphics\LightShader.h"
 #include "Game\Model.h"
 #include "Game\SNode.h"
@@ -8,6 +9,7 @@
 #include "Game\Player.h"
 #include "Game\World.h"
 #include "Graphics\GuiItem.h"
+#include "Graphics\PlayerGameGUI.h"
 
 enum Models {
 	_Player, //used for type of object
@@ -28,7 +30,8 @@ enum Models {
 
 enum Shaders {
 	_GShader,
-	_LtShader
+	_LtShader,
+	_2DShader
 };
 
 enum GUI {
@@ -39,10 +42,13 @@ enum GUI {
 class GameObjects
 {
 private:
+	int numPlayerGuiSet;
+
 	void generateWorld(string directory);
 public:
 
 	std::unordered_map<std::uint32_t, SMatrixTransform*> playerMap;
+	std::vector<std::pair<std::uint32_t, PlayerGameGUI*>> playerGUIMap;
 	std::unordered_map<std::uint32_t, SMatrixTransform*> hatMap;
 	std::unordered_map<std::uint32_t, SMatrixTransform*> bulletMap;
 	std::unordered_map<std::uint32_t, Model*> modelMap;
@@ -56,5 +62,8 @@ public:
 	void loadGameObjects();
 	void loadModelMap();
 	void loadHatModelsMap();
+	void setPlayerToGui(int id);
+	void drawPlayerGui(glm::mat4 translation);
+	void updatePlayerGui(int id, int lives, int health);
 };
 

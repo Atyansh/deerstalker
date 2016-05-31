@@ -28,12 +28,12 @@ PlayerGameGUI::PlayerGameGUI(Shader *shader, int w, int h, string name) : _shade
 PlayerGameGUI::~PlayerGameGUI() {
 }
 
-void PlayerGameGUI::draw(glm::mat4 translation) {
+void PlayerGameGUI::draw(glm::mat4 translation, glm::vec3 color) {
 	// Draw everything
 
 	glm::vec4 loc(30.f, 150.f, 0.0f, 1.0f);
 	loc = translation * loc;
-	playerName->renderText(_name, loc.x, loc.y, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	playerName->renderText(_name, loc.x, loc.y, 1.0f, color);
 	glm::mat4 trans;
 	trans = glm::scale(trans, glm::vec3(0.5f, 0.4f, 1.0f));
 	trans = glm::translate(trans, glm::vec3(0.0f, 220.f, 0.f));
