@@ -196,8 +196,8 @@ void Game::startGameLoop() {
 		}
 		messageQueueLock_.unlock();
 
-		world_->stepSimulation(1.f / 15.f, 10);
 		handleReSpawnLogic();
+		world_->stepSimulation(1.f / 15.f, 10);
 
 		deleteBullets();
 
@@ -449,7 +449,7 @@ void Game::handleGrabLogic(const protos::Event* event) {
 
 		grabber->setGrabbedPlayer(grabbee);
 		grabbee->setMyGrabber(grabber);
-		grabbee->getController()->grabOrientation();
+		grabbee->getController()->grabOrientation(grabber);
 		grabbee->setLinearFactor(btVector3(0, 0, 0));
 
 		break;

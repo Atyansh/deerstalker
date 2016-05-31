@@ -28,6 +28,8 @@ protected:
 	btVector3 forwardRaySource;
 	btVector3 forwardRayTarget;
 
+	btVector3 grabberLook;
+
 	float range = 5;
 
 	const btCollisionObject* punchTarget;
@@ -41,7 +43,8 @@ public:
 
 	btCollisionObject* getCollisionObject();
 
-	void preStep(btCollisionWorld* collisionWorld);
+	void preStep(btCollisionWorld* collisionWorld) {}
+	void preStep(btCollisionWorld* collisionWorld, btScalar dt);
 	void playerStep(const btCollisionWorld* collisionWorld, btVector3& dir);
 	bool canJump() const;
 	void jump();
@@ -59,7 +62,7 @@ public:
 	void setUpInterpolate(bool value) {}
 	
 	void updateAction(btCollisionWorld *collisionWorld, btScalar deltaTimeStep) {
-		preStep(collisionWorld);
+		preStep(collisionWorld, deltaTimeStep);
 	}
 	void debugDraw(btIDebugDraw *debugDrawer) {}
 
@@ -85,7 +88,7 @@ public:
 
 	void setLookDirection(const btVector3& newLook);
 
-	void grabOrientation();
+	void grabOrientation(Player* grabber);
 
 	void straightOrientation();
 };

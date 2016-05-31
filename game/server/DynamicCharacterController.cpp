@@ -27,18 +27,27 @@ btCollisionObject* DynamicCharacterController::getCollisionObject() {
 	return m_rigidBody;
 }
 
-void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld) {
+void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld, btScalar dt) {
 	Player* myGrabber = m_rigidBody->getMyGrabber();
 
 	if (myGrabber) {
-		btTransform grabbeeTransform;
-		m_rigidBody->getMotionState()->getWorldTransform(grabbeeTransform);
+		m_rigidBody->applyCentralImpulse(btVector3(0, 10, 0) * dt);
+		btVector3 origin = m_rigidBody->getCenterOfMassPosition();
+		std::cerr << origin.getX() << " " << origin.getY() << " " << origin.getZ() << std::endl;
+
+		btTransform grabbeeTransform = m_rigidBody->getCenterOfMassTransform();
 		
 		btVector3 grabberPosition = myGrabber->getCenterOfMassPosition();
 
-		grabbeeTransform.setOrigin(grabberPosition + btVector3(0, 20, 0));
-
+		grabbeeTransform.setOrigin(grabberPosition + btVector3(0, 17, 0) + grabberLook * -10);
+		
+		
+		//setLookDirection();
 		m_rigidBody->setCenterOfMassTransform(grabbeeTransform);
+		origin = m_rigidBody->getCenterOfMassPosition();
+
+		std::cerr << origin.getX() << " " << origin.getY() << " " << origin.getZ() << std::endl;
+
 		m_rigidBody->getMotionState()->setWorldTransform(grabbeeTransform);
 		return;
 	}
@@ -211,7 +220,9 @@ void DynamicCharacterController::setLookDirection(const btVector3& newLook) {
 	m_rigidBody->getMotionState()->setWorldTransform(transform);
 }
 
-void DynamicCharacterController::grabOrientation() {
+void DynamicCharacterController::grabOrientation(Player* grabber) {
+	grabberLook = quatRotate(grabber->getCenterOfMassTransform().getRotation(), btVector3(0, 0, 1));
+	setLookDirection(quatRotate(grabber->getCenterOfMassTransform().getRotation(), btVector3(0, 0, 1)));
 	btVector3 localLook(0.0f, 0.0f, 1.0f);
 	btVector3 rotationAxis(0.0f, 1.0f, 0.0f);
 
