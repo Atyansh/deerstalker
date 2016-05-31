@@ -410,8 +410,8 @@ void Game::handlePunchLogic(const protos::Event* event) {
 			btTransform transform = player->getController()->getRigidBody()->getCenterOfMassTransform();
 			btQuaternion rotation = transform.getRotation();
 			btVector3 currentLook = quatRotate(rotation, localLook);
-			punchedPlayer->applyCentralImpulse(currentLook.normalized() * 5);
-			punchedPlayer->changeHealth(-5);
+			punchedPlayer->applyCentralImpulse((currentLook.normalized() + btVector3(0, 1, 0)) * 10);
+			punchedPlayer->changeHealth(-10);
 			// Throw Punch event to clients
 			eventQueueLock_.lock();
 			protos::Event event;
@@ -580,8 +580,8 @@ void Game::ramOff(const protos::Event* event) {
 			btQuaternion rotation = transform.getRotation();
 			btVector3 ramDirection = quatRotate(rotation, localLook);
 			ramDirection = ramDirection + btVector3(0, 1, 0);
-			rammedPlayer->applyCentralImpulse(ramDirection.normalized() * 10);
-			rammedPlayer->changeHealth(-5);
+			rammedPlayer->applyCentralImpulse(ramDirection.normalized() * 20);
+			rammedPlayer->changeHealth(-20);
 			// Throw Punch event to clients
 			eventQueueLock_.lock();
 			protos::Event event;
