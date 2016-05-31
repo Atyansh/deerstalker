@@ -258,6 +258,10 @@ void Game::startGameLoop() {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
+		if (deadPlayers_.size() >= MAX_PLAYERS - 1) {
+			// Game over. Show win screen.
+		}
+
 		loopReset();
 
 		messageQueueLock_.lock();
@@ -447,6 +451,7 @@ void Game::handleReSpawnLogic() {
 				std::cerr << "Player " << player->getId() << " died\n";
 			}
 			else {
+				player->setDead(true);
 				std::cerr << "Player " << player->getId() << "is dead forever "<< std::endl;
 				theDead.emplace(player);
 				world_->removeRigidBody(player);
@@ -456,6 +461,7 @@ void Game::handleReSpawnLogic() {
 	}
 	
 	for (auto player : theDead) {
+		deadPlayers_.emplace(player);
 		playerMap_.erase(player->getId());
 		playerSet_.erase(player);
 	}
@@ -478,7 +484,7 @@ void Game::handleEquipLogic(const protos::Event* event) {
 	Hat* hatToRemove = nullptr;
 	Hat* hatToAdd = nullptr;
 	for (auto hat : hatSet_) {
-		if (withinRange(player, hat, 5)) {
+		if (withinRange(player, hat, 7)) {
 			std::cerr << "Equip success\n";
 			Hat* oldHat  = player->setHat(hat);
 			hatToRemove = hat;
@@ -698,7 +704,6 @@ void Game::setInvisible(Player* player) {
 }
 
 void Game::ramOff(const protos::Event* event) {
-	std::cerr << "ramOff" << std::endl;
 	Player* player = playerMap_[event->clientid()];
 
 	animationStateMap_[event->clientid()] = protos::Message_GameObject_AnimationState_WUSON;

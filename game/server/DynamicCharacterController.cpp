@@ -178,8 +178,8 @@ void DynamicCharacterController::playerStep(const btCollisionWorld*, btVector3& 
 	planeVelocity.setY(0);
 	btScalar speed = planeVelocity.length();
 
-	if (speed < 15) {
-		m_rigidBody->setLinearVelocity((dir * 15) + btVector3(0, velocity.getY(), 0));
+	if (speed < 10) {
+		m_rigidBody->setLinearVelocity((dir * 10) + btVector3(0, velocity.getY(), 0));
 	}
 
 	m_rigidBody->applyCentralForce(dir * 5);

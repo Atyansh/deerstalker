@@ -95,6 +95,14 @@ public:
 		stunTimestamp_ = timestamp;
 	}
 
+	bool getDead() {
+		return dead_;
+	}
+
+	void setDead(bool dead) {
+		dead_ = dead;
+	}
+
 	void setSpawn();
 	void setProjectile(btRigidBody * body, unsigned int baseVelocity);
 
@@ -113,6 +121,8 @@ private:
 
 	bool stunned_ = false;
 	bool visible_ = true;
+
+	bool dead_ = false;
 
 	Player* myGrabber_ = nullptr;
 	Player* grabbedPlayer_ = nullptr;

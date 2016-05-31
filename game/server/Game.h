@@ -106,6 +106,7 @@ private:
 	std::unordered_set<Bullet*> bulletRemovedSet_;
 
 	std::unordered_map<ClientId, Player*> playerMap_;
+	std::unordered_set<Player*> deadPlayers_;
 
 	std::unordered_set<Hat*> hatSet_;
 	std::unordered_set<Hat*> hatRemovedSet_;
