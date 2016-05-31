@@ -32,7 +32,6 @@ enum Shaders {
 	_GShader,
 	_LtShader,
 	_2DShader,
-	_LtShader,
 	_AShader
 };
 
