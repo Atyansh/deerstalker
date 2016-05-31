@@ -15,7 +15,6 @@ public:
 	~World();
 
 	static World* createNewWorld();
-	static World* loadNewWorld(std::string filePath);
 	bool isDead(Player * p);
 	void spawnPlayer(Player *p);
 	

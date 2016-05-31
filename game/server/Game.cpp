@@ -254,8 +254,6 @@ void Game::startGameLoop() {
 	// TODO(Atyansh): Make this part of config settings 
 	milliseconds interval = milliseconds(1000/30);
 	int frameCounter = 0;
-	int maxHat = 10;
-	int hatP = 0;
 	while (true) {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
@@ -323,9 +321,8 @@ void Game::startGameLoop() {
 
 		sleep_for(interval - (stamp2-stamp1));
 
-		if (frameCounter > 300) {// && maxHat > hatP) {
+		if (frameCounter > 300) {
 			spawnNewHat();
-			hatP++;
 			frameCounter = 0;
 		}
 		else {
@@ -435,28 +432,32 @@ void Game::spawnNewHat() {
 }
 
 void Game::handleReSpawnLogic() {
-	std::list<unsigned int> theDead;
-	for (auto it = playerMap_.begin(); it != playerMap_.end(); it++) {
-		if (world_->isDead(it->second)) {
-			Player * currP = it->second;
-			unsigned int pLives = currP->getLives() - 1;
-			if (pLives > 0) {
-				world_->spawnPlayer(currP);
-				currP->setLives(pLives);
-				std::cerr << "Player " << currP->getId() << " died\n";
+	std::unordered_set<Player*> theDead;
+	for (auto* body : playerSet_) {
+		Player* player = (Player*)body;
+		if (world_->isDead(player)) {
+			auto lives = player->getLives();
+			if (lives > 1) {
+				Hat* hat = player->getHat();
+				if (hat) {
+					handleDquipLogic(player);
+				}
+				world_->spawnPlayer(player);
+				player->setLives(lives - 1);
+				std::cerr << "Player " << player->getId() << " died\n";
 			}
 			else {
-				//TODO MAYBE DEAL WITH SOME EVENT SHIT
-				std::cerr << "Player " << currP->getId() << "is dead forever "<< std::endl;
-				theDead.push_back(currP->getId());
-				world_->removeRigidBody(currP->getController()->getRigidBody());
+				std::cerr << "Player " << player->getId() << "is dead forever "<< std::endl;
+				theDead.emplace(player);
+				world_->removeRigidBody(player);
 			}
 			
 		}
 	}
 	
-	for (auto id : theDead) {
-		playerMap_.erase(id);
+	for (auto player : theDead) {
+		playerMap_.erase(player->getId());
+		playerSet_.erase(player);
 	}
 }
  

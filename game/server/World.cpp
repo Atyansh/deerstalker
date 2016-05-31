@@ -21,23 +21,10 @@ World* World::createNewWorld() {
 	return new World(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 }
 
-World* World::loadNewWorld(std::string filepath) {
-	if (filepath == "") {
-		return createNewWorld();
-	}
-	else {
-		//TODO implement levelLoader I'm not going to do it.
-		return createNewWorld();
-	}
-}
-
 bool World::isDead(Player * player) {
-	
-	return player->getController()->getRigidBody()->getCenterOfMassPosition().getY() <= lowestPoint_;
+	return player->getCenterOfMassPosition().getY() <= lowestPoint_;
 }
 
 void World::spawnPlayer(Player * player) {
-	//TODO Deal with more complex cases
-	//Most likley set spawn zones
 	player->setSpawn();
 }

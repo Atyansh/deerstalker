@@ -21,8 +21,8 @@ public:
 	static Player* createNewPlayer(ClientId clientId, btCollisionShape* collisionShape);
 
 	int getId();
-	void setLives(unsigned int lives);
-	unsigned int getLives();
+	void setLives(uint32_t lives);
+	uint32_t getLives();
 
 
 	Hat*  setHat(Hat * hat);
@@ -107,7 +107,7 @@ public:
 
 private:
 	const unsigned int id_;
-	unsigned int lives_;
+	uint32_t lives_;
 
 	milliseconds stunTimestamp_;
 
