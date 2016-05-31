@@ -39,7 +39,7 @@ void HealthBarGUI::setupBuffers() {
 	glGenBuffers(1, &baseVBO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, baseVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(base_vertices), base_vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(base_vertices), base_vertices, GL_STREAM_DRAW);
 
 	glBindVertexArray(baseVAO);
 	glEnableVertexAttribArray(0);
@@ -69,7 +69,37 @@ void HealthBarGUI::draw(glm::mat4 translation) {
 	
 }
 
-void HealthBarGUI::update(int health) {
+void HealthBarGUI::update(float health) {
 	_health = health;
-	setupBuffers();
+	//setupBuffers();
+
+	GLfloat base_vertices[] = {
+
+		20.0f, 80.0f, 1.0f, 1.0f, 0.0f,
+		380.0f * _health, 20.0f, 1.0f, 1.0f, 0.0f,
+		20.0f, 20.f, 1.0f, 1.0f, 0.0f,
+
+		20.0f, 80.0f, 1.0f, 1.0f, 0.0f,
+		380.0f * _health, 80.0f, 1.0f, 1.0f, 0.0f,
+		380.0f * _health, 20.0f, 1.0f, 1.0f, 0.0f,
+
+		// Pos    
+		0.0f, 100.0f, 0.0f, 1.0f, 0.0f,
+		400.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+
+		0.0f, 100.0f, 0.0f, 1.0f, 0.0f,
+		400.0f, 100.0f, 0.0f, 1.0f, 0.0f,
+		400.0f, 0.0f, 0.0f, 1.0f, 0.0f
+
+
+	};
+
+
+
+	glBindBuffer(GL_ARRAY_BUFFER, baseVBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(base_vertices), base_vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
 }

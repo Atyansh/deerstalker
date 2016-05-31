@@ -27,6 +27,7 @@ private:
 
 	FT_Library _ft;
 	FT_Face _face;
+	int _fontSize;
 
 	map<GLchar, Character> Characters;
 	GLuint VAO, VBO;
@@ -41,7 +42,7 @@ private:
 
 public:
 	GUIText();
-	GUIText(Shader *shader, glm::mat4 proj, const char* fontPath) : _shader(shader), _projection(proj), _fontPath(fontPath) {}
+	GUIText(Shader *shader, glm::mat4 proj, const char* fontPath, int size) : _shader(shader), _projection(proj), _fontPath(fontPath), _fontSize(size) {}
 	~GUIText();
 
 	bool init();

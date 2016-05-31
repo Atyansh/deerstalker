@@ -33,7 +33,10 @@ SMatrixTransform *root;
 
 int STATE;
 
-PlayerGameGUI * playerGame;
+PlayerGameGUI * playerGame1;
+PlayerGameGUI * playerGame2;
+PlayerGameGUI * playerGame3;
+PlayerGameGUI * playerGame4;
 HealthBarGUI * health;
 
 void Window::initialize_objects()
@@ -45,7 +48,11 @@ void Window::initialize_objects()
 	Shader* shader = new Shader("Shaders/fontShader.vert", "Shaders/fontShader.frag");
 	Shader* twodShader = new Shader("Shaders/2DShader.vert", "Shaders/2DShader.frag");
 
-	playerGame = new PlayerGameGUI(twodShader, Window::width, Window::height);
+	playerGame1 = new PlayerGameGUI(twodShader, Window::width, Window::height, "P1");
+	playerGame1->update(2, 50, 1);
+	playerGame2 = new PlayerGameGUI(twodShader, Window::width, Window::height, "P2");
+	playerGame3 = new PlayerGameGUI(twodShader, Window::width, Window::height, "P3");
+	playerGame4 = new PlayerGameGUI(twodShader, Window::width, Window::height, "P4");
 	//health = new HealthBarGUI(twodShader, Window::width, Window::height);
 }
 
@@ -120,9 +127,16 @@ void Window::display_callback(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::mat4 trans;
-	trans = glm::scale(trans, glm::vec3(0.5f));
-	trans = glm::translate(trans, glm::vec3(20.f, 20.f, 0.f));
-	playerGame->draw(trans);
+	trans = glm::scale(trans, glm::vec3(0.7f));
+	trans = glm::translate(trans, glm::vec3(500.f, 20.f, 0.f));
+	playerGame1->draw(trans);
+	
+	trans = glm::translate(trans, glm::vec3(500.0f, 0.f, 0.f));
+	playerGame2->draw(trans);
+	trans = glm::translate(trans, glm::vec3(500.0f, 0.f, 0.f));
+	playerGame3->draw(trans);
+	trans = glm::translate(trans, glm::vec3(500.0f, 0.f, 0.f));
+	playerGame4->draw(trans);
 	switch (STATE) {
 	case State::_Start:
 		Globals::gameObjects.guiMap[_Background]->draw(Globals::drawData);

@@ -16,10 +16,10 @@ public:
 
 	HealthBarGUI(Shader *s, glm::mat4 proj) : shader(s), _projection(proj) { _health = 1.0f; setupBuffers(); }
 	~HealthBarGUI();
-
+	void init();
 	void setupBuffers();
 
 	void draw(glm::mat4 translation);
-	void update(int health);
+	void update(float health);
 };
 

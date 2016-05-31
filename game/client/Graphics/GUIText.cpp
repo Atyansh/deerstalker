@@ -97,7 +97,7 @@ bool GUIText::init() {
 		return false;
 	}
 
-	setFontSize(100);
+	setFontSize(_fontSize);
 
 	// Disable byte-alignment restriction
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
