@@ -37,7 +37,7 @@ protected:
 	void processMaterial(aiMesh* mesh, const aiScene* scene, vector<Texture> &textures, MaterialNoTex &materialNoTex);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
-	GLint TextureFromFile(const char* path, string directory);
+	virtual GLint TextureFromFile(const char* path, string directory);
 
 	//helper for extended classes
 	virtual void addLoadMethod();

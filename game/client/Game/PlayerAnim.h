@@ -6,13 +6,14 @@ class PlayerAnim : public SGeode {
 private:
 	bool isVisible;
 	PlayerModel *model;
+	int id;
 
 	//Animation time
 	float prevTime = 0;
 	float currAnimTime = 0;
 
 public:
-	PlayerAnim(PlayerModel *model);
+	PlayerAnim(PlayerModel *model, int id);
 	~PlayerAnim();
 
 	virtual void update(UpdateData&);

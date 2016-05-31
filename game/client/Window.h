@@ -34,7 +34,7 @@ public:
 	static void display_callback(GLFWwindow*);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void handle_gamepad(GLFWwindow* window);
-	static SMatrixTransform* createGameObj(Models modelType, Model* model);
+	static SMatrixTransform* createGameObj(Models modelType, Model* model, int id);
 	//static void generateWorld(string directory);
 
 private:

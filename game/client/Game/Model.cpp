@@ -226,6 +226,7 @@ GLint Model::TextureFromFile(const char* path, string directory)
 	//Generate texture ID and load texture data 
 	string filename = string(path);
 	filename = directory + '/' + filename;
+
 	GLuint textureID;
 	glGenTextures(1, &textureID);
 	int width, height;
@@ -233,6 +234,7 @@ GLint Model::TextureFromFile(const char* path, string directory)
 	if (image == NULL || image[0] == '\0') {
 		return -1;
 	}
+
 	// Assign texture to ID
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
@@ -244,6 +246,6 @@ GLint Model::TextureFromFile(const char* path, string directory)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	// SOIL_free_image_data(image);
+	SOIL_free_image_data(image);
 	return textureID;
 }

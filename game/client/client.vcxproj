@@ -110,6 +110,7 @@
     <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="Game\AnimationTree.cpp" />
     <ClCompile Include="Game\BoneInfo.cpp" />
+    <ClCompile Include="Game\Clouds.cpp" />
     <ClCompile Include="Game\Cube.cpp" />
     <ClCompile Include="Game\Cubemap.cpp" />
     <ClCompile Include="Game\Hat.cpp" />
@@ -117,6 +118,7 @@
     <ClCompile Include="Game\Model.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\PlayerAnim.cpp" />
+    <ClCompile Include="Game\PlayerMesh.cpp" />
     <ClCompile Include="Game\PlayerModel.cpp" />
     <ClCompile Include="Game\SGeode.cpp" />
     <ClCompile Include="Game\SGroup.cpp" />
@@ -141,6 +143,7 @@
     <ClInclude Include="GameObjects.h" />
     <ClInclude Include="Game\AnimationTree.h" />
     <ClInclude Include="Game\BoneInfo.h" />
+    <ClInclude Include="Game\Clouds.h" />
     <ClInclude Include="Game\Cube.h" />
     <ClInclude Include="Game\Cubemap.h" />
     <ClInclude Include="Game\Hat.h" />
@@ -148,6 +151,7 @@
     <ClInclude Include="Game\Model.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\PlayerAnim.h" />
+    <ClInclude Include="Game\PlayerMesh.h" />
     <ClInclude Include="Game\PlayerModel.h" />
     <ClInclude Include="Game\SGeode.h" />
     <ClInclude Include="Game\SGroup.h" />

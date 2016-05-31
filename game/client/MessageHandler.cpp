@@ -65,7 +65,11 @@ void MessageHandler::handleGameMessages() {
 			}
 
 			if ((*map).find(id) == (*map).end()) {
-				(*map)[id] = Window::createGameObj(model, Globals::gameObjects.modelMap[model]);
+				int pId = -1;
+				if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
+					pId = id;
+				}
+				(*map)[id] = Window::createGameObj(model, Globals::gameObjects.modelMap[model], id);
 			}
 
 			auto& player = *(*map)[id];

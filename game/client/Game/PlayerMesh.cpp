@@ -1,4 +1,4 @@
-#include "Mesh.h"
+#include "PlayerMesh.h"
 
 #include <fstream>
 #include <sstream>
@@ -7,11 +7,11 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, MaterialNoTex materialNoTex, Shader *shader, bool hasBones=false) : SGeode()
+PlayerMesh::PlayerMesh(vector<Vertex> vertices, vector<GLuint> indices, unordered_map<std::uint32_t, vector<Texture>> texturesMap, MaterialNoTex materialNoTex, Shader *shader, bool hasBones = false) : SGeode()
 {
 	this->vertices = vertices;
 	this->indices = indices;
-	this->textures = textures;
+	this->texturesMap = texturesMap;
 	this->materialNoTex = materialNoTex;
 	this->shader = shader;
 	this->hasBones = hasBones;
@@ -20,15 +20,15 @@ Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> text
 	this->setupUniformLoc();
 }
 
-Mesh::~Mesh()
+PlayerMesh::~PlayerMesh()
 {
 
 }
 
-void Mesh::draw(DrawData& data)
+void PlayerMesh::draw(DrawData& data)
 {
 
-	if (!shader->isInitilized()){
+	if (!shader->isInitilized()) {
 		cerr << "Shader not initialized" << endl;
 		exit(-1);
 	}
@@ -38,20 +38,20 @@ void Mesh::draw(DrawData& data)
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(data.matrix));
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(data.view));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(data.projection));
-	glUniform1i(hasTexLoc, this->textures.size() > 0 );
+	glUniform1i(hasTexLoc, this->texturesMap[data.playerId].size() > 0);
 	glUniform1i(hasBonesLoc, this->hasBones);
 
-	if (this->textures.size() > 0) {
+	if (this->texturesMap[data.playerId].size() > 0) {
 		// Bind appropriate textures
 		GLuint diffuseNr = 1;
 		GLuint specularNr = 1;
-		for (GLuint i = 0; i < this->textures.size(); i++)
+		for (GLuint i = 0; i < this->texturesMap[data.playerId].size(); i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i); // Active proper texture unit before binding
-			// Retrieve texture number (the N in diffuse_textureN)
+											  // Retrieve texture number (the N in diffuse_textureN)
 			stringstream ss;
 			string number;
-			string name = this->textures[i].type;
+			string name = this->texturesMap[data.playerId][i].type;
 			if (name == "texture_diffuse")
 				ss << diffuseNr++; // Transfer GLuint to stream
 			else if (name == "texture_specular")
@@ -60,12 +60,13 @@ void Mesh::draw(DrawData& data)
 			// Now set the sampler to the correct texture unit
 			glUniform1i(glGetUniformLocation(shader->getPid(), (name + number).c_str()), i);
 			// And finally bind the texture
-			glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
+			glBindTexture(GL_TEXTURE_2D, this->texturesMap[data.playerId][i].id);
 
 			// Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
 			glUniform1f(glGetUniformLocation(shader->getPid(), "material.shininess"), 16.0f);
 		}
-	} else {
+	}
+	else {
 		glUniform3fv(ambient, 1, glm::value_ptr(this->materialNoTex.ambient));
 		glUniform3fv(diffuse, 1, glm::value_ptr(this->materialNoTex.diffuse));
 		glUniform3fv(specular, 1, glm::value_ptr(this->materialNoTex.specular)); // Specular doesn't have full effect on this object's material
@@ -78,7 +79,7 @@ void Mesh::draw(DrawData& data)
 	glBindVertexArray(0);
 
 	// Always good practice to set everything back to defaults once configured.
-	for (GLuint i = 0; i < this->textures.size(); i++)
+	for (GLuint i = 0; i < this->texturesMap[data.playerId].size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -87,19 +88,19 @@ void Mesh::draw(DrawData& data)
 	shader->unbind();
 }
 
-void Mesh::update(UpdateData& data)
+void PlayerMesh::update(UpdateData& data)
 {
 	//
 }
 
 // Sets bone transformation matrices
-void Mesh::setBoneMatrix(GLint index, aiMatrix4x4 matrix)
+void PlayerMesh::setBoneMatrix(GLint index, aiMatrix4x4 matrix)
 {
 	glm::mat4 mat = glm::transpose(glm::make_mat4(&matrix.a1));
 	glUniformMatrix4fv(boneLocs[index], 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-void Mesh::setupMesh(){
+void PlayerMesh::setupMesh() {
 	// Create buffers/arrays
 	glGenVertexArrays(1, &this->VAO);
 	glGenBuffers(1, &this->VBO);
@@ -118,10 +119,8 @@ void Mesh::setupMesh(){
 	glEnableVertexAttribArray(NORMAL_LOCATION);
 	glVertexAttribPointer(NORMAL_LOCATION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, Normal));
 	// Vertex Texture Coords
-	if (this->textures.size() > 0) {
-		glEnableVertexAttribArray(TEX_COORD_LOCATION);
-		glVertexAttribPointer(TEX_COORD_LOCATION, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, TexCoords));
-	}
+	glEnableVertexAttribArray(TEX_COORD_LOCATION);
+	glVertexAttribPointer(TEX_COORD_LOCATION, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, TexCoords));
 
 	if (this->hasBones) {
 		glEnableVertexAttribArray(BONE_ID_LOCATION);
@@ -137,7 +136,7 @@ void Mesh::setupMesh(){
 	glBindVertexArray(0);
 }
 
-void Mesh::setupUniformLoc() {
+void PlayerMesh::setupUniformLoc() {
 	if (!shader->isInitilized()) {
 		cerr << "Shader not initialized" << endl;
 		exit(-1);
