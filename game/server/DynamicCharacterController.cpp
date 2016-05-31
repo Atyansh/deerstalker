@@ -172,6 +172,16 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld, btSca
 void DynamicCharacterController::playerStep(const btCollisionWorld*, btVector3& dir) {
 	setLookDirection(dir);
 	dir.setY(0);
+
+	btVector3 velocity = m_rigidBody->getLinearVelocity();
+	btVector3 planeVelocity = velocity;
+	planeVelocity.setY(0);
+	btScalar speed = planeVelocity.length();
+
+	if (speed < 15) {
+		m_rigidBody->setLinearVelocity((dir * 15) + btVector3(0, velocity.getY(), 0));
+	}
+
 	m_rigidBody->applyCentralForce(dir * 5);
 }
 
