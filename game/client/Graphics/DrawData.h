@@ -11,6 +11,7 @@ public:
 	glm::mat4 view;
 	glm::mat4 matrix;
 	float animTime;
+	int playerId;
     
     DrawData(void);
     ~DrawData(void);

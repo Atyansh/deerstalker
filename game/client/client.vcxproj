@@ -118,6 +118,7 @@
     <ClCompile Include="Game\Model.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\PlayerAnim.cpp" />
+    <ClCompile Include="Game\PlayerMesh.cpp" />
     <ClCompile Include="Game\PlayerModel.cpp" />
     <ClCompile Include="Game\SGeode.cpp" />
     <ClCompile Include="Game\SGroup.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Game\Model.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\PlayerAnim.h" />
+    <ClInclude Include="Game\PlayerMesh.h" />
     <ClInclude Include="Game\PlayerModel.h" />
     <ClInclude Include="Game\SGeode.h" />
     <ClInclude Include="Game\SGroup.h" />

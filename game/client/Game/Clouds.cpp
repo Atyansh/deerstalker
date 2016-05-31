@@ -15,6 +15,7 @@ Clouds::Clouds(Shader *shader, float radius, int rings, int sectors, glm::vec3 c
 	setupCloud();
 	setUpBuffer();
 	setupUniformLoc();
+	createCloudPlane();
 }
 	
 
@@ -30,7 +31,7 @@ void Clouds::draw(DrawData& data) {
 	prevTime = time;
 	currCloudTime += min(delta, 0.05f);
 
-	updateScene(delta, currCloudTime);
+	updateScene(min(delta, 0.05f), currCloudTime);
 	shader->bind();
 
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(data.matrix));
@@ -158,7 +159,7 @@ void Clouds::updateScene(float passedSeconds, float totalPassedTime)
 
 		// remove if it is out of view (2D cloud offset > radius of cloud plane circle)
 		float offsetLength = glm::length(glm::vec2(offsets.at(i).x, offsets.at(i).z));
-		bool invisible = offsetLength > SKYBOX_LENGTH * 1.2; // add 20% to avoid removing clouds that have just been spawned
+		bool invisible = offsetLength > SKYBOX_LENGTH * 1.4; // add 40% to avoid removing clouds that have just been spawned
 		if (invisible)
 		{
 			offsets.erase(offsets.begin() + i);
@@ -199,11 +200,12 @@ void Clouds::addSphere(glm::vec3 offset)
 	planarExpansionDirection.y += yRand2D;
 	planarExpansionDirection = normalize(planarExpansionDirection);
 	// scale the plane up to the size of the sky (+10% to make clouds float into the scene)
-	planarExpansionDirection = -planarExpansionDirection * SKYBOX_LENGTH * 1.1f;
+	planarExpansionDirection = -planarExpansionDirection * SKYBOX_LENGTH * 1.3f;
 
 	float rX = planarExpansionDirection.x;
 	float rY = CLOUD_PLANE_HEIGHT;
 	float rZ = planarExpansionDirection.y;
+
 	offsets.insert(offsets.begin(), glm::vec3(rX, rY, rZ));
 
 	noises.insert(noises.begin(), NOISE_FACTOR * static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // [0,NONSE_FACTOR]
@@ -216,5 +218,22 @@ void Clouds::addCloud(int numberOfSpheres)
 	for (size_t i = 0; i < numberOfSpheres; i++)
 	{
 		addSphere(offset);
+	}
+}
+
+void Clouds::createCloudPlane() {
+	for (int i = 0; i < SKYBOX_LENGTH / 2+100; i++) {
+		// add a sphere on the outline of the circular cloud plane
+		float xRand2D = -0.5f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX); // [-0.5, 0.5]
+		float yRand2D = -0.5f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX); // [-0.5, 0.5]
+
+		float rX = xRand2D * SKYBOX_LENGTH * 2.4;
+		float rY = CLOUD_PLANE_HEIGHT;
+		float rZ = yRand2D * SKYBOX_LENGTH * 2.0;
+
+		offsets.insert(offsets.begin(), glm::vec3(rX, rY, rZ));
+
+		noises.insert(noises.begin(), NOISE_FACTOR * static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // [0,NONSE_FACTOR]
+		scales.insert(scales.begin(), MIN_CLOUD_SCALE + (MAX_CLOUD_SCALE - MIN_CLOUD_SCALE) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // [min,max]
 	}
 }

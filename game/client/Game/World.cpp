@@ -45,7 +45,7 @@ void World::createWorld(Shader* shader, string directory) {
 	floor->addNode(billboard);
 
 	Shader *cloudShader = new Shader("Shaders/cloud.vert", "Shaders/cloud.frag");
-	floor->addNode(new Clouds(cloudShader, 4, 25, 25, glm::vec3(0.f,-17.f, 0.f)));
+	floor->addNode(new Clouds(cloudShader, 4, 25, 25, glm::vec3(0.f,-5.f, 0.f)));
 
 	this->addNode(floor);
 
