@@ -89,6 +89,18 @@ void Game::deleteHats() {
 			world_->removeRigidBody(hat);
 		}
 	}
+
+	for (auto* player : playerSet_) {
+		Hat* hat = ((Player*)player)->getHat();
+
+		if (hat) {
+			if (currTime - hat->getTimestamp() > hatLifespan) {
+				protos::Event event;
+				event.set_clientid(((Player*)player)->getId());
+				handleDquipLogic(&event);
+			}
+		}
+	}
 }
 
 void Game::initialize() {
