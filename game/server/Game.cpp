@@ -846,13 +846,25 @@ void Game::sendStateToClients() {
 void Game::sendEventsToClients() {
 	protos::Message message;
 
+	// Don't remove these print statements.
+	// TODO(Atyansh): Find a proper solution to fix this bug
+
+	std::cerr << "PRINT STATEMENT" << std::endl;
+
 	eventQueueLock_.lock();
+	std::cerr << "PRINT STATEMENT" << std::endl;
 	for (auto& event : eventQueue_) {
+		std::cerr << "PRINT STATEMENT" << std::endl;
 		auto* e = message.add_event();
+		std::cerr << "PRINT STATEMENT" << std::endl;
 		e->MergeFrom(event);
+		std::cerr << "PRINT STATEMENT" << std::endl;
 	}
+	std::cerr << "PRINT STATEMENT" << std::endl;
 	eventQueue_.clear();
+	std::cerr << "PRINT STATEMENT" << std::endl;
 	eventQueueLock_.unlock();
+	std::cerr << "PRINT STATEMENT" << std::endl;
 
 	if (message.event_size()) {
 		for (auto client : clients_) {
