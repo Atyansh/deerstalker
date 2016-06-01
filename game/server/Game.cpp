@@ -111,7 +111,7 @@ void Game::detectStun() {
 	for (auto* body : playerSet_) {
 		Player* player = (Player*)body;
 		if (!player->getStunned() && player->getHealth() == 0) {
-			if (player->getHatType()) {
+			if (player->getHat()) {
 				handleDquipLogic(player);
 			}
 			player->setStunned(true);
