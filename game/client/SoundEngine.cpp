@@ -31,6 +31,12 @@ void SoundEngine::initialize() {
 
 	result_ = system_->createSound("Sounds\\wear_hat.wav", FMOD_3D, 0, &wearHatSound_);
 	wearHatSound_->set3DMinMaxDistance(5, 5000);
+
+	result_ = system_->createSound("Sounds\\wuson.wav", FMOD_3D, 0, &wusonSound_);
+	wusonSound_->set3DMinMaxDistance(5, 5000);
+
+	result_ = system_->createSound("Sounds\\propeller.mp3", FMOD_3D, 0, &propellerSound_);
+	propellerSound_->set3DMinMaxDistance(5, 5000);
 }
 
 void SoundEngine::initializePlayer(Player* player) {
@@ -106,6 +112,50 @@ void SoundEngine::wearHat(int playerId) {
 	glm::vec3 pos = player->getPosition();
 	FMOD_VECTOR position = { pos.x, pos.y, pos.z };
 	result_ = system_->playSound(wearHatSound_, 0, true, &channel);
+	result_ = channel->set3DAttributes(&position, 0);
+	result_ = channel->setPaused(false);
+}
+
+void SoundEngine::wuson(int playerId) {
+	Player* player = dynamic_cast<Player*>(Globals::gameObjects.playerMap[playerId]);
+	FMOD::Channel* channel = wusonChannels[playerId];
+
+	glm::vec3 pos = player->getPosition();
+	FMOD_VECTOR position = { pos.x, pos.y, pos.z };
+
+	if (channel) {
+		bool playing = false;
+		if (channel->isPlaying(&playing));
+		if (playing) {
+			channel->set3DAttributes(&position, 0);
+			return;
+		}
+	}
+
+	result_ = system_->playSound(wusonSound_, 0, true, &channel);
+	wusonChannels[playerId] = channel;
+	result_ = channel->set3DAttributes(&position, 0);
+	result_ = channel->setPaused(false);
+}
+
+void SoundEngine::propeller(int playerId) {
+	Player* player = dynamic_cast<Player*>(Globals::gameObjects.playerMap[playerId]);
+	FMOD::Channel* channel = propellerChannels[playerId];
+
+	glm::vec3 pos = player->getPosition();
+	FMOD_VECTOR position = { pos.x, pos.y, pos.z };
+
+	if (channel) {
+		bool playing = false;
+		if (channel->isPlaying(&playing));
+		if (playing) {
+			channel->set3DAttributes(&position, 0);
+			return;
+		}
+	}
+
+	result_ = system_->playSound(propellerSound_, 0, true, &channel);
+	propellerChannels[playerId] = channel;
 	result_ = channel->set3DAttributes(&position, 0);
 	result_ = channel->setPaused(false);
 }

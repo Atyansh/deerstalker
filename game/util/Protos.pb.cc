@@ -156,37 +156,38 @@ void protobuf_AddDesc_Protos_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\014Protos.proto\022\006protos\"\247\005\n\005Event\022\n\n\002id\030\001"
+    "\n\014Protos.proto\022\006protos\"\275\005\n\005Event\022\n\n\002id\030\001"
     " \001(\005\022 \n\004type\030\002 \001(\0162\022.protos.Event.Type\022\020"
     "\n\010clientID\030\003 \001(\005\022\r\n\005hatID\030\004 \001(\005\022\020\n\010bulle"
     "tID\030\005 \001(\005\022*\n\tdirection\030\006 \001(\0162\027.protos.Ev"
     "ent.Direction\022\024\n\014cameraVector\030\007 \003(\001\022\014\n\004h"
     "old\030\010 \001(\010\022\r\n\005first\030\t \001(\005\022\016\n\006second\030\n \001(\005"
     "\022\r\n\005third\030\013 \001(\005\022\016\n\006fourth\030\014 \001(\005\022\017\n\007grabb"
-    "er\030\r \001(\005\022\017\n\007grabbee\030\016 \001(\005\"\235\002\n\004Type\022\t\n\005SP"
+    "er\030\r \001(\005\022\017\n\007grabbee\030\016 \001(\005\"\263\002\n\004Type\022\t\n\005SP"
     "AWN\020\001\022\010\n\004MOVE\020\002\022\010\n\004JUMP\020\003\022\n\n\006ASSIGN\020\004\022\t\n"
     "\005EQUIP\020\005\022\t\n\005DQUIP\020\006\022\t\n\005SHOOT\020\007\022\010\n\004HATR\020\010"
     "\022\010\n\004HATL\020\t\022\t\n\005PUNCH\020\n\022\021\n\rDELETE_BULLET\020\013"
     "\022\022\n\016PLAYER_PUNCHED\020\014\022\017\n\013PLAYER_DIED\020\r\022\020\n"
     "\014PROPELLER_UP\020\016\022\017\n\013PLAYER_JUMP\020\017\022\r\n\tGAME"
     "_OVER\020\020\022\022\n\016PLAYER_STUNNED\020\021\022\016\n\nPLAYER_WI"
-    "N\020\022\022\010\n\004GRAB\020\023\022\022\n\016PLAYER_GRABBED\020\024\"m\n\tDir"
-    "ection\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RI"
-    "GHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\022\006\n\002FL\020\007"
-    "\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020\n\"\216\004\n\007Message\022\n\n\002"
-    "id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132\r.protos.Event\022."
-    "\n\ngameObject\030\003 \003(\0132\032.protos.Message.Game"
-    "Object\032\250\003\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016\n\006mat"
-    "rix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162\037.protos.Message"
-    ".GameObject.Type\022\017\n\007hatType\030\004 \001(\005\022A\n\016ani"
-    "mationState\030\005 \001(\0162).protos.Message.GameO"
-    "bject.AnimationState\022\016\n\006health\030\006 \001(\005\022\017\n\007"
-    "visible\030\007 \001(\010\022\r\n\005lives\030\010 \001(\005\022\r\n\005timer\030\t "
-    "\001(\005\022\014\n\004posX\030\n \001(\002\022\014\n\004posY\030\013 \001(\002\022\014\n\004posZ\030"
-    "\014 \001(\002\"\'\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n"
-    "\003HAT\020\003\"i\n\016AnimationState\022\014\n\010STANDING\020\001\022\013"
-    "\n\007RUNNING\020\002\022\014\n\010PUNCHING\020\003\022\010\n\004BEAR\020\004\022\t\n\005W"
-    "USON\020\005\022\013\n\007STUNNED\020\006\022\014\n\010GRABBING\020\007", 1233);
+    "N\020\022\022\010\n\004GRAB\020\023\022\022\n\016PLAYER_GRABBED\020\024\022\024\n\020PLA"
+    "YER_PROPELLER\020\025\"m\n\tDirection\022\006\n\002UP\020\001\022\010\n\004"
+    "DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005"
+    "\022\014\n\010BACKWARD\020\006\022\006\n\002FL\020\007\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006"
+    "\n\002BR\020\n\"\216\004\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030"
+    "\002 \003(\0132\r.protos.Event\022.\n\ngameObject\030\003 \003(\013"
+    "2\032.protos.Message.GameObject\032\250\003\n\nGameObj"
+    "ect\022\n\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004type\030"
+    "\003 \001(\0162\037.protos.Message.GameObject.Type\022\017"
+    "\n\007hatType\030\004 \001(\005\022A\n\016animationState\030\005 \001(\0162"
+    ").protos.Message.GameObject.AnimationSta"
+    "te\022\016\n\006health\030\006 \001(\005\022\017\n\007visible\030\007 \001(\010\022\r\n\005l"
+    "ives\030\010 \001(\005\022\r\n\005timer\030\t \001(\005\022\014\n\004posX\030\n \001(\002\022"
+    "\014\n\004posY\030\013 \001(\002\022\014\n\004posZ\030\014 \001(\002\"\'\n\004Type\022\n\n\006P"
+    "LAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003\"i\n\016Animatio"
+    "nState\022\014\n\010STANDING\020\001\022\013\n\007RUNNING\020\002\022\014\n\010PUN"
+    "CHING\020\003\022\010\n\004BEAR\020\004\022\t\n\005WUSON\020\005\022\013\n\007STUNNED\020"
+    "\006\022\014\n\010GRABBING\020\007", 1255);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -233,6 +234,7 @@ bool Event_Type_IsValid(int value) {
     case 18:
     case 19:
     case 20:
+    case 21:
       return true;
     default:
       return false;
@@ -260,6 +262,7 @@ const Event_Type Event::PLAYER_STUNNED;
 const Event_Type Event::PLAYER_WIN;
 const Event_Type Event::GRAB;
 const Event_Type Event::PLAYER_GRABBED;
+const Event_Type Event::PLAYER_PROPELLER;
 const Event_Type Event::Type_MIN;
 const Event_Type Event::Type_MAX;
 const int Event::Type_ARRAYSIZE;

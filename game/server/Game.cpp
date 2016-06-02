@@ -423,14 +423,16 @@ void Game::handleMoveLogic(const protos::Event* event) {
 
 void Game::handleJumpLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
-	player->getController()->jump();
+	if (player->getController()->onGround()) {
+		player->getController()->jump();
 
-	eventQueueLock_.lock();
-	protos::Event jumpEvent;
-	jumpEvent.set_type(protos::Event_Type_PLAYER_JUMP);
-	jumpEvent.set_clientid(event->clientid());
-	eventQueue_.emplace_back(jumpEvent);
-	eventQueueLock_.unlock();
+		eventQueueLock_.lock();
+		protos::Event jumpEvent;
+		jumpEvent.set_type(protos::Event_Type_PLAYER_JUMP);
+		jumpEvent.set_clientid(event->clientid());
+		eventQueue_.emplace_back(jumpEvent);
+		eventQueueLock_.unlock();
+	}
 }
 
 void Game::spawnNewHat() {
@@ -698,10 +700,22 @@ void Game::killGravity() {
 
 void Game::propellerUp(Player* player) {
 	player->getController()->getRigidBody()->applyCentralForce(btVector3(0, 10, 0));
+	eventQueueLock_.lock();
+	protos::Event propellerEvent;
+	propellerEvent.set_type(protos::Event_Type_PLAYER_PROPELLER);
+	propellerEvent.set_clientid(player->getId());
+	eventQueue_.emplace_back(propellerEvent);
+	eventQueueLock_.unlock();
 }
 
 void Game::propellerDown(Player* player) {
 	player->getController()->getRigidBody()->applyCentralForce(btVector3(0, -10, 0));
+	eventQueueLock_.lock();
+	protos::Event propellerEvent;
+	propellerEvent.set_type(protos::Event_Type_PLAYER_PROPELLER);
+	propellerEvent.set_clientid(player->getId());
+	eventQueue_.emplace_back(propellerEvent);
+	eventQueueLock_.unlock();
 }
 
 void Game::setInvisible(Player* player) {

@@ -22,6 +22,7 @@ message Event {
 		PLAYER_WIN = 18;
 		GRAB = 19;
 		PLAYER_GRABBED = 20;
+		PLAYER_PROPELLER = 21;
 	}
 
 	enum Direction {

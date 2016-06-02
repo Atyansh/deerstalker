@@ -58,11 +58,12 @@ enum Event_Type {
   Event_Type_PLAYER_STUNNED = 17,
   Event_Type_PLAYER_WIN = 18,
   Event_Type_GRAB = 19,
-  Event_Type_PLAYER_GRABBED = 20
+  Event_Type_PLAYER_GRABBED = 20,
+  Event_Type_PLAYER_PROPELLER = 21
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
-const Event_Type Event_Type_Type_MAX = Event_Type_PLAYER_GRABBED;
+const Event_Type Event_Type_Type_MAX = Event_Type_PLAYER_PROPELLER;
 const int Event_Type_Type_ARRAYSIZE = Event_Type_Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Event_Type_descriptor();
@@ -220,6 +221,7 @@ class Event : public ::google::protobuf::Message {
   static const Type PLAYER_WIN = Event_Type_PLAYER_WIN;
   static const Type GRAB = Event_Type_GRAB;
   static const Type PLAYER_GRABBED = Event_Type_PLAYER_GRABBED;
+  static const Type PLAYER_PROPELLER = Event_Type_PLAYER_PROPELLER;
   static inline bool Type_IsValid(int value) {
     return Event_Type_IsValid(value);
   }

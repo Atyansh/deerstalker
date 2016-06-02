@@ -41,6 +41,9 @@ void MessageHandler::handleGameMessages() {
 			else if (event.type() == protos::Event_Type_PLAYER_JUMP) {
 				Globals::soundEngine.jump(event.clientid());
 			}
+			else if (event.type() == protos::Event_Type_PLAYER_PROPELLER) {
+				Globals::soundEngine.propeller(event.clientid());
+			}
 		}
 
 		for (int i = 0; i < message.gameobject_size(); i++) {
@@ -105,6 +108,7 @@ void MessageHandler::handleGameMessages() {
 					entity.setMatrix(scaleMat);
 				}
 				else if (gameObject.animationstate() == protos::Message_GameObject_AnimationState_WUSON) {
+					Globals::soundEngine.wuson(id);
 					auto scale = glm::vec3(1) / 0.075 * 8;
 					glm::mat4 scaleMat = glm::scale(mat, scale);
 					entity.setMatrix(scaleMat);

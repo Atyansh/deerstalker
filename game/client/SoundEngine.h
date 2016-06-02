@@ -24,6 +24,8 @@ public:
 	void jump(int playerId);
 	void hatSpawn(float x, float y, float z);
 	void wearHat(int playerId);
+	void wuson(int playerId);
+	void propeller(int playerId);
 
 	void pauseChannel(FMOD::Channel* channel) {
 		if (channel) {
@@ -44,7 +46,11 @@ private:
 	FMOD::Sound* jumpSound_;
 	FMOD::Sound* hatSpawnSound_;
 	FMOD::Sound* wearHatSound_;
+	FMOD::Sound* wusonSound_;
 	FMOD::Sound* propellerSound_;
+
+	std::unordered_map<int, FMOD::Channel*> wusonChannels;
+	std::unordered_map<int, FMOD::Channel*> propellerChannels;
 
 	FMOD::Channel* loadingChannel_ = 0;
 	FMOD::Channel* menuChannel_ = 0;
