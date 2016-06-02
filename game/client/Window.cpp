@@ -59,7 +59,7 @@ GLFWwindow* Window::create_window(int width, int height) {
 
 	// Create the GLFW window
 	GLFWwindow* window = glfwCreateWindow(width, height, window_title, glfwGetPrimaryMonitor(), NULL);
-	// GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
+    // GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
 
 	// Check if the window could not be created
 	if (!window) {
@@ -409,7 +409,7 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model, int id) 
 	switch (modelType) {
 		case _Player:
 			playerHatMap[WIZARD_HAT] = new Hat(Globals::gameObjects.modelMap[_WizardHat]);
-			playerHatMap[PROPELLER_HAT] = new Hat(Globals::gameObjects.modelMap[_PropellerHat]);
+			playerHatMap[PROPELLER_HAT] = new Hat(Globals::gameObjects.modelMap[_PropellerHat], true);
 			playerHatMap[BEAR_HAT] = new Hat(Globals::gameObjects.modelMap[_BearHat]);
 			playerHatMap[HARD_HAT] = new Hat(Globals::gameObjects.modelMap[_HardHat]);
 			playerHatMap[DEERSTALKER_HAT] = new Hat(Globals::gameObjects.modelMap[_DeerstalkerHat]);

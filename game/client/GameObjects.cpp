@@ -87,7 +87,7 @@ void GameObjects::loadModelMap() {
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_AShader]);
 	modelMap[_WizardHat] = new Model(wizardPath, shaderMap[_AShader]);
 	modelMap[_HardHat] = new Model(hardHatPath, shaderMap[_AShader]);
-	modelMap[_PropellerHat] = new Model(propellerHatPath, shaderMap[_AShader]);
+	modelMap[_PropellerHat] = new AnimModel(propellerHatPath, shaderMap[_AShader]);
 	modelMap[_BearHat] = new Model(bearHatPath, shaderMap[_AShader]);
 	modelMap[_DeerstalkerHat] = new Model(deerstalkerHatPath, shaderMap[_AShader]);
 }

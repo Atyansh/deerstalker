@@ -4,6 +4,7 @@
 #include <vector>
 #include "Graphics\LightShader.h"
 #include "Game\Model.h"
+#include "Game\AnimModel.h"
 #include "Game\SNode.h"
 #include "Game\SMatrixTransform.h"
 #include "Game\Player.h"
