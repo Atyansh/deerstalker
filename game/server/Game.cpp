@@ -695,6 +695,7 @@ void Game::handleSecondaryHatLogic(const protos::Event* event) {
 	case WIZARD_HAT:
 		break;
 	case HARD_HAT:
+		shockwave(player);
 		break;
 	case BEAR_HAT:
 		becomeBear(player);
@@ -729,6 +730,37 @@ void Game::wrenchHit(Player* player) {
 			event.set_clientid(wrenchedPlayer->getId());
 			eventQueue_.emplace_back(event);
 			eventQueueLock_.unlock();
+		}
+	}
+}
+
+void Game::shockwave(Player* player) {
+	// TODO add shockwave animation
+
+	if (!player->getController()->onGround()) {
+		return;
+	}
+
+	btVector3 playerPos = player->getCenterOfMassPosition();
+
+	for (auto* body : playerSet_) {
+		Player* shockedPlayer = (Player*)body;
+		if (shockedPlayer == player) {
+			continue;
+		}
+		if (withinRange(player, shockedPlayer, 15) && shockedPlayer->getController()->onGround()) {
+			btVector3 shockPos = shockedPlayer->getCenterOfMassPosition();
+			btVector3 direction = (shockPos - playerPos).normalized();
+			shockedPlayer->applyCentralImpulse(direction * 5);
+			shockedPlayer->changeHealth(-10);
+		}
+	}
+
+	for (auto* hat : hatSet_) {
+		if (withinRange(player, hat, 15)) {
+			btVector3 shockPos = hat->getCenterOfMassPosition();
+			btVector3 direction = (shockPos - playerPos).normalized();
+			hat->applyCentralImpulse(direction * 5);
 		}
 	}
 }
