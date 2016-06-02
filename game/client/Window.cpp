@@ -376,7 +376,16 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	}
 
 	if (STATE == State::_Lobby) {
+		Sleep(1);
+		std::cerr << "LOBBY" << std::endl;
 		if (buttons[BUTTON_A] == GLFW_PRESS) {
+			std::cerr << "SEND READY" << std::endl;
+			auto* event = message.add_event();
+			event->set_clientid(Globals::ID);
+			event->set_type(protos::Event_Type_READY);
+		}
+		if (Globals::startGame) {
+			std::cerr << "START_GAME" << std::endl;
 			STATE = State::_Game;
 			Globals::soundEngine.playGameMusic();
 		}
@@ -392,6 +401,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	}
 
 	if (message.event_size()) {
+		std::cerr << "Sending Message" << std::endl;
 		sendMessage(Globals::socket, message);
 	}
 }

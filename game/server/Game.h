@@ -41,6 +41,20 @@ private:
 
 	void clearAnimations();
 
+	bool allReady() {
+		if (size() < MIN_PLAYERS) {
+			return false;
+		}
+
+		for (auto* body : playerSet_) {
+			Player* player = (Player*)body;
+			if (!player->getReady()) {
+				return false;
+			}
+			return true;
+		}
+	}
+
 	void deleteBullets();
 	void deleteHats();
 

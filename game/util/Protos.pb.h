@@ -61,11 +61,13 @@ enum Event_Type {
   Event_Type_PLAYER_GRABBED = 20,
   Event_Type_PLAYER_PROPELLER = 21,
   Event_Type_GRAVITY_MUSIC = 22,
-  Event_Type_GAME_MUSIC = 23
+  Event_Type_GAME_MUSIC = 23,
+  Event_Type_READY = 24,
+  Event_Type_START_GAME = 25
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
-const Event_Type Event_Type_Type_MAX = Event_Type_GAME_MUSIC;
+const Event_Type Event_Type_Type_MAX = Event_Type_START_GAME;
 const int Event_Type_Type_ARRAYSIZE = Event_Type_Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Event_Type_descriptor();
@@ -245,6 +247,8 @@ class Event : public ::google::protobuf::Message {
   static const Type PLAYER_PROPELLER = Event_Type_PLAYER_PROPELLER;
   static const Type GRAVITY_MUSIC = Event_Type_GRAVITY_MUSIC;
   static const Type GAME_MUSIC = Event_Type_GAME_MUSIC;
+  static const Type READY = Event_Type_READY;
+  static const Type START_GAME = Event_Type_START_GAME;
   static inline bool Type_IsValid(int value) {
     return Event_Type_IsValid(value);
   }

@@ -61,9 +61,7 @@ void Session::do_read_body(size_t length) {
 		if (!ec) {
 			protos::Message message;
 			message.ParseFromArray(body, length);
-			if (message.messagetype() == protos::Message_MessageType_GAME) {
-				game_.deliver(message);
-			}
+			game_.deliver(message);
 			delete body;
 			do_read_header();
 		}

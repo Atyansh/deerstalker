@@ -111,6 +111,14 @@ public:
 		deadTimestamp_ = timestamp;
 	}
 
+	bool getReady() {
+		return ready_;
+	}
+
+	void setReady(bool ready) {
+		ready_ = ready;
+	}
+
 	void setSpawn();
 	void setProjectile(btRigidBody * body, unsigned int baseVelocity);
 
@@ -132,7 +140,7 @@ private:
 	bool visible_ = true;
 
 	bool dead_ = false;
-
+	bool ready_ = false;
 
 	Player* myGrabber_ = nullptr;
 	Player* grabbedPlayer_ = nullptr;

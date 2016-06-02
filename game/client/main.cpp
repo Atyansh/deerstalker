@@ -129,6 +129,12 @@ void do_read_body(size_t length) {
 				if (event.type() == event.ASSIGN) {
 					Globals::ID = event.clientid();
 				}
+				if (event.type() == event.START_GAME) {
+					Globals::startGame = true;
+				}
+				if (event.type() == event.READY) {
+					Globals::readyPlayers[event.clientid()] = true;
+				}
 			}
 
 			MessageHandler::gameLock.lock();

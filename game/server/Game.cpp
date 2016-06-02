@@ -294,7 +294,6 @@ void Game::startGameLoop() {
 				if (event.type() == protos::Event_Type_SPAWN) {
 					handleSpawnLogic(&event);
 				}
-				
 				else if (playerMap_[event.clientid()]->getDead()) {
 					//TODO WHAT CAN THE DEAD DO
 					//std::cout << "WHAT CAN THE DEAD DO\n";
@@ -324,10 +323,27 @@ void Game::startGameLoop() {
 				else if (event.type() == protos::Event_Type_GRAB) {
 					handleGrabLogic(&event);
 				}
+				else if (event.type() == protos::Event_Type_READY) {
+					protos::Event e;
+					e.set_type(protos::Event_Type_READY);
+					e.set_clientid(event.clientid());
+					eventQueue_.emplace_back(e);
+					eventQueueLock_.unlock();
+					playerMap_[event.clientid()]->setReady(true);
+				}
 			}
 			messageQueue_.pop_front();
 		}
 		messageQueueLock_.unlock();
+
+		if (allReady()) {
+			std::cerr << "ALL READY" << std::endl;
+			eventQueueLock_.lock();
+			protos::Event e;
+			e.set_type(protos::Event_Type_START_GAME);
+			eventQueue_.emplace_back(e);
+			eventQueueLock_.unlock();
+		}
 
 		handleReSpawnLogic();
 		world_->stepSimulation(1.f / 15.f, 10);

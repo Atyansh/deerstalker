@@ -25,6 +25,8 @@ message Event {
 		PLAYER_PROPELLER = 21;
 		GRAVITY_MUSIC = 22;
 		GAME_MUSIC = 23;
+		READY = 24;
+		START_GAME = 25;
 	}
 
 	enum Direction {
