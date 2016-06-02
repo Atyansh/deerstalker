@@ -19,8 +19,9 @@ const char* deerstalkerHatPath = "Assets/OBJ/DeerstalkerHat/DeerstalkerHat.obj";
 string skyboxDirectory = "Assets/Cubemap";
 string backgroundPath = "Assets/UI/DeerMenu.jpg";
 string lobbyPath = "Assets/UI/Lobby.jpg";
+string lobbyReadyPath = "Assets/UI/Lobby_Ready.jpg";
 string endPath = "Assets/UI/EndGame.jpg";
-string loadingPath = "Assets/UI/Loading.png";
+string loadingPath = "Assets/UI/Loading.jpg";
 
 GameObjects::GameObjects() {
 }
@@ -62,6 +63,7 @@ void GameObjects::loadLoadingObject() {
 void GameObjects::loadGameObjects() {
 	guiMap[_Background] = new GuiItem(backgroundPath, shaderMap[_GShader], 60, 34, 0, 0);
 	guiMap[_LobbyBG] = new GuiItem(lobbyPath, shaderMap[_GShader], 60, 34, 0, 0);
+	guiMap[_LobbyReadyBG] = new GuiItem(lobbyReadyPath, shaderMap[_GShader], 60, 34, 0, 0);
 	guiMap[_EndGameBG] = new GuiItem(endPath, shaderMap[_GShader], 60, 34, 0, 0);
 
 	numPlayerGuiSet = 0;

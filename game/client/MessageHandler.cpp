@@ -16,6 +16,10 @@ std::mutex MessageHandler::endGameLock;
 void MessageHandler::handleLobbyMessages() {
 }
 
+void MessageHandler::handleLobbyReadyMessages() {
+
+}
+
 void MessageHandler::handleStartMessages() {
 }
 

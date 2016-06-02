@@ -5,6 +5,7 @@ namespace State {
 		_Loading,
 		_Start,
 		_Lobby,
+		_LobbyReady,
 		_Game,
 		_EndGame
 	};

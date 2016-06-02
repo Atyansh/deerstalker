@@ -22,6 +22,7 @@ public:
 	static std::mutex endGameLock;
 
 	static void handleLobbyMessages();
+	static void handleLobbyReadyMessages();
 	static void handleStartMessages();
 	static void handleGameMessages();
 	static void handleEndGameMessages();
