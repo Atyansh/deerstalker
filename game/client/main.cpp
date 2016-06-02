@@ -210,17 +210,19 @@ int main(int argc, char *argv[]) {
 		cerr << "JOYSTICK NOT PRESENT" << endl;
 	}
 	
-	// Initialize objects/pointers for rendering
-	Window::initialize_objects();
 
 	Globals::soundEngine.initialize();
-	Globals::soundEngine.playGameMusic();
+
+	// Initialize objects/pointers for rendering
+	Window::initialize_objects();
 
 	// Loop while GLFW window should stay open
 	while (!glfwWindowShouldClose(window)) {
 		if (joyStickPresent) {
 			Window::handle_gamepad(window);
 		}
+
+		Globals::soundEngine.updateSystem();
 
 		// Main render display callback. Rendering of objects is done here.
 		Window::display_callback(window);

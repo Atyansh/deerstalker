@@ -41,6 +41,7 @@ void Window::initialize_objects() {
 
 
 	STATE = State::_Loading;
+	Globals::soundEngine.playLoadingMusic();
 }
 
 void Window::clean_up() {
@@ -98,6 +99,7 @@ void Window::idle_callback(GLFWwindow* window) {
 	if (STATE == State::_Loading) {
 		Globals::gameObjects.loadGameObjects();
 		STATE = State::_Start;
+		Globals::soundEngine.playMenuMusic();
 		cerr << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
 	}
 	if (STATE == State::_Lobby) {
@@ -376,6 +378,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	if (STATE == State::_Lobby) {
 		if (buttons[BUTTON_A] == GLFW_PRESS) {
 			STATE = State::_Game;
+			Globals::soundEngine.playGameMusic();
 		}
 	}
 
