@@ -399,7 +399,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		sendMessage(Globals::socket, message);
 	}
 }
-
+   
 void Window::addMoveEvent(protos::Message& message, protos::Event_Direction direction) {
 	protos::Event* event = message.add_event();
 	event->set_clientid(Globals::ID);
