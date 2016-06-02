@@ -296,12 +296,15 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			addMoveEvent(message, protos::Event_Direction_FORWARD);
 		}
 
+
+		/*
 		if (axes[TRIGGER_AXIS] > POS_AXIS_TILT) {
 			addMoveEvent(message, protos::Event_Direction_DOWN);
 		}
 		else if (axes[TRIGGER_AXIS] < NEG_AXIS_TILT) {
 			addMoveEvent(message, protos::Event_Direction_UP);
 		}
+		*/
 
 		if (buttons[BUTTON_A] == GLFW_PRESS && !buttonState[BUTTON_A]) {
 			auto* event = message.add_event();
