@@ -65,11 +65,16 @@ void MessageHandler::handleGameMessages() {
 			}
 
 			if ((*map).find(id) == (*map).end()) {
-				int pId = -1;
-				if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
-					pId = id;
-				}
 				(*map)[id] = Window::createGameObj(model, Globals::gameObjects.modelMap[model], id);
+				if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
+					if (id == Globals::ID) {
+						Player* player = dynamic_cast<Player*>(Globals::gameObjects.playerMap[Globals::ID]);
+						Globals::soundEngine.initializePlayer(player);
+					}
+				}
+				if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
+					Globals::soundEngine.mangoShot(gameObject.posx(), gameObject.posy(), gameObject.posz());
+				}
 			}
 
 			auto& entity = *(*map)[id];
@@ -80,6 +85,10 @@ void MessageHandler::handleGameMessages() {
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 				Player* player = dynamic_cast<Player*>(&entity);
 
+				glm::vec3 position = glm::vec3(gameObject.posx(), gameObject.posy(), gameObject.posz());
+
+				player->setPosition(position);
+				player->setTimer(gameObject.timer());
 				player->setLives(gameObject.lives());
 				player->setHealth(gameObject.health());
 

@@ -369,7 +369,6 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 	if (STATE == State::_Start) {
 		if (buttons[BUTTON_START] == GLFW_PRESS) {
-
 			// Switch state to lobby
 			STATE = State::_Lobby;
 		}

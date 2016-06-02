@@ -602,6 +602,34 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 lives() const;
   inline void set_lives(::google::protobuf::int32 value);
 
+  // optional int32 timer = 9;
+  inline bool has_timer() const;
+  inline void clear_timer();
+  static const int kTimerFieldNumber = 9;
+  inline ::google::protobuf::int32 timer() const;
+  inline void set_timer(::google::protobuf::int32 value);
+
+  // optional float posX = 10;
+  inline bool has_posx() const;
+  inline void clear_posx();
+  static const int kPosXFieldNumber = 10;
+  inline float posx() const;
+  inline void set_posx(float value);
+
+  // optional float posY = 11;
+  inline bool has_posy() const;
+  inline void clear_posy();
+  static const int kPosYFieldNumber = 11;
+  inline float posy() const;
+  inline void set_posy(float value);
+
+  // optional float posZ = 12;
+  inline bool has_posz() const;
+  inline void clear_posz();
+  static const int kPosZFieldNumber = 12;
+  inline float posz() const;
+  inline void set_posz(float value);
+
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
@@ -618,6 +646,14 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline void clear_has_visible();
   inline void set_has_lives();
   inline void clear_has_lives();
+  inline void set_has_timer();
+  inline void clear_has_timer();
+  inline void set_has_posx();
+  inline void clear_has_posx();
+  inline void set_has_posy();
+  inline void clear_has_posy();
+  inline void set_has_posz();
+  inline void clear_has_posz();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -631,6 +667,10 @@ class Message_GameObject : public ::google::protobuf::Message {
   ::google::protobuf::int32 health_;
   bool visible_;
   ::google::protobuf::int32 lives_;
+  ::google::protobuf::int32 timer_;
+  float posx_;
+  float posy_;
+  float posz_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -1298,6 +1338,102 @@ inline void Message_GameObject::set_lives(::google::protobuf::int32 value) {
   set_has_lives();
   lives_ = value;
   // @@protoc_insertion_point(field_set:protos.Message.GameObject.lives)
+}
+
+// optional int32 timer = 9;
+inline bool Message_GameObject::has_timer() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void Message_GameObject::set_has_timer() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void Message_GameObject::clear_has_timer() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void Message_GameObject::clear_timer() {
+  timer_ = 0;
+  clear_has_timer();
+}
+inline ::google::protobuf::int32 Message_GameObject::timer() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.timer)
+  return timer_;
+}
+inline void Message_GameObject::set_timer(::google::protobuf::int32 value) {
+  set_has_timer();
+  timer_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.timer)
+}
+
+// optional float posX = 10;
+inline bool Message_GameObject::has_posx() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void Message_GameObject::set_has_posx() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void Message_GameObject::clear_has_posx() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+inline void Message_GameObject::clear_posx() {
+  posx_ = 0;
+  clear_has_posx();
+}
+inline float Message_GameObject::posx() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.posX)
+  return posx_;
+}
+inline void Message_GameObject::set_posx(float value) {
+  set_has_posx();
+  posx_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.posX)
+}
+
+// optional float posY = 11;
+inline bool Message_GameObject::has_posy() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void Message_GameObject::set_has_posy() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void Message_GameObject::clear_has_posy() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void Message_GameObject::clear_posy() {
+  posy_ = 0;
+  clear_has_posy();
+}
+inline float Message_GameObject::posy() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.posY)
+  return posy_;
+}
+inline void Message_GameObject::set_posy(float value) {
+  set_has_posy();
+  posy_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.posY)
+}
+
+// optional float posZ = 12;
+inline bool Message_GameObject::has_posz() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void Message_GameObject::set_has_posz() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void Message_GameObject::clear_has_posz() {
+  _has_bits_[0] &= ~0x00000800u;
+}
+inline void Message_GameObject::clear_posz() {
+  posz_ = 0;
+  clear_has_posz();
+}
+inline float Message_GameObject::posz() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.posZ)
+  return posz_;
+}
+inline void Message_GameObject::set_posz(float value) {
+  set_has_posz();
+  posz_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.posZ)
 }
 
 // -------------------------------------------------------------------

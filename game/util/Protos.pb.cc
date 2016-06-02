@@ -91,7 +91,7 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Message));
   Message_GameObject_descriptor_ = Message_descriptor_->nested_type(0);
-  static const int Message_GameObject_offsets_[8] = {
+  static const int Message_GameObject_offsets_[12] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, matrix_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, type_),
@@ -100,6 +100,10 @@ void protobuf_AssignDesc_Protos_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, health_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, visible_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, lives_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, timer_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, posx_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, posy_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, posz_),
   };
   Message_GameObject_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -169,19 +173,20 @@ void protobuf_AddDesc_Protos_2eproto() {
     "N\020\022\022\010\n\004GRAB\020\023\022\022\n\016PLAYER_GRABBED\020\024\"m\n\tDir"
     "ection\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t\n\005RI"
     "GHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\022\006\n\002FL\020\007"
-    "\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020\n\"\325\003\n\007Message\022\n\n\002"
+    "\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020\n\"\216\004\n\007Message\022\n\n\002"
     "id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132\r.protos.Event\022."
     "\n\ngameObject\030\003 \003(\0132\032.protos.Message.Game"
-    "Object\032\357\002\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016\n\006mat"
+    "Object\032\250\003\n\nGameObject\022\n\n\002id\030\001 \001(\005\022\016\n\006mat"
     "rix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162\037.protos.Message"
     ".GameObject.Type\022\017\n\007hatType\030\004 \001(\005\022A\n\016ani"
     "mationState\030\005 \001(\0162).protos.Message.GameO"
     "bject.AnimationState\022\016\n\006health\030\006 \001(\005\022\017\n\007"
-    "visible\030\007 \001(\010\022\r\n\005lives\030\010 \001(\005\"\'\n\004Type\022\n\n\006"
-    "PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003\"i\n\016Animati"
-    "onState\022\014\n\010STANDING\020\001\022\013\n\007RUNNING\020\002\022\014\n\010PU"
-    "NCHING\020\003\022\010\n\004BEAR\020\004\022\t\n\005WUSON\020\005\022\013\n\007STUNNED"
-    "\020\006\022\014\n\010GRABBING\020\007", 1176);
+    "visible\030\007 \001(\010\022\r\n\005lives\030\010 \001(\005\022\r\n\005timer\030\t "
+    "\001(\005\022\014\n\004posX\030\n \001(\002\022\014\n\004posY\030\013 \001(\002\022\014\n\004posZ\030"
+    "\014 \001(\002\"\'\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n"
+    "\003HAT\020\003\"i\n\016AnimationState\022\014\n\010STANDING\020\001\022\013"
+    "\n\007RUNNING\020\002\022\014\n\010PUNCHING\020\003\022\010\n\004BEAR\020\004\022\t\n\005W"
+    "USON\020\005\022\013\n\007STUNNED\020\006\022\014\n\010GRABBING\020\007", 1233);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -1116,6 +1121,10 @@ const int Message_GameObject::kAnimationStateFieldNumber;
 const int Message_GameObject::kHealthFieldNumber;
 const int Message_GameObject::kVisibleFieldNumber;
 const int Message_GameObject::kLivesFieldNumber;
+const int Message_GameObject::kTimerFieldNumber;
+const int Message_GameObject::kPosXFieldNumber;
+const int Message_GameObject::kPosYFieldNumber;
+const int Message_GameObject::kPosZFieldNumber;
 #endif  // !_MSC_VER
 
 Message_GameObject::Message_GameObject()
@@ -1143,6 +1152,10 @@ void Message_GameObject::SharedCtor() {
   health_ = 0;
   visible_ = false;
   lives_ = 0;
+  timer_ = 0;
+  posx_ = 0;
+  posy_ = 0;
+  posz_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1195,6 +1208,7 @@ void Message_GameObject::Clear() {
     hattype_ = 0;
     animationstate_ = 1;
   }
+  ZR_(timer_, posz_);
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -1343,6 +1357,66 @@ bool Message_GameObject::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(72)) goto parse_timer;
+        break;
+      }
+
+      // optional int32 timer = 9;
+      case 9: {
+        if (tag == 72) {
+         parse_timer:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &timer_)));
+          set_has_timer();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(85)) goto parse_posX;
+        break;
+      }
+
+      // optional float posX = 10;
+      case 10: {
+        if (tag == 85) {
+         parse_posX:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &posx_)));
+          set_has_posx();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(93)) goto parse_posY;
+        break;
+      }
+
+      // optional float posY = 11;
+      case 11: {
+        if (tag == 93) {
+         parse_posY:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &posy_)));
+          set_has_posy();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(101)) goto parse_posZ;
+        break;
+      }
+
+      // optional float posZ = 12;
+      case 12: {
+        if (tag == 101) {
+         parse_posZ:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &posz_)));
+          set_has_posz();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1415,6 +1489,26 @@ void Message_GameObject::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(8, this->lives(), output);
   }
 
+  // optional int32 timer = 9;
+  if (has_timer()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(9, this->timer(), output);
+  }
+
+  // optional float posX = 10;
+  if (has_posx()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(10, this->posx(), output);
+  }
+
+  // optional float posY = 11;
+  if (has_posy()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(11, this->posy(), output);
+  }
+
+  // optional float posZ = 12;
+  if (has_posz()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(12, this->posz(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1466,6 +1560,26 @@ void Message_GameObject::SerializeWithCachedSizes(
   // optional int32 lives = 8;
   if (has_lives()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(8, this->lives(), target);
+  }
+
+  // optional int32 timer = 9;
+  if (has_timer()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(9, this->timer(), target);
+  }
+
+  // optional float posX = 10;
+  if (has_posx()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(10, this->posx(), target);
+  }
+
+  // optional float posY = 11;
+  if (has_posy()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(11, this->posy(), target);
+  }
+
+  // optional float posZ = 12;
+  if (has_posz()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(12, this->posz(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1526,6 +1640,30 @@ int Message_GameObject::ByteSize() const {
     }
 
   }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    // optional int32 timer = 9;
+    if (has_timer()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->timer());
+    }
+
+    // optional float posX = 10;
+    if (has_posx()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float posY = 11;
+    if (has_posy()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float posZ = 12;
+    if (has_posz()) {
+      total_size += 1 + 4;
+    }
+
+  }
   // repeated double matrix = 2;
   {
     int data_size = 0;
@@ -1582,6 +1720,20 @@ void Message_GameObject::MergeFrom(const Message_GameObject& from) {
       set_lives(from.lives());
     }
   }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (from.has_timer()) {
+      set_timer(from.timer());
+    }
+    if (from.has_posx()) {
+      set_posx(from.posx());
+    }
+    if (from.has_posy()) {
+      set_posy(from.posy());
+    }
+    if (from.has_posz()) {
+      set_posz(from.posz());
+    }
+  }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
@@ -1612,6 +1764,10 @@ void Message_GameObject::Swap(Message_GameObject* other) {
     std::swap(health_, other->health_);
     std::swap(visible_, other->visible_);
     std::swap(lives_, other->lives_);
+    std::swap(timer_, other->timer_);
+    std::swap(posx_, other->posx_);
+    std::swap(posy_, other->posy_);
+    std::swap(posz_, other->posz_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

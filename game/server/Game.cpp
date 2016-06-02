@@ -81,10 +81,8 @@ void Game::deleteHats() {
 	milliseconds currTime = duration_cast<milliseconds>(
 		system_clock::now().time_since_epoch());
 
-	milliseconds hatLifespan = milliseconds(120000);
-
 	for (auto* hat : hatSet_) {
-		if (currTime - hat->getTimestamp() > hatLifespan) {
+		if (currTime - hat->getTimestamp() > Hat::HAT_LIFESPAN) {
 			hatRemovedSet_.emplace(hat);
 			world_->removeRigidBody(hat);
 		}
@@ -95,7 +93,7 @@ void Game::deleteHats() {
 		Hat* hat = player->getHat();
 
 		if (hat) {
-			if (currTime - hat->getTimestamp() > hatLifespan) {
+			if (currTime - hat->getTimestamp() > Hat::HAT_LIFESPAN) {
 				protos::Event event;
 				event.set_clientid(player->getId());
 				handleDquipLogic(player);
@@ -762,12 +760,27 @@ void Game::sendStateToClients() {
 
 		auto* gameObject = message.add_gameobject();
 
-		Hat* hat = player->getHat();
-
 		if (player->getStunned()) {
 			animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_STUNNED;
 		}
 
+		Hat* hat = player->getHat();
+
+		if (hat) {
+			milliseconds currTime = duration_cast<milliseconds>(
+				system_clock::now().time_since_epoch());
+
+			milliseconds timer = currTime - hat->getTimestamp();
+
+			gameObject->set_timer(timer.count());
+		}
+		else {
+			gameObject->set_timer(0);
+		}
+
+		gameObject->set_posx(position.getX());
+		gameObject->set_posy(position.getY());
+		gameObject->set_posz(position.getZ());
 		gameObject->set_hattype(player->getHatType());
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
 		gameObject->set_health(player->getHealth());
@@ -826,11 +839,16 @@ void Game::sendStateToClients() {
 		btTransform transform;
 		bullet->getMotionState()->getWorldTransform(transform);
 
+		btVector3 position = bullet->getCenterOfMassPosition();
+
 		btScalar glm[16] = {};
 
 		transform.getOpenGLMatrix(glm);
 
 		auto* gameObject = message.add_gameobject();
+		gameObject->set_posx(position.getX());
+		gameObject->set_posy(position.getY());
+		gameObject->set_posz(position.getZ());
 		gameObject->set_type(protos::Message_GameObject_Type_BULLET);
 		gameObject->set_id(bullet->getId());
 		for (auto v : glm) {

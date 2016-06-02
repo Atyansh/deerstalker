@@ -77,6 +77,10 @@ message Message {
 		optional int32 health = 6;
 		optional bool visible = 7;
 		optional int32 lives = 8;
+		optional int32 timer = 9;
+		optional float posX = 10;
+		optional float posY = 11;
+		optional float posZ = 12;
 	}
 
 	optional int32 id = 1;
