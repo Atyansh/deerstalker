@@ -57,6 +57,10 @@ message Event {
 }
 
 message Message {
+	enum MessageType {
+		LOBBY = 1;
+		GAME = 2;
+	}
 	message GameObject {
 		enum Type {
 			PLAYER = 1;
@@ -90,4 +94,5 @@ message Message {
 	optional int32 id = 1;
 	repeated Event event = 2;
 	repeated GameObject gameObject = 3;
+	optional MessageType messageType = 4;
 }

@@ -33,6 +33,7 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
   Message_GameObject_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* Message_GameObject_Type_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* Message_GameObject_AnimationState_descriptor_ = NULL;
+const ::google::protobuf::EnumDescriptor* Message_MessageType_descriptor_ = NULL;
 
 }  // namespace
 
@@ -74,10 +75,11 @@ void protobuf_AssignDesc_Protos_2eproto() {
   Event_Type_descriptor_ = Event_descriptor_->enum_type(0);
   Event_Direction_descriptor_ = Event_descriptor_->enum_type(1);
   Message_descriptor_ = file->message_type(1);
-  static const int Message_offsets_[3] = {
+  static const int Message_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message, event_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message, gameobject_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message, messagetype_),
   };
   Message_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -119,6 +121,7 @@ void protobuf_AssignDesc_Protos_2eproto() {
       sizeof(Message_GameObject));
   Message_GameObject_Type_descriptor_ = Message_GameObject_descriptor_->enum_type(0);
   Message_GameObject_AnimationState_descriptor_ = Message_GameObject_descriptor_->enum_type(1);
+  Message_MessageType_descriptor_ = Message_descriptor_->enum_type(0);
 }
 
 namespace {
@@ -176,20 +179,22 @@ void protobuf_AddDesc_Protos_2eproto() {
     "ME_MUSIC\020\027\"m\n\tDirection\022\006\n\002UP\020\001\022\010\n\004DOWN\020"
     "\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010B"
     "ACKWARD\020\006\022\006\n\002FL\020\007\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020"
-    "\n\"\234\004\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\013"
+    "\n\"\362\004\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\013"
     "2\r.protos.Event\022.\n\ngameObject\030\003 \003(\0132\032.pr"
-    "otos.Message.GameObject\032\266\003\n\nGameObject\022\n"
-    "\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\016"
-    "2\037.protos.Message.GameObject.Type\022\017\n\007hat"
-    "Type\030\004 \001(\005\022A\n\016animationState\030\005 \001(\0162).pro"
-    "tos.Message.GameObject.AnimationState\022\016\n"
-    "\006health\030\006 \001(\005\022\017\n\007visible\030\007 \001(\010\022\r\n\005lives\030"
-    "\010 \001(\005\022\r\n\005timer\030\t \001(\005\022\014\n\004posX\030\n \001(\002\022\014\n\004po"
-    "sY\030\013 \001(\002\022\014\n\004posZ\030\014 \001(\002\022\014\n\004dead\030\r \001(\010\"\'\n\004"
-    "Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003\"i\n"
-    "\016AnimationState\022\014\n\010STANDING\020\001\022\013\n\007RUNNING"
-    "\020\002\022\014\n\010PUNCHING\020\003\022\010\n\004BEAR\020\004\022\t\n\005WUSON\020\005\022\013\n"
-    "\007STUNNED\020\006\022\014\n\010GRABBING\020\007", 1304);
+    "otos.Message.GameObject\0220\n\013messageType\030\004"
+    " \001(\0162\033.protos.Message.MessageType\032\266\003\n\nGa"
+    "meObject\022\n\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004"
+    "type\030\003 \001(\0162\037.protos.Message.GameObject.T"
+    "ype\022\017\n\007hatType\030\004 \001(\005\022A\n\016animationState\030\005"
+    " \001(\0162).protos.Message.GameObject.Animati"
+    "onState\022\016\n\006health\030\006 \001(\005\022\017\n\007visible\030\007 \001(\010"
+    "\022\r\n\005lives\030\010 \001(\005\022\r\n\005timer\030\t \001(\005\022\014\n\004posX\030\n"
+    " \001(\002\022\014\n\004posY\030\013 \001(\002\022\014\n\004posZ\030\014 \001(\002\022\014\n\004dead"
+    "\030\r \001(\010\"\'\n\004Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007"
+    "\n\003HAT\020\003\"i\n\016AnimationState\022\014\n\010STANDING\020\001\022"
+    "\013\n\007RUNNING\020\002\022\014\n\010PUNCHING\020\003\022\010\n\004BEAR\020\004\022\t\n\005"
+    "WUSON\020\005\022\013\n\007STUNNED\020\006\022\014\n\010GRABBING\020\007\"\"\n\013Me"
+    "ssageType\022\t\n\005LOBBY\020\001\022\010\n\004GAME\020\002", 1390);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -1067,6 +1072,27 @@ void Event::Swap(Event* other) {
 
 // ===================================================================
 
+const ::google::protobuf::EnumDescriptor* Message_MessageType_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Message_MessageType_descriptor_;
+}
+bool Message_MessageType_IsValid(int value) {
+  switch(value) {
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#ifndef _MSC_VER
+const Message_MessageType Message::LOBBY;
+const Message_MessageType Message::GAME;
+const Message_MessageType Message::MessageType_MIN;
+const Message_MessageType Message::MessageType_MAX;
+const int Message::MessageType_ARRAYSIZE;
+#endif  // _MSC_VER
 const ::google::protobuf::EnumDescriptor* Message_GameObject_Type_descriptor() {
   protobuf_AssignDescriptorsOnce();
   return Message_GameObject_Type_descriptor_;
@@ -1838,6 +1864,7 @@ void Message_GameObject::Swap(Message_GameObject* other) {
 const int Message::kIdFieldNumber;
 const int Message::kEventFieldNumber;
 const int Message::kGameObjectFieldNumber;
+const int Message::kMessageTypeFieldNumber;
 #endif  // !_MSC_VER
 
 Message::Message()
@@ -1859,6 +1886,7 @@ Message::Message(const Message& from)
 void Message::SharedCtor() {
   _cached_size_ = 0;
   id_ = 0;
+  messagetype_ = 1;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1894,7 +1922,10 @@ Message* Message::New() const {
 }
 
 void Message::Clear() {
-  id_ = 0;
+  if (_has_bits_[0 / 32] & 9) {
+    id_ = 0;
+    messagetype_ = 1;
+  }
   event_.Clear();
   gameobject_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -1949,6 +1980,26 @@ bool Message::MergePartialFromCodedStream(
           goto handle_unusual;
         }
         if (input->ExpectTag(26)) goto parse_gameObject;
+        if (input->ExpectTag(32)) goto parse_messageType;
+        break;
+      }
+
+      // optional .protos.Message.MessageType messageType = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_messageType:
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::protos::Message_MessageType_IsValid(value)) {
+            set_messagetype(static_cast< ::protos::Message_MessageType >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(4, value);
+          }
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1995,6 +2046,12 @@ void Message::SerializeWithCachedSizes(
       3, this->gameobject(i), output);
   }
 
+  // optional .protos.Message.MessageType messageType = 4;
+  if (has_messagetype()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      4, this->messagetype(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -2024,6 +2081,12 @@ void Message::SerializeWithCachedSizes(
         3, this->gameobject(i), target);
   }
 
+  // optional .protos.Message.MessageType messageType = 4;
+  if (has_messagetype()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      4, this->messagetype(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -2041,6 +2104,12 @@ int Message::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->id());
+    }
+
+    // optional .protos.Message.MessageType messageType = 4;
+    if (has_messagetype()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->messagetype());
     }
 
   }
@@ -2091,6 +2160,9 @@ void Message::MergeFrom(const Message& from) {
     if (from.has_id()) {
       set_id(from.id());
     }
+    if (from.has_messagetype()) {
+      set_messagetype(from.messagetype());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -2117,6 +2189,7 @@ void Message::Swap(Message* other) {
     std::swap(id_, other->id_);
     event_.Swap(&other->event_);
     gameobject_.Swap(&other->gameobject_);
+    std::swap(messagetype_, other->messagetype_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

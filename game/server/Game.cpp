@@ -128,7 +128,9 @@ void Game::revivePlayers() {
 		Player* player = (Player*)body;
 		if (player->getStunned()) {
 			if (currTime - player->getStunTimestamp() > reviveSpan) {
-				player->setHealth(50);
+				if (player->getHealth() < 50) {
+					player->setHealth(50);
+				}
 				player->setStunned(false);
 
 				Player* grabber = player->getMyGrabber();
@@ -137,6 +139,27 @@ void Game::revivePlayers() {
 					releaseGrab(grabber);
 				}
 			}
+		}
+	}
+}
+
+void Game::resurrectPlayers() {
+	milliseconds currTime = duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch());
+
+	milliseconds resurrectSpan = milliseconds(4000);
+
+	for (auto* body : playerSet_) {
+		Player* player = (Player*)body;
+
+		if (player->getDead() && player->getLives() > 0 &&
+			(currTime - player->getDeadTimestamp() > resurrectSpan)) {
+			player->setDead(false);
+			player->setHealth(100);
+			player->setStunned(false);
+			world_->addRigidBody(player);
+			world_->addAction(player->getController());
+			world_->spawnPlayer(player);
 		}
 	}
 }
@@ -314,6 +337,7 @@ void Game::startGameLoop() {
 
 		detectStun();
 		revivePlayers();
+		resurrectPlayers();
 
 		if (gravityController_->getActive()) {
 			eventQueueLock_.lock();
@@ -335,7 +359,7 @@ void Game::startGameLoop() {
 		milliseconds stamp2 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
-		sleep_for(interval - (stamp2-stamp1));
+		sleep_for(interval - (stamp2 - stamp1));
 
 		if (frameCounter > 300) {
 			spawnNewHat();
@@ -465,36 +489,39 @@ void Game::handleReSpawnLogic() {
 		}
 		if (world_->isDead(player)) {
 			auto lives = player->getLives();
-			if (lives > 1) {
-				Hat* hat = player->getHat();
-				if (hat) {
-					handleDquipLogic(player);
-				}
-				world_->spawnPlayer(player);
-				player->setLives(lives - 1);
-				std::cerr << "Player " << player->getId() << " died\n";
+
+			eventQueueLock_.lock();
+			protos::Event event;
+			event.set_clientid(player->getId());
+			event.set_type(protos::Event_Type_PLAYER_DIED);
+			eventQueue_.emplace_back(event);
+			eventQueueLock_.unlock();
+
+			Hat* hat = player->getHat();
+			if (hat) {
+				handleDquipLogic(player);
 			}
-			else {
-				std::cerr << "Player " << player->getId() << "is dead forever "<< std::endl;
-				player->setLives(lives - 1);
-				theDead.emplace(player);
+
+			world_->removeRigidBody(player);
+
+			player->setLives(lives - 1);
+			player->setDeadTimestamp(duration_cast<milliseconds>(
+				system_clock::now().time_since_epoch()));
+			player->setDead(true);
+
+			std::cerr << "Player died" << std::endl;
+
+			if (player->getLives() == 0) {
+				eventQueueLock_.lock();
+				event.Clear();
+				event.set_clientid(player->getId());
+				event.set_type(protos::Event_Type_GAME_OVER);
+				eventQueue_.emplace_back(event);
+				eventQueueLock_.unlock();
+
+				deadPlayers_.emplace(player);
 			}
-			
 		}
-	}
-	
-	for (auto* player : theDead) {
-		player->setDead(true);
-		world_->removeRigidBody(player);
-		deadPlayers_.emplace(player);
-		eventQueueLock_.lock();
-		protos::Event event;
-		event.set_clientid(player->getId());
-		event.set_type(protos::Event_Type_PLAYER_DIED);
-		eventQueue_.emplace_back(event);
-		eventQueueLock_.unlock();
-		//playerMap_.erase(player->getId());
-		//playerSet_.erase(player);
 	}
 }
  
@@ -793,9 +820,7 @@ void Game::sendStateToClients() {
 	for (auto& pair : playerMap_) {
 		Player* player = pair.second;
 
-		if (player->getDead()) {
-			// Don't do anything.
-		}
+		auto* gameObject = message.add_gameobject();
 
 		btVector3 position = player->getCenterOfMassPosition();
 
@@ -806,8 +831,6 @@ void Game::sendStateToClients() {
 		btScalar glm[16] = {};
 
 		transform.getOpenGLMatrix(glm);
-
-		auto* gameObject = message.add_gameobject();
 
 		if (player->getStunned()) {
 			animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_STUNNED;
@@ -837,7 +860,7 @@ void Game::sendStateToClients() {
 		gameObject->set_lives(player->getLives());
 		gameObject->set_animationstate(animationStateMap_[player->getId()]);
 		gameObject->set_visible(player->getVisible());
-		gameObject->set_id(pair.first);
+		gameObject->set_id(player->getId());
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
 		}

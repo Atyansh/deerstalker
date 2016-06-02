@@ -141,9 +141,10 @@ void Window::display_callback(GLFWwindow* window) {
 		for (auto& pair : Globals::gameObjects.playerMap) {
 			Player *player = dynamic_cast<Player*>((pair.second));
 			if (player->getVisible() && !player->getDead()) {
-				Globals::gameObjects.updatePlayerGui(player->getID(), player->getLives(), player->getHealth());
 				pair.second->draw(Globals::drawData);
 			}
+			Globals::gameObjects.updatePlayerGui(player->getID(), player->getLives(), player->getHealth());
+
 		}
 		// hat
 		for (auto& pair : Globals::gameObjects.hatMap) {
@@ -226,6 +227,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
 	if (STATE == State::_Game) {
+		message.set_messagetype(protos::Message_MessageType_GAME);
 		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
 			fprintf(stderr, "Going Down\n");
 			Globals::cam.pitch(0);

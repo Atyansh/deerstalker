@@ -54,8 +54,7 @@ void MessageHandler::handleGameMessages() {
 				Globals::soundEngine.playGameMusic();
 			}
 			else if (event.type() == protos::Event_Type_PLAYER_DIED) {
-				//Globals::gameObjects.playerMap.erase(event.clientid());
-				std::cerr << "PLAYER IS DEAD" << std::endl;
+				Globals::soundEngine.dead(event.clientid());
 			}
 		}
 
@@ -79,11 +78,6 @@ void MessageHandler::handleGameMessages() {
 				model = _Mango;
 			}
 
-			float matrix[16];
-			for (int j = 0; j < gameObject.matrix_size(); j++) {
-				matrix[j] = gameObject.matrix(j);
-			}
-
 			if ((*map).find(id) == (*map).end()) {
 				(*map)[id] = Window::createGameObj(model, Globals::gameObjects.modelMap[model], id);
 				if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
@@ -100,11 +94,15 @@ void MessageHandler::handleGameMessages() {
 				}
 			}
 
+			float matrix[16];
+			for (int j = 0; j < gameObject.matrix_size(); j++) {
+				matrix[j] = gameObject.matrix(j);
+			}
+
 			auto& entity = *(*map)[id];
-
 			glm::mat4 mat = glm::make_mat4(matrix);
-
 			entity.setMatrix(mat);
+
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 				Player* player = dynamic_cast<Player*>(&entity);
 

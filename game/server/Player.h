@@ -103,6 +103,14 @@ public:
 		dead_ = dead;
 	}
 
+	milliseconds getDeadTimestamp() {
+		return deadTimestamp_;
+	}
+
+	void setDeadTimestamp(milliseconds timestamp) {
+		deadTimestamp_ = timestamp;
+	}
+
 	void setSpawn();
 	void setProjectile(btRigidBody * body, unsigned int baseVelocity);
 
@@ -118,11 +126,13 @@ private:
 	uint32_t lives_;
 
 	milliseconds stunTimestamp_;
+	milliseconds deadTimestamp_;
 
 	bool stunned_ = false;
 	bool visible_ = true;
 
 	bool dead_ = false;
+
 
 	Player* myGrabber_ = nullptr;
 	Player* grabbedPlayer_ = nullptr;

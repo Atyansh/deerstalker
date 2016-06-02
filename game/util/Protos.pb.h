@@ -149,6 +149,25 @@ inline bool Message_GameObject_AnimationState_Parse(
   return ::google::protobuf::internal::ParseNamedEnum<Message_GameObject_AnimationState>(
     Message_GameObject_AnimationState_descriptor(), name, value);
 }
+enum Message_MessageType {
+  Message_MessageType_LOBBY = 1,
+  Message_MessageType_GAME = 2
+};
+bool Message_MessageType_IsValid(int value);
+const Message_MessageType Message_MessageType_MessageType_MIN = Message_MessageType_LOBBY;
+const Message_MessageType Message_MessageType_MessageType_MAX = Message_MessageType_GAME;
+const int Message_MessageType_MessageType_ARRAYSIZE = Message_MessageType_MessageType_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* Message_MessageType_descriptor();
+inline const ::std::string& Message_MessageType_Name(Message_MessageType value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    Message_MessageType_descriptor(), value);
+}
+inline bool Message_MessageType_Parse(
+    const ::std::string& name, Message_MessageType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Message_MessageType>(
+    Message_MessageType_descriptor(), name, value);
+}
 // ===================================================================
 
 class Event : public ::google::protobuf::Message {
@@ -749,6 +768,30 @@ class Message : public ::google::protobuf::Message {
 
   typedef Message_GameObject GameObject;
 
+  typedef Message_MessageType MessageType;
+  static const MessageType LOBBY = Message_MessageType_LOBBY;
+  static const MessageType GAME = Message_MessageType_GAME;
+  static inline bool MessageType_IsValid(int value) {
+    return Message_MessageType_IsValid(value);
+  }
+  static const MessageType MessageType_MIN =
+    Message_MessageType_MessageType_MIN;
+  static const MessageType MessageType_MAX =
+    Message_MessageType_MessageType_MAX;
+  static const int MessageType_ARRAYSIZE =
+    Message_MessageType_MessageType_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  MessageType_descriptor() {
+    return Message_MessageType_descriptor();
+  }
+  static inline const ::std::string& MessageType_Name(MessageType value) {
+    return Message_MessageType_Name(value);
+  }
+  static inline bool MessageType_Parse(const ::std::string& name,
+      MessageType* value) {
+    return Message_MessageType_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
   // optional int32 id = 1;
@@ -782,18 +825,28 @@ class Message : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedPtrField< ::protos::Message_GameObject >*
       mutable_gameobject();
 
+  // optional .protos.Message.MessageType messageType = 4;
+  inline bool has_messagetype() const;
+  inline void clear_messagetype();
+  static const int kMessageTypeFieldNumber = 4;
+  inline ::protos::Message_MessageType messagetype() const;
+  inline void set_messagetype(::protos::Message_MessageType value);
+
   // @@protoc_insertion_point(class_scope:protos.Message)
  private:
   inline void set_has_id();
   inline void clear_has_id();
+  inline void set_has_messagetype();
+  inline void clear_has_messagetype();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::RepeatedPtrField< ::protos::Event > event_;
-  ::google::protobuf::RepeatedPtrField< ::protos::Message_GameObject > gameobject_;
   ::google::protobuf::int32 id_;
+  int messagetype_;
+  ::google::protobuf::RepeatedPtrField< ::protos::Message_GameObject > gameobject_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -1564,6 +1617,31 @@ Message::mutable_gameobject() {
   return &gameobject_;
 }
 
+// optional .protos.Message.MessageType messageType = 4;
+inline bool Message::has_messagetype() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Message::set_has_messagetype() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Message::clear_has_messagetype() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Message::clear_messagetype() {
+  messagetype_ = 1;
+  clear_has_messagetype();
+}
+inline ::protos::Message_MessageType Message::messagetype() const {
+  // @@protoc_insertion_point(field_get:protos.Message.messageType)
+  return static_cast< ::protos::Message_MessageType >(messagetype_);
+}
+inline void Message::set_messagetype(::protos::Message_MessageType value) {
+  assert(::protos::Message_MessageType_IsValid(value));
+  set_has_messagetype();
+  messagetype_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.messageType)
+}
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -1592,6 +1670,11 @@ template <> struct is_proto_enum< ::protos::Message_GameObject_AnimationState> :
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::protos::Message_GameObject_AnimationState>() {
   return ::protos::Message_GameObject_AnimationState_descriptor();
+}
+template <> struct is_proto_enum< ::protos::Message_MessageType> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::protos::Message_MessageType>() {
+  return ::protos::Message_MessageType_descriptor();
 }
 
 }  // namespace google

@@ -41,6 +41,9 @@ void SoundEngine::initialize() {
 
 	result_ = system_->createSound("Sounds\\punch.wav", FMOD_3D, 0, &punchSound_);
 	punchSound_->set3DMinMaxDistance(5, 5000);
+
+	result_ = system_->createSound("Sounds\\dead.wav", FMOD_3D, 0, &deadSound_);
+	deadSound_->set3DMinMaxDistance(5, 5000);
 }
 
 void SoundEngine::initializePlayer(Player* player) {
@@ -191,7 +194,7 @@ void SoundEngine::wuson(int playerId) {
 
 	if (channel) {
 		bool playing = false;
-		if (channel->isPlaying(&playing));
+		channel->isPlaying(&playing);
 		if (playing) {
 			channel->set3DAttributes(&position, 0);
 			return;
@@ -213,7 +216,7 @@ void SoundEngine::propeller(int playerId) {
 
 	if (channel) {
 		bool playing = false;
-		if (channel->isPlaying(&playing));
+		channel->isPlaying(&playing);
 		if (playing) {
 			channel->set3DAttributes(&position, 0);
 			return;
@@ -235,7 +238,7 @@ void SoundEngine::punch(int playerId) {
 
 	if (channel) {
 		bool playing = false;
-		if (channel->isPlaying(&playing));
+		channel->isPlaying(&playing);
 		if (playing) {
 			channel->set3DAttributes(&position, 0);
 			return;
@@ -244,6 +247,16 @@ void SoundEngine::punch(int playerId) {
 
 	result_ = system_->playSound(punchSound_, 0, true, &channel);
 	punchChannels[playerId] = channel;
+	result_ = channel->set3DAttributes(&position, 0);
+	result_ = channel->setPaused(false);
+}
+
+void SoundEngine::dead(int playerId) {
+	Player* player = dynamic_cast<Player*>(Globals::gameObjects.playerMap[playerId]);
+	FMOD::Channel* channel = nullptr;
+	glm::vec3 pos = player->getPosition();
+	FMOD_VECTOR position = { pos.x, pos.y, pos.z };
+	result_ = system_->playSound(deadSound_, 0, true, &channel);
 	result_ = channel->set3DAttributes(&position, 0);
 	result_ = channel->setPaused(false);
 }

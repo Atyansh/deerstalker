@@ -28,6 +28,7 @@ public:
 	void wuson(int playerId);
 	void propeller(int playerId);
 	void punch(int playerId);
+	void dead(int playerId);
 
 	void pauseChannel(FMOD::Channel* channel) {
 		if (channel) {
@@ -52,6 +53,7 @@ private:
 	FMOD::Sound* wusonSound_;
 	FMOD::Sound* propellerSound_;
 	FMOD::Sound* punchSound_;
+	FMOD::Sound* deadSound_;
 
 
 	std::unordered_map<int, FMOD::Channel*> wusonChannels;
