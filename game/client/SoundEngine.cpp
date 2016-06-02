@@ -19,6 +19,7 @@ void SoundEngine::initialize() {
 	result_ = system_->createStream("Sounds\\menu_music.mp3", FMOD_LOOP_NORMAL | FMOD_2D, 0, &menuMusic_);
 	result_ = system_->createStream("Sounds\\Spazzkid.mp3", FMOD_LOOP_NORMAL | FMOD_2D, 0, &gameMusic_);
 	result_ = system_->createStream("Sounds\\end_music.mp3", FMOD_LOOP_NORMAL | FMOD_2D, 0, &endMusic_);
+	result_ = system_->createStream("Sounds\\gravity.wav", FMOD_LOOP_NORMAL | FMOD_2D, 0, &gravityMusic_);
 
 	result_ = system_->createSound("Sounds\\mango_shooting.wav", FMOD_3D, 0, &mangoShotSound_);
 	mangoShotSound_->set3DMinMaxDistance(5, 5000);
@@ -37,6 +38,9 @@ void SoundEngine::initialize() {
 
 	result_ = system_->createSound("Sounds\\propeller.mp3", FMOD_3D, 0, &propellerSound_);
 	propellerSound_->set3DMinMaxDistance(5, 5000);
+
+	result_ = system_->createSound("Sounds\\punch.wav", FMOD_3D, 0, &punchSound_);
+	punchSound_->set3DMinMaxDistance(5, 5000);
 }
 
 void SoundEngine::initializePlayer(Player* player) {
@@ -56,6 +60,17 @@ void SoundEngine::playLoadingMusic() {
 	pauseChannel(menuChannel_);
 	pauseChannel(gameChannel_);
 	pauseChannel(endChannel_);
+	pauseChannel(gravityChannel_);
+
+	if (loadingChannel_) {
+		bool paused;
+		loadingChannel_->getPaused(&paused);
+		if (paused) {
+			loadingChannel_->setPaused(false);
+		}
+		return;
+	}
+
 	result_ = system_->playSound(loadingMusic_, 0, false, &loadingChannel_);
 }
 
@@ -63,6 +78,17 @@ void SoundEngine::playMenuMusic() {
 	pauseChannel(loadingChannel_);
 	pauseChannel(gameChannel_);
 	pauseChannel(endChannel_);
+	pauseChannel(gravityChannel_);
+
+	if (menuChannel_) {
+		bool paused;
+		menuChannel_->getPaused(&paused);
+		if (paused) {
+			menuChannel_->setPaused(false);
+		}
+		return;
+	}
+
 	result_ = system_->playSound(menuMusic_, 0, false, &menuChannel_);
 }
 
@@ -70,6 +96,17 @@ void SoundEngine::playGameMusic() {
 	pauseChannel(loadingChannel_);
 	pauseChannel(menuChannel_);
 	pauseChannel(endChannel_);
+	pauseChannel(gravityChannel_);
+
+	if (gameChannel_) {
+		bool paused;
+		gameChannel_->getPaused(&paused);
+		if (paused) {
+			gameChannel_->setPaused(false);
+		}
+		return;
+	}
+
 	result_ = system_->playSound(gameMusic_, 0, false, &gameChannel_);
 }
 
@@ -77,7 +114,36 @@ void SoundEngine::playEndMusic() {
 	pauseChannel(loadingChannel_);
 	pauseChannel(menuChannel_);
 	pauseChannel(gameChannel_);
+	pauseChannel(gravityChannel_);
+
+	if (endChannel_) {
+		bool paused;
+		endChannel_->getPaused(&paused);
+		if (paused) {
+			endChannel_->setPaused(false);
+		}
+		return;
+	}
+
 	result_ = system_->playSound(endMusic_, 0, false, &endChannel_);
+}
+
+void SoundEngine::playGravityMusic() {
+	pauseChannel(loadingChannel_);
+	pauseChannel(menuChannel_);
+	pauseChannel(gameChannel_);
+	pauseChannel(endChannel_);
+
+	if (gravityChannel_) {
+		bool paused;
+		gravityChannel_->getPaused(&paused);
+		if (paused) {
+			gravityChannel_->setPaused(false);
+		}
+		return;
+	}
+
+	result_ = system_->playSound(gravityMusic_, 0, false, &gravityChannel_);
 }
 
 void SoundEngine::mangoShot(float x, float y, float z) {
@@ -156,6 +222,28 @@ void SoundEngine::propeller(int playerId) {
 
 	result_ = system_->playSound(propellerSound_, 0, true, &channel);
 	propellerChannels[playerId] = channel;
+	result_ = channel->set3DAttributes(&position, 0);
+	result_ = channel->setPaused(false);
+}
+
+void SoundEngine::punch(int playerId) {
+	Player* player = dynamic_cast<Player*>(Globals::gameObjects.playerMap[playerId]);
+	FMOD::Channel* channel = punchChannels[playerId];
+
+	glm::vec3 pos = player->getPosition();
+	FMOD_VECTOR position = { pos.x, pos.y, pos.z };
+
+	if (channel) {
+		bool playing = false;
+		if (channel->isPlaying(&playing));
+		if (playing) {
+			channel->set3DAttributes(&position, 0);
+			return;
+		}
+	}
+
+	result_ = system_->playSound(punchSound_, 0, true, &channel);
+	punchChannels[playerId] = channel;
 	result_ = channel->set3DAttributes(&position, 0);
 	result_ = channel->setPaused(false);
 }

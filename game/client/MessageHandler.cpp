@@ -44,6 +44,15 @@ void MessageHandler::handleGameMessages() {
 			else if (event.type() == protos::Event_Type_PLAYER_PROPELLER) {
 				Globals::soundEngine.propeller(event.clientid());
 			}
+			else if (event.type() == protos::Event_Type_PLAYER_PUNCHED) {
+				Globals::soundEngine.punch(event.clientid());
+			}
+			else if (event.type() == protos::Event_Type_GRAVITY_MUSIC) {
+				Globals::soundEngine.playGravityMusic();
+			}
+			else if (event.type() == protos::Event_Type_GAME_MUSIC) {
+				Globals::soundEngine.playGameMusic();
+			}
 		}
 
 		for (int i = 0; i < message.gameobject_size(); i++) {

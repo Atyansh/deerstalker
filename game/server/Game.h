@@ -64,7 +64,6 @@ private:
 	void releaseGrab(Player* player);
 
 	void sendStateToClients();
-	void sendEventsToClients();
 
 	void spawnNewHat();
 

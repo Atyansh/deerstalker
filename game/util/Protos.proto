@@ -23,6 +23,8 @@ message Event {
 		GRAB = 19;
 		PLAYER_GRABBED = 20;
 		PLAYER_PROPELLER = 21;
+		GRAVITY_MUSIC = 22;
+		GAME_MUSIC = 23;
 	}
 
 	enum Direction {
