@@ -21,6 +21,7 @@ class Player : public SMatrixTransform {
 		int health_;
 		int id_;
 		int timer_;
+		bool dead_;
 		glm::vec3 position_;
 
 		void createPlayer();
@@ -73,6 +74,14 @@ class Player : public SMatrixTransform {
 
 		void setTimer(int timer) {
 			timer_ = timer;
+		}
+
+		bool getDead() {
+			return dead_;
+		}
+
+		void setDead(bool dead) {
+			dead_ = dead;
 		}
 
 		void changeState(protos::Message_GameObject_AnimationState newState);

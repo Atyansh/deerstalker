@@ -140,8 +140,7 @@ void Window::display_callback(GLFWwindow* window) {
 		// Render objects
 		for (auto& pair : Globals::gameObjects.playerMap) {
 			Player *player = dynamic_cast<Player*>((pair.second));
-			if (player->getVisible()) {
-				
+			if (player->getVisible() && !player->getDead()) {
 				Globals::gameObjects.updatePlayerGui(player->getID(), player->getLives(), player->getHealth());
 				pair.second->draw(Globals::drawData);
 			}

@@ -53,6 +53,10 @@ void MessageHandler::handleGameMessages() {
 			else if (event.type() == protos::Event_Type_GAME_MUSIC) {
 				Globals::soundEngine.playGameMusic();
 			}
+			else if (event.type() == protos::Event_Type_PLAYER_DIED) {
+				//Globals::gameObjects.playerMap.erase(event.clientid());
+				std::cerr << "PLAYER IS DEAD" << std::endl;
+			}
 		}
 
 		for (int i = 0; i < message.gameobject_size(); i++) {
@@ -106,6 +110,7 @@ void MessageHandler::handleGameMessages() {
 
 				glm::vec3 position = glm::vec3(gameObject.posx(), gameObject.posy(), gameObject.posz());
 
+				player->setDead(gameObject.dead());
 				player->setPosition(position);
 				player->setTimer(gameObject.timer());
 				player->setLives(gameObject.lives());

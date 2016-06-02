@@ -483,13 +483,16 @@ void Game::handleReSpawnLogic() {
 		}
 	}
 	
-	for (auto player : theDead) {
+	for (auto* player : theDead) {
 		player->setDead(true);
 		world_->removeRigidBody(player);
 		deadPlayers_.emplace(player);
+		eventQueueLock_.lock();
 		protos::Event event;
 		event.set_clientid(player->getId());
 		event.set_type(protos::Event_Type_PLAYER_DIED);
+		eventQueue_.emplace_back(event);
+		eventQueueLock_.unlock();
 		//playerMap_.erase(player->getId());
 		//playerSet_.erase(player);
 	}
