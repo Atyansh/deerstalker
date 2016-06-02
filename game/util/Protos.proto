@@ -84,6 +84,7 @@ message Message {
 		optional float posX = 10;
 		optional float posY = 11;
 		optional float posZ = 12;
+		optional bool dead = 13;
 	}
 
 	optional int32 id = 1;

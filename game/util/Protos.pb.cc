@@ -91,7 +91,7 @@ void protobuf_AssignDesc_Protos_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Message));
   Message_GameObject_descriptor_ = Message_descriptor_->nested_type(0);
-  static const int Message_GameObject_offsets_[12] = {
+  static const int Message_GameObject_offsets_[13] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, matrix_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, type_),
@@ -104,6 +104,7 @@ void protobuf_AssignDesc_Protos_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, posx_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, posy_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, posz_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Message_GameObject, dead_),
   };
   Message_GameObject_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -175,20 +176,20 @@ void protobuf_AddDesc_Protos_2eproto() {
     "ME_MUSIC\020\027\"m\n\tDirection\022\006\n\002UP\020\001\022\010\n\004DOWN\020"
     "\002\022\010\n\004LEFT\020\003\022\t\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010B"
     "ACKWARD\020\006\022\006\n\002FL\020\007\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020"
-    "\n\"\216\004\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\013"
+    "\n\"\234\004\n\007Message\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\013"
     "2\r.protos.Event\022.\n\ngameObject\030\003 \003(\0132\032.pr"
-    "otos.Message.GameObject\032\250\003\n\nGameObject\022\n"
+    "otos.Message.GameObject\032\266\003\n\nGameObject\022\n"
     "\n\002id\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\016"
     "2\037.protos.Message.GameObject.Type\022\017\n\007hat"
     "Type\030\004 \001(\005\022A\n\016animationState\030\005 \001(\0162).pro"
     "tos.Message.GameObject.AnimationState\022\016\n"
     "\006health\030\006 \001(\005\022\017\n\007visible\030\007 \001(\010\022\r\n\005lives\030"
     "\010 \001(\005\022\r\n\005timer\030\t \001(\005\022\014\n\004posX\030\n \001(\002\022\014\n\004po"
-    "sY\030\013 \001(\002\022\014\n\004posZ\030\014 \001(\002\"\'\n\004Type\022\n\n\006PLAYER"
-    "\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003\"i\n\016AnimationStat"
-    "e\022\014\n\010STANDING\020\001\022\013\n\007RUNNING\020\002\022\014\n\010PUNCHING"
-    "\020\003\022\010\n\004BEAR\020\004\022\t\n\005WUSON\020\005\022\013\n\007STUNNED\020\006\022\014\n\010"
-    "GRABBING\020\007", 1290);
+    "sY\030\013 \001(\002\022\014\n\004posZ\030\014 \001(\002\022\014\n\004dead\030\r \001(\010\"\'\n\004"
+    "Type\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003\"i\n"
+    "\016AnimationState\022\014\n\010STANDING\020\001\022\013\n\007RUNNING"
+    "\020\002\022\014\n\010PUNCHING\020\003\022\010\n\004BEAR\020\004\022\t\n\005WUSON\020\005\022\013\n"
+    "\007STUNNED\020\006\022\014\n\010GRABBING\020\007", 1304);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -1133,6 +1134,7 @@ const int Message_GameObject::kTimerFieldNumber;
 const int Message_GameObject::kPosXFieldNumber;
 const int Message_GameObject::kPosYFieldNumber;
 const int Message_GameObject::kPosZFieldNumber;
+const int Message_GameObject::kDeadFieldNumber;
 #endif  // !_MSC_VER
 
 Message_GameObject::Message_GameObject()
@@ -1164,6 +1166,7 @@ void Message_GameObject::SharedCtor() {
   posx_ = 0;
   posy_ = 0;
   posz_ = 0;
+  dead_ = false;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1215,8 +1218,12 @@ void Message_GameObject::Clear() {
     type_ = 1;
     hattype_ = 0;
     animationstate_ = 1;
+    visible_ = false;
   }
-  ZR_(timer_, posz_);
+  if (_has_bits_[8 / 32] & 7936) {
+    ZR_(timer_, posx_);
+    ZR_(dead_, posz_);
+  }
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -1425,6 +1432,21 @@ bool Message_GameObject::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(104)) goto parse_dead;
+        break;
+      }
+
+      // optional bool dead = 13;
+      case 13: {
+        if (tag == 104) {
+         parse_dead:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &dead_)));
+          set_has_dead();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1517,6 +1539,11 @@ void Message_GameObject::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteFloat(12, this->posz(), output);
   }
 
+  // optional bool dead = 13;
+  if (has_dead()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(13, this->dead(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1588,6 +1615,11 @@ void Message_GameObject::SerializeWithCachedSizes(
   // optional float posZ = 12;
   if (has_posz()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(12, this->posz(), target);
+  }
+
+  // optional bool dead = 13;
+  if (has_dead()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(13, this->dead(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1671,6 +1703,11 @@ int Message_GameObject::ByteSize() const {
       total_size += 1 + 4;
     }
 
+    // optional bool dead = 13;
+    if (has_dead()) {
+      total_size += 1 + 1;
+    }
+
   }
   // repeated double matrix = 2;
   {
@@ -1741,6 +1778,9 @@ void Message_GameObject::MergeFrom(const Message_GameObject& from) {
     if (from.has_posz()) {
       set_posz(from.posz());
     }
+    if (from.has_dead()) {
+      set_dead(from.dead());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1776,6 +1816,7 @@ void Message_GameObject::Swap(Message_GameObject* other) {
     std::swap(posx_, other->posx_);
     std::swap(posy_, other->posy_);
     std::swap(posz_, other->posz_);
+    std::swap(dead_, other->dead_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

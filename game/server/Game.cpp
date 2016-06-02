@@ -28,9 +28,9 @@ void Game::remove(client_ptr client) {
 	if (iter != playerMap_.end()) {
 		auto* action = iter->second->getController();
 		auto* body = action->getRigidBody();
-		playerSet_.erase(body);
 		world_->removeAction(action);
 		world_->removeRigidBody(body);
+		playerSet_.erase(body);
 		playerMap_.erase(iter);
 		delete iter->second;
 	}
@@ -272,7 +272,7 @@ void Game::startGameLoop() {
 					handleSpawnLogic(&event);
 				}
 				
-				else if (playerMap_.count(event.clientid()) == 0) {
+				else if (playerMap_[event.clientid()]->getDead()) {
 					//TODO WHAT CAN THE DEAD DO
 					//std::cout << "WHAT CAN THE DEAD DO\n";
 					continue;
@@ -460,6 +460,9 @@ void Game::handleReSpawnLogic() {
 	std::unordered_set<Player*> theDead;
 	for (auto* body : playerSet_) {
 		Player* player = (Player*)body;
+		if (player->getDead()) {
+			continue;
+		}
 		if (world_->isDead(player)) {
 			auto lives = player->getLives();
 			if (lives > 1) {
@@ -472,19 +475,23 @@ void Game::handleReSpawnLogic() {
 				std::cerr << "Player " << player->getId() << " died\n";
 			}
 			else {
-				player->setDead(true);
 				std::cerr << "Player " << player->getId() << "is dead forever "<< std::endl;
+				player->setLives(lives - 1);
 				theDead.emplace(player);
-				world_->removeRigidBody(player);
 			}
 			
 		}
 	}
 	
 	for (auto player : theDead) {
+		player->setDead(true);
+		world_->removeRigidBody(player);
 		deadPlayers_.emplace(player);
-		playerMap_.erase(player->getId());
-		playerSet_.erase(player);
+		protos::Event event;
+		event.set_clientid(player->getId());
+		event.set_type(protos::Event_Type_PLAYER_DIED);
+		//playerMap_.erase(player->getId());
+		//playerSet_.erase(player);
 	}
 }
  
@@ -783,6 +790,10 @@ void Game::sendStateToClients() {
 	for (auto& pair : playerMap_) {
 		Player* player = pair.second;
 
+		if (player->getDead()) {
+			// Don't do anything.
+		}
+
 		btVector3 position = player->getCenterOfMassPosition();
 
 		//std::cerr << position.getX() << " " << position.getY() << " " << position.getZ() << std::endl;
@@ -817,6 +828,7 @@ void Game::sendStateToClients() {
 		gameObject->set_posy(position.getY());
 		gameObject->set_posz(position.getZ());
 		gameObject->set_hattype(player->getHatType());
+		gameObject->set_dead(player->getDead());
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
 		gameObject->set_health(player->getHealth());
 		gameObject->set_lives(player->getLives());

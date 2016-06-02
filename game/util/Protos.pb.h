@@ -636,6 +636,13 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline float posz() const;
   inline void set_posz(float value);
 
+  // optional bool dead = 13;
+  inline bool has_dead() const;
+  inline void clear_dead();
+  static const int kDeadFieldNumber = 13;
+  inline bool dead() const;
+  inline void set_dead(bool value);
+
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
@@ -660,6 +667,8 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline void clear_has_posy();
   inline void set_has_posz();
   inline void clear_has_posz();
+  inline void set_has_dead();
+  inline void clear_has_dead();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -671,10 +680,11 @@ class Message_GameObject : public ::google::protobuf::Message {
   ::google::protobuf::int32 hattype_;
   int animationstate_;
   ::google::protobuf::int32 health_;
-  bool visible_;
   ::google::protobuf::int32 lives_;
   ::google::protobuf::int32 timer_;
   float posx_;
+  bool visible_;
+  bool dead_;
   float posy_;
   float posz_;
   friend void  protobuf_AddDesc_Protos_2eproto();
@@ -1440,6 +1450,30 @@ inline void Message_GameObject::set_posz(float value) {
   set_has_posz();
   posz_ = value;
   // @@protoc_insertion_point(field_set:protos.Message.GameObject.posZ)
+}
+
+// optional bool dead = 13;
+inline bool Message_GameObject::has_dead() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void Message_GameObject::set_has_dead() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void Message_GameObject::clear_has_dead() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+inline void Message_GameObject::clear_dead() {
+  dead_ = false;
+  clear_has_dead();
+}
+inline bool Message_GameObject::dead() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.dead)
+  return dead_;
+}
+inline void Message_GameObject::set_dead(bool value) {
+  set_has_dead();
+  dead_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.dead)
 }
 
 // -------------------------------------------------------------------
