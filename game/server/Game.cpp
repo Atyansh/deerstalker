@@ -802,8 +802,8 @@ void Game::sendStateToClients() {
 
 	for (auto* hat : hatRemovedSet_) {
 		auto* event = message.add_event();
-		event->set_clientid(hat->playerId_);
 		event->set_type(protos::Event_Type_EQUIP);
+		event->set_clientid(hat->playerId_);
 		event->set_hatid(hat->getHatId());
 		
 		if (hat->playerId_ == 0) {
@@ -822,7 +822,12 @@ void Game::sendStateToClients() {
 
 		transform.getOpenGLMatrix(glm);
 
+		btVector3 position = hat->getCenterOfMassPosition();
+
 		auto* gameObject = message.add_gameobject();
+		gameObject->set_posx(position.getX());
+		gameObject->set_posy(position.getY());
+		gameObject->set_posz(position.getZ());
 		gameObject->set_type(protos::Message_GameObject_Type_HAT);
 		gameObject->set_hattype(hat->getHatType());
 		gameObject->set_id(hat->getHatId());

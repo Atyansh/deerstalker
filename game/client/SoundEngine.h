@@ -22,6 +22,8 @@ public:
 
 	void mangoShot(float x, float y, float z);
 	void jump(int playerId);
+	void hatSpawn(float x, float y, float z);
+	void wearHat(int playerId);
 
 	void pauseChannel(FMOD::Channel* channel) {
 		if (channel) {
@@ -40,6 +42,8 @@ private:
 
 	FMOD::Sound* mangoShotSound_;
 	FMOD::Sound* jumpSound_;
+	FMOD::Sound* hatSpawnSound_;
+	FMOD::Sound* wearHatSound_;
 	FMOD::Sound* propellerSound_;
 
 	FMOD::Channel* loadingChannel_ = 0;

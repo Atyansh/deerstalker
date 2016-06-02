@@ -25,6 +25,12 @@ void SoundEngine::initialize() {
 
 	result_ = system_->createSound("Sounds\\jump.wav", FMOD_3D, 0, &jumpSound_);
 	jumpSound_->set3DMinMaxDistance(5, 5000);
+
+	result_ = system_->createSound("Sounds\\hat_spawn.wav", FMOD_3D, 0, &hatSpawnSound_);
+	hatSpawnSound_->set3DMinMaxDistance(5, 5000);
+
+	result_ = system_->createSound("Sounds\\wear_hat.wav", FMOD_3D, 0, &wearHatSound_);
+	wearHatSound_->set3DMinMaxDistance(5, 5000);
 }
 
 void SoundEngine::initializePlayer(Player* player) {
@@ -82,6 +88,24 @@ void SoundEngine::jump(int playerId) {
 	glm::vec3 pos = player->getPosition();
 	FMOD_VECTOR position = { pos.x, pos.y, pos.z };
 	result_ = system_->playSound(jumpSound_, 0, true, &channel);
+	result_ = channel->set3DAttributes(&position, 0);
+	result_ = channel->setPaused(false);
+}
+
+void SoundEngine::hatSpawn(float x, float y, float z) {
+	FMOD::Channel* channel = nullptr;
+	FMOD_VECTOR position = { x, y, z };
+	result_ = system_->playSound(hatSpawnSound_, 0, true, &channel);
+	result_ = channel->set3DAttributes(&position, 0);
+	result_ = channel->setPaused(false);
+}
+
+void SoundEngine::wearHat(int playerId) {
+	Player* player = dynamic_cast<Player*>(Globals::gameObjects.playerMap[playerId]);
+	FMOD::Channel* channel = nullptr;
+	glm::vec3 pos = player->getPosition();
+	FMOD_VECTOR position = { pos.x, pos.y, pos.z };
+	result_ = system_->playSound(wearHatSound_, 0, true, &channel);
 	result_ = channel->set3DAttributes(&position, 0);
 	result_ = channel->setPaused(false);
 }

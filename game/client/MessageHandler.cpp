@@ -30,6 +30,7 @@ void MessageHandler::handleGameMessages() {
 			if (event.type() == protos::Event_Type_EQUIP) {
 				auto* hat = Globals::gameObjects.hatMap[event.hatid()];
 				Globals::gameObjects.hatMap.erase(event.hatid());
+				Globals::soundEngine.wearHat(event.clientid());
 				//delete hat;
 			}
 			else if (event.type() == protos::Event_Type_DELETE_BULLET) {
@@ -77,6 +78,9 @@ void MessageHandler::handleGameMessages() {
 				}
 				if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
 					Globals::soundEngine.mangoShot(gameObject.posx(), gameObject.posy(), gameObject.posz());
+				}
+				if (gameObject.type() == protos::Message_GameObject_Type_HAT) {
+					Globals::soundEngine.hatSpawn(gameObject.posx(), gameObject.posy(), gameObject.posz());
 				}
 			}
 
