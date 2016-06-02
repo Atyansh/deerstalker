@@ -21,6 +21,10 @@ void SoundEngine::initialize() {
 	result_ = system_->createStream("Sounds\\end_music.mp3", FMOD_LOOP_NORMAL | FMOD_2D, 0, &endMusic_);
 
 	result_ = system_->createSound("Sounds\\mango_shooting.wav", FMOD_3D, 0, &mangoShotSound_);
+	mangoShotSound_->set3DMinMaxDistance(5, 5000);
+
+	result_ = system_->createSound("Sounds\\jump.wav", FMOD_3D, 0, &jumpSound_);
+	jumpSound_->set3DMinMaxDistance(5, 5000);
 }
 
 void SoundEngine::initializePlayer(Player* player) {
@@ -68,6 +72,16 @@ void SoundEngine::mangoShot(float x, float y, float z) {
 	FMOD::Channel* channel = nullptr;
 	FMOD_VECTOR position = { x, y, z };
 	result_ = system_->playSound(mangoShotSound_, 0, true, &channel);
+	result_ = channel->set3DAttributes(&position, 0);
+	result_ = channel->setPaused(false);
+}
+
+void SoundEngine::jump(int playerId) {
+	Player* player = dynamic_cast<Player*>(Globals::gameObjects.playerMap[playerId]);
+	FMOD::Channel* channel = nullptr;
+	glm::vec3 pos = player->getPosition();
+	FMOD_VECTOR position = { pos.x, pos.y, pos.z };
+	result_ = system_->playSound(jumpSound_, 0, true, &channel);
 	result_ = channel->set3DAttributes(&position, 0);
 	result_ = channel->setPaused(false);
 }

@@ -21,6 +21,7 @@ public:
 	void playEndMusic();
 
 	void mangoShot(float x, float y, float z);
+	void jump(int playerId);
 
 	void pauseChannel(FMOD::Channel* channel) {
 		if (channel) {
@@ -38,6 +39,7 @@ private:
 	FMOD::Sound* endMusic_;
 
 	FMOD::Sound* mangoShotSound_;
+	FMOD::Sound* jumpSound_;
 	FMOD::Sound* propellerSound_;
 
 	FMOD::Channel* loadingChannel_ = 0;

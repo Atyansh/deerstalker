@@ -37,6 +37,9 @@ void MessageHandler::handleGameMessages() {
 				Globals::gameObjects.bulletMap.erase(event.bulletid());
 				//delete bullet;
 			}
+			else if (event.type() == protos::Event_Type_PLAYER_JUMP) {
+				Globals::soundEngine.jump(event.clientid());
+			}
 		}
 
 		for (int i = 0; i < message.gameobject_size(); i++) {

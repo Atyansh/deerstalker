@@ -424,6 +424,13 @@ void Game::handleMoveLogic(const protos::Event* event) {
 void Game::handleJumpLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
 	player->getController()->jump();
+
+	eventQueueLock_.lock();
+	protos::Event jumpEvent;
+	jumpEvent.set_type(protos::Event_Type_PLAYER_JUMP);
+	jumpEvent.set_clientid(event->clientid());
+	eventQueue_.emplace_back(jumpEvent);
+	eventQueueLock_.unlock();
 }
 
 void Game::spawnNewHat() {
