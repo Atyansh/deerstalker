@@ -1,6 +1,12 @@
 #include "GameObjects.h"
 #include "Globals.h"
 
+
+#include <glm/glm.hpp>
+
+#include <glm/gtx/transform.hpp>
+
+
 const char* bearPath = "Assets/OBJ/Bear/bear_full.obj";
 const char* wusonPath = "Assets/X/Wuson.X";
 const char* mangoPath = "Assets/OBJ/Mango/mango.obj";
@@ -29,6 +35,7 @@ string lobbyPath = "Assets/UI/Lobby.jpg";
 string lobbyReadyPath = "Assets/UI/Lobby_Ready.jpg";
 string endPath = "Assets/UI/EndGame.jpg";
 string loadingPath = "Assets/UI/Loading.jpg";
+string winnerPath = "Assets/UI/Winner.png";
 
 GameObjects::GameObjects() {
 }
@@ -53,14 +60,20 @@ void GameObjects::loadShaders() {
 	animShader->addDirectionalLight(glm::vec3(0.f, 1.0f, 0.f), glm::vec3(0.7f), glm::vec3(0.4f));
 
 	Shader *guiShader = new Shader("Shaders/guiItem.vert", "Shaders/guiItem.frag");
+	Shader *guiShaderTrans = new Shader("Shaders/guiItem2.vert", "Shaders/guiItem2.frag");
 	Shader *twoShader = new Shader("Shaders/2DShader.vert", "Shaders/2DShader.frag");
 
 	shaderMap[_LtShader] = lightShader;
 	shaderMap[_GShader] = guiShader;
 	shaderMap[_2DShader] = twoShader;
 	shaderMap[_AShader] = animShader;
+	shaderMap[_TransShader] = guiShaderTrans;
 
+	Shader *fontShader = new Shader("Shaders/fontShader.vert", "Shaders/fontShader.frag");
 	ready = new ReadyGUI(Globals::drawData.width, Globals::drawData.height);
+	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(Globals::drawData.width), 0.0f, static_cast<GLfloat>(Globals::drawData.height));
+	winnerText = new GUIText(fontShader, projection, "Assets/Font/bubblebutt.ttf", 200);
+	winnerText->init();
 }
 
 void GameObjects::loadLoadingObject() {
@@ -74,7 +87,9 @@ void GameObjects::loadGameObjects() {
 	guiMap[_LobbyBG] = new GuiItem(lobbyPath, shaderMap[_GShader], 60, 34, 0, 0);
 	guiMap[_LobbyReadyBG] = new GuiItem(lobbyReadyPath, shaderMap[_GShader], 60, 34, 0, 0);
 	guiMap[_EndGameBG] = new GuiItem(endPath, shaderMap[_GShader], 60, 34, 0, 0);
-
+	//guiMap[_Winner] = new GuiItem(winnerPath, shaderMap[_TransShader], 60, 34, 0, 0);
+	//winner = new ImageGUI(winnerPath.c_str(), shaderMap[_TransShader], Globals::drawData.width, Globals::drawData.height);
+	//winner->setupBuffers();
 	numPlayerGuiSet = 0;
 
 	playerGUIMap.push_back(std::pair<std::uint32_t, PlayerGameGUI*>(0, new PlayerGameGUI(shaderMap[_2DShader], Globals::drawData.width, Globals::drawData.height, "P1")));

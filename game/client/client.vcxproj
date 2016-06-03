@@ -135,6 +135,7 @@
     <ClCompile Include="Graphics\GuiItem.cpp" />
     <ClCompile Include="Graphics\GUIText.cpp" />
     <ClCompile Include="Graphics\HealthBarGUI.cpp" />
+    <ClCompile Include="Graphics\ImageGUI.cpp" />
     <ClCompile Include="Graphics\LightShader.cpp" />
     <ClCompile Include="Graphics\LivesGUI.cpp" />
     <ClCompile Include="Graphics\PlayerGameGUI.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Graphics\GuiItem.h" />
     <ClInclude Include="Graphics\GUIText.h" />
     <ClInclude Include="Graphics\HealthBarGUI.h" />
+    <ClInclude Include="Graphics\ImageGUI.h" />
     <ClInclude Include="Graphics\LightShader.h" />
     <ClInclude Include="Graphics\LivesGUI.h" />
     <ClInclude Include="Graphics\PlayerGameGUI.h" />

@@ -148,7 +148,13 @@ void Window::display_callback(GLFWwindow* window) {
 		Globals::drawData.view = Globals::cam.getView();
 
 		Globals::gameObjects.root->draw(Globals::drawData);
-		Globals::gameObjects.drawPlayerGui(guiTranslation);
+		//Globals::gameObjects.drawPlayerGui(guiTranslation);
+
+		if (Globals::gameWin) {
+			cerr << "WIN\n";
+			//Globals::gameObjects.winner->draw();
+			Globals::gameObjects.winnerText->renderText("WINNER!", 100.0f, 100.0f, 1.0f, glm::vec3(1.0f, 1.0f, 0.0f));
+		}
 
 		// Render objects
 		for (auto& pair : Globals::gameObjects.playerMap) {

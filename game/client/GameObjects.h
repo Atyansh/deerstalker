@@ -12,6 +12,7 @@
 #include "Graphics\GuiItem.h"
 #include "Graphics\PlayerGameGUI.h"
 #include "Graphics\ReadyGUI.h"
+#include "Graphics\ImageGUI.h"
 
 enum Models {
 	_Player, //used for type of object
@@ -45,7 +46,8 @@ enum Shaders {
 	_GShader,
 	_LtShader,
 	_2DShader,
-	_AShader
+	_AShader,
+	_TransShader
 };
 
 enum GUI {
@@ -53,7 +55,8 @@ enum GUI {
 	_LobbyBG,
 	_LobbyReadyBG,
 	_EndGameBG,
-	_Loading
+	_Loading,
+	_Winner
 };
 class GameObjects
 {
@@ -70,6 +73,8 @@ public:
 	std::unordered_map<std::uint32_t, Model*> modelMap;
 	std::unordered_map<std::uint32_t, Shader*> shaderMap;
 	std::unordered_map<std::uint32_t, GuiItem*> guiMap;
+	GUIText* winnerText;
+	//ImageGUI *winner;
 	ReadyGUI *ready;
 	SMatrixTransform *root;
 
