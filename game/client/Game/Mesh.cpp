@@ -150,11 +150,9 @@ void Mesh::setupUniformLoc() {
 	projLoc = glGetUniformLocation(shader->getPid(), "projection");
 	hasTexLoc = glGetUniformLocation(shader->getPid(), "hasTexture");
 	hasBonesLoc = glGetUniformLocation(shader->getPid(), "hasBones");
-	if (this->hasBones) {
-		for (size_t i = 0; i < MAX_BONES; i++) {
-			string tmp = "bones[" + to_string(i) + "]";
-			boneLocs.push_back(glGetUniformLocation(shader->getPid(), tmp.c_str()));
-		}
+	for (size_t i = 0; i < MAX_BONES; i++) {
+		string tmp = "bones[" + to_string(i) + "]";
+		boneLocs.push_back(glGetUniformLocation(shader->getPid(), tmp.c_str()));
 	}
 
 	ambient = glGetUniformLocation(shader->getPid(), "materialNoTex.ambient");

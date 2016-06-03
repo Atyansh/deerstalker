@@ -13,7 +13,6 @@ AnimModel::AnimModel(const char* path, Shader *shader) : Model()
 	numBones = 0;
 	height = 0.f;
 	this->mAnimTree = NULL;
-	this->state = state;
 	this->loadModel(path);
 }
 
@@ -23,10 +22,16 @@ AnimModel::~AnimModel()
 }
 
 void AnimModel::draw(DrawData &data) {
+	float time = clock() / float(CLOCKS_PER_SEC);
+	float delta = time - prevTime;
+	prevTime = time;
+
+	currAnimTime += min(delta, 0.05f);
+
 	shader->bind();
 
 	if (this->mAnimTree != NULL) {
-		this->mAnimTree->boneTransfrom(data.animTime, boneInfos, boneMapping);
+		this->mAnimTree->boneTransfrom(currAnimTime, boneInfos, boneMapping);
 	}
 
 	for (GLuint i = 0; i < this->meshes.size(); i++) {
@@ -50,8 +55,8 @@ float AnimModel::getHeight() {
 void AnimModel::addLoadMethod() {
 	if (boneMapping.size() > 0 && boneInfos.size() > 0) {
 		this->mAnimTree = new AnimationTree(scene, modelInverseMat);
+		cout << "animation tree made" << endl;
 	}
-	cout << endl;
 }
 
 void AnimModel::addProcessVertMethod(float y) {

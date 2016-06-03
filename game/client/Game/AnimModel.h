@@ -16,12 +16,13 @@ protected:
 	unordered_map<string, unsigned int> boneMapping;
 	vector<BoneInfo> boneInfos; // transformation for bones
 
-								/* Animation */
+	/* Animation */
 	AnimationTree *mAnimTree;
+	//Animation time
+	float prevTime = 0;
+	float currAnimTime = 0;
 
 	float height = 0;
-
-	protos::Message_GameObject_AnimationState state;
 
 	void loadBones(const aiMesh* mesh, vector<Vertex>& bones);
 

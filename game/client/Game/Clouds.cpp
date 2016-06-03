@@ -72,7 +72,6 @@ void Clouds::setupCloud() {
 	}
 
 	for (r = 0; r < rings - 1; r++) for (s = 0; s < sectors - 1; s++) {
-		// create 2 triangles: 1 - 2 - 4  &  2 - 3 - 4
 		indices.push_back(r * sectors + s); // 1
 		indices.push_back(r * sectors + (s + 1)); // 2
 		indices.push_back((r + 1) * sectors + s); // 4

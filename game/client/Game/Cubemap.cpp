@@ -2,6 +2,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <boost/filesystem.hpp>
+#include <SOIL/SOIL.h>
 
 Cubemap::Cubemap() {
 
@@ -80,12 +81,19 @@ unsigned char* Cubemap::loadPPM(const char* filename, int& width, int& height)
 GLuint Cubemap::loadCubemap(const string& directory) {
 
 	vector<const GLchar*> faces;
-	faces.push_back("right.ppm");
+	/*faces.push_back("right.ppm");
 	faces.push_back("left.ppm");
 	faces.push_back("top.ppm");
 	faces.push_back("bottom.ppm");
 	faces.push_back("back.ppm");
-	faces.push_back("front.ppm");
+	faces.push_back("front.ppm");*/
+
+	faces.push_back("right.png");
+	faces.push_back("left.png");
+	faces.push_back("top.png");
+	faces.push_back("bottom.png");
+	faces.push_back("back.png");
+	faces.push_back("front.png");
 
 	GLuint textureID;
 	glGenTextures(1, &textureID);
@@ -95,8 +103,10 @@ GLuint Cubemap::loadCubemap(const string& directory) {
 	unsigned char* image;
 
 	for (int i = 0; i < faces.size(); i++) {
-		image = loadPPM((directory + "/" + faces[i]).c_str(), width, height);
+		// image = loadPPM((directory + "/" + faces[i]).c_str(), width, height);
+		image = SOIL_load_image((directory + "/" + faces[i]).c_str(), &width, &height, 0, SOIL_LOAD_RGB);
 		if (image == NULL) {
+			cout << "error loading " << faces[i] << " from " << directory << endl;
 			return 0;
 		}
 		glTexImage2D(

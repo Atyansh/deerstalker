@@ -12,11 +12,12 @@ const char* playerPunchingPath = "Assets/FBX/punching.fbx";
 const char* playerStunnedPath = "Assets/FBX/stun.fbx";
 const char* wizardPath = "Assets/OBJ/Wizard_Hat/wizard_hat.obj";
 const char* hardHatPath = "Assets/OBJ/Hard_Hat/HardHat.obj";
-const char* propellerHatPath = "Assets/OBJ/PropellerHat/PropellerHat.obj";
+//const char* propellerHatPath = "Assets/OBJ/PropellerHat/PropellerHat.obj";
+const char* propellerHatPath = "Assets/FBX/PropellerHat.fbx";
 const char* bearHatPath = "Assets/OBJ/BearHat/BearHat.obj";
 const char* deerstalkerHatPath = "Assets/OBJ/DeerstalkerHat/DeerstalkerHat.obj";
 
-string skyboxDirectory = "Assets/Cubemap";
+string skyboxDirectory = "Assets/Cubemap2";
 string backgroundPath = "Assets/UI/DeerMenu.jpg";
 string lobbyPath = "Assets/UI/Lobby.jpg";
 string endPath = "Assets/UI/EndGame.jpg";

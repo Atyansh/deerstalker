@@ -29,7 +29,6 @@ aiAnimation* AnimationTree::getAnim() {
 }
 
 void AnimationTree::readNodeHierarchy(float animationTime, const aiNode* node, aiMatrix4x4 parentMatrix, vector<BoneInfo> &boneInfos, unordered_map<string, unsigned int> boneMapping) {
-
 	string nodeName(node->mName.data);
 
 	const aiAnimation* pAnimation = this->scene->mAnimations[0];
@@ -86,7 +85,6 @@ unsigned int AnimationTree::findPosition(float animationTime, const aiNodeAnim* 
 unsigned int AnimationTree::findRotation(float animationTime, const aiNodeAnim* pNodeAnim)
 {
 	assert(pNodeAnim->mNumRotationKeys > 0);
-
 	for (unsigned int i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
 		if (animationTime < (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
 			return i;
