@@ -64,7 +64,7 @@ public:
 	std::unordered_map<std::uint32_t, Shader*> shaderMap;
 	std::unordered_map<std::uint32_t, GuiItem*> guiMap;
 	GUIText* winnerText;
-	ImageGUI *winner;
+	//ImageGUI *winner;
 	ReadyGUI *ready;
 	SMatrixTransform *root;
 

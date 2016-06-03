@@ -82,8 +82,8 @@ void GameObjects::loadGameObjects() {
 	guiMap[_LobbyReadyBG] = new GuiItem(lobbyReadyPath, shaderMap[_GShader], 60, 34, 0, 0);
 	guiMap[_EndGameBG] = new GuiItem(endPath, shaderMap[_GShader], 60, 34, 0, 0);
 	//guiMap[_Winner] = new GuiItem(winnerPath, shaderMap[_TransShader], 60, 34, 0, 0);
-	winner = new ImageGUI(winnerPath.c_str(), shaderMap[_TransShader], Globals::drawData.width, Globals::drawData.height);
-	winner->setupBuffers();
+	//winner = new ImageGUI(winnerPath.c_str(), shaderMap[_TransShader], Globals::drawData.width, Globals::drawData.height);
+	//winner->setupBuffers();
 	numPlayerGuiSet = 0;
 
 	playerGUIMap.push_back(std::pair<std::uint32_t, PlayerGameGUI*>(0, new PlayerGameGUI(shaderMap[_2DShader], Globals::drawData.width, Globals::drawData.height, "P1")));
