@@ -134,6 +134,7 @@ void do_read_body(size_t length) {
 				}
 				if (event.type() == event.READY) {
 					Globals::readyPlayers[event.clientid()] = true;
+					cerr << "HIIIIII AJJJJ AND TIMMMM\n";
 				}
 			}
 

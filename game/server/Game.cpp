@@ -287,6 +287,7 @@ void Game::startGameLoop() {
 
 		messageQueueLock_.lock();
 		while (!messageQueue_.empty()) {
+		std::cerr << "in Message Queue" << std::endl;
 			protos::Message message = messageQueue_.front();
 
 			for (int i = 0; i < message.event_size(); i++) {
@@ -324,6 +325,7 @@ void Game::startGameLoop() {
 					handleGrabLogic(&event);
 				}
 				else if (event.type() == protos::Event_Type_READY) {
+					std::cerr << "READY RECEIVED FROM CLIENT" << std::endl;
 					protos::Event e;
 					e.set_type(protos::Event_Type_READY);
 					e.set_clientid(event.clientid());

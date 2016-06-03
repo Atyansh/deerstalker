@@ -17,7 +17,7 @@ void MessageHandler::handleLobbyMessages() {
 }
 
 void MessageHandler::handleLobbyReadyMessages() {
-
+	
 }
 
 void MessageHandler::handleStartMessages() {

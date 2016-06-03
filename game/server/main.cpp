@@ -38,10 +38,6 @@ int main(int argc, char* argv[]) {
 		Server s(io_service, port, game);
 		std::thread t([&io_service](){ io_service.run(); });
 
-		while (game.size() < Game::MIN_PLAYERS) {
-			Sleep(1);
-		}
-
 		game.initialize();
 		game.startGameLoop();
 

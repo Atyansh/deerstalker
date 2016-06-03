@@ -136,6 +136,7 @@ void Window::display_callback(GLFWwindow* window) {
 		break;
 	case State::_LobbyReady:
 		Globals::gameObjects.guiMap[_LobbyReadyBG]->draw(Globals::drawData);
+		//cout << Globals::readyPlayers[Globals::ID] << endl;
 		break;
 	case State::_Game:
 		Globals::drawData.view = Globals::cam.getView();
@@ -382,14 +383,21 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	}
 
 	if (STATE == State::_Lobby) {
+		
 		Sleep(1);
-		std::cerr << "LOBBY" << std::endl;
+		//std::cerr << "LOBBY" << std::endl;
 		if (buttons[BUTTON_A] == GLFW_PRESS) {
 			std::cerr << "SEND READY" << std::endl;
 			auto* event = message.add_event();
 			event->set_clientid(Globals::ID);
 			event->set_type(protos::Event_Type_READY);
+			STATE = State::_LobbyReady;
 		}
+		
+	}
+
+	if (STATE == State::_LobbyReady) {
+		//Sleep(1);
 		if (Globals::startGame) {
 			std::cerr << "START_GAME" << std::endl;
 			STATE = State::_Game;
