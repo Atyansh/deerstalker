@@ -102,7 +102,7 @@ void Player::changeState(protos::Message_GameObject_AnimationState newState){
 
 	float scaleFactorPlayer = 0.075f;
 	float scaleFactorHat = 2.2f;
-	float transZ = currState == protos::Message_GameObject_AnimationState_STANDING ? 0.0f : 0.5f;
+	float transZ = currState == protos::Message_GameObject_AnimationState_STANDING || currState == protos::Message_GameObject_AnimationState_FLYING ? 0.0f : 0.5f;
 
 	//z = 0.5f to put hat in right spot 
 	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(0.f, (playerModels[protos::Message_GameObject_AnimationState_STANDING]->getPlayerModel()->getHeight()*scaleFactorPlayer) - 0.6f, transZ));
