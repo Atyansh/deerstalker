@@ -541,13 +541,14 @@ void Game::handleReSpawnLogic() {
 			std::cerr << "Player died" << std::endl;
 
 			if (player->getLives() == 0) {
+				/*
 				eventQueueLock_.lock();
 				event.Clear();
 				event.set_clientid(player->getId());
 				event.set_type(protos::Event_Type_GAME_OVER);
 				eventQueue_.emplace_back(event);
 				eventQueueLock_.unlock();
-
+				*/
 				deadPlayers_.emplace(player);
 			}
 		}

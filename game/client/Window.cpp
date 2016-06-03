@@ -388,7 +388,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 	if (STATE == State::_Dead) {
 		if (Globals::gameOver) {
-			//STATE = State::_EndGame;
+			STATE = State::_EndGame;
 		}
 
 		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
