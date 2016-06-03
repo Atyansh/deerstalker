@@ -17,7 +17,7 @@ void SoundEngine::initialize() {
 
 	result_ = system_->createStream("Sounds\\loading_music.mp3", FMOD_LOOP_NORMAL | FMOD_2D, 0, &loadingMusic_);
 	result_ = system_->createStream("Sounds\\menu_music.mp3", FMOD_LOOP_NORMAL | FMOD_2D, 0, &menuMusic_);
-	result_ = system_->createStream("Sounds\\Spazzkid.mp3", FMOD_LOOP_NORMAL | FMOD_2D, 0, &gameMusic_);
+	result_ = system_->createStream("Sounds\\background_play2.mp3", FMOD_LOOP_NORMAL | FMOD_2D, 0, &gameMusic_);
 	result_ = system_->createStream("Sounds\\end_music.mp3", FMOD_LOOP_NORMAL | FMOD_2D, 0, &endMusic_);
 	result_ = system_->createStream("Sounds\\gravity.wav", FMOD_LOOP_NORMAL | FMOD_2D, 0, &gravityMusic_);
 
