@@ -55,7 +55,6 @@ float AnimModel::getHeight() {
 void AnimModel::addLoadMethod() {
 	if (boneMapping.size() > 0 && boneInfos.size() > 0) {
 		this->mAnimTree = new AnimationTree(scene, modelInverseMat);
-		cout << "animation tree made" << endl;
 	}
 }
 
