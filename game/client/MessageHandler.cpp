@@ -30,7 +30,9 @@ void MessageHandler::handleGameMessages() {
 			if (event.type() == protos::Event_Type_EQUIP) {
 				auto* hat = Globals::gameObjects.hatMap[event.hatid()];
 				Globals::gameObjects.hatMap.erase(event.hatid());
-				Globals::soundEngine.wearHat(event.clientid());
+				if (event.clientid()) {
+					Globals::soundEngine.wearHat(event.clientid());
+				}
 				//delete hat;
 			}
 			else if (event.type() == protos::Event_Type_DELETE_BULLET) {
