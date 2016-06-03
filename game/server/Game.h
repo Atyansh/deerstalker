@@ -30,7 +30,7 @@ public:
 	void initialize();
 	void startGameLoop();
 
-	const static uint32_t MIN_PLAYERS = 3;
+	const static uint32_t MIN_PLAYERS = 1;
 	const static uint32_t MAX_PLAYERS = 4;
 	std::deque<uint32_t> availableIds;
 

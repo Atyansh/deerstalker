@@ -3,6 +3,7 @@
 const char* fontShaderVert = "Shaders/fontShader.vert";
 const char* fontShaderFrag = "Shaders/fontShader.frag";
 const char* fontPath = "Assets/Font/bubblebutt.ttf";
+const char* arial = "Assets/Font/arial.ttf";
 
 PlayerGameGUI::PlayerGameGUI(Shader *shader, int w, int h, string name) : _shader(shader), _width(w), _height(h), _name(name) {
 	
@@ -13,6 +14,9 @@ PlayerGameGUI::PlayerGameGUI(Shader *shader, int w, int h, string name) : _shade
 	Shader* fontShader = new Shader(fontShaderVert, fontShaderFrag);
 	playerName = new GUIText(fontShader, projection, fontPath, 100);
 	playerName->init();
+
+	timeText = new GUIText(fontShader, projection, fontPath, 100);
+	timeText->init();
 
 	//playerName->setFontSize(150);
 	health = new HealthBarGUI(_shader, projection);
@@ -45,15 +49,23 @@ void PlayerGameGUI::draw(glm::mat4 translation, glm::vec3 color) {
 	lMat = glm::translate(lMat, glm::vec3(80.0f, 150.f, 0.0f));
 	lMat = translation * lMat;
 	for (int i = 0; i < _livesLeft; i++) {
-		if (i > 0) { lMat = glm::translate(lMat, glm::vec3(200.f, 0.f, 0.0f)); } 
+		if (i > 0) { lMat = glm::translate(lMat, glm::vec3(200.f, 0.f, 0.0f)); }
 		lives[i]->draw(lMat);
 	}
 
+	if (_time) {
+		string curTime = to_string(120 - int(_time));
+		timeText->renderText(curTime, 940.0f, 960.0f, 1.0f, glm::vec3(0.0f, 1.0f, 1.0f));
+	}
 }
 
-void PlayerGameGUI::update(int updatedLives, int updatedHealth, int updatedHat) {
+void PlayerGameGUI::update(int updatedLives, int updatedHealth) {
 	_livesLeft = updatedLives;
 	_currHealth = float(updatedHealth)/100.0f;
 	health->update(_currHealth);
 	// Update hats
+}
+
+void PlayerGameGUI::updateTime(float time) {
+	_time = time;
 }

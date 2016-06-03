@@ -74,5 +74,6 @@ public:
 	void setPlayerToGui(int id);
 	void drawPlayerGui(glm::mat4 translation);
 	void updatePlayerGui(int id, int lives, int health);
+	void updatePlayerTime(float time, int id);
 };
 

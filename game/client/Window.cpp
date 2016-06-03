@@ -153,8 +153,11 @@ void Window::display_callback(GLFWwindow* window) {
 				pair.second->draw(Globals::drawData);
 			}
 			Globals::gameObjects.updatePlayerGui(player->getID(), player->getLives(), player->getHealth());
-
+			if (pair.first == Globals::ID) {
+				Globals::gameObjects.updatePlayerTime(float(player->getTimer())/1000.0f, Globals::ID);
+			}
 		}
+
 		// hat
 		for (auto& pair : Globals::gameObjects.hatMap) {
 			pair.second->draw(Globals::drawData);

@@ -146,7 +146,15 @@ void GameObjects::drawPlayerGui(glm::mat4 translation) {
 void GameObjects::updatePlayerGui(int id, int lives, int health) {
 	for (int i = 0; i < numPlayerGuiSet; i++) {
 		if (playerGUIMap[i].first == id) {
-			playerGUIMap[i].second->update(lives, health, 0);
+			playerGUIMap[i].second->update(lives, health);
+		}
+	}
+}
+
+void GameObjects::updatePlayerTime(float time, int id) {
+	for (int i = 0; i < numPlayerGuiSet; i++) {
+		if (playerGUIMap[i].first == id) {
+			playerGUIMap[i].second->updateTime(time);
 		}
 	}
 }
