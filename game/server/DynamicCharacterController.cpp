@@ -33,7 +33,7 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld, btSca
 	if (myGrabber) {
 		m_rigidBody->applyCentralImpulse(btVector3(0, 10, 0) * dt);
 		btVector3 origin = m_rigidBody->getCenterOfMassPosition();
-		std::cerr << origin.getX() << " " << origin.getY() << " " << origin.getZ() << std::endl;
+		//std::cerr << origin.getX() << " " << origin.getY() << " " << origin.getZ() << std::endl;
 
 		btTransform grabbeeTransform = m_rigidBody->getCenterOfMassTransform();
 		
@@ -46,7 +46,7 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld, btSca
 		m_rigidBody->setCenterOfMassTransform(grabbeeTransform);
 		origin = m_rigidBody->getCenterOfMassPosition();
 
-		std::cerr << origin.getX() << " " << origin.getY() << " " << origin.getZ() << std::endl;
+		//std::cerr << origin.getX() << " " << origin.getY() << " " << origin.getZ() << std::endl;
 
 		m_rigidBody->getMotionState()->setWorldTransform(grabbeeTransform);
 		return;

@@ -46,7 +46,7 @@ void Session::do_read_header() {
 			do_read_body(length);
 		}
 		else {
-			std::cerr << "REMOVING CLIENT" << std::endl;
+			//std::cerr << "REMOVING CLIENT" << std::endl;
 			game_.remove(shared_from_this());
 		}
 	});
@@ -61,13 +61,13 @@ void Session::do_read_body(size_t length) {
 		if (!ec) {
 			protos::Message message;
 			message.ParseFromArray(body, length);
-			std::cerr << "DO READ BODY DELIVERED A MESSAGE" << std::endl;
+			//std::cerr << "DO READ BODY DELIVERED A MESSAGE" << std::endl;
 			game_.deliver(message);
 			delete body;
 			do_read_header();
 		}
 		else {
-			std::cerr << "REMOVING CLIENT" << std::endl;
+			//std::cerr << "REMOVING CLIENT" << std::endl;
 			game_.remove(shared_from_this());
 		}
 	});
@@ -100,7 +100,7 @@ void Session::do_write() {
 				queueLock_.unlock();
 			}
 			else {
-				std::cerr << "REMOVING CLIENT" << std::endl;
+				//std::cerr << "REMOVING CLIENT" << std::endl;
 				game_.remove(shared_from_this());
 			}
 		});

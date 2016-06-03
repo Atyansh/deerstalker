@@ -360,7 +360,7 @@ void Game::startGameLoop() {
 
 		messageQueueLock_.lock();
 		while (!messageQueue_.empty()) {
-		std::cerr << "in Message Queue" << std::endl;
+		//std::cerr << "in Message Queue" << std::endl;
 			protos::Message message = messageQueue_.front();
 
 			for (int i = 0; i < message.event_size(); i++) {
@@ -408,7 +408,7 @@ void Game::startGameLoop() {
 					handleGrabLogic(&event);
 				}
 				else if (event.type() == protos::Event_Type_READY) {
-					std::cerr << "READY RECEIVED FROM CLIENT" << std::endl;
+					//std::cerr << "READY RECEIVED FROM CLIENT" << std::endl;
 					playerMap_[event.clientid()]->setReady(true);
 					eventQueueLock_.lock();
 					protos::Event e;
@@ -425,7 +425,7 @@ void Game::startGameLoop() {
 		if (!getGameOn() && allReady()) {
 			setGameOn(true);
 			gameReset();
-			std::cerr << "ALL READY" << std::endl;
+			//std::cerr << "ALL READY" << std::endl;
 			eventQueueLock_.lock();
 			protos::Event e;
 			e.set_type(protos::Event_Type_START_GAME);
@@ -503,7 +503,7 @@ void Game::handleDquipLogic(Player* player) {
 }
 
 void Game::handleSpawnLogic(const protos::Event* event) {
-	std::cerr << "SPAWN HAPPENED" << std::endl;
+	//std::cerr << "SPAWN HAPPENED" << std::endl;
 
 	Player* player;
 
@@ -633,7 +633,7 @@ void Game::handleReSpawnLogic() {
 				system_clock::now().time_since_epoch()));
 			player->setDead(true);
 
-			std::cerr << "Player died" << std::endl;
+			//std::cerr << "Player died" << std::endl;
 
 			if (player->getLives() == 0) {
 				/*
@@ -663,12 +663,12 @@ void Game::handleEquipLogic(const protos::Event* event) {
 		return;
 	}
 
-	std::cout << event->clientid() << " Attempting to equip hat\n";
+	//std::cout << event->clientid() << " Attempting to equip hat\n";
 	Hat* hatToRemove = nullptr;
 	Hat* hatToAdd = nullptr;
 	for (auto hat : hatSet_) {
 		if (withinRange(player, hat, 7)) {
-			std::cerr << "Equip success\n";
+			//std::cerr << "Equip success\n";
 			Hat* oldHat  = player->setHat(hat);
 			hatToRemove = hat;
 			if (oldHat != nullptr) {
@@ -703,11 +703,11 @@ void Game::handlePunchLogic(const protos::Event* event) {
 	btCollisionObject* target = player->getController()->getPunchTarget();
 
 	if (target) {
-		std::cerr << "SOME TARGET" << std::endl;
+		//std::cerr << "SOME TARGET" << std::endl;
 		auto search = playerSet_.find(target);
 		if (search != playerSet_.end()) {
 			Player* punchedPlayer = (Player*)target;
-			std::cerr << "PUNCH DETECTED" << std::endl;
+			//std::cerr << "PUNCH DETECTED" << std::endl;
 			btVector3 localLook(0.0f, 0.0f, 1.0f);
 			btTransform transform = player->getController()->getRigidBody()->getCenterOfMassTransform();
 			btQuaternion rotation = transform.getRotation();
@@ -957,11 +957,11 @@ void Game::ramOff(const protos::Event* event) {
 	btCollisionObject* target = player->getController()->getRamTarget();
 
 	if (target) {
-		std::cerr << "SOME TARGET" << std::endl;
+		//std::cerr << "SOME TARGET" << std::endl;
 		auto search = playerSet_.find(target);
 		if (search != playerSet_.end()) {
 			Player* rammedPlayer = (Player*)target;
-			std::cerr << "PUNCH DETECTED" << std::endl;
+			//std::cerr << "PUNCH DETECTED" << std::endl;
 			btVector3 localLook(0.0f, 0.0f, 1.0f);
 			btTransform transform = player->getController()->getRigidBody()->getCenterOfMassTransform();
 			btQuaternion rotation = transform.getRotation();

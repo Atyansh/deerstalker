@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 		// load the settings from the config file
 		if (!ConfigSettings::config->checkIfLoaded()) {
 			if (!ConfigSettings::config->loadSettingsFile()) {
-				std::cerr << "There was a problem loading the config file\n";
+				//std::cerr << "There was a problem loading the config file\n";
 				return 1;
 			}
 		}
@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 		int port;
 		// set the port
 		if (!ConfigSettings::config->getValue(ConfigSettings::str_port_number, port)) {
-			std::cerr << "There was a problem getting the port number from the config file\n";
+			//std::cerr << "There was a problem getting the port number from the config file\n";
 			return 1;
 		}
 

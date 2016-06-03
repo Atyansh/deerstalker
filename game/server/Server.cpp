@@ -7,7 +7,7 @@ Server::Server(boost::asio::io_service& io_service, short port, Game& game)
 }
 
 void Server::do_accept() {
-	std::cerr << "NOW ACCEPTING" << std::endl;
+	//std::cerr << "NOW ACCEPTING" << std::endl;
 
 	acceptor_.async_accept(socket_,
 		[this](boost::system::error_code ec) {
