@@ -470,12 +470,14 @@ void Game::startGameLoop() {
 }
 
 void Game::handleShootLogic(const protos::Event* event) {
-	std::cerr << "SHOOT HAPPENED" << std::endl;
 	Player* player = playerMap_[event->clientid()];
-	Bullet * bull = Bullet::createNewBullet(generateId(), mangoBody_->getCollisionShape(), player->getId());
-	player->setProjectile(bull,bull->getVelocity());
-	bulletSet_.emplace(bull);
-	world_->addRigidBody(bull);
+	animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_WAND;
+	if (event->hold() == false) {
+		Bullet * bull = Bullet::createNewBullet(generateId(), mangoBody_->getCollisionShape(), player->getId());
+		player->setProjectile(bull, bull->getVelocity());
+		bulletSet_.emplace(bull);
+		world_->addRigidBody(bull);
+	}
 }
 
 void Game::handleDquipLogic(Player* player) {
@@ -522,6 +524,14 @@ void Game::handleMoveLogic(const protos::Event* event) {
 		animationStateMap_[event->clientid()] = protos::Message_GameObject_AnimationState_RUNNING;
 	}
 
+	if (player->getGrabbedPlayer()) {
+		if (player->getController()->onGround()) {
+			animationStateMap_[event->clientid()] = protos::Message_GameObject_AnimationState_GRAB_WALK;
+		}
+		else {
+			animationStateMap_[event->clientid()] = protos::Message_GameObject_AnimationState_GRAB;
+		}
+	}
 	// TODO(Atyansh): Maybe have animation for flying?
 
 	double x = event->cameravector(0);
@@ -771,9 +781,7 @@ void Game::handlePrimaryHatLogic(const protos::Event* event) {
 		propellerUp(player);
 		break;
 	case WIZARD_HAT:
-		if (event->hold() == false) {
-			handleShootLogic(event);
-		}
+		handleShootLogic(event);
 		break;
 	case HARD_HAT:
 		wrenchHit(player);
@@ -826,6 +834,8 @@ void Game::wrenchHit(Player* player) {
 
 	btCollisionObject* target = player->getController()->getWrenchTarget();
 
+	animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_WRENCH_SWING;
+
 	if (target) {
 		auto search = playerSet_.find(target);
 		if (search != playerSet_.end()) {
@@ -856,6 +866,7 @@ void Game::shockwave(Player* player) {
 	}
 
 	btVector3 playerPos = player->getCenterOfMassPosition();
+	animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_WRENCH_SLAM;
 
 	for (auto* body : playerSet_) {
 		Player* shockedPlayer = (Player*)body;
@@ -981,8 +992,18 @@ void Game::sendStateToClients() {
 
 		transform.getOpenGLMatrix(glm);
 
+		if (player->getGrabbedPlayer()) {
+			if (animationStateMap_[player->getId()] != protos::Message_GameObject_AnimationState_GRAB_WALK) {
+				animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_GRAB;
+			}
+		}
+
 		if (player->getStunned()) {
 			animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_STUNNED;
+		}
+
+		if (player->getDead()) {
+			animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_DEAD;
 		}
 
 		Hat* hat = player->getHat();

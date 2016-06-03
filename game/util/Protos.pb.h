@@ -39,31 +39,31 @@ class Message;
 class Message_GameObject;
 
 enum Event_Type {
-	Event_Type_SPAWN = 1,
-	Event_Type_MOVE = 2,
-	Event_Type_JUMP = 3,
-	Event_Type_ASSIGN = 4,
-	Event_Type_EQUIP = 5,
-	Event_Type_DQUIP = 6,
-	Event_Type_SHOOT = 7,
-	Event_Type_HATR = 8,
-	Event_Type_HATL = 9,
-	Event_Type_PUNCH = 10,
-	Event_Type_DELETE_BULLET = 11,
-	Event_Type_PLAYER_PUNCHED = 12,
-	Event_Type_PLAYER_DIED = 13,
-	Event_Type_PROPELLER_UP = 14,
-	Event_Type_PLAYER_JUMP = 15,
-	Event_Type_GAME_OVER = 16,
-	Event_Type_PLAYER_STUNNED = 17,
-	Event_Type_PLAYER_WIN = 18,
-	Event_Type_GRAB = 19,
-	Event_Type_PLAYER_GRABBED = 20,
-	Event_Type_PLAYER_PROPELLER = 21,
-	Event_Type_GRAVITY_MUSIC = 22,
-	Event_Type_GAME_MUSIC = 23,
-	Event_Type_READY = 24,
-	Event_Type_START_GAME = 25
+  Event_Type_SPAWN = 1,
+  Event_Type_MOVE = 2,
+  Event_Type_JUMP = 3,
+  Event_Type_ASSIGN = 4,
+  Event_Type_EQUIP = 5,
+  Event_Type_DQUIP = 6,
+  Event_Type_SHOOT = 7,
+  Event_Type_HATR = 8,
+  Event_Type_HATL = 9,
+  Event_Type_PUNCH = 10,
+  Event_Type_DELETE_BULLET = 11,
+  Event_Type_PLAYER_PUNCHED = 12,
+  Event_Type_PLAYER_DIED = 13,
+  Event_Type_PROPELLER_UP = 14,
+  Event_Type_PLAYER_JUMP = 15,
+  Event_Type_GAME_OVER = 16,
+  Event_Type_PLAYER_STUNNED = 17,
+  Event_Type_PLAYER_WIN = 18,
+  Event_Type_GRAB = 19,
+  Event_Type_PLAYER_GRABBED = 20,
+  Event_Type_PLAYER_PROPELLER = 21,
+  Event_Type_GRAVITY_MUSIC = 22,
+  Event_Type_GAME_MUSIC = 23,
+  Event_Type_READY = 24,
+  Event_Type_START_GAME = 25
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
@@ -134,12 +134,17 @@ enum Message_GameObject_AnimationState {
   Message_GameObject_AnimationState_BEAR = 4,
   Message_GameObject_AnimationState_WUSON = 5,
   Message_GameObject_AnimationState_STUNNED = 6,
-  Message_GameObject_AnimationState_GRABBING = 7,
-  Message_GameObject_AnimationState_FLYING = 8
+  Message_GameObject_AnimationState_FLYING = 7,
+  Message_GameObject_AnimationState_WAND = 8,
+  Message_GameObject_AnimationState_WRENCH_SWING = 9,
+  Message_GameObject_AnimationState_WRENCH_SLAM = 10,
+  Message_GameObject_AnimationState_GRAB = 11,
+  Message_GameObject_AnimationState_GRAB_WALK = 12,
+  Message_GameObject_AnimationState_DEAD = 13
 };
 bool Message_GameObject_AnimationState_IsValid(int value);
 const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MIN = Message_GameObject_AnimationState_STANDING;
-const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MAX = Message_GameObject_AnimationState_FLYING;
+const Message_GameObject_AnimationState Message_GameObject_AnimationState_AnimationState_MAX = Message_GameObject_AnimationState_DEAD;
 const int Message_GameObject_AnimationState_AnimationState_ARRAYSIZE = Message_GameObject_AnimationState_AnimationState_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Message_GameObject_AnimationState_descriptor();
@@ -547,8 +552,13 @@ class Message_GameObject : public ::google::protobuf::Message {
   static const AnimationState BEAR = Message_GameObject_AnimationState_BEAR;
   static const AnimationState WUSON = Message_GameObject_AnimationState_WUSON;
   static const AnimationState STUNNED = Message_GameObject_AnimationState_STUNNED;
-  static const AnimationState GRABBING = Message_GameObject_AnimationState_GRABBING;
   static const AnimationState FLYING = Message_GameObject_AnimationState_FLYING;
+  static const AnimationState WAND = Message_GameObject_AnimationState_WAND;
+  static const AnimationState WRENCH_SWING = Message_GameObject_AnimationState_WRENCH_SWING;
+  static const AnimationState WRENCH_SLAM = Message_GameObject_AnimationState_WRENCH_SLAM;
+  static const AnimationState GRAB = Message_GameObject_AnimationState_GRAB;
+  static const AnimationState GRAB_WALK = Message_GameObject_AnimationState_GRAB_WALK;
+  static const AnimationState DEAD = Message_GameObject_AnimationState_DEAD;
   static inline bool AnimationState_IsValid(int value) {
     return Message_GameObject_AnimationState_IsValid(value);
   }

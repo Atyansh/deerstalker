@@ -18,9 +18,7 @@ protected:
 
 	/* Animation */
 	AnimationTree *mAnimTree;
-	//Animation time
-	float prevTime = 0;
-	float currAnimTime = 0;
+	bool isAnimated;
 
 	float height = 0;
 
@@ -38,4 +36,5 @@ public:
 	virtual void update(UpdateData&);
 	virtual void draw(DrawData&);
 	float getHeight();
+	void setAnimation(bool isAnimated);
 };

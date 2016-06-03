@@ -24,6 +24,10 @@ void AnimationTree::boneTransfrom(float animationTime, vector<BoneInfo> &boneInf
 	readNodeHierarchy(newAnimationTime, this->scene->mRootNode, identity, boneInfos, boneMapping);
 }
 
+float AnimationTree::getHeight() {
+	return height;
+}
+
 aiAnimation* AnimationTree::getAnim() {
 	return this->scene->mAnimations[0];
 }

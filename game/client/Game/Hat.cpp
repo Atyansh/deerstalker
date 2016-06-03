@@ -1,4 +1,5 @@
 #include "Hat.h"
+#include <ctime>
 
 Hat::Hat(Model *model, bool animate) : SGeode()
 {
@@ -15,10 +16,16 @@ Hat::~Hat()
 
 void Hat::draw(DrawData& data) {
 	if (isVisible) {
-		cout << animate << endl;
+		
 		if (animate) {
-			data.animate = animate;
-			dynamic_cast<AnimModel*>(model)->draw(data);
+			float time = clock() / float(CLOCKS_PER_SEC);
+			float delta = time - prevTime;
+			prevTime = time;
+
+			currAnimTime += min(delta, 0.05f);
+			data.animTime = currAnimTime;
+			dynamic_cast<AnimModel*>(model)->setAnimation(true);
+			model->draw(data);
 		} else {
 			model->draw(data);
 		}

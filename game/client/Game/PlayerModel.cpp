@@ -10,6 +10,7 @@
 
 PlayerModel::PlayerModel(const char* path, Shader *shader, protos::Message_GameObject_AnimationState state) : Model()
 {
+	cout << path << endl;
 	this->shader = shader;
 	numBones = 0;
 	height = 0.f;
@@ -301,24 +302,25 @@ GLint PlayerModel::TextureFromFile(const char* path, string directory, int id)
 {
 	//Generate texture ID and load texture data 
 	string filename = string(path);
-	cout << filename << endl;
 	int index = filename.find("_x");
-	switch (id) {
-	case 1:
-		filename.replace(index, index+2,"_blue.png");
-		break;
-	case 2:
-		filename.replace(index, index + 2, "_green.png");
-		break;
-	case 3:
-		filename.replace(index, index + 2, "_purple.png");
-		break;
-	case 4:
-		filename.replace(index, index + 2, "_red.png");
-		break;
-	default:
-		filename.replace(index, index + 2, "_blue.png");
-		break;
+	if (index != -1) {
+		switch (id) {
+		case 1:
+			filename.replace(index, index + 2, "_blue.png");
+			break;
+		case 2:
+			filename.replace(index, index + 2, "_green.png");
+			break;
+		case 3:
+			filename.replace(index, index + 2, "_purple.png");
+			break;
+		case 4:
+			filename.replace(index, index + 2, "_red.png");
+			break;
+		default:
+			filename.replace(index, index + 2, "_blue.png");
+			break;
+		}
 	}
 	filename = directory + '/' + filename;
 	cout << filename << endl;

@@ -12,6 +12,7 @@ class AnimationTree {
 private:
 	const aiScene *scene;
 	aiMatrix4x4 globalInverse;
+	float height;
 
 	void readNodeHierarchy(float animationTime, const aiNode* node, aiMatrix4x4 parentMatrix, vector<BoneInfo> &boneInfos, unordered_map<string, unsigned int> boneMapping);
 	aiVector3D calcInterpolatedScaling(float AnimationTime, const aiNodeAnim* pNodeAnim);
@@ -28,4 +29,5 @@ public:
 
 	void boneTransfrom(float animationTime, vector<BoneInfo> &boneInfos, unordered_map<string, unsigned int> boneMapping);
 	aiAnimation* getAnim();
+	float getHeight();
 };

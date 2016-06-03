@@ -82,6 +82,10 @@ void Player::attachHat(HatType newHat) {
 }
 
 void Player::changeState(protos::Message_GameObject_AnimationState newState){
+	if (newState == protos::Message_GameObject_AnimationState_WRENCH_SLAM || newState == protos::Message_GameObject_AnimationState_WRENCH_SWING) {
+		detachHat();
+	}
+
 	if(newState == currState){
 		return;
 	}
@@ -96,8 +100,11 @@ void Player::changeState(protos::Message_GameObject_AnimationState newState){
 	if (valueNewState != this->playerModels.end()) {
 		valueNewState->second->setVisible(true);
 		currState = newState;
-		if (hatPtr != NULL)
-			hatPtr->setAnimate(this->fly);
+		if (hatPtr != NULL) {
+			if (currHat == PROPELLER_HAT)
+				hatPtr->setAnimate(this->fly);
+		}
+
 	}
 
 	float scaleFactorPlayer = 0.075f;
