@@ -39,5 +39,6 @@ public:
 	static std::unordered_map<int, bool> readyPlayers;
 	static bool startGame;
 	static bool gameOver;
+	static bool gameWin;
 };
 

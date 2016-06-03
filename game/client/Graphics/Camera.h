@@ -22,6 +22,7 @@ public:
 	void pitch(int up); // Move camera up and down
 	void yaw(int up);	  // Move camera left and right
 	void roll(int up);
+	void resetCam();
 
 	int getPlayerId() {
 		return playerId_;

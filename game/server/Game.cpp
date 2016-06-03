@@ -32,7 +32,8 @@ void Game::remove(client_ptr client) {
 		world_->removeRigidBody(body);
 		playerSet_.erase(body);
 		playerMap_.erase(iter);
-		delete iter->second;
+		deletedPlayers_[clientId] = iter->second;
+		//delete iter->second;
 	}
 }
 
@@ -62,6 +63,67 @@ void Game::clearAnimations() {
 	for (auto client : clients_) {
 		animationStateMap_[client->getClientId()] = protos::Message_GameObject_AnimationState_STANDING;
 	}
+}
+
+void Game::handleGameWinLogic() {
+	gameWin_ = true;
+	winTimestamp_ = duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch());
+
+	eventQueueLock_.lock();
+	protos::Event event;
+	event.set_type(protos::Event_Type_PLAYER_WIN);
+	eventQueue_.emplace_back(event);
+	eventQueueLock_.unlock();
+}
+
+void Game::handleGameOverLogic() {
+	milliseconds currTime = duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch());
+
+	milliseconds winSpan = milliseconds(10000);
+
+	if (currTime - winTimestamp_ < winSpan) {
+		return;
+	}
+
+	deadPlayers_.clear();
+	gameWin_ = false;
+	gameOn_ = false;
+	eventQueueLock_.lock();
+	protos::Event event;
+	event.set_type(protos::Event_Type_GAME_OVER);
+	eventQueue_.emplace_back(event);
+	eventQueueLock_.unlock();
+}
+
+void Game::gameReset() {
+	for (auto* hat : hatSet_) {
+		world_->removeRigidBody(hat);
+		eventQueueLock_.lock();
+		protos::Event event;
+		event.set_type(protos::Event_Type_EQUIP);
+		event.set_hatid(hat->getHatId());
+		eventQueue_.emplace_back(event);
+		eventQueueLock_.unlock();
+		delete hat;
+	}
+	hatSet_.clear();
+
+	for (auto* body : playerSet_) {
+		Player * player = (Player*)body;
+		if (player->getHat()) {
+			handleDquipLogic(player);
+		}
+		player->reset();
+	}
+
+	for (auto* hat : hatSet_) {
+		world_->removeRigidBody(hat);
+		delete hat;
+	}
+	hatSet_.clear();
+
 }
 
 void Game::deleteBullets() {
@@ -279,8 +341,12 @@ void Game::startGameLoop() {
 		milliseconds stamp1 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
-		if (deadPlayers_.size() >= MAX_PLAYERS - 1) {
-			// Game over. Show win screen.
+		if (gameOn_ && !gameWin_ && deadPlayers_.size() >= MIN_PLAYERS - 1) {
+			handleGameWinLogic();
+		}
+
+		if (gameWin_) {
+			handleGameOverLogic();
 		}
 
 		loopReset();
@@ -349,7 +415,9 @@ void Game::startGameLoop() {
 		}
 		messageQueueLock_.unlock();
 
-		if (allReady()) {
+		if (!getGameOn() && allReady()) {
+			setGameOn(true);
+			gameReset();
 			std::cerr << "ALL READY" << std::endl;
 			eventQueueLock_.lock();
 			protos::Event e;
@@ -427,11 +495,21 @@ void Game::handleDquipLogic(Player* player) {
 
 void Game::handleSpawnLogic(const protos::Event* event) {
 	std::cerr << "SPAWN HAPPENED" << std::endl;
-	Player* player = Player::createNewPlayer(event->clientid(), playerBody_->getCollisionShape());
-	playerMap_[event->clientid()] = player;
-	btRigidBody* body = player->getController()->getRigidBody();
-	playerSet_.emplace(body);
-	world_->addRigidBody(body);
+
+	Player* player;
+
+	if (deletedPlayers_.find(event->clientid()) != deletedPlayers_.end()) {
+		player = deletedPlayers_[event->clientid()];
+		deletedPlayers_.erase(event->clientid());
+		player->reset();
+	}
+	else {
+		player = Player::createNewPlayer(event->clientid(), playerBody_->getCollisionShape());
+	}
+
+	playerMap_[event->clientid()] = player;;
+	playerSet_.emplace(player);
+	world_->addRigidBody(player);
 	world_->addAction(player->getController());
 }
 

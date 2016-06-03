@@ -99,7 +99,6 @@ void Window::idle_callback(GLFWwindow* window) {
 	if (STATE == State::_Loading) {
 		Globals::gameObjects.loadGameObjects();
 		STATE = State::_Start;
-		Globals::soundEngine.playMenuMusic();
 		cerr << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
 	}
 	if (STATE == State::_Lobby) {
@@ -130,11 +129,15 @@ void Window::display_callback(GLFWwindow* window) {
 		break;
 	case State::_Start:
 		Globals::gameObjects.guiMap[_Background]->draw(Globals::drawData);
+		Globals::soundEngine.playMenuMusic();
 		//Globals::gameObjects.guiMap[_Loading]->draw(Globals::drawData);
 		break;
 	case State::_Lobby:
+		Globals::cam.resetCam();
+		Globals::drawData.view = Globals::cam.getView();
 		Globals::gameObjects.guiMap[_LobbyBG]->draw(Globals::drawData);
 		Globals::gameObjects.ready->draw(Globals::readyPlayers);
+		Globals::soundEngine.playMenuMusic();
 		break;
 	case State::_LobbyReady:
 		Globals::gameObjects.guiMap[_LobbyReadyBG]->draw(Globals::drawData);
@@ -238,12 +241,14 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 	if (STATE == State::_Game) {
 		if (Globals::gameOver) {
-			STATE = State::_EndGame;
+			STATE = State::_Lobby;
+			resetStates();
 		}
 
 		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second);
 
 		if (player->getDead() && player->getLives() == 0) {
+			cycleCamera();
 			STATE = State::_Dead;
 		}
 
@@ -388,7 +393,8 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 	if (STATE == State::_Dead) {
 		if (Globals::gameOver) {
-			STATE = State::_EndGame;
+			resetStates();
+			STATE = State::_Lobby;
 		}
 
 		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
@@ -428,7 +434,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	}
 
 	if (STATE == State::_Lobby) {
-		Sleep(1);
+		//Sleep(1);
 		//std::cerr << "LOBBY" << std::endl;
 		if (buttons[BUTTON_A] == GLFW_PRESS) {
 			std::cerr << "SEND READY" << std::endl;
@@ -463,7 +469,17 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		sendMessage(Globals::socket, message);
 	}
 }
-  
+
+void Window::resetStates() {
+	Globals::readyPlayers[1] = false;
+	Globals::readyPlayers[2] = false;
+	Globals::readyPlayers[3] = false;
+	Globals::readyPlayers[4] = false;
+	Globals::startGame = false;
+	Globals::gameOver = false;
+	Globals::gameOver = false;
+}
+
 void Window::cycleCamera() {
 	int originalId = Globals::cam.getPlayerId();
 	int playerId = originalId;

@@ -132,6 +132,9 @@ void do_read_body(size_t length) {
 				if (event.type() == event.START_GAME) {
 					Globals::startGame = true;
 				}
+				if (event.type() == event.PLAYER_WIN) {
+					Globals::gameWin = true;
+				}
 				if (event.type() == event.GAME_OVER) {
 					Globals::gameOver = true;
 				}

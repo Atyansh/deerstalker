@@ -24,6 +24,7 @@ public:
 	static void handle_gamepad(GLFWwindow* window);
 	static SMatrixTransform* createGameObj(Models modelType, Model* model, int id);
 	static void cycleCamera();
+	static void resetStates();
 	//static void generateWorld(string directory);
 
 private:

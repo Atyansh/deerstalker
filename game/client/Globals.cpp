@@ -14,3 +14,4 @@ SoundEngine Globals::soundEngine;
 std::unordered_map<int, bool> Globals::readyPlayers;
 bool Globals::startGame = false;
 bool Globals::gameOver = false;
+bool Globals::gameWin = false;
