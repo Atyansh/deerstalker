@@ -481,6 +481,7 @@ void Window::resetStates() {
 	Globals::startGame = false;
 	Globals::gameOver = false;
 	Globals::gameOver = false;
+	Globals::cam.setPlayerId(Globals::ID);
 }
 
 void Window::cycleCamera() {

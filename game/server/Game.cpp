@@ -87,8 +87,14 @@ void Game::handleGameOverLogic() {
 		return;
 	}
 
-	gameReset();
+	for (Player* player : deadPlayers_) {
+		world_->addRigidBody(player);
+		world_->addAction(player->getController());
+	}
+
 	deadPlayers_.clear();
+
+	gameReset();
 	gameWin_ = false;
 	gameOn_ = false;
 	eventQueueLock_.lock();
@@ -124,7 +130,6 @@ void Game::gameReset() {
 		delete hat;
 	}
 	hatSet_.clear();
-
 }
 
 void Game::deleteBullets() {
