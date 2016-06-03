@@ -30,6 +30,7 @@ public:
 	void initialize();
 	void startGameLoop();
 
+	const static uint32_t MIN_PLAYERS = 2;
 	const static uint32_t MAX_PLAYERS = 4;
 	std::deque<uint32_t> availableIds;
 
@@ -40,11 +41,26 @@ private:
 
 	void clearAnimations();
 
+	bool allReady() {
+		if (size() < MIN_PLAYERS) {
+			return false;
+		}
+
+		for (auto* body : playerSet_) {
+			Player* player = (Player*)body;
+			if (!player->getReady()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	void deleteBullets();
 	void deleteHats();
 
 	void detectStun();
 	void revivePlayers();
+	void resurrectPlayers();
 
 	void loopReset();
 
@@ -64,7 +80,6 @@ private:
 	void releaseGrab(Player* player);
 
 	void sendStateToClients();
-	void sendEventsToClients();
 
 	void spawnNewHat();
 
@@ -78,6 +93,7 @@ private:
 	void killGravity();
 
 	void wrenchHit(Player* player);
+	void shockwave(Player* player);
 
 	std::set<client_ptr> clients_;
 	World* world_;

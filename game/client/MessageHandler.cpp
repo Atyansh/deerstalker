@@ -16,6 +16,10 @@ std::mutex MessageHandler::endGameLock;
 void MessageHandler::handleLobbyMessages() {
 }
 
+void MessageHandler::handleLobbyReadyMessages() {
+	
+}
+
 void MessageHandler::handleStartMessages() {
 }
 
@@ -30,12 +34,33 @@ void MessageHandler::handleGameMessages() {
 			if (event.type() == protos::Event_Type_EQUIP) {
 				auto* hat = Globals::gameObjects.hatMap[event.hatid()];
 				Globals::gameObjects.hatMap.erase(event.hatid());
+				if (event.clientid()) {
+					Globals::soundEngine.wearHat(event.clientid());
+				}
 				//delete hat;
 			}
 			else if (event.type() == protos::Event_Type_DELETE_BULLET) {
 				auto* bullet = Globals::gameObjects.bulletMap[event.bulletid()];
 				Globals::gameObjects.bulletMap.erase(event.bulletid());
 				//delete bullet;
+			}
+			else if (event.type() == protos::Event_Type_PLAYER_JUMP) {
+				Globals::soundEngine.jump(event.clientid());
+			}
+			else if (event.type() == protos::Event_Type_PLAYER_PROPELLER) {
+				Globals::soundEngine.propeller(event.clientid());
+			}
+			else if (event.type() == protos::Event_Type_PLAYER_PUNCHED) {
+				Globals::soundEngine.punch(event.clientid());
+			}
+			else if (event.type() == protos::Event_Type_GRAVITY_MUSIC) {
+				Globals::soundEngine.playGravityMusic();
+			}
+			else if (event.type() == protos::Event_Type_GAME_MUSIC) {
+				Globals::soundEngine.playGameMusic();
+			}
+			else if (event.type() == protos::Event_Type_PLAYER_DIED) {
+				Globals::soundEngine.dead(event.clientid());
 			}
 		}
 
@@ -59,27 +84,39 @@ void MessageHandler::handleGameMessages() {
 				model = _Mango;
 			}
 
+			if ((*map).find(id) == (*map).end()) {
+				(*map)[id] = Window::createGameObj(model, Globals::gameObjects.modelMap[model], id);
+				if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
+					if (id == Globals::ID) {
+						Player* player = dynamic_cast<Player*>(Globals::gameObjects.playerMap[Globals::ID]);
+						Globals::soundEngine.initializePlayer(player);
+					}
+				}
+				if (gameObject.type() == protos::Message_GameObject_Type_BULLET) {
+					Globals::soundEngine.mangoShot(gameObject.posx(), gameObject.posy(), gameObject.posz());
+				}
+				if (gameObject.type() == protos::Message_GameObject_Type_HAT) {
+					Globals::soundEngine.hatSpawn(gameObject.posx(), gameObject.posy(), gameObject.posz());
+				}
+			}
+
 			float matrix[16];
 			for (int j = 0; j < gameObject.matrix_size(); j++) {
 				matrix[j] = gameObject.matrix(j);
 			}
 
-			if ((*map).find(id) == (*map).end()) {
-				int pId = -1;
-				if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
-					pId = id;
-				}
-				(*map)[id] = Window::createGameObj(model, Globals::gameObjects.modelMap[model], id);
-			}
-
 			auto& entity = *(*map)[id];
-
 			glm::mat4 mat = glm::make_mat4(matrix);
-
 			entity.setMatrix(mat);
+
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 				Player* player = dynamic_cast<Player*>(&entity);
 
+				glm::vec3 position = glm::vec3(gameObject.posx(), gameObject.posy(), gameObject.posz());
+
+				player->setDead(gameObject.dead());
+				player->setPosition(position);
+				player->setTimer(gameObject.timer());
 				player->setLives(gameObject.lives());
 				player->setHealth(gameObject.health());
 
@@ -89,6 +126,7 @@ void MessageHandler::handleGameMessages() {
 					entity.setMatrix(scaleMat);
 				}
 				else if (gameObject.animationstate() == protos::Message_GameObject_AnimationState_WUSON) {
+					Globals::soundEngine.wuson(id);
 					auto scale = glm::vec3(1) / 0.075 * 8;
 					glm::mat4 scaleMat = glm::scale(mat, scale);
 					entity.setMatrix(scaleMat);

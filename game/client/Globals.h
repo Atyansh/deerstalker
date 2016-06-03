@@ -14,6 +14,8 @@
 
 #include <mutex>
 
+#include "SoundEngine.h"
+
 using boost::asio::ip::tcp;
 
 class Globals {
@@ -32,5 +34,10 @@ public:
 	static bool socketError;
 
 	static unordered_map<HatType, Models> hatModelsMap;
+
+	static SoundEngine soundEngine;
+
+	static std::unordered_map<int, bool> readyPlayers;
+	static bool startGame;
 };
 

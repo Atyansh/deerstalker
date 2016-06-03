@@ -2,6 +2,8 @@
 
 int Hat::idCounter = 0;
 
+const milliseconds Hat::HAT_LIFESPAN = milliseconds(120000);
+
 Hat::Hat(btRigidBodyConstructionInfo& info, HatType hatType) : btRigidBody(info), id_(idCounter++), hatType_(hatType), timestamp_(duration_cast<milliseconds>(system_clock::now().time_since_epoch())) {
 }
 

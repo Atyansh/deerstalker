@@ -61,6 +61,7 @@ void Session::do_read_body(size_t length) {
 		if (!ec) {
 			protos::Message message;
 			message.ParseFromArray(body, length);
+			std::cerr << "DO READ BODY DELIVERED A MESSAGE" << std::endl;
 			game_.deliver(message);
 			delete body;
 			do_read_header();

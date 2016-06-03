@@ -22,6 +22,11 @@ message Event {
 		PLAYER_WIN = 18;
 		GRAB = 19;
 		PLAYER_GRABBED = 20;
+		PLAYER_PROPELLER = 21;
+		GRAVITY_MUSIC = 22;
+		GAME_MUSIC = 23;
+		READY = 24;
+		START_GAME = 25;
 	}
 
 	enum Direction {
@@ -54,6 +59,10 @@ message Event {
 }
 
 message Message {
+	enum MessageType {
+		LOBBY = 1;
+		GAME = 2;
+	}
 	message GameObject {
 		enum Type {
 			PLAYER = 1;
@@ -77,9 +86,15 @@ message Message {
 		optional int32 health = 6;
 		optional bool visible = 7;
 		optional int32 lives = 8;
+		optional int32 timer = 9;
+		optional float posX = 10;
+		optional float posY = 11;
+		optional float posZ = 12;
+		optional bool dead = 13;
 	}
 
 	optional int32 id = 1;
 	repeated Event event = 2;
 	repeated GameObject gameObject = 3;
+	optional MessageType messageType = 4;
 }

@@ -23,6 +23,10 @@ public:
 		active = false;
 	};
 
+	bool getActive() {
+		return active;
+	}
+
 private:
 	Game* game_;
 	bool active = false;

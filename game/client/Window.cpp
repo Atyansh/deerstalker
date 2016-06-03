@@ -41,6 +41,7 @@ void Window::initialize_objects() {
 
 
 	STATE = State::_Loading;
+	Globals::soundEngine.playLoadingMusic();
 }
 
 void Window::clean_up() {
@@ -98,10 +99,14 @@ void Window::idle_callback(GLFWwindow* window) {
 	if (STATE == State::_Loading) {
 		Globals::gameObjects.loadGameObjects();
 		STATE = State::_Start;
+		Globals::soundEngine.playMenuMusic();
 		cerr << "A message for people starting the game and not seeing the character move. Please hit \"START\" the press the A button. Thank you.\n";
 	}
 	if (STATE == State::_Lobby) {
 		MessageHandler::handleLobbyMessages();
+	}
+	if (STATE == State::_LobbyReady) {
+		MessageHandler::handleLobbyReadyMessages();
 	}
 	if (STATE == State::_Start) {
 		MessageHandler::handleStartMessages();
@@ -129,6 +134,10 @@ void Window::display_callback(GLFWwindow* window) {
 	case State::_Lobby:
 		Globals::gameObjects.guiMap[_LobbyBG]->draw(Globals::drawData);
 		break;
+	case State::_LobbyReady:
+		Globals::gameObjects.guiMap[_LobbyReadyBG]->draw(Globals::drawData);
+		//cout << Globals::readyPlayers[Globals::ID] << endl;
+		break;
 	case State::_Game:
 		Globals::drawData.view = Globals::cam.getView();
 
@@ -138,11 +147,11 @@ void Window::display_callback(GLFWwindow* window) {
 		// Render objects
 		for (auto& pair : Globals::gameObjects.playerMap) {
 			Player *player = dynamic_cast<Player*>((pair.second));
-			if (player->getVisible()) {
-				
-				Globals::gameObjects.updatePlayerGui(player->getID(), player->getLives(), player->getHealth());
+			if (player->getVisible() && !player->getDead()) {
 				pair.second->draw(Globals::drawData);
 			}
+			Globals::gameObjects.updatePlayerGui(player->getID(), player->getLives(), player->getHealth());
+
 		}
 		// hat
 		for (auto& pair : Globals::gameObjects.hatMap) {
@@ -225,6 +234,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
 	if (STATE == State::_Game) {
+		message.set_messagetype(protos::Message_MessageType_GAME);
 		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
 			fprintf(stderr, "Going Down\n");
 			Globals::cam.pitch(0);
@@ -296,12 +306,15 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			addMoveEvent(message, protos::Event_Direction_FORWARD);
 		}
 
+
+		/*
 		if (axes[TRIGGER_AXIS] > POS_AXIS_TILT) {
 			addMoveEvent(message, protos::Event_Direction_DOWN);
 		}
 		else if (axes[TRIGGER_AXIS] < NEG_AXIS_TILT) {
 			addMoveEvent(message, protos::Event_Direction_UP);
 		}
+		*/
 
 		if (buttons[BUTTON_A] == GLFW_PRESS && !buttonState[BUTTON_A]) {
 			auto* event = message.add_event();
@@ -364,15 +377,31 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 	if (STATE == State::_Start) {
 		if (buttons[BUTTON_START] == GLFW_PRESS) {
-
 			// Switch state to lobby
 			STATE = State::_Lobby;
 		}
 	}
 
 	if (STATE == State::_Lobby) {
+		
+		Sleep(1);
+		//std::cerr << "LOBBY" << std::endl;
 		if (buttons[BUTTON_A] == GLFW_PRESS) {
+			std::cerr << "SEND READY" << std::endl;
+			auto* event = message.add_event();
+			event->set_clientid(Globals::ID);
+			event->set_type(protos::Event_Type_READY);
+			STATE = State::_LobbyReady;
+		}
+		
+	}
+
+	if (STATE == State::_LobbyReady) {
+		//Sleep(1);
+		if (Globals::startGame) {
+			std::cerr << "START_GAME" << std::endl;
 			STATE = State::_Game;
+			Globals::soundEngine.playGameMusic();
 		}
 	}
 
@@ -386,10 +415,11 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	}
 
 	if (message.event_size()) {
+		std::cerr << "Sending Message" << std::endl;
 		sendMessage(Globals::socket, message);
 	}
 }
-
+   
 void Window::addMoveEvent(protos::Message& message, protos::Event_Direction direction) {
 	protos::Event* event = message.add_event();
 	event->set_clientid(Globals::ID);

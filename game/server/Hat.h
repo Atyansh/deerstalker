@@ -7,7 +7,6 @@
 
 #include <chrono>
 
-
 using namespace std::chrono;
 
 class Hat : public btRigidBody {
@@ -25,6 +24,8 @@ public:
 
 	static int idCounter;
 	int playerId_;
+
+	static const milliseconds HAT_LIFESPAN;
 
 private:
 	btScalar mass_;

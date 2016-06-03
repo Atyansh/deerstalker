@@ -129,6 +129,13 @@ void do_read_body(size_t length) {
 				if (event.type() == event.ASSIGN) {
 					Globals::ID = event.clientid();
 				}
+				if (event.type() == event.START_GAME) {
+					Globals::startGame = true;
+				}
+				if (event.type() == event.READY) {
+					Globals::readyPlayers[event.clientid()] = true;
+					cerr << "HIIIIII AJJJJ AND TIMMMM\n";
+				}
 			}
 
 			MessageHandler::gameLock.lock();
@@ -144,8 +151,7 @@ void do_read_body(size_t length) {
 	});
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	std::string hostname;
 	std::string port;
 
@@ -178,8 +184,7 @@ int main(int argc, char *argv[])
 	
 	// Initialize GLEW to setup the OpenGL Function pointers
 	GLenum glew_err = glewInit();
-	if (glew_err != GLEW_OK)
-	{
+	if (glew_err != GLEW_OK) {
 		fprintf(stderr, "GLEW NOT INITIALIZED");
 		exit(-1);
 	}
@@ -212,6 +217,9 @@ int main(int argc, char *argv[])
 		cerr << "JOYSTICK NOT PRESENT" << endl;
 	}
 	
+
+	Globals::soundEngine.initialize();
+
 	// Initialize objects/pointers for rendering
 	Window::initialize_objects();
 
@@ -220,6 +228,8 @@ int main(int argc, char *argv[])
 		if (joyStickPresent) {
 			Window::handle_gamepad(window);
 		}
+
+		Globals::soundEngine.updateSystem();
 
 		// Main render display callback. Rendering of objects is done here.
 		Window::display_callback(window);

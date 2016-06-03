@@ -28,9 +28,9 @@ void Game::remove(client_ptr client) {
 	if (iter != playerMap_.end()) {
 		auto* action = iter->second->getController();
 		auto* body = action->getRigidBody();
-		playerSet_.erase(body);
 		world_->removeAction(action);
 		world_->removeRigidBody(body);
+		playerSet_.erase(body);
 		playerMap_.erase(iter);
 		delete iter->second;
 	}
@@ -81,10 +81,8 @@ void Game::deleteHats() {
 	milliseconds currTime = duration_cast<milliseconds>(
 		system_clock::now().time_since_epoch());
 
-	milliseconds hatLifespan = milliseconds(120000);
-
 	for (auto* hat : hatSet_) {
-		if (currTime - hat->getTimestamp() > hatLifespan) {
+		if (currTime - hat->getTimestamp() > Hat::HAT_LIFESPAN) {
 			hatRemovedSet_.emplace(hat);
 			world_->removeRigidBody(hat);
 		}
@@ -95,7 +93,7 @@ void Game::deleteHats() {
 		Hat* hat = player->getHat();
 
 		if (hat) {
-			if (currTime - hat->getTimestamp() > hatLifespan) {
+			if (currTime - hat->getTimestamp() > Hat::HAT_LIFESPAN) {
 				protos::Event event;
 				event.set_clientid(player->getId());
 				handleDquipLogic(player);
@@ -130,7 +128,9 @@ void Game::revivePlayers() {
 		Player* player = (Player*)body;
 		if (player->getStunned()) {
 			if (currTime - player->getStunTimestamp() > reviveSpan) {
-				player->setHealth(50);
+				if (player->getHealth() < 50) {
+					player->setHealth(50);
+				}
 				player->setStunned(false);
 
 				Player* grabber = player->getMyGrabber();
@@ -139,6 +139,27 @@ void Game::revivePlayers() {
 					releaseGrab(grabber);
 				}
 			}
+		}
+	}
+}
+
+void Game::resurrectPlayers() {
+	milliseconds currTime = duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch());
+
+	milliseconds resurrectSpan = milliseconds(4000);
+
+	for (auto* body : playerSet_) {
+		Player* player = (Player*)body;
+
+		if (player->getDead() && player->getLives() > 0 &&
+			(currTime - player->getDeadTimestamp() > resurrectSpan)) {
+			player->setDead(false);
+			player->setHealth(100);
+			player->setStunned(false);
+			world_->addRigidBody(player);
+			world_->addAction(player->getController());
+			world_->spawnPlayer(player);
 		}
 	}
 }
@@ -266,6 +287,7 @@ void Game::startGameLoop() {
 
 		messageQueueLock_.lock();
 		while (!messageQueue_.empty()) {
+		std::cerr << "in Message Queue" << std::endl;
 			protos::Message message = messageQueue_.front();
 
 			for (int i = 0; i < message.event_size(); i++) {
@@ -273,8 +295,7 @@ void Game::startGameLoop() {
 				if (event.type() == protos::Event_Type_SPAWN) {
 					handleSpawnLogic(&event);
 				}
-				
-				else if (playerMap_.count(event.clientid()) == 0) {
+				else if (playerMap_[event.clientid()]->getDead()) {
 					//TODO WHAT CAN THE DEAD DO
 					//std::cout << "WHAT CAN THE DEAD DO\n";
 					continue;
@@ -303,10 +324,28 @@ void Game::startGameLoop() {
 				else if (event.type() == protos::Event_Type_GRAB) {
 					handleGrabLogic(&event);
 				}
+				else if (event.type() == protos::Event_Type_READY) {
+					std::cerr << "READY RECEIVED FROM CLIENT" << std::endl;
+					protos::Event e;
+					e.set_type(protos::Event_Type_READY);
+					e.set_clientid(event.clientid());
+					eventQueue_.emplace_back(e);
+					eventQueueLock_.unlock();
+					playerMap_[event.clientid()]->setReady(true);
+				}
 			}
 			messageQueue_.pop_front();
 		}
 		messageQueueLock_.unlock();
+
+		if (allReady()) {
+			std::cerr << "ALL READY" << std::endl;
+			eventQueueLock_.lock();
+			protos::Event e;
+			e.set_type(protos::Event_Type_START_GAME);
+			eventQueue_.emplace_back(e);
+			eventQueueLock_.unlock();
+		}
 
 		handleReSpawnLogic();
 		world_->stepSimulation(1.f / 15.f, 10);
@@ -316,14 +355,29 @@ void Game::startGameLoop() {
 
 		detectStun();
 		revivePlayers();
+		resurrectPlayers();
+
+		if (gravityController_->getActive()) {
+			eventQueueLock_.lock();
+			protos::Event event;
+			event.set_type(protos::Event_Type_GRAVITY_MUSIC);
+			eventQueue_.emplace_back(event);
+			eventQueueLock_.unlock();
+		}
+		else {
+			eventQueueLock_.lock();
+			protos::Event event;
+			event.set_type(protos::Event_Type_GAME_MUSIC);
+			eventQueue_.emplace_back(event);
+			eventQueueLock_.unlock();
+		}
 
 		sendStateToClients();
-		sendEventsToClients();
 
 		milliseconds stamp2 = duration_cast<milliseconds>(
 			system_clock::now().time_since_epoch());
 
-		sleep_for(interval - (stamp2-stamp1));
+		sleep_for(interval - (stamp2 - stamp1));
 
 		if (frameCounter > 300) {
 			spawnNewHat();
@@ -425,7 +479,16 @@ void Game::handleMoveLogic(const protos::Event* event) {
 
 void Game::handleJumpLogic(const protos::Event* event) {
 	Player* player = playerMap_[event->clientid()];
-	player->getController()->jump();
+	if (player->getController()->onGround()) {
+		player->getController()->jump();
+
+		eventQueueLock_.lock();
+		protos::Event jumpEvent;
+		jumpEvent.set_type(protos::Event_Type_PLAYER_JUMP);
+		jumpEvent.set_clientid(event->clientid());
+		eventQueue_.emplace_back(jumpEvent);
+		eventQueueLock_.unlock();
+	}
 }
 
 void Game::spawnNewHat() {
@@ -439,31 +502,44 @@ void Game::handleReSpawnLogic() {
 	std::unordered_set<Player*> theDead;
 	for (auto* body : playerSet_) {
 		Player* player = (Player*)body;
+		if (player->getDead()) {
+			continue;
+		}
 		if (world_->isDead(player)) {
 			auto lives = player->getLives();
-			if (lives > 1) {
-				Hat* hat = player->getHat();
-				if (hat) {
-					handleDquipLogic(player);
-				}
-				world_->spawnPlayer(player);
-				player->setLives(lives - 1);
-				std::cerr << "Player " << player->getId() << " died\n";
+
+			eventQueueLock_.lock();
+			protos::Event event;
+			event.set_clientid(player->getId());
+			event.set_type(protos::Event_Type_PLAYER_DIED);
+			eventQueue_.emplace_back(event);
+			eventQueueLock_.unlock();
+
+			Hat* hat = player->getHat();
+			if (hat) {
+				handleDquipLogic(player);
 			}
-			else {
-				player->setDead(true);
-				std::cerr << "Player " << player->getId() << "is dead forever "<< std::endl;
-				theDead.emplace(player);
-				world_->removeRigidBody(player);
+
+			world_->removeRigidBody(player);
+
+			player->setLives(lives - 1);
+			player->setDeadTimestamp(duration_cast<milliseconds>(
+				system_clock::now().time_since_epoch()));
+			player->setDead(true);
+
+			std::cerr << "Player died" << std::endl;
+
+			if (player->getLives() == 0) {
+				eventQueueLock_.lock();
+				event.Clear();
+				event.set_clientid(player->getId());
+				event.set_type(protos::Event_Type_GAME_OVER);
+				eventQueue_.emplace_back(event);
+				eventQueueLock_.unlock();
+
+				deadPlayers_.emplace(player);
 			}
-			
 		}
-	}
-	
-	for (auto player : theDead) {
-		deadPlayers_.emplace(player);
-		playerMap_.erase(player->getId());
-		playerSet_.erase(player);
 	}
 }
  
@@ -637,6 +713,7 @@ void Game::handleSecondaryHatLogic(const protos::Event* event) {
 	case WIZARD_HAT:
 		break;
 	case HARD_HAT:
+		shockwave(player);
 		break;
 	case BEAR_HAT:
 		becomeBear(player);
@@ -675,6 +752,37 @@ void Game::wrenchHit(Player* player) {
 	}
 }
 
+void Game::shockwave(Player* player) {
+	// TODO add shockwave animation
+
+	if (!player->getController()->onGround()) {
+		return;
+	}
+
+	btVector3 playerPos = player->getCenterOfMassPosition();
+
+	for (auto* body : playerSet_) {
+		Player* shockedPlayer = (Player*)body;
+		if (shockedPlayer == player) {
+			continue;
+		}
+		if (withinRange(player, shockedPlayer, 15) && shockedPlayer->getController()->onGround()) {
+			btVector3 shockPos = shockedPlayer->getCenterOfMassPosition();
+			btVector3 direction = (shockPos - playerPos).normalized();
+			shockedPlayer->applyCentralImpulse(direction * 5);
+			shockedPlayer->changeHealth(-10);
+		}
+	}
+
+	for (auto* hat : hatSet_) {
+		if (withinRange(player, hat, 15)) {
+			btVector3 shockPos = hat->getCenterOfMassPosition();
+			btVector3 direction = (shockPos - playerPos).normalized();
+			hat->applyCentralImpulse(direction * 5);
+		}
+	}
+}
+
 void Game::becomeBear(Player* player) {
 	animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_BEAR;
 	if (player->getController()->onGround()) {
@@ -693,10 +801,22 @@ void Game::killGravity() {
 
 void Game::propellerUp(Player* player) {
 	player->getController()->getRigidBody()->applyCentralForce(btVector3(0, 10, 0));
+	eventQueueLock_.lock();
+	protos::Event propellerEvent;
+	propellerEvent.set_type(protos::Event_Type_PLAYER_PROPELLER);
+	propellerEvent.set_clientid(player->getId());
+	eventQueue_.emplace_back(propellerEvent);
+	eventQueueLock_.unlock();
 }
 
 void Game::propellerDown(Player* player) {
 	player->getController()->getRigidBody()->applyCentralForce(btVector3(0, -10, 0));
+	eventQueueLock_.lock();
+	protos::Event propellerEvent;
+	propellerEvent.set_type(protos::Event_Type_PLAYER_PROPELLER);
+	propellerEvent.set_clientid(player->getId());
+	eventQueue_.emplace_back(propellerEvent);
+	eventQueueLock_.unlock();
 }
 
 void Game::setInvisible(Player* player) {
@@ -750,6 +870,8 @@ void Game::sendStateToClients() {
 	for (auto& pair : playerMap_) {
 		Player* player = pair.second;
 
+		auto* gameObject = message.add_gameobject();
+
 		btVector3 position = player->getCenterOfMassPosition();
 
 		//std::cerr << position.getX() << " " << position.getY() << " " << position.getZ() << std::endl;
@@ -760,21 +882,35 @@ void Game::sendStateToClients() {
 
 		transform.getOpenGLMatrix(glm);
 
-		auto* gameObject = message.add_gameobject();
-
-		Hat* hat = player->getHat();
-
 		if (player->getStunned()) {
 			animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_STUNNED;
 		}
 
+		Hat* hat = player->getHat();
+
+		if (hat) {
+			milliseconds currTime = duration_cast<milliseconds>(
+				system_clock::now().time_since_epoch());
+
+			milliseconds timer = currTime - hat->getTimestamp();
+
+			gameObject->set_timer(timer.count());
+		}
+		else {
+			gameObject->set_timer(0);
+		}
+
+		gameObject->set_posx(position.getX());
+		gameObject->set_posy(position.getY());
+		gameObject->set_posz(position.getZ());
 		gameObject->set_hattype(player->getHatType());
+		gameObject->set_dead(player->getDead());
 		gameObject->set_type(protos::Message_GameObject_Type_PLAYER);
 		gameObject->set_health(player->getHealth());
 		gameObject->set_lives(player->getLives());
 		gameObject->set_animationstate(animationStateMap_[player->getId()]);
 		gameObject->set_visible(player->getVisible());
-		gameObject->set_id(pair.first);
+		gameObject->set_id(player->getId());
 		for (auto v : glm) {
 			gameObject->add_matrix(v);
 		}
@@ -782,8 +918,8 @@ void Game::sendStateToClients() {
 
 	for (auto* hat : hatRemovedSet_) {
 		auto* event = message.add_event();
-		event->set_clientid(hat->playerId_);
 		event->set_type(protos::Event_Type_EQUIP);
+		event->set_clientid(hat->playerId_);
 		event->set_hatid(hat->getHatId());
 		
 		if (hat->playerId_ == 0) {
@@ -802,7 +938,12 @@ void Game::sendStateToClients() {
 
 		transform.getOpenGLMatrix(glm);
 
+		btVector3 position = hat->getCenterOfMassPosition();
+
 		auto* gameObject = message.add_gameobject();
+		gameObject->set_posx(position.getX());
+		gameObject->set_posy(position.getY());
+		gameObject->set_posz(position.getZ());
 		gameObject->set_type(protos::Message_GameObject_Type_HAT);
 		gameObject->set_hattype(hat->getHatType());
 		gameObject->set_id(hat->getHatId());
@@ -826,11 +967,16 @@ void Game::sendStateToClients() {
 		btTransform transform;
 		bullet->getMotionState()->getWorldTransform(transform);
 
+		btVector3 position = bullet->getCenterOfMassPosition();
+
 		btScalar glm[16] = {};
 
 		transform.getOpenGLMatrix(glm);
 
 		auto* gameObject = message.add_gameobject();
+		gameObject->set_posx(position.getX());
+		gameObject->set_posy(position.getY());
+		gameObject->set_posz(position.getZ());
 		gameObject->set_type(protos::Message_GameObject_Type_BULLET);
 		gameObject->set_id(bullet->getId());
 		for (auto v : glm) {
@@ -838,37 +984,17 @@ void Game::sendStateToClients() {
 		}
 	}
 
-	for (auto client : clients_) {
-		client->deliver(message);
-	}
-}
-
-void Game::sendEventsToClients() {
-	protos::Message message;
-
-	// Don't remove these print statements.
-	// TODO(Atyansh): Find a proper solution to fix this bug
-
-	std::cerr << "PRINT STATEMENT" << std::endl;
+	sleep_for(milliseconds(1));
 
 	eventQueueLock_.lock();
-	std::cerr << "PRINT STATEMENT" << std::endl;
 	for (auto& event : eventQueue_) {
-		std::cerr << "PRINT STATEMENT" << std::endl;
 		auto* e = message.add_event();
-		std::cerr << "PRINT STATEMENT" << std::endl;
 		e->MergeFrom(event);
-		std::cerr << "PRINT STATEMENT" << std::endl;
 	}
-	std::cerr << "PRINT STATEMENT" << std::endl;
 	eventQueue_.clear();
-	std::cerr << "PRINT STATEMENT" << std::endl;
 	eventQueueLock_.unlock();
-	std::cerr << "PRINT STATEMENT" << std::endl;
 
-	if (message.event_size()) {
-		for (auto client : clients_) {
-			client->deliver(message);
-		}
+	for (auto client : clients_) {
+		client->deliver(message);
 	}
 }

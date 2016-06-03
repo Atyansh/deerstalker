@@ -58,11 +58,16 @@ enum Event_Type {
   Event_Type_PLAYER_STUNNED = 17,
   Event_Type_PLAYER_WIN = 18,
   Event_Type_GRAB = 19,
-  Event_Type_PLAYER_GRABBED = 20
+  Event_Type_PLAYER_GRABBED = 20,
+  Event_Type_PLAYER_PROPELLER = 21,
+  Event_Type_GRAVITY_MUSIC = 22,
+  Event_Type_GAME_MUSIC = 23,
+  Event_Type_READY = 24,
+  Event_Type_START_GAME = 25
 };
 bool Event_Type_IsValid(int value);
 const Event_Type Event_Type_Type_MIN = Event_Type_SPAWN;
-const Event_Type Event_Type_Type_MAX = Event_Type_PLAYER_GRABBED;
+const Event_Type Event_Type_Type_MAX = Event_Type_START_GAME;
 const int Event_Type_Type_ARRAYSIZE = Event_Type_Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Event_Type_descriptor();
@@ -146,6 +151,25 @@ inline bool Message_GameObject_AnimationState_Parse(
   return ::google::protobuf::internal::ParseNamedEnum<Message_GameObject_AnimationState>(
     Message_GameObject_AnimationState_descriptor(), name, value);
 }
+enum Message_MessageType {
+  Message_MessageType_LOBBY = 1,
+  Message_MessageType_GAME = 2
+};
+bool Message_MessageType_IsValid(int value);
+const Message_MessageType Message_MessageType_MessageType_MIN = Message_MessageType_LOBBY;
+const Message_MessageType Message_MessageType_MessageType_MAX = Message_MessageType_GAME;
+const int Message_MessageType_MessageType_ARRAYSIZE = Message_MessageType_MessageType_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* Message_MessageType_descriptor();
+inline const ::std::string& Message_MessageType_Name(Message_MessageType value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    Message_MessageType_descriptor(), value);
+}
+inline bool Message_MessageType_Parse(
+    const ::std::string& name, Message_MessageType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Message_MessageType>(
+    Message_MessageType_descriptor(), name, value);
+}
 // ===================================================================
 
 class Event : public ::google::protobuf::Message {
@@ -220,6 +244,11 @@ class Event : public ::google::protobuf::Message {
   static const Type PLAYER_WIN = Event_Type_PLAYER_WIN;
   static const Type GRAB = Event_Type_GRAB;
   static const Type PLAYER_GRABBED = Event_Type_PLAYER_GRABBED;
+  static const Type PLAYER_PROPELLER = Event_Type_PLAYER_PROPELLER;
+  static const Type GRAVITY_MUSIC = Event_Type_GRAVITY_MUSIC;
+  static const Type GAME_MUSIC = Event_Type_GAME_MUSIC;
+  static const Type READY = Event_Type_READY;
+  static const Type START_GAME = Event_Type_START_GAME;
   static inline bool Type_IsValid(int value) {
     return Event_Type_IsValid(value);
   }
@@ -602,6 +631,41 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 lives() const;
   inline void set_lives(::google::protobuf::int32 value);
 
+  // optional int32 timer = 9;
+  inline bool has_timer() const;
+  inline void clear_timer();
+  static const int kTimerFieldNumber = 9;
+  inline ::google::protobuf::int32 timer() const;
+  inline void set_timer(::google::protobuf::int32 value);
+
+  // optional float posX = 10;
+  inline bool has_posx() const;
+  inline void clear_posx();
+  static const int kPosXFieldNumber = 10;
+  inline float posx() const;
+  inline void set_posx(float value);
+
+  // optional float posY = 11;
+  inline bool has_posy() const;
+  inline void clear_posy();
+  static const int kPosYFieldNumber = 11;
+  inline float posy() const;
+  inline void set_posy(float value);
+
+  // optional float posZ = 12;
+  inline bool has_posz() const;
+  inline void clear_posz();
+  static const int kPosZFieldNumber = 12;
+  inline float posz() const;
+  inline void set_posz(float value);
+
+  // optional bool dead = 13;
+  inline bool has_dead() const;
+  inline void clear_dead();
+  static const int kDeadFieldNumber = 13;
+  inline bool dead() const;
+  inline void set_dead(bool value);
+
   // @@protoc_insertion_point(class_scope:protos.Message.GameObject)
  private:
   inline void set_has_id();
@@ -618,6 +682,16 @@ class Message_GameObject : public ::google::protobuf::Message {
   inline void clear_has_visible();
   inline void set_has_lives();
   inline void clear_has_lives();
+  inline void set_has_timer();
+  inline void clear_has_timer();
+  inline void set_has_posx();
+  inline void clear_has_posx();
+  inline void set_has_posy();
+  inline void clear_has_posy();
+  inline void set_has_posz();
+  inline void clear_has_posz();
+  inline void set_has_dead();
+  inline void clear_has_dead();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -629,8 +703,13 @@ class Message_GameObject : public ::google::protobuf::Message {
   ::google::protobuf::int32 hattype_;
   int animationstate_;
   ::google::protobuf::int32 health_;
-  bool visible_;
   ::google::protobuf::int32 lives_;
+  ::google::protobuf::int32 timer_;
+  float posx_;
+  bool visible_;
+  bool dead_;
+  float posy_;
+  float posz_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -693,6 +772,30 @@ class Message : public ::google::protobuf::Message {
 
   typedef Message_GameObject GameObject;
 
+  typedef Message_MessageType MessageType;
+  static const MessageType LOBBY = Message_MessageType_LOBBY;
+  static const MessageType GAME = Message_MessageType_GAME;
+  static inline bool MessageType_IsValid(int value) {
+    return Message_MessageType_IsValid(value);
+  }
+  static const MessageType MessageType_MIN =
+    Message_MessageType_MessageType_MIN;
+  static const MessageType MessageType_MAX =
+    Message_MessageType_MessageType_MAX;
+  static const int MessageType_ARRAYSIZE =
+    Message_MessageType_MessageType_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  MessageType_descriptor() {
+    return Message_MessageType_descriptor();
+  }
+  static inline const ::std::string& MessageType_Name(MessageType value) {
+    return Message_MessageType_Name(value);
+  }
+  static inline bool MessageType_Parse(const ::std::string& name,
+      MessageType* value) {
+    return Message_MessageType_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
   // optional int32 id = 1;
@@ -726,18 +829,28 @@ class Message : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedPtrField< ::protos::Message_GameObject >*
       mutable_gameobject();
 
+  // optional .protos.Message.MessageType messageType = 4;
+  inline bool has_messagetype() const;
+  inline void clear_messagetype();
+  static const int kMessageTypeFieldNumber = 4;
+  inline ::protos::Message_MessageType messagetype() const;
+  inline void set_messagetype(::protos::Message_MessageType value);
+
   // @@protoc_insertion_point(class_scope:protos.Message)
  private:
   inline void set_has_id();
   inline void clear_has_id();
+  inline void set_has_messagetype();
+  inline void clear_has_messagetype();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::RepeatedPtrField< ::protos::Event > event_;
-  ::google::protobuf::RepeatedPtrField< ::protos::Message_GameObject > gameobject_;
   ::google::protobuf::int32 id_;
+  int messagetype_;
+  ::google::protobuf::RepeatedPtrField< ::protos::Message_GameObject > gameobject_;
   friend void  protobuf_AddDesc_Protos_2eproto();
   friend void protobuf_AssignDesc_Protos_2eproto();
   friend void protobuf_ShutdownFile_Protos_2eproto();
@@ -1300,6 +1413,126 @@ inline void Message_GameObject::set_lives(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:protos.Message.GameObject.lives)
 }
 
+// optional int32 timer = 9;
+inline bool Message_GameObject::has_timer() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void Message_GameObject::set_has_timer() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void Message_GameObject::clear_has_timer() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void Message_GameObject::clear_timer() {
+  timer_ = 0;
+  clear_has_timer();
+}
+inline ::google::protobuf::int32 Message_GameObject::timer() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.timer)
+  return timer_;
+}
+inline void Message_GameObject::set_timer(::google::protobuf::int32 value) {
+  set_has_timer();
+  timer_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.timer)
+}
+
+// optional float posX = 10;
+inline bool Message_GameObject::has_posx() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void Message_GameObject::set_has_posx() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void Message_GameObject::clear_has_posx() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+inline void Message_GameObject::clear_posx() {
+  posx_ = 0;
+  clear_has_posx();
+}
+inline float Message_GameObject::posx() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.posX)
+  return posx_;
+}
+inline void Message_GameObject::set_posx(float value) {
+  set_has_posx();
+  posx_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.posX)
+}
+
+// optional float posY = 11;
+inline bool Message_GameObject::has_posy() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void Message_GameObject::set_has_posy() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void Message_GameObject::clear_has_posy() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void Message_GameObject::clear_posy() {
+  posy_ = 0;
+  clear_has_posy();
+}
+inline float Message_GameObject::posy() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.posY)
+  return posy_;
+}
+inline void Message_GameObject::set_posy(float value) {
+  set_has_posy();
+  posy_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.posY)
+}
+
+// optional float posZ = 12;
+inline bool Message_GameObject::has_posz() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void Message_GameObject::set_has_posz() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void Message_GameObject::clear_has_posz() {
+  _has_bits_[0] &= ~0x00000800u;
+}
+inline void Message_GameObject::clear_posz() {
+  posz_ = 0;
+  clear_has_posz();
+}
+inline float Message_GameObject::posz() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.posZ)
+  return posz_;
+}
+inline void Message_GameObject::set_posz(float value) {
+  set_has_posz();
+  posz_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.posZ)
+}
+
+// optional bool dead = 13;
+inline bool Message_GameObject::has_dead() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void Message_GameObject::set_has_dead() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void Message_GameObject::clear_has_dead() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+inline void Message_GameObject::clear_dead() {
+  dead_ = false;
+  clear_has_dead();
+}
+inline bool Message_GameObject::dead() const {
+  // @@protoc_insertion_point(field_get:protos.Message.GameObject.dead)
+  return dead_;
+}
+inline void Message_GameObject::set_dead(bool value) {
+  set_has_dead();
+  dead_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.GameObject.dead)
+}
+
 // -------------------------------------------------------------------
 
 // Message
@@ -1388,6 +1621,31 @@ Message::mutable_gameobject() {
   return &gameobject_;
 }
 
+// optional .protos.Message.MessageType messageType = 4;
+inline bool Message::has_messagetype() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Message::set_has_messagetype() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Message::clear_has_messagetype() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Message::clear_messagetype() {
+  messagetype_ = 1;
+  clear_has_messagetype();
+}
+inline ::protos::Message_MessageType Message::messagetype() const {
+  // @@protoc_insertion_point(field_get:protos.Message.messageType)
+  return static_cast< ::protos::Message_MessageType >(messagetype_);
+}
+inline void Message::set_messagetype(::protos::Message_MessageType value) {
+  assert(::protos::Message_MessageType_IsValid(value));
+  set_has_messagetype();
+  messagetype_ = value;
+  // @@protoc_insertion_point(field_set:protos.Message.messageType)
+}
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -1416,6 +1674,11 @@ template <> struct is_proto_enum< ::protos::Message_GameObject_AnimationState> :
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::protos::Message_GameObject_AnimationState>() {
   return ::protos::Message_GameObject_AnimationState_descriptor();
+}
+template <> struct is_proto_enum< ::protos::Message_MessageType> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::protos::Message_MessageType>() {
+  return ::protos::Message_MessageType_descriptor();
 }
 
 }  // namespace google

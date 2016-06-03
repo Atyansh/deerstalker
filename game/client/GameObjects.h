@@ -39,6 +39,7 @@ enum Shaders {
 enum GUI {
 	_Background,
 	_LobbyBG,
+	_LobbyReadyBG,
 	_EndGameBG,
 	_Loading
 };
