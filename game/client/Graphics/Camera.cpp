@@ -73,6 +73,11 @@ void Camera::update(glm::mat4 rotMat, float lookUpMin, float lookDownMin) {
 	}
 }
 
+void Camera::resetCam() {
+	_camVec = glm::vec3(0.0f, 0.0f, 30.0f);
+	_objectVec = glm::vec3(0.f);
+}
+
 glm::mat4 Camera::getView() {
 	return glm::lookAt((_camVec + _objectVec), _objectVec, glm::vec3(0.0f, 1.0f, 0.0f));
 }

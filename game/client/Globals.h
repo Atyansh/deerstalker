@@ -22,7 +22,6 @@ class Globals {
 public:
 	static DrawData drawData;
 	static UpdateData updateData;
-	static Camera_Original camera;
 	static Camera cam;
 	static GameObjects gameObjects;
 
@@ -39,5 +38,7 @@ public:
 
 	static std::unordered_map<int, bool> readyPlayers;
 	static bool startGame;
+	static bool gameOver;
+	static bool gameWin;
 };
 

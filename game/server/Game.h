@@ -30,11 +30,19 @@ public:
 	void initialize();
 	void startGameLoop();
 
-	const static uint32_t MIN_PLAYERS = 1;
+	const static uint32_t MIN_PLAYERS = 2;
 	const static uint32_t MAX_PLAYERS = 4;
 	std::deque<uint32_t> availableIds;
 
 	std::unordered_set<btCollisionObject*> playerSet_;
+
+	bool getGameOn() {
+		return gameOn_;
+	}
+
+	void setGameOn(bool gameOn) {
+		gameOn_ = gameOn;
+	}
 
 private:
 	void loadHatBodyMap();
@@ -54,6 +62,11 @@ private:
 		}
 		return true;
 	}
+
+	void handleGameWinLogic();
+	void handleGameOverLogic();
+
+	void gameReset();
 
 	void deleteBullets();
 	void deleteHats();
@@ -111,7 +124,6 @@ private:
 	btCollisionObject* deerstalkerHatBody_;
 	btCollisionObject* propellerHatBody_;
 
-
 	std::deque<protos::Message> messageQueue_;
 	std::mutex messageQueueLock_;
 
@@ -123,6 +135,7 @@ private:
 
 	std::unordered_map<ClientId, Player*> playerMap_;
 	std::unordered_set<Player*> deadPlayers_;
+	std::unordered_map<ClientId, Player*> deletedPlayers_;
 
 	std::unordered_set<Hat*> hatSet_;
 	std::unordered_set<Hat*> hatRemovedSet_;
@@ -131,4 +144,9 @@ private:
 	std::unordered_map<ClientId, protos::Message_GameObject_AnimationState> animationStateMap_;
 
 	GravityController* gravityController_;
+
+	bool gameOn_ = false;
+	bool gameWin_ = false;
+
+	milliseconds winTimestamp_;
 };

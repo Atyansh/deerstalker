@@ -119,6 +119,19 @@ public:
 		ready_ = ready;
 	}
 
+	void reset() {
+		ready_ = false;
+		lives_ = 3;
+		stunned_ = false;
+		visible_ = true;
+		health_ = 100;
+		currHat_ = nullptr;
+		dead_ = false;
+		myGrabber_ = nullptr;
+		grabbedPlayer_ = nullptr;
+		setSpawn();
+	}
+
 	void setSpawn();
 	void setProjectile(btRigidBody * body, unsigned int baseVelocity);
 

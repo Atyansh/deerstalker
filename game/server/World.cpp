@@ -6,7 +6,7 @@ World::World(btCollisionDispatcher* collisionDispatcher,
 	btConstraintSolver* solver,
 	btCollisionConfiguration* collisionConfiguration) : 
 btDiscreteDynamicsWorld(collisionDispatcher, overlappingPairCache, solver, collisionConfiguration),
-lowestPoint_(-50) {
+lowestPoint_(20) {
 }
 
 World::~World() {
