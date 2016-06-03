@@ -30,7 +30,7 @@ int Player::getId() {
 	return id_;
 }
 
-void Player::setLives(unsigned int lives) {
+void Player::setLives(uint32_t lives) {
 	lives_ = lives;
 }
 
