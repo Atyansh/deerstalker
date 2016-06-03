@@ -396,8 +396,8 @@ void Window::handle_gamepad(GLFWwindow* window) {
 
 	if (STATE == State::_Dead) {
 		if (Globals::gameOver) {
-			resetStates();
 			STATE = State::_Lobby;
+			resetStates();
 		}
 
 		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {

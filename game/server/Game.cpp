@@ -87,6 +87,7 @@ void Game::handleGameOverLogic() {
 		return;
 	}
 
+	gameReset();
 	deadPlayers_.clear();
 	gameWin_ = false;
 	gameOn_ = false;
