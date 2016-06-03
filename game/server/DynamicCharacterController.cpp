@@ -157,7 +157,7 @@ void DynamicCharacterController::preStep(btCollisionWorld* collisionWorld, btSca
 	rayCallback6.m_closestHitFraction = 1.0;
 
 	forwardRaySource = xform.getOrigin() + btVector3(0, 5, 0);
-	forwardRayTarget = forwardRaySource + currentLook * 10;
+	forwardRayTarget = forwardRaySource + currentLook * 20;
 
 	collisionWorld->rayTest(forwardRaySource, forwardRayTarget, rayCallback6);
 

@@ -801,6 +801,7 @@ void Game::handleSecondaryHatLogic(const protos::Event* event) {
 		propellerDown(player);
 		break;
 	case WIZARD_HAT:
+		heal(player);
 		break;
 	case HARD_HAT:
 		shockwave(player);
@@ -812,6 +813,10 @@ void Game::handleSecondaryHatLogic(const protos::Event* event) {
 		ramOff(event);
 		break;
 	}
+}
+
+void Game::heal(Player* player) {
+	player->changeHealth(1);
 }
 
 void Game::wrenchHit(Player* player) {
@@ -856,7 +861,7 @@ void Game::shockwave(Player* player) {
 		if (shockedPlayer == player) {
 			continue;
 		}
-		if (withinRange(player, shockedPlayer, 15) && shockedPlayer->getController()->onGround()) {
+		if (withinRange(player, shockedPlayer, 30) && shockedPlayer->getController()->onGround()) {
 			btVector3 shockPos = shockedPlayer->getCenterOfMassPosition();
 			btVector3 direction = (shockPos - playerPos).normalized();
 			shockedPlayer->applyCentralImpulse(direction * 5);

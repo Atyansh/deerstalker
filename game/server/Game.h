@@ -96,6 +96,8 @@ private:
 
 	void spawnNewHat();
 
+	void heal(Player* player);
+
 	void propellerUp(Player* player);
 	void propellerDown(Player* player);
 
