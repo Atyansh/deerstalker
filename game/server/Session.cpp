@@ -99,6 +99,10 @@ void Session::do_write() {
 				}
 				queueLock_.unlock();
 			}
+			else {
+				std::cerr << "REMOVING CLIENT" << std::endl;
+				game_.remove(shared_from_this());
+			}
 		});
 	}
 }
