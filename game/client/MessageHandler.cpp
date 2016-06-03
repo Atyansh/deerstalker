@@ -147,15 +147,14 @@ void MessageHandler::handleGameMessages() {
 					Globals::cam.updateCamObjectMat(glm::vec3(mat[3]));
 				}
 
-
-				player->changeState(gameObject.animationstate());
-
 				if (gameObject.hattype() != NO_HAT) {
 					player->attachHat((HatType)gameObject.hattype());
 				}
 				else {
 					player->detachHat();
 				}
+
+				player->changeState(gameObject.animationstate());
 			}
 
 		}

@@ -76,8 +76,13 @@ message Message {
 			BEAR = 4;
 			WUSON = 5;
 			STUNNED = 6;
-			GRABBING = 7;
-			FLYING = 8;
+			FLYING = 7;
+			WAND = 8;
+			WRENCH_SWING = 9;
+			WRENCH_SLAM = 10;
+			GRAB = 11;
+			GRAB_WALK = 12;
+			DEAD = 13;
 		}
 		optional int32 id = 1;
 		repeated double matrix = 2;

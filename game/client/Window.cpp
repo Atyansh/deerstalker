@@ -59,8 +59,8 @@ GLFWwindow* Window::create_window(int width, int height) {
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	// Create the GLFW window
-	 GLFWwindow* window = glfwCreateWindow(width, height, window_title, glfwGetPrimaryMonitor(), NULL);
-     //GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
+	// GLFWwindow* window = glfwCreateWindow(width, height, window_title, glfwGetPrimaryMonitor(), NULL);
+     GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
 
 	// Check if the window could not be created
 	if (!window) {
@@ -149,7 +149,7 @@ void Window::display_callback(GLFWwindow* window) {
 		// Render objects
 		for (auto& pair : Globals::gameObjects.playerMap) {
 			Player *player = dynamic_cast<Player*>((pair.second));
-			if (player->getVisible() && !player->getDead()) {
+			if (player->getVisible()) {
 				pair.second->draw(Globals::drawData);
 			}
 			Globals::gameObjects.updatePlayerGui(player->getID(), player->getLives(), player->getHealth());
@@ -440,7 +440,20 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model, int id) 
 	switch (modelType) {
 		case _Player:
 			playerHatMap[WIZARD_HAT] = new Hat(Globals::gameObjects.modelMap[_WizardHat]);
-			playerHatMap[PROPELLER_HAT] = new Hat(Globals::gameObjects.modelMap[_PropellerHat]);
+			switch (id) {
+				case 1:
+					playerHatMap[PROPELLER_HAT] = new Hat(Globals::gameObjects.modelMap[_PropellerHat_P1]);
+					break;
+				case 2:
+					playerHatMap[PROPELLER_HAT] = new Hat(Globals::gameObjects.modelMap[_PropellerHat_P2]);
+					break;
+				case 3:
+					playerHatMap[PROPELLER_HAT] = new Hat(Globals::gameObjects.modelMap[_PropellerHat_P3]);
+					break;
+				case 4:
+					playerHatMap[PROPELLER_HAT] = new Hat(Globals::gameObjects.modelMap[_PropellerHat_P4]);
+					break;
+			}
 			playerHatMap[BEAR_HAT] = new Hat(Globals::gameObjects.modelMap[_BearHat]);
 			playerHatMap[HARD_HAT] = new Hat(Globals::gameObjects.modelMap[_HardHat]);
 			playerHatMap[DEERSTALKER_HAT] = new Hat(Globals::gameObjects.modelMap[_DeerstalkerHat]);
@@ -452,6 +465,12 @@ SMatrixTransform* Window::createGameObj(Models modelType, Model* model, int id) 
 			playerStateMap[protos::Message_GameObject_AnimationState_BEAR] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Bear]), id);
 			playerStateMap[protos::Message_GameObject_AnimationState_WUSON] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Wuson]), id);
 			playerStateMap[protos::Message_GameObject_AnimationState_FLYING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Flying]), id);
+			playerStateMap[protos::Message_GameObject_AnimationState_WAND] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Wand]), id);
+			playerStateMap[protos::Message_GameObject_AnimationState_WRENCH_SWING] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Wrench_Swing]), id);
+			playerStateMap[protos::Message_GameObject_AnimationState_WRENCH_SLAM] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Wrench_Slam]), id);
+			playerStateMap[protos::Message_GameObject_AnimationState_GRAB] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Grab]), id);
+			playerStateMap[protos::Message_GameObject_AnimationState_GRAB_WALK] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Grab_Running]), id);
+			playerStateMap[protos::Message_GameObject_AnimationState_DEAD] = new PlayerAnim(dynamic_cast<PlayerModel*>(Globals::gameObjects.modelMap[_Player_Dead]), id);
 			Globals::gameObjects.setPlayerToGui(id);
 			return new Player(playerStateMap, playerHatMap, id);
 		default:

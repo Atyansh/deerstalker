@@ -9,6 +9,10 @@ private:
 	bool animate;
 	Model *model;
 
+	//Animation time
+	float prevTime = 0;
+	float currAnimTime = 0;
+
 public:
 	Hat(Model *model, bool animate=false);
 	~Hat();

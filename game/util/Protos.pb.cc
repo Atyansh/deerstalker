@@ -179,11 +179,11 @@ void protobuf_AddDesc_Protos_2eproto() {
     "ME_MUSIC\020\027\022\t\n\005READY\020\030\022\016\n\nSTART_GAME\020\031\"m\n"
     "\tDirection\022\006\n\002UP\020\001\022\010\n\004DOWN\020\002\022\010\n\004LEFT\020\003\022\t"
     "\n\005RIGHT\020\004\022\013\n\007FORWARD\020\005\022\014\n\010BACKWARD\020\006\022\006\n\002"
-    "FL\020\007\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020\n\"\376\004\n\007Message"
+    "FL\020\007\022\006\n\002BL\020\010\022\006\n\002FR\020\t\022\006\n\002BR\020\n\"\301\005\n\007Message"
     "\022\n\n\002id\030\001 \001(\005\022\034\n\005event\030\002 \003(\0132\r.protos.Eve"
     "nt\022.\n\ngameObject\030\003 \003(\0132\032.protos.Message."
     "GameObject\0220\n\013messageType\030\004 \001(\0162\033.protos"
-    ".Message.MessageType\032\302\003\n\nGameObject\022\n\n\002i"
+    ".Message.MessageType\032\205\004\n\nGameObject\022\n\n\002i"
     "d\030\001 \001(\005\022\016\n\006matrix\030\002 \003(\001\022-\n\004type\030\003 \001(\0162\037."
     "protos.Message.GameObject.Type\022\017\n\007hatTyp"
     "e\030\004 \001(\005\022A\n\016animationState\030\005 \001(\0162).protos"
@@ -191,11 +191,13 @@ void protobuf_AddDesc_Protos_2eproto() {
     "alth\030\006 \001(\005\022\017\n\007visible\030\007 \001(\010\022\r\n\005lives\030\010 \001"
     "(\005\022\r\n\005timer\030\t \001(\005\022\014\n\004posX\030\n \001(\002\022\014\n\004posY\030"
     "\013 \001(\002\022\014\n\004posZ\030\014 \001(\002\022\014\n\004dead\030\r \001(\010\"\'\n\004Typ"
-    "e\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003\"u\n\016An"
-    "imationState\022\014\n\010STANDING\020\001\022\013\n\007RUNNING\020\002\022"
-    "\014\n\010PUNCHING\020\003\022\010\n\004BEAR\020\004\022\t\n\005WUSON\020\005\022\013\n\007ST"
-    "UNNED\020\006\022\014\n\010GRABBING\020\007\022\n\n\006FLYING\020\010\"\"\n\013Mes"
-    "sageType\022\t\n\005LOBBY\020\001\022\010\n\004GAME\020\002", 1429);
+    "e\022\n\n\006PLAYER\020\001\022\n\n\006BULLET\020\002\022\007\n\003HAT\020\003\"\267\001\n\016A"
+    "nimationState\022\014\n\010STANDING\020\001\022\013\n\007RUNNING\020\002"
+    "\022\014\n\010PUNCHING\020\003\022\010\n\004BEAR\020\004\022\t\n\005WUSON\020\005\022\013\n\007S"
+    "TUNNED\020\006\022\n\n\006FLYING\020\007\022\010\n\004WAND\020\010\022\020\n\014WRENCH"
+    "_SWING\020\t\022\017\n\013WRENCH_SLAM\020\n\022\010\n\004GRAB\020\013\022\r\n\tG"
+    "RAB_WALK\020\014\022\010\n\004DEAD\020\r\"\"\n\013MessageType\022\t\n\005L"
+    "OBBY\020\001\022\010\n\004GAME\020\002", 1496);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Protos.proto", &protobuf_RegisterTypes);
   Event::default_instance_ = new Event();
@@ -1135,6 +1137,11 @@ bool Message_GameObject_AnimationState_IsValid(int value) {
     case 6:
     case 7:
     case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+    case 13:
       return true;
     default:
       return false;
@@ -1148,8 +1155,13 @@ const Message_GameObject_AnimationState Message_GameObject::PUNCHING;
 const Message_GameObject_AnimationState Message_GameObject::BEAR;
 const Message_GameObject_AnimationState Message_GameObject::WUSON;
 const Message_GameObject_AnimationState Message_GameObject::STUNNED;
-const Message_GameObject_AnimationState Message_GameObject::GRABBING;
 const Message_GameObject_AnimationState Message_GameObject::FLYING;
+const Message_GameObject_AnimationState Message_GameObject::WAND;
+const Message_GameObject_AnimationState Message_GameObject::WRENCH_SWING;
+const Message_GameObject_AnimationState Message_GameObject::WRENCH_SLAM;
+const Message_GameObject_AnimationState Message_GameObject::GRAB;
+const Message_GameObject_AnimationState Message_GameObject::GRAB_WALK;
+const Message_GameObject_AnimationState Message_GameObject::DEAD;
 const Message_GameObject_AnimationState Message_GameObject::AnimationState_MIN;
 const Message_GameObject_AnimationState Message_GameObject::AnimationState_MAX;
 const int Message_GameObject::AnimationState_ARRAYSIZE;
