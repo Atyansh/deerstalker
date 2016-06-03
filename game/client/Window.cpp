@@ -105,6 +105,9 @@ void Window::idle_callback(GLFWwindow* window) {
 	if (STATE == State::_Lobby) {
 		MessageHandler::handleLobbyMessages();
 	}
+	if (STATE == State::_LobbyReady) {
+		MessageHandler::handleLobbyReadyMessages();
+	}
 	if (STATE == State::_Start) {
 		MessageHandler::handleStartMessages();
 	}
@@ -130,6 +133,9 @@ void Window::display_callback(GLFWwindow* window) {
 		break;
 	case State::_Lobby:
 		Globals::gameObjects.guiMap[_LobbyBG]->draw(Globals::drawData);
+		break;
+	case State::_LobbyReady:
+		Globals::gameObjects.guiMap[_LobbyReadyBG]->draw(Globals::drawData);
 		break;
 	case State::_Game:
 		Globals::drawData.view = Globals::cam.getView();
@@ -405,7 +411,7 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		sendMessage(Globals::socket, message);
 	}
 }
-
+   
 void Window::addMoveEvent(protos::Message& message, protos::Event_Direction direction) {
 	protos::Event* event = message.add_event();
 	event->set_clientid(Globals::ID);
