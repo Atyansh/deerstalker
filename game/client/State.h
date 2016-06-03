@@ -7,6 +7,7 @@ namespace State {
 		_Lobby,
 		_LobbyReady,
 		_Game,
+		_Dead,
 		_EndGame
 	};
 }

@@ -10,18 +10,6 @@
 
 #include "util\Protos.pb.h"
 
-//enum Models {
-//	_Player,
-//	_Mango,
-//	_Crate,
-//	_Wizard
-//};
-//
-//enum Shaders {
-//	_BShader,
-//	_LtShader
-//};
-
 class Window {
 public:
 	static int width;
@@ -35,6 +23,7 @@ public:
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void handle_gamepad(GLFWwindow* window);
 	static SMatrixTransform* createGameObj(Models modelType, Model* model, int id);
+	static void cycleCamera();
 	//static void generateWorld(string directory);
 
 private:

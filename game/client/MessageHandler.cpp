@@ -16,8 +16,7 @@ std::mutex MessageHandler::endGameLock;
 void MessageHandler::handleLobbyMessages() {
 }
 
-void MessageHandler::handleLobbyReadyMessages() {
-	
+void MessageHandler::handleLobbyReadyMessages() {	
 }
 
 void MessageHandler::handleStartMessages() {
@@ -143,10 +142,9 @@ void MessageHandler::handleGameMessages() {
 					player->setVisible(true);
 				}
 
-				if (gameObject.id() == Globals::ID) { // follow camera based player
+				if (gameObject.id() == Globals::cam.getPlayerId()) { // follow camera based player
 					Globals::cam.updateCamObjectMat(glm::vec3(mat[3]));
 				}
-
 
 				player->changeState(gameObject.animationstate());
 

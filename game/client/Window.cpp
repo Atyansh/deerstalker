@@ -111,7 +111,7 @@ void Window::idle_callback(GLFWwindow* window) {
 	if (STATE == State::_Start) {
 		MessageHandler::handleStartMessages();
 	}
-	if (STATE == State::_Game) {
+	if (STATE == State::_Game || STATE == State::_Dead) {
 		MessageHandler::handleGameMessages();
 	}
 	if (STATE == State::_EndGame) {
@@ -141,6 +141,7 @@ void Window::display_callback(GLFWwindow* window) {
 		Globals::gameObjects.ready->draw(Globals::readyPlayers);
 		break;
 	case State::_Game:
+	case State::_Dead:
 		Globals::drawData.view = Globals::cam.getView();
 
 		Globals::gameObjects.root->draw(Globals::drawData);
@@ -236,6 +237,16 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	auto* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
 	if (STATE == State::_Game) {
+		if (Globals::gameOver) {
+			STATE = State::_EndGame;
+		}
+
+		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second);
+
+		if (player->getDead() && player->getLives() == 0) {
+			STATE = State::_Dead;
+		}
+
 		message.set_messagetype(protos::Message_MessageType_GAME);
 		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
 			fprintf(stderr, "Going Down\n");
@@ -256,8 +267,6 @@ void Window::handle_gamepad(GLFWwindow* window) {
 			Globals::cam.yaw(1);
 		}
 
-		Player *player = dynamic_cast<Player*>(Globals::gameObjects.playerMap.find(Globals::ID)->second); 
-		
 		if (player->getState() == protos::Message_GameObject_AnimationState_STUNNED) {
 			return;
 		}
@@ -377,6 +386,40 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		}
 	}
 
+	if (STATE == State::_Dead) {
+		if (Globals::gameOver) {
+			//STATE = State::_EndGame;
+		}
+
+		if (axes[RIGHT_STICK_X] > POS_AXIS_TILT) {
+			fprintf(stderr, "Going Down\n");
+			Globals::cam.pitch(0);
+		}
+		else if (axes[RIGHT_STICK_X] < NEG_AXIS_TILT) {
+			fprintf(stderr, "Going Up\n");
+			Globals::cam.pitch(1);
+		}
+
+		if (axes[RIGHT_STICK_Y] > POS_AXIS_TILT) {
+			fprintf(stderr, "Going Right\n");
+			Globals::cam.yaw(0);
+		}
+
+		else if (axes[RIGHT_STICK_Y] < NEG_AXIS_TILT) {
+			fprintf(stderr, "Going Left\n");
+			Globals::cam.yaw(1);
+		}
+
+		if (buttons[BUTTON_A] == GLFW_PRESS && !buttonState[BUTTON_A]) {
+			cycleCamera();
+			buttonState[BUTTON_A] = true;
+		}
+
+		if (buttons[BUTTON_A] == GLFW_RELEASE) {
+			buttonState[BUTTON_A] = false;
+		}
+	}
+
 	if (STATE == State::_Start) {
 		if (buttons[BUTTON_START] == GLFW_PRESS) {
 			// Switch state to lobby
@@ -420,7 +463,33 @@ void Window::handle_gamepad(GLFWwindow* window) {
 		sendMessage(Globals::socket, message);
 	}
 }
-   
+  
+void Window::cycleCamera() {
+	int originalId = Globals::cam.getPlayerId();
+	int playerId = originalId;
+	auto* map = &Globals::gameObjects.playerMap;
+	Player* cyclePlayer = nullptr;
+	do {
+		if (playerId >= 4) {
+			playerId = 1;
+		}
+		else {
+			playerId += 1;
+		}
+
+		if ((*map).find(playerId) == (*map).end()) {
+			continue;
+		}
+
+		if (playerId == originalId) {
+			break;
+		}
+		cyclePlayer = dynamic_cast<Player*>(Globals::gameObjects.playerMap[playerId]);
+	} while (!cyclePlayer || (cyclePlayer->getDead() && cyclePlayer->getLives() == 0));
+
+	Globals::cam.setPlayerId(playerId);
+}
+
 void Window::addMoveEvent(protos::Message& message, protos::Event_Direction direction) {
 	protos::Event* event = message.add_event();
 	event->set_clientid(Globals::ID);
