@@ -11,6 +11,7 @@
 #include "Game\World.h"
 #include "Graphics\GuiItem.h"
 #include "Graphics\PlayerGameGUI.h"
+#include "Graphics\ReadyGUI.h"
 
 enum Models {
 	_Player, //used for type of object
@@ -59,6 +60,7 @@ public:
 	std::unordered_map<std::uint32_t, Model*> modelMap;
 	std::unordered_map<std::uint32_t, Shader*> shaderMap;
 	std::unordered_map<std::uint32_t, GuiItem*> guiMap;
+	ReadyGUI *ready;
 	SMatrixTransform *root;
 
 	GameObjects();

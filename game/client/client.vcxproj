@@ -138,6 +138,7 @@
     <ClCompile Include="Graphics\LightShader.cpp" />
     <ClCompile Include="Graphics\LivesGUI.cpp" />
     <ClCompile Include="Graphics\PlayerGameGUI.cpp" />
+    <ClCompile Include="Graphics\ReadyGUI.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
     <ClCompile Include="Graphics\UpdateData.cpp" />
     <ClCompile Include="main.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Graphics\LightShader.h" />
     <ClInclude Include="Graphics\LivesGUI.h" />
     <ClInclude Include="Graphics\PlayerGameGUI.h" />
+    <ClInclude Include="Graphics\ReadyGUI.h" />
     <ClInclude Include="Graphics\Shader.h" />
     <ClInclude Include="Graphics\UpdateData.h" />
     <ClInclude Include="MessageHandler.h" />
