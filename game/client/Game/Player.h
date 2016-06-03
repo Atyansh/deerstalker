@@ -15,6 +15,7 @@ class Player : public SMatrixTransform {
 		SMatrixTransform *player;
 		unordered_map<std::uint32_t, PlayerAnim*> playerModels;
 		HatType currHat;
+		Hat *hatPtr;
 		protos::Message_GameObject_AnimationState currState;
 
 		int lives_;
@@ -23,6 +24,7 @@ class Player : public SMatrixTransform {
 		int timer_;
 		bool dead_;
 		glm::vec3 position_;
+		bool fly;
 
 		void createPlayer();
 
@@ -92,5 +94,13 @@ class Player : public SMatrixTransform {
 		
 		int getID() {
 			return id_;
+		}
+
+		void setFlying(bool flying) {
+			this->fly = flying;
+		}
+
+		bool getFlying() {
+			this->fly;
 		}
 };

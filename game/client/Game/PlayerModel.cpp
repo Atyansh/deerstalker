@@ -16,7 +16,7 @@ PlayerModel::PlayerModel(const char* path, Shader *shader, protos::Message_GameO
 	this->mAnimTree = NULL;
 	this->state = state;
 	this->loadModel(path);
-	if(state == protos::Message_GameObject_AnimationState_STANDING){
+	if(state == protos::Message_GameObject_AnimationState_STANDING || state == protos::Message_GameObject_AnimationState_FLYING){
 		this->mAnimTree->boneTransfrom(0.f, boneInfos, boneMapping);
 	}
 }
@@ -29,7 +29,7 @@ PlayerModel::~PlayerModel()
 void PlayerModel::draw(DrawData &data) {
 	shader->bind();
 
-	if(state != protos::Message_GameObject_AnimationState_STANDING){
+	if(state != protos::Message_GameObject_AnimationState_STANDING && state != protos::Message_GameObject_AnimationState_FLYING){
 		if (this->mAnimTree != NULL) {
 			this->mAnimTree->boneTransfrom(data.animTime, boneInfos, boneMapping);
 		}

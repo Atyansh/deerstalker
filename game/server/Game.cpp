@@ -802,6 +802,7 @@ void Game::killGravity() {
 void Game::propellerUp(Player* player) {
 	player->getController()->getRigidBody()->applyCentralForce(btVector3(0, 10, 0));
 	eventQueueLock_.lock();
+	animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_FLYING;
 	protos::Event propellerEvent;
 	propellerEvent.set_type(protos::Event_Type_PLAYER_PROPELLER);
 	propellerEvent.set_clientid(player->getId());
@@ -812,6 +813,7 @@ void Game::propellerUp(Player* player) {
 void Game::propellerDown(Player* player) {
 	player->getController()->getRigidBody()->applyCentralForce(btVector3(0, -10, 0));
 	eventQueueLock_.lock();
+	animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_FLYING;
 	protos::Event propellerEvent;
 	propellerEvent.set_type(protos::Event_Type_PLAYER_PROPELLER);
 	propellerEvent.set_clientid(player->getId());

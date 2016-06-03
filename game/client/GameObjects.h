@@ -20,6 +20,7 @@ enum Models {
 	_Player_Stunned,
 	_Player_Wuson,
 	_Player_Bear,
+	_Player_Flying,
 	_Mango,
 	_Crate,
 	_WizardHat,

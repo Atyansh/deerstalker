@@ -64,6 +64,7 @@ void Player::detachHat() {
 
 	if (value != this->hatModels.end()) {
 		value->second->setVisible(false);
+		hatPtr = NULL;
 		currHat = NO_HAT;
 	}
 }
@@ -75,6 +76,7 @@ void Player::attachHat(HatType newHat) {
 
 	if (value != this->hatModels.end()) {
 		value->second->setVisible(true);
+		hatPtr = value->second;
 		currHat = newHat;
 	}
 }
@@ -94,6 +96,8 @@ void Player::changeState(protos::Message_GameObject_AnimationState newState){
 	if (valueNewState != this->playerModels.end()) {
 		valueNewState->second->setVisible(true);
 		currState = newState;
+		if (hatPtr != NULL)
+			hatPtr->setAnimate(this->fly);
 	}
 
 	float scaleFactorPlayer = 0.075f;

@@ -15,7 +15,9 @@ Hat::~Hat()
 
 void Hat::draw(DrawData& data) {
 	if (isVisible) {
+		cout << animate << endl;
 		if (animate) {
+			data.animate = animate;
 			dynamic_cast<AnimModel*>(model)->draw(data);
 		} else {
 			model->draw(data);
@@ -32,4 +34,8 @@ void Hat::update(UpdateData& data) {
 
 void Hat::setVisible(bool visible) {
 	this->isVisible = visible;
+}
+
+void Hat::setAnimate(bool animate) {
+	this->animate = animate;
 }

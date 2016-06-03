@@ -87,6 +87,7 @@ void GameObjects::loadModelMap() {
 	modelMap[_Player_Stunned] = new PlayerModel(playerStunnedPath, shaderMap[_AShader], protos::Message_GameObject_AnimationState_STUNNED);
 	modelMap[_Player_Wuson] = new PlayerModel(wusonPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_WUSON);
 	modelMap[_Player_Bear] = new PlayerModel(bearPath, shaderMap[_LtShader], protos::Message_GameObject_AnimationState_BEAR);
+	modelMap[_Player_Flying] = new PlayerModel(playerStandPath, shaderMap[_AShader], protos::Message_GameObject_AnimationState_FLYING);
 	modelMap[_Crate] = new Model(cratePath, shaderMap[_AShader]);
 	modelMap[_WizardHat] = new Model(wizardPath, shaderMap[_AShader]);
 	modelMap[_HardHat] = new Model(hardHatPath, shaderMap[_AShader]);

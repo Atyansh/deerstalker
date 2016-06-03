@@ -111,6 +111,7 @@ void MessageHandler::handleGameMessages() {
 
 			if (gameObject.type() == protos::Message_GameObject_Type_PLAYER) {
 				Player* player = dynamic_cast<Player*>(&entity);
+				player->setFlying(false);
 
 				glm::vec3 position = glm::vec3(gameObject.posx(), gameObject.posy(), gameObject.posz());
 
@@ -130,6 +131,9 @@ void MessageHandler::handleGameMessages() {
 					auto scale = glm::vec3(1) / 0.075 * 8;
 					glm::mat4 scaleMat = glm::scale(mat, scale);
 					entity.setMatrix(scaleMat);
+				}
+				else if (gameObject.animationstate() == protos::Message_GameObject_AnimationState_FLYING) {
+					player->setFlying(true);
 				}
 
 				if (Globals::ID != id) {

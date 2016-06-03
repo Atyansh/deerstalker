@@ -30,7 +30,7 @@ void AnimModel::draw(DrawData &data) {
 
 	shader->bind();
 
-	if (this->mAnimTree != NULL) {
+	if (data.animate && this->mAnimTree != NULL) {
 		this->mAnimTree->boneTransfrom(currAnimTime, boneInfos, boneMapping);
 	}
 

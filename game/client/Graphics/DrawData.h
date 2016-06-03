@@ -14,6 +14,7 @@ public:
 	int playerId;
 	int width;
 	int height;
+	bool animate;
     
     DrawData(void);
     ~DrawData(void);

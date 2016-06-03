@@ -19,4 +19,8 @@ public:
 	bool getVisible() {
 		return isVisible;
 	}
+	void setAnimate(bool visible);
+	bool getAnimate() {
+		return animate;
+	}
 };
