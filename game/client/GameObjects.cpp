@@ -52,6 +52,8 @@ void GameObjects::loadShaders() {
 	shaderMap[_GShader] = guiShader;
 	shaderMap[_2DShader] = twoShader;
 	shaderMap[_AShader] = animShader;
+
+	ready = new ReadyGUI(Globals::drawData.width, Globals::drawData.height);
 }
 
 void GameObjects::loadLoadingObject() {

@@ -294,6 +294,16 @@ void Game::startGameLoop() {
 				auto event = message.event(i);
 				if (event.type() == protos::Event_Type_SPAWN) {
 					handleSpawnLogic(&event);
+					eventQueueLock_.lock();
+					for (auto item : playerMap_) {
+						if (item.second->getReady()) {
+							protos::Event e;
+							e.set_type(protos::Event_Type_READY);
+							e.set_clientid(item.first);
+							eventQueue_.emplace_back(e);
+						}
+					}
+					eventQueueLock_.unlock();
 				}
 				else if (playerMap_[event.clientid()]->getDead()) {
 					//TODO WHAT CAN THE DEAD DO
@@ -326,12 +336,13 @@ void Game::startGameLoop() {
 				}
 				else if (event.type() == protos::Event_Type_READY) {
 					std::cerr << "READY RECEIVED FROM CLIENT" << std::endl;
+					playerMap_[event.clientid()]->setReady(true);
+					eventQueueLock_.lock();
 					protos::Event e;
 					e.set_type(protos::Event_Type_READY);
 					e.set_clientid(event.clientid());
 					eventQueue_.emplace_back(e);
 					eventQueueLock_.unlock();
-					playerMap_[event.clientid()]->setReady(true);
 				}
 			}
 			messageQueue_.pop_front();

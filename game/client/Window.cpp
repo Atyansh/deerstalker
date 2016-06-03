@@ -122,6 +122,7 @@ void Window::idle_callback(GLFWwindow* window) {
 void Window::display_callback(GLFWwindow* window) {
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	int count = 0;
 
 	switch (STATE) {
 	case State::_Loading:
@@ -133,10 +134,11 @@ void Window::display_callback(GLFWwindow* window) {
 		break;
 	case State::_Lobby:
 		Globals::gameObjects.guiMap[_LobbyBG]->draw(Globals::drawData);
+		Globals::gameObjects.ready->draw(Globals::readyPlayers);
 		break;
 	case State::_LobbyReady:
 		Globals::gameObjects.guiMap[_LobbyReadyBG]->draw(Globals::drawData);
-		//cout << Globals::readyPlayers[Globals::ID] << endl;
+		Globals::gameObjects.ready->draw(Globals::readyPlayers);
 		break;
 	case State::_Game:
 		Globals::drawData.view = Globals::cam.getView();
@@ -383,7 +385,6 @@ void Window::handle_gamepad(GLFWwindow* window) {
 	}
 
 	if (STATE == State::_Lobby) {
-		
 		Sleep(1);
 		//std::cerr << "LOBBY" << std::endl;
 		if (buttons[BUTTON_A] == GLFW_PRESS) {
