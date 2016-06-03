@@ -330,6 +330,7 @@ void Game::loopReset() {
 	for (auto pair : playerMap_) {
 		pair.second->setVisible(true);
 		pair.second->setLinearFactor(btVector3(1,1,1));
+		pair.second->setBearMode(false);
 	}
 }
 
@@ -880,6 +881,7 @@ void Game::shockwave(Player* player) {
 
 void Game::becomeBear(Player* player) {
 	animationStateMap_[player->getId()] = protos::Message_GameObject_AnimationState_BEAR;
+	player->setBearMode(true);
 	if (player->getController()->onGround()) {
 		player->setLinearFactor(btVector3(0, 0, 0));
 		player->setLinearVelocity(btVector3(0, 0, 0));

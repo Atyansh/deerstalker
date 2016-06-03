@@ -39,6 +39,9 @@ public:
 	}
 
 	void changeHealth(int delta) {
+		if (getBearMode()) {
+			return;
+		}
 		int newHealth = health_ + delta;
 		if (newHealth > 100) {
 			setHealth(100);
@@ -119,6 +122,14 @@ public:
 		ready_ = ready;
 	}
 
+	bool getBearMode() {
+		return bearMode_;
+	}
+
+	void setBearMode(bool bearMode) {
+		bearMode_ = bearMode;
+	}
+
 	void reset() {
 		ready_ = false;
 		lives_ = 3;
@@ -154,6 +165,8 @@ private:
 
 	bool dead_ = false;
 	bool ready_ = false;
+
+	bool bearMode_ = false;
 
 	Player* myGrabber_ = nullptr;
 	Player* grabbedPlayer_ = nullptr;
