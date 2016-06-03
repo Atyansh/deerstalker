@@ -131,6 +131,7 @@ void do_read_body(size_t length) {
 				}
 				if (event.type() == event.START_GAME) {
 					Globals::startGame = true;
+					Globals::gameWin = false;
 				}
 				if (event.type() == event.PLAYER_WIN) {
 					Globals::gameWin = true;
@@ -140,6 +141,7 @@ void do_read_body(size_t length) {
 				}
 				if (event.type() == event.READY) {
 					Globals::readyPlayers[event.clientid()] = true;
+					Globals::gameWin = false;
 				}
 			}
 

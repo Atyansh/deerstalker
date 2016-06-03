@@ -148,7 +148,9 @@ void Window::display_callback(GLFWwindow* window) {
 		Globals::drawData.view = Globals::cam.getView();
 
 		Globals::gameObjects.root->draw(Globals::drawData);
-		//Globals::gameObjects.drawPlayerGui(guiTranslation);
+		if (!Globals::gameWin) {
+			Globals::gameObjects.drawPlayerGui(guiTranslation);
+		}
 
 		if (Globals::gameWin) {
 			cerr << "WIN\n";
